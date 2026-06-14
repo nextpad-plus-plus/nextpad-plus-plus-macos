@@ -2308,7 +2308,13 @@ static const struct SciDefaultKeys *sciDefaultKeysFor(int sciID) {
 
     BOOL bsUnindent = [ud boolForKey:kPrefBackspaceUnindent];
     [sci message:SCI_SETBACKSPACEUNINDENTS wParam:bsUnindent ? 1 : 0];
-    [sci message:SCI_SETTABINDENTS wParam:bsUnindent ? 1 : 0];
+    // Tab / Shift+Tab indent/outdent the line, like Notepad++ and most code
+    // editors. This is independent of "Backspace unindents": SCI_SETTABINDENTS
+    // governs whether Shift+Tab dedents line content (otherwise it only moves
+    // the caret). Notepad++ relies on Scintilla's default of tabIndents=true and
+    // never overrides it; we set it explicitly so the behaviour can't regress.
+    // Tying it to bsUnindent (default NO) disabled Shift+Tab outdent (#201).
+    [sci message:SCI_SETTABINDENTS wParam:1];
 
     // Notepad++ "column selection to multi-editing": on Backspace/arrows a
     // column (rectangular) selection is first converted to a stream
