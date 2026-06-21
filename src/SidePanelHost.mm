@@ -115,7 +115,19 @@ static CGFloat panelMinHeight(NSSplitView *sv) {
     [_frames setObject:frame forKey:panel];
     [_order addObject:panel];
 
-    [self _installFrameInStack:frame];
+    NSString *cls = NSStringFromClass([panel class]);
+    NSString *key = [@"NppFloatingPanelPopped_" stringByAppendingString:cls];
+    BOOL shouldPop = [[NSUserDefaults standardUserDefaults] boolForKey:key];
+
+    if (shouldPop) {
+        FloatingPanelWindow *w = [[FloatingPanelWindow alloc] initWithPanelFrame:frame];
+        [_poppedWindows setObject:w forKey:panel];
+        frame.popped = YES;
+        [w makeKeyAndOrderFront:nil];
+        [self _notifyLayoutChanged];
+    } else {
+        [self _installFrameInStack:frame];
+    }
 }
 
 // Add a frame to the bottom of the stack and equalize all docked heights.
@@ -209,6 +221,10 @@ static CGFloat panelMinHeight(NSSplitView *sv) {
     frame.popped = YES;
     [w makeKeyAndOrderFront:nil];
 
+    NSString *cls = NSStringFromClass([panel class]);
+    NSString *key = [@"NppFloatingPanelPopped_" stringByAppendingString:cls];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:key];
+
     [self _notifyLayoutChanged];
 }
 
@@ -230,6 +246,10 @@ static CGFloat panelMinHeight(NSSplitView *sv) {
 
     frame.popped = NO;
     [self _installFrameInStack:frame];
+
+    NSString *cls = NSStringFromClass([panel class]);
+    NSString *key = [@"NppFloatingPanelPopped_" stringByAppendingString:cls];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:key];
 
     [self _notifyLayoutChanged];
 }

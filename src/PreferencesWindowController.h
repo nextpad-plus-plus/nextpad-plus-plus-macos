@@ -77,6 +77,9 @@ extern NSString *const kPrefClickableLinkFullBox;    // BOOL, default NO — box
 extern NSString *const kPrefClickableLinkSchemes;    // NSString — space-separated URI schemes
 // Tier 1 booleans
 extern NSString *const kPrefShowStatusBar;       // BOOL, default YES
+extern NSString *const kPrefToolbarVisible;      // BOOL, default YES
+extern NSString *const kPrefDockPanelsOnLeft;    // BOOL, default NO
+extern NSString *const kPrefSidePanelWidth;      // double, default 280
 extern NSString *const kPrefMuteSounds;          // BOOL, default NO
 extern NSString *const kPrefSaveAllConfirm;      // BOOL, default NO
 extern NSString *const kPrefPluginSplitViewRouting; // BOOL, default YES — route plugin SCI messages to split view

@@ -536,6 +536,7 @@ static NSMenu *buildLanguageMenu() {
 
     [viewMenu addItem:itemMod(@"Command Palette…", @selector(showCommandPalette:), @"p",
                               NSEventModifierFlagCommand | NSEventModifierFlagShift)];
+    [viewMenu addItem:item(@"Toggle Toolbar", @selector(toggleToolbarShown:), @"")];
     addSep(viewMenu);
     [viewMenu addItem:item(@"Always on Top", @selector(toggleAlwaysOnTop:), @"")];
     [viewMenu addItem:itemMod(@"Toggle Full Screen Mode", @selector(toggleFullScreen:), @"f",
