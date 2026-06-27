@@ -135,8 +135,11 @@
                 }];
                 return;
             }
-            NSError *err;
-            [editor saveError:&err];
+            NSError *err = nil;
+            if (![editor saveError:&err]) {
+                if (err) [[NSAlert alertWithError:err] runModal];
+                return;   // save failed — keep the tab (and its changes) open
+            }
         } else if (resp == NSAlertThirdButtonReturn) {
             return;
         }
@@ -335,10 +338,11 @@
     panel.nameFieldStringValue = editor.displayName;
     [panel beginWithCompletionHandler:^(NSModalResponse result) {
         if (result == NSModalResponseOK) {
-            NSError *err;
-            [editor saveToPath:panel.URL.path error:&err];
+            NSError *err = nil;
+            BOOL ok = [editor saveToPath:panel.URL.path error:&err];
+            if (!ok && err) [[NSAlert alertWithError:err] runModal];
             [self refreshAllTabTitles];
-            if (completion) completion(YES);
+            if (completion) completion(ok);
         } else {
             if (completion) completion(NO);
         }
