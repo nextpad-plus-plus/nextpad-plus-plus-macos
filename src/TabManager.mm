@@ -76,15 +76,6 @@
     EditorView *editor = [[EditorView alloc] initWithFrame:_contentView.bounds];
     editor.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-    // Mirrors NPP: reuse the lowest available untitled index rather than always incrementing.
-    // e.g. if "new 1" and "new 3" are open, next tab is "new 2" (fills the gap).
-    NSMutableSet<NSNumber *> *used = [NSMutableSet set];
-    for (EditorView *ed in _editors)
-        if (!ed.filePath) [used addObject:@(ed.untitledIndex)];
-    NSInteger idx = 1;
-    while ([used containsObject:@(idx)]) idx++;
-    [editor restoreUntitledIndex:idx];
-
     [self insertEditor:editor title:editor.displayName modified:NO];
     return editor;
 }
