@@ -801,6 +801,21 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         : [NSColor colorWithRed:0.8 green:0 blue:0 alpha:1];
 }
 
+- (void)_showReplaceWriteFailures:(NSArray<NSString *> *)failures {
+    if (!failures.count) return;
+    NSUInteger shownCount = MIN(failures.count, (NSUInteger)10);
+    NSMutableArray<NSString *> *details = [[failures subarrayWithRange:NSMakeRange(0, shownCount)] mutableCopy];
+    if (failures.count > shownCount)
+        [details addObject:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"...and %lu more"],
+            (unsigned long)(failures.count - shownCount)]];
+
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleWarning;
+    alert.messageText = [[NppLocalizer shared] translate:@"Some files could not be replaced"];
+    alert.informativeText = [details componentsJoinedByString:@"\n"];
+    [alert runModal];
+}
+
 #pragma mark - History
 
 - (void)_addToHistory:(NSComboBox *)combo key:(NSString *)key {
@@ -1011,6 +1026,8 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             options:opts progressBlock:nil cancelFlag:NULL totalFilesScanned:NULL];
         __block NSInteger totalReplacements = 0;
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSInteger changedFiles = 0;
+            NSMutableArray<NSString *> *writeFailures = [NSMutableArray array];
             for (NPPFileResults *fr in results) {
                 NSString *content = [NSString stringWithContentsOfFile:fr.filePath
                                                              encoding:NSUTF8StringEncoding error:nil];
@@ -1025,12 +1042,20 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                 NSString *replaced = [content stringByReplacingOccurrencesOfString:search withString:repl
                                                                           options:cmp range:NSMakeRange(0, content.length)];
                 if (![replaced isEqualToString:content]) {
-                    [replaced writeToFile:fr.filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-                    totalReplacements += (NSInteger)fr.results.count;
+                    NSError *writeError = nil;
+                    if ([replaced writeToFile:fr.filePath atomically:YES
+                                     encoding:NSUTF8StringEncoding error:&writeError]) {
+                        totalReplacements += (NSInteger)fr.results.count;
+                        changedFiles++;
+                    } else {
+                        [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
+                            fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
+                    }
                 }
             }
             [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Replace in Files: %ld replacement(s) in %ld file(s)."],
-                (long)totalReplacements, (long)results.count] found:(totalReplacements > 0)];
+                (long)totalReplacements, (long)changedFiles] found:(totalReplacements > 0)];
+            [self _showReplaceWriteFailures:writeFailures];
         });
     });
 }
@@ -1166,6 +1191,8 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             options:opts progressBlock:nil cancelFlag:NULL totalFilesScanned:NULL];
         __block NSInteger totalReplacements = 0;
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSInteger changedFiles = 0;
+            NSMutableArray<NSString *> *writeFailures = [NSMutableArray array];
             for (NPPFileResults *fr in results) {
                 NSString *content = [NSString stringWithContentsOfFile:fr.filePath
                                                              encoding:NSUTF8StringEncoding error:nil];
@@ -1180,13 +1207,21 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                 NSString *replaced = [content stringByReplacingOccurrencesOfString:search withString:repl
                                                                           options:cmp range:NSMakeRange(0, content.length)];
                 if (![replaced isEqualToString:content]) {
-                    [replaced writeToFile:fr.filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-                    totalReplacements += (NSInteger)fr.results.count;
+                    NSError *writeError = nil;
+                    if ([replaced writeToFile:fr.filePath atomically:YES
+                                     encoding:NSUTF8StringEncoding error:&writeError]) {
+                        totalReplacements += (NSInteger)fr.results.count;
+                        changedFiles++;
+                    } else {
+                        [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
+                            fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
+                    }
                 }
             }
             [self _showStatus:[NSString stringWithFormat:
                 [[NppLocalizer shared] translate:@"Replace in Projects: %ld replacement(s) in %ld file(s)."],
-                (long)totalReplacements, (long)results.count] found:(totalReplacements > 0)];
+                (long)totalReplacements, (long)changedFiles] found:(totalReplacements > 0)];
+            [self _showReplaceWriteFailures:writeFailures];
         });
     });
 }
