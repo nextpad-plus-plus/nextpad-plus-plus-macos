@@ -579,8 +579,11 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
         task.launchPath = @"/usr/bin/git";
         task.arguments = @[@"add", @"-A"];
         task.currentDirectoryPath = root;
-        task.standardOutput = [NSPipe pipe];
-        task.standardError  = [NSPipe pipe];
+        // Output is intentionally unused. Send both streams to /dev/null rather
+        // than unread pipes, whose bounded buffers can deadlock a verbose git
+        // invocation before waitUntilExit returns.
+        task.standardOutput = [NSFileHandle fileHandleWithNullDevice];
+        task.standardError  = [NSFileHandle fileHandleWithNullDevice];
         @try { [task launch]; [task waitUntilExit]; } @catch (NSException *) {}
         dispatch_async(dispatch_get_main_queue(), ^{ [self refresh]; });
     });
@@ -594,8 +597,9 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
         task.launchPath = @"/usr/bin/git";
         task.arguments = @[@"restore", @"--staged", @"."];
         task.currentDirectoryPath = root;
-        task.standardOutput = [NSPipe pipe];
-        task.standardError  = [NSPipe pipe];
+        // See _stageAll: — unread NSPipes can fill and block the child forever.
+        task.standardOutput = [NSFileHandle fileHandleWithNullDevice];
+        task.standardError  = [NSFileHandle fileHandleWithNullDevice];
         @try { [task launch]; [task waitUntilExit]; } @catch (NSException *) {}
         dispatch_async(dispatch_get_main_queue(), ^{ [self refresh]; });
     });
