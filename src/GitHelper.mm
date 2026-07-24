@@ -2,9 +2,12 @@
 
 @implementation GitHelper
 
-// ── Private: run git synchronously, return stdout string ─────────────────────
+// ── Private: run git synchronously and capture both output streams ───────────
 
-+ (NSString *)_run:(NSArray<NSString *> *)args dir:(NSString *)dir {
++ (BOOL)_run:(NSArray<NSString *> *)args
+         dir:(NSString *)dir
+      output:(NSString *_Nullable *_Nullable)output
+ errorOutput:(NSString *_Nullable *_Nullable)errorOutput {
     NSTask *task = [[NSTask alloc] init];
     task.launchPath = @"/usr/bin/git";
     task.arguments = args;
@@ -15,22 +18,35 @@
     task.standardError  = errPipe;
     @try {
         [task launch];
-    } @catch (NSException *) {
-        return @"";
+    } @catch (NSException *exception) {
+        if (output) *output = @"";
+        if (errorOutput) *errorOutput = exception.reason ?: @"Failed to launch git";
+        return NO;
     }
     // Drain stdout and stderr concurrently while git runs. Each pipe buffer is
     // only ~64KB; if either fills, git blocks on write and never exits — and
     // reading just one stream before waitUntilExit still deadlocks on the other.
     NSFileHandle *errFH = errPipe.fileHandleForReading;
+    __block NSData *errData = nil;
     dispatch_semaphore_t errDone = dispatch_semaphore_create(0);
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-        [errFH readDataToEndOfFile];
+        errData = [errFH readDataToEndOfFile];
         dispatch_semaphore_signal(errDone);
     });
     NSData *data = [outPipe.fileHandleForReading readDataToEndOfFile];
     [task waitUntilExit];
     dispatch_semaphore_wait(errDone, DISPATCH_TIME_FOREVER);
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] ?: @"";
+    if (output)
+        *output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] ?: @"";
+    if (errorOutput)
+        *errorOutput = [[NSString alloc] initWithData:errData encoding:NSUTF8StringEncoding] ?: @"";
+    return task.terminationStatus == 0;
+}
+
++ (NSString *)_run:(NSArray<NSString *> *)args dir:(NSString *)dir {
+    NSString *output = nil;
+    [self _run:args dir:dir output:&output errorOutput:nil];
+    return output ?: @"";
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -110,17 +126,22 @@
     return result.length ? result : nil;
 }
 
-+ (void)stageFile:(NSString *)path root:(NSString *)root completion:(void (^)(BOOL))cb {
++ (void)stageFile:(NSString *)path root:(NSString *)root
+       completion:(void (^)(BOOL, NSString *_Nullable))cb {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-        [self _run:@[@"add", @"--", path] dir:root];
-        dispatch_async(dispatch_get_main_queue(), ^{ if (cb) cb(YES); });
+        NSString *error = nil;
+        BOOL success = [self _run:@[@"add", @"--", path] dir:root output:nil errorOutput:&error];
+        dispatch_async(dispatch_get_main_queue(), ^{ if (cb) cb(success, success ? nil : error); });
     });
 }
 
-+ (void)unstageFile:(NSString *)path root:(NSString *)root completion:(void (^)(BOOL))cb {
++ (void)unstageFile:(NSString *)path root:(NSString *)root
+         completion:(void (^)(BOOL, NSString *_Nullable))cb {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
-        [self _run:@[@"restore", @"--staged", @"--", path] dir:root];
-        dispatch_async(dispatch_get_main_queue(), ^{ if (cb) cb(YES); });
+        NSString *error = nil;
+        BOOL success = [self _run:@[@"restore", @"--staged", @"--", path]
+                                dir:root output:nil errorOutput:&error];
+        dispatch_async(dispatch_get_main_queue(), ^{ if (cb) cb(success, success ? nil : error); });
     });
 }
 

@@ -21,10 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSString *)diffForFile:(NSString *)path root:(NSString *)root;
 
 /// Stage a file (git add). Calls completion on main queue.
-+ (void)stageFile:(NSString *)path root:(NSString *)root completion:(void (^)(BOOL success))cb;
++ (void)stageFile:(NSString *)path root:(NSString *)root
+       completion:(void (^)(BOOL success, NSString *_Nullable error))cb;
 
 /// Unstage a file (git restore --staged). Calls completion on main queue.
-+ (void)unstageFile:(NSString *)path root:(NSString *)root completion:(void (^)(BOOL success))cb;
++ (void)unstageFile:(NSString *)path root:(NSString *)root
+         completion:(void (^)(BOOL success, NSString *_Nullable error))cb;
 
 /// Commit with message. Calls completion(success, errorMessage) on main queue.
 + (void)commitMessage:(NSString *)msg root:(NSString *)root

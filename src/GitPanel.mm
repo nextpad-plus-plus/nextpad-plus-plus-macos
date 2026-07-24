@@ -550,18 +550,32 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
     return _items[row];
 }
 
+- (void)_showGitFailure:(NSString *)title error:(nullable NSString *)error {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleWarning;
+    alert.messageText = [[NppLocalizer shared] translate:title];
+    alert.informativeText = error.length ? error : [[NppLocalizer shared] translate:@"Unknown error"];
+    [alert runModal];
+}
+
 - (void)_stageSelected:(id)sender {
     _GitStatusItem *it = [self _itemAtClickedRow];
     if (!it || !_repoRoot) return;
     NSString *root = _repoRoot, *path = it.path;
-    [GitHelper stageFile:path root:root completion:^(BOOL ok) { [self refresh]; }];
+    [GitHelper stageFile:path root:root completion:^(BOOL ok, NSString *error) {
+        if (!ok) [self _showGitFailure:@"Stage Failed" error:error];
+        [self refresh];
+    }];
 }
 
 - (void)_unstageSelected:(id)sender {
     _GitStatusItem *it = [self _itemAtClickedRow];
     if (!it || !_repoRoot) return;
     NSString *root = _repoRoot, *path = it.path;
-    [GitHelper unstageFile:path root:root completion:^(BOOL ok) { [self refresh]; }];
+    [GitHelper unstageFile:path root:root completion:^(BOOL ok, NSString *error) {
+        if (!ok) [self _showGitFailure:@"Unstage Failed" error:error];
+        [self refresh];
+    }];
 }
 
 - (void)_openSelected:(id)sender {
