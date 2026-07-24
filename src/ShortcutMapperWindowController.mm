@@ -1096,7 +1096,16 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     // Initial check (also sets btnOK.enabled to its starting state)
     checkConflict();
 
+    // handle the window close button (red x) — without this the modal session
+    // outlives the panel and the app becomes unclickable (#283)
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp abortModal]; }];
+
     NSModalResponse resp = [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
     [panel orderOut:nil];
     if (resp != NSModalResponseStop) return;
 
