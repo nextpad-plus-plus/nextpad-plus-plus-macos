@@ -86,7 +86,10 @@
 }
 
 + (NSArray<NSDictionary<NSString *, NSString *> *> *)statusAtRoot:(NSString *)root {
-    NSString *out = [self _run:@[@"status", @"--porcelain", @"-u"] dir:root];
+    // core.quotePath=false makes git emit non-ASCII paths as raw UTF-8 instead
+    // of C-quoting them (e.g. "café.txt" rather than "\"caf\303\251.txt\""),
+    // so substringFromIndex:3 yields a usable pathspec for add/diff/open.
+    NSString *out = [self _run:@[@"-c", @"core.quotePath=false", @"status", @"--porcelain", @"-u"] dir:root];
     NSMutableArray *items = [NSMutableArray array];
     for (NSString *line in [out componentsSeparatedByString:@"\n"]) {
         if (line.length < 4) continue;

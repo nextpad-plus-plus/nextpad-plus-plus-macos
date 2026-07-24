@@ -1,6 +1,6 @@
 # Claude Code project data (memory, sessions, settings)
 .claude/
-
+.vscode/
 # Build output
 build/
 build-release/

@@ -4844,6 +4844,15 @@ static NSSet<NSString *> *_cLikeLanguages() {
     } else {
         lineStart = 0;
         lineEnd   = [sci message:SCI_GETLINECOUNT] - 1;
+        // GETLINECOUNT includes the phantom empty line after a trailing EOL.
+        // Excluding it keeps a whole-document sort from floating a blank line
+        // to the top and from swallowing the file's final newline (the range
+        // then stops at the end of the last content line, before that EOL).
+        if (lineEnd > lineStart) {
+            sptr_t lastStart = [sci message:SCI_POSITIONFROMLINE   wParam:(uptr_t)lineEnd];
+            sptr_t lastEnd   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)lineEnd];
+            if (lastEnd == lastStart) lineEnd--;
+        }
     }
 
     *startPos = [sci message:SCI_POSITIONFROMLINE wParam:(uptr_t)lineStart];

@@ -872,16 +872,11 @@ static NSString *const kUpdateMenuItemTag = @"checkForUpdatesMenuItem";
                                            assets:json[@"assets"]];
                 }
             } else {
-                // Up to date — badge the menu item green
+                // Up to date — leave the menu item plain (no badge / icon).
                 NSMenuItem *mi = [self _updateMenuItem];
                 if (mi) {
                     mi.title = @"Check for Updates…";
-                    NSString *imgPath = [[NSBundle mainBundle] pathForResource:@"icons/standard/status/status_green" ofType:@"png"];
-                    if (imgPath) {
-                        NSImage *img = [[NSImage alloc] initWithContentsOfFile:imgPath];
-                        [img setSize:NSMakeSize(12, 12)];
-                        mi.image = img;
-                    }
+                    mi.image = nil;
                 }
 
                 if (userInitiated) {
