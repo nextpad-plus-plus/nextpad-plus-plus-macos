@@ -3064,6 +3064,7 @@ static const unsigned int kSCI_SetAdditionalSelTyping   = 2565;
 static const unsigned int kSCI_GetSelections             = 2570;
 static const unsigned int kSCI_AddSelection              = 2573;
 static const unsigned int kSCI_SetMainSelection          = 2574;
+static const unsigned int kSCI_GetMainSelection          = 2575;
 static const unsigned int kSCI_GetSelectionNCaret        = 2577;
 static const unsigned int kSCI_DropSelectionN            = 2671;
 static const unsigned int kSCI_SetRectSelCaret           = 2588;
@@ -3103,7 +3104,25 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
     [_scintillaView message:kSCI_SetAdditionalSelTyping wParam:1];
 }
 
-- (NSString *)_currentSelectionOrWord {
+// ── Multi-Select helpers ─────────────────────────────────────────────────────
+//
+// Everything here works in Scintilla's position space, which counts BYTES of the
+// UTF-8 document. -[ScintillaView string] hands back an NSString indexed in
+// UTF-16 code units, so the two spaces diverge as soon as the document holds a
+// single non-ASCII character. Searching the NSString and feeding the resulting
+// index straight back to SCI_ADDSELECTION (or vice versa) selects the wrong text
+// and can land a caret mid-sequence, so matching is done with Scintilla's own
+// SCI_SEARCHINTARGET — the same approach SearchEngine uses.
+
+/// Read the needle to match: the current selection, or the word under the caret
+/// when the selection is empty. Returns NO when there is nothing to match, in
+/// which case no output is written. On success `outNeedle` receives the raw
+/// document bytes (NUL-terminated, caller frees), `outLen` their byte count, and
+/// `outStart`/`outEnd` (both optional) the byte range they came from.
+- (BOOL)_multiSelectNeedle:(char **)outNeedle
+                    length:(sptr_t *)outLen
+                     start:(sptr_t *)outStart
+                       end:(sptr_t *)outEnd {
     ScintillaView *sci = _scintillaView;
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
@@ -3111,76 +3130,82 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
         selStart = [sci message:SCI_WORDSTARTPOSITION wParam:(uptr_t)selStart lParam:1];
         selEnd   = [sci message:SCI_WORDENDPOSITION   wParam:(uptr_t)selEnd   lParam:1];
     }
-    if (selStart >= selEnd) return nil;
-    NSString *text = sci.string;
-    NSUInteger len = (NSUInteger)(selEnd - selStart);
-    if ((NSUInteger)selStart + len > text.length) return nil;
-    return [text substringWithRange:NSMakeRange((NSUInteger)selStart, len)];
-}
+    if (selStart >= selEnd) return NO;
 
-// ── Multi-Select helpers ─────────────────────────────────────────────────────
+    sptr_t len = selEnd - selStart;
+    char *buf = (char *)calloc((size_t)len + 1, 1);
+    if (!buf) return NO;
+    Sci_TextRangeFull tr = { {(Sci_Position)selStart, (Sci_Position)selEnd}, buf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
 
-/// Check if character at pos is a word character (alphanumeric or underscore)
-- (BOOL)_isWordCharAtPos:(sptr_t)pos inText:(NSString *)text {
-    if (pos < 0 || (NSUInteger)pos >= text.length) return NO;
-    unichar c = [text characterAtIndex:(NSUInteger)pos];
-    return [[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_';
-}
-
-/// Check if match at range is a whole word (not part of a larger word)
-- (BOOL)_isWholeWord:(NSRange)range inText:(NSString *)text {
-    if (range.location > 0 && [self _isWordCharAtPos:(sptr_t)(range.location - 1) inText:text])
-        return NO;
-    NSUInteger end = range.location + range.length;
-    if (end < text.length && [self _isWordCharAtPos:(sptr_t)end inText:text])
-        return NO;
+    *outNeedle = buf;
+    *outLen    = len;
+    if (outStart) *outStart = selStart;
+    if (outEnd)   *outEnd   = selEnd;
     return YES;
 }
 
-- (void)_multiSelectAll_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
-    NSString *word = [self _currentSelectionOrWord];
-    if (!word.length) return;
+/// Find `needle` in [from, to) using Scintilla's search. Returns the match's
+/// start byte position, or -1 when there is no match. On success the target end
+/// holds the match end.
+- (sptr_t)_findNeedle:(const char *)needle
+               length:(sptr_t)needleLen
+                 from:(sptr_t)from
+                   to:(sptr_t)to
+            matchCase:(BOOL)matchCase
+            wholeWord:(BOOL)wholeWord {
     ScintillaView *sci = _scintillaView;
-    NSString *text = sci.string;
+    int flags = 0;
+    if (matchCase) flags |= SCFIND_MATCHCASE;
+    if (wholeWord) flags |= SCFIND_WHOLEWORD;
+    [sci message:SCI_SETSEARCHFLAGS wParam:(uptr_t)flags];
+    [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)from lParam:to];
+    return [sci message:SCI_SEARCHINTARGET wParam:(uptr_t)needleLen lParam:(sptr_t)needle];
+}
+
+- (void)_multiSelectAll_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
+    char *needle = NULL; sptr_t needleLen = 0;
+    if (![self _multiSelectNeedle:&needle length:&needleLen start:NULL end:NULL]) return;
+
+    ScintillaView *sci = _scintillaView;
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
     [self _enableMultiSelect];
 
-    NSStringCompareOptions opts = matchCase ? NSLiteralSearch : NSCaseInsensitiveSearch;
     BOOL first = YES;
-    NSRange search = NSMakeRange(0, text.length);
-    NSRange found;
-    while ((found = [text rangeOfString:word options:opts range:search]).location != NSNotFound) {
-        if (!wholeWord || [self _isWholeWord:found inText:text]) {
-            uptr_t caret  = (uptr_t)(found.location + found.length);
-            sptr_t anchor = (sptr_t)found.location;
-            if (first) {
-                [sci message:SCI_SETSEL wParam:caret lParam:anchor];
-                first = NO;
-            } else {
-                [sci message:kSCI_AddSelection wParam:caret lParam:anchor];
-            }
+    sptr_t pos = 0;
+    // `pos < docLen`, not `pos <= docLen - needleLen`: a case-insensitive match
+    // need not be as long as the needle. Scintilla folds case per code point, so
+    // the two-byte "ſ" matches a one-byte "s" (see testUTFDifferentLength in
+    // scintilla/test/simpleTests.py) — bounding by needle length would drop such
+    // a match near the end of the document. SearchEngine bounds it the same way.
+    while (pos < docLen) {
+        sptr_t found = [self _findNeedle:needle length:needleLen from:pos to:docLen
+                               matchCase:matchCase wholeWord:wholeWord];
+        if (found < 0) break;
+        sptr_t end = [sci message:SCI_GETTARGETEND];
+        if (first) {
+            [sci message:SCI_SETSEL wParam:(uptr_t)end lParam:found];
+            first = NO;
+        } else {
+            [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
         }
-        NSUInteger next = found.location + 1;
-        if (next >= text.length) break;
-        search = NSMakeRange(next, text.length - next);
+        // Advance past the match so occurrences never overlap — two selections
+        // sharing bytes is not a state Scintilla's multi-selection can hold.
+        // The `found + 1` arm is belt-and-braces against a zero-length match
+        // pinning the loop on one position.
+        pos = (end > found) ? end : found + 1;
     }
+    free(needle);
 }
 
 - (void)_multiSelectNext_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
     ScintillaView *sci = _scintillaView;
-    NSString *word = [self _currentSelectionOrWord];
-    if (!word.length) return;
+    char *needle = NULL; sptr_t needleLen = 0, selStart = 0, selEnd = 0;
+    if (![self _multiSelectNeedle:&needle length:&needleLen start:&selStart end:&selEnd]) return;
 
-    // If nothing was selected, select the word under caret first
-    sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
-    sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
-    if (selStart == selEnd) {
-        selStart = [sci message:SCI_WORDSTARTPOSITION wParam:(uptr_t)selStart lParam:1];
-        selEnd   = [sci message:SCI_WORDENDPOSITION   wParam:(uptr_t)selEnd   lParam:1];
+    // If nothing was selected, select the word under the caret first.
+    if ([sci message:SCI_GETSELECTIONSTART] == [sci message:SCI_GETSELECTIONEND])
         [sci message:SCI_SETSEL wParam:(uptr_t)selEnd lParam:selStart];
-    }
-
-    NSString *text = sci.string;
-    NSStringCompareOptions opts = matchCase ? NSLiteralSearch : NSCaseInsensitiveSearch;
 
     // Find the furthest caret position across all current selections
     NSInteger n = [sci message:kSCI_GetSelections];
@@ -3190,33 +3215,19 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
         if (c > searchFrom) searchFrom = c;
     }
 
-    // Search forward from last selection, then wrap
-    NSRange search = NSMakeRange((NSUInteger)searchFrom, text.length - (NSUInteger)searchFrom);
-    BOOL wrapped = NO;
-    while (YES) {
-        NSRange found = [text rangeOfString:word options:opts range:search];
-        if (found.location == NSNotFound) {
-            if (wrapped) return;
-            wrapped = YES;
-            search = NSMakeRange(0, text.length);
-            continue;
-        }
-        if (!wholeWord || [self _isWholeWord:found inText:text]) {
-            [self _enableMultiSelect];
-            [sci message:kSCI_AddSelection
-                  wParam:(uptr_t)(found.location + found.length)
-                   lParam:(sptr_t)found.location];
-            return;
-        }
-        NSUInteger next = found.location + 1;
-        if (next >= text.length) {
-            if (wrapped) return;
-            wrapped = YES;
-            search = NSMakeRange(0, text.length);
-        } else {
-            search = NSMakeRange(next, text.length - next);
-        }
-    }
+    // Search forward from the last selection, then wrap to the top.
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
+    sptr_t found  = [self _findNeedle:needle length:needleLen from:searchFrom to:docLen
+                           matchCase:matchCase wholeWord:wholeWord];
+    if (found < 0)
+        found = [self _findNeedle:needle length:needleLen from:0 to:docLen
+                        matchCase:matchCase wholeWord:wholeWord];
+    if (found < 0) { free(needle); return; }
+
+    sptr_t end = [sci message:SCI_GETTARGETEND];
+    [self _enableMultiSelect];
+    [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
+    free(needle);
 }
 
 // Multi-Select All — 4 variants
@@ -3243,29 +3254,40 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
     sptr_t mainStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t mainEnd   = [sci message:SCI_GETSELECTIONEND];
     if (mainStart == mainEnd) return;
-    NSString *text = sci.string;
-    NSUInteger wordLen = (NSUInteger)(mainEnd - mainStart);
-    if ((NSUInteger)mainStart + wordLen > text.length) return;
-    NSString *word = [text substringWithRange:NSMakeRange((NSUInteger)mainStart, wordLen)];
 
-    // Drop the main selection (index 0)
+    sptr_t needleLen = mainEnd - mainStart;
+    char *needle = (char *)calloc((size_t)needleLen + 1, 1);
+    if (!needle) return;
+    Sci_TextRangeFull tr = { {(Sci_Position)mainStart, (Sci_Position)mainEnd}, needle };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+
+    // Drop the selection we are skipping — the MAIN one, which is what
+    // SCI_GETSELECTIONSTART/END above reported. It is not index 0: every
+    // SCI_ADDSELECTION makes the newly added range main, so after Multi-Select
+    // Next the main selection is the last one added. Dropping index 0
+    // unconditionally kept the occurrence the user asked to skip and discarded
+    // their original selection instead.
     NSInteger n = [sci message:kSCI_GetSelections];
     if (n > 1) {
-        [sci message:kSCI_DropSelectionN wParam:0];
-        [sci message:kSCI_SetMainSelection wParam:0];
+        sptr_t main = [sci message:kSCI_GetMainSelection];
+        [sci message:kSCI_DropSelectionN wParam:(uptr_t)main];
+        [sci message:kSCI_SetMainSelection wParam:(uptr_t)MAX((sptr_t)0, main - 1)];
     }
 
-    // Find next occurrence after old mainEnd (case-sensitive, no whole-word)
-    NSRange search = NSMakeRange((NSUInteger)mainEnd, text.length - (NSUInteger)mainEnd);
-    NSRange found = [text rangeOfString:word options:NSLiteralSearch range:search];
-    if (found.location == NSNotFound)
-        found = [text rangeOfString:word options:NSLiteralSearch];
-    if (found.location == NSNotFound) return;
+    // Find next occurrence after old mainEnd (case-sensitive, no whole-word),
+    // wrapping to the top of the document.
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
+    sptr_t found = [self _findNeedle:needle length:needleLen from:mainEnd to:docLen
+                          matchCase:YES wholeWord:NO];
+    if (found < 0)
+        found = [self _findNeedle:needle length:needleLen from:0 to:docLen
+                        matchCase:YES wholeWord:NO];
+    if (found < 0) { free(needle); return; }
 
+    sptr_t end = [sci message:SCI_GETTARGETEND];
     [self _enableMultiSelect];
-    [sci message:kSCI_AddSelection
-          wParam:(uptr_t)(found.location + found.length)
-           lParam:(sptr_t)found.location];
+    [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
+    free(needle);
 }
 
 #pragma mark - Blank / EOL Cleanup
