@@ -5054,7 +5054,17 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     btnCancel.action = @selector(abortModal);
     [cv addSubview:btnCancel];
 
+    // clicking the red x doesn't call stopModal/abortModal on its own — the
+    // window vanishes but the modal loop keeps running, swallowing every click.
+    // basically the app looks frozen. lets catch that close and treat it as cancel.
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp abortModal]; }];
+
     NSModalResponse resp = [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
     [panel orderOut:nil];
     if (resp != NSModalResponseStop) return;
 
@@ -5378,7 +5388,16 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // Initial check (also sets btnOK.enabled to its starting state)
     checkConflict();
 
+    // same deal as the run-macro dialog — red x needs to end the modal session
+    // or the app goes into a ghost-modal state where nothing is clickable (#283)
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp abortModal]; }];
+
     NSModalResponse resp = [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
     [panel orderOut:nil];
     if (resp != NSModalResponseStop) return;
 
@@ -6239,7 +6258,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     tv.doubleAction = @selector(activatePressed:);
     tv.target = helper;
 
+    // without this the close button (red x) leaves us stuck in modal limbo
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp stopModal]; }];
+
     [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
 }
 
 #pragma mark - UI Validation
@@ -9245,7 +9272,15 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     // Initial check (also sets btnOK.enabled to its starting state)
     checkConflict();
 
+    // red x = cancel, not "leave the app in purgatory"
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp abortModal]; }];
+
     NSModalResponse resp = [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
     [panel orderOut:nil];
     if (resp != NSModalResponseStop || !nameField.stringValue.length) return;
 
@@ -10406,7 +10441,15 @@ static BOOL _writeCLIScript(NSString *script, NSString *path, NSError **outErr) 
     objc_setAssociatedObject(panel, "realDS", realDS, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [tv reloadData];
 
+    // the x button doesn't end the modal on its own, so we do it ourselves
+    id closeObserver = [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSWindowWillCloseNotification
+                    object:panel
+                     queue:nil
+                usingBlock:^(NSNotification *note) { [NSApp stopModal]; }];
+
     [NSApp runModalForWindow:panel];
+    [[NSNotificationCenter defaultCenter] removeObserver:closeObserver];
 }
 
 #pragma mark - Help / Debug
