@@ -17,6 +17,11 @@
 /// Launch timestamp for -loadingTime display.
 @property (nonatomic, strong, nullable) NSDate *launchStart;
 
+/// YES once -applicationShouldTerminate: has begun tearing windows down.
+/// Windows consult this so they don't re-save the session per-window while the
+/// app is quitting — that save has already happened once, for all windows.
+@property (nonatomic, readonly) BOOL isTerminating;
+
 /// Create and show a new editor window. Returns the new controller.
 - (MainWindowController *)openNewWindow;
 
