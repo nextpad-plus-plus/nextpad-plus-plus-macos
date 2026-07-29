@@ -2933,10 +2933,15 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
         NSInteger i = 0;
         while (i < len && (buf[i]==' ' || buf[i]=='\t')) i++;
         if (i >= len || buf[i]=='\r' || buf[i]=='\n') { free(buf); continue; }
-        if (strncmp(buf + i, prefix.UTF8String, prefix.length) == 0) {
+        // Byte count, not -[NSString length]: the prefix comes from langs.xml and
+        // may be non-ASCII, in which case a UTF-16 count both compares too few
+        // bytes and deletes a partial character, leaving invalid UTF-8 behind.
+        size_t prefixBytes = (size_t)[prefix lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        if ((size_t)(len - i) >= prefixBytes &&
+            strncmp(buf + i, prefix.UTF8String, prefixBytes) == 0) {
             sptr_t lineStart = [sci message:SCI_POSITIONFROMLINE wParam:(uptr_t)ln];
             sptr_t removeStart = lineStart + i;
-            NSInteger removeLen = (NSInteger)prefix.length;
+            NSInteger removeLen = (NSInteger)prefixBytes;
             if (i + removeLen < len && buf[i + removeLen] == ' ') removeLen++;
             [sci message:SCI_DELETERANGE wParam:(uptr_t)removeStart lParam:removeLen];
         }
@@ -2968,32 +2973,67 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     return fallback[_currentLanguage.lowercaseString];
 }
 
+// Block-comment positions are Scintilla positions, i.e. BYTE offsets into the
+// UTF-8 document — not indices into -[ScintillaView string], which is UTF-16.
+// The helpers below keep everything in byte space; -[NSString length] is never a
+// substitute for a delimiter's byte count either, since the user-editable
+// langs.xml (loaded in preference to the bundled ASCII-only model) may define
+// non-ASCII delimiters.
+
+/// UTF-8 byte count of `s`.
+static inline sptr_t utf8Len(NSString *s) {
+    return (sptr_t)[s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+}
+
+/// YES when the document bytes at [pos, pos + len) equal `bytes`. NO if that
+/// range falls outside the document.
+- (BOOL)_documentBytesAt:(sptr_t)pos equal:(const char *)bytes length:(sptr_t)len {
+    ScintillaView *sci = _scintillaView;
+    if (len <= 0 || pos < 0 || pos + len > [sci message:SCI_GETLENGTH]) return NO;
+
+    char *buf = (char *)calloc((size_t)len + 1, 1);
+    if (!buf) return NO;
+    Sci_TextRangeFull tr = { {(Sci_Position)pos, (Sci_Position)(pos + len)}, buf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+    BOOL equal = (memcmp(buf, bytes, (size_t)len) == 0);
+    free(buf);
+    return equal;
+}
+
+/// Locate `needle` in [from, to) — or, when `from` > `to`, the nearest match
+/// searching backwards. Returns the match's start byte position or -1.
+/// On success the search target end holds the match end.
+- (sptr_t)_findLiteral:(NSString *)needle from:(sptr_t)from to:(sptr_t)to {
+    ScintillaView *sci = _scintillaView;
+    sptr_t len = utf8Len(needle);
+    if (len <= 0) return -1;
+    [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_MATCHCASE];
+    [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)from lParam:to];
+    return [sci message:SCI_SEARCHINTARGET wParam:(uptr_t)len lParam:(sptr_t)needle.UTF8String];
+}
+
 - (void)toggleBlockComment:(id)sender {
     NSArray<NSString *> *pair = [self _blockCommentDelimiters];
     if (!pair) return;
 
     NSString *open  = pair[0];
     NSString *close = pair[1];
+    sptr_t openLen  = utf8Len(open);
+    sptr_t closeLen = utf8Len(close);
     ScintillaView *sci = _scintillaView;
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
 
-    // Check whether selection is already wrapped — if so, remove delimiters
-    NSString *docText = sci.string;
-    if ((sptr_t)docText.length >= selStart + (sptr_t)open.length + (sptr_t)close.length) {
-        NSString *before = [docText substringWithRange:NSMakeRange((NSUInteger)selStart,
-                                                                    (NSUInteger)open.length)];
-        NSString *after  = selEnd >= (sptr_t)close.length
-            ? [docText substringWithRange:NSMakeRange((NSUInteger)(selEnd - close.length),
-                                                      (NSUInteger)close.length)]
-            : @"";
-        if ([before isEqualToString:open] && [after isEqualToString:close]) {
-            [sci message:SCI_BEGINUNDOACTION];
-            [sci message:SCI_DELETERANGE wParam:(uptr_t)(selEnd - close.length) lParam:(sptr_t)close.length];
-            [sci message:SCI_DELETERANGE wParam:(uptr_t)selStart lParam:(sptr_t)open.length];
-            [sci message:SCI_ENDUNDOACTION];
-            return;
-        }
+    // Already wrapped? The selection has to be long enough to hold both
+    // delimiters and start/end with them.
+    if (selEnd - selStart >= openLen + closeLen &&
+        [self _documentBytesAt:selStart equal:open.UTF8String length:openLen] &&
+        [self _documentBytesAt:selEnd - closeLen equal:close.UTF8String length:closeLen]) {
+        [sci message:SCI_BEGINUNDOACTION];
+        [sci message:SCI_DELETERANGE wParam:(uptr_t)(selEnd - closeLen) lParam:closeLen];
+        [sci message:SCI_DELETERANGE wParam:(uptr_t)selStart lParam:openLen];
+        [sci message:SCI_ENDUNDOACTION];
+        return;
     }
 
     // Wrap selection with open/close
@@ -3002,7 +3042,7 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     [sci message:SCI_INSERTTEXT wParam:(uptr_t)selStart lParam:(sptr_t)open.UTF8String];
     [sci message:SCI_SETSEL
           wParam:(uptr_t)selStart
-           lParam:selEnd + (sptr_t)(open.length + close.length)];
+           lParam:selEnd + openLen + closeLen];
     [sci message:SCI_ENDUNDOACTION];
 }
 
@@ -3023,36 +3063,59 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     NSArray<NSString *> *pair = [self _blockCommentDelimiters];
     if (!pair) { NSBeep(); return; }
     ScintillaView *sci = _scintillaView;
-    NSString *docText = sci.string;
+    sptr_t docLen   = [sci message:SCI_GETLENGTH];
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
 
-    // Search backward from selStart for opening delimiter
-    NSString *open = pair[0], *openTrim = [pair[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSString *close = pair[1], *closeTrim = [pair[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSUInteger searchStart = (NSUInteger)MAX(0LL, selStart - (sptr_t)open.length);
-    NSRange openRange = [docText rangeOfString:open  options:NSBackwardsSearch
-                                         range:NSMakeRange(0, (NSUInteger)selStart + open.length)];
-    if (openRange.location == NSNotFound)
-        openRange = [docText rangeOfString:openTrim options:NSBackwardsSearch
-                                     range:NSMakeRange(0, (NSUInteger)selStart + openTrim.length)];
-    (void)searchStart;
+    // langs.xml delimiters may carry padding ("/* "), so each is tried as given
+    // and then trimmed.
+    NSCharacterSet *ws = [NSCharacterSet whitespaceCharacterSet];
+    NSString *open  = pair[0], *openTrim  = [pair[0] stringByTrimmingCharactersInSet:ws];
+    NSString *close = pair[1], *closeTrim = [pair[1] stringByTrimmingCharactersInSet:ws];
 
-    NSUInteger closeSearchStart = (NSUInteger)MAX(0LL, selEnd - (sptr_t)close.length);
-    NSRange closeRange = [docText rangeOfString:close options:0
-                                          range:NSMakeRange(closeSearchStart, docText.length - closeSearchStart)];
-    if (closeRange.location == NSNotFound) {
-        NSUInteger cs2 = (NSUInteger)MAX(0LL, selEnd - (sptr_t)closeTrim.length);
-        closeRange = [docText rangeOfString:closeTrim options:0
-                                      range:NSMakeRange(cs2, docText.length - cs2)];
+    // Nearest opening delimiter at or before the selection start (target start >
+    // target end makes SCI_SEARCHINTARGET search backwards). The window extends a
+    // delimiter past selStart so a selection sitting just inside the comment
+    // still finds it; Scintilla requires the match to fit inside the target, so
+    // the result never starts after selStart. Each delimiter is tried in both
+    // forms and the NEAREST hit wins, so a distant exact match cannot outrank a
+    // nearby padded one.
+    sptr_t openPos = -1, openLen = 0;
+    for (NSString *v in @[open, openTrim]) {
+        sptr_t p = [self _findLiteral:v from:MIN(docLen, selStart + utf8Len(v)) to:0];
+        if (p > openPos) { openPos = p; openLen = utf8Len(v); }  // backwards: larger is nearer
     }
 
-    if (openRange.location == NSNotFound || closeRange.location == NSNotFound) { NSBeep(); return; }
+    if (openPos < 0) { NSBeep(); return; }
+
+    // That comment ends at the FIRST closing delimiter after the opener. The
+    // search is anchored to the opener, not to the selection, because that is
+    // what keeps both delimiters part of one comment. Searching forward from the
+    // selection instead pairs them across comments: in "/* one */ gap /* two */"
+    // it finds the first "/*" and the second "*/", and deleting both splices the
+    // two comments together and mangles the text between them.
+    sptr_t closePos = -1, closeLen = 0;
+    for (NSString *v in @[close, closeTrim]) {
+        sptr_t p = [self _findLiteral:v from:openPos + openLen to:docLen];
+        if (p >= 0 && (closePos < 0 || p < closePos)) { closePos = p; closeLen = utf8Len(v); }
+    }
+    if (closePos < 0) { NSBeep(); return; }
+
+    // Finally, the selection has to lie inside the comment we found. This is what
+    // rejects a caret that is merely between two comments, or a selection that
+    // starts in one comment and ends in the next.
+    //
+    // Nested block comments are not resolved: with "/* outer /* inner */ x */" and
+    // the caret on x, the enclosing comment is the outer one but this finds the
+    // inner opener and its own closer, and beeps. Separating those needs a
+    // depth-counting scan; beeping is at least safe, where the previous code
+    // paired the inner opener with the outer closer and corrupted the text.
+    if (selEnd > closePos + closeLen) { NSBeep(); return; }
 
     [sci message:SCI_BEGINUNDOACTION];
     // Remove close first (higher position) so start positions stay valid
-    [sci message:SCI_DELETERANGE wParam:(uptr_t)closeRange.location lParam:(sptr_t)closeRange.length];
-    [sci message:SCI_DELETERANGE wParam:(uptr_t)openRange.location  lParam:(sptr_t)openRange.length];
+    [sci message:SCI_DELETERANGE wParam:(uptr_t)closePos lParam:closeLen];
+    [sci message:SCI_DELETERANGE wParam:(uptr_t)openPos  lParam:openLen];
     [sci message:SCI_ENDUNDOACTION];
 }
 
