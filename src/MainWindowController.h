@@ -3,6 +3,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class EditorView;
+@class TabManager;
 
 @interface MainWindowController : NSWindowController
 
@@ -29,6 +30,32 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Restore the last session from ~/Library/Application Support/Nextpad++/session.plist.
 - (BOOL)restoreLastSession;
+
+/// The receiver's tab managers: primary view plus the horizontal/vertical split
+/// views, with nils omitted. Session saving walks every window's managers so a
+/// tab living in a secondary window is neither dropped from session.plist nor
+/// stripped of its backup file by the stale-backup prune.
+- (NSArray<TabManager *> *)sessionTabManagers;
+
+/// YES once the receiver's window has closed. A closed window's tabs are gone —
+/// the user closed them — so they no longer contribute to the session. Tracked
+/// explicitly rather than inferred from -[NSWindow isVisible], which is also NO
+/// for a merely miniaturized window.
+@property (nonatomic, readonly) BOOL windowHasClosed;
+
+/// Write session.plist covering the tabs of EVERY open window, and prune backup
+/// files no longer referenced by any of them.
+///
+/// This is app-scoped on purpose. session.plist and the backup directory are
+/// single, shared resources, so a per-window save would write only the closing
+/// window's tabs and then delete every other window's backups — losing the
+/// unsaved contents of all other windows. Call this once per quit, before any
+/// window is torn down.
+- (void)saveSessionForAllWindows;
+
+/// YES when the session should be persisted at all: the "Remember current
+/// session for next launch" pref is on and -nosession was not passed (#87).
+- (BOOL)sessionPersistenceEnabled;
 
 /// Add a plugin-provided toolbar icon.  Called by NppPluginManager when a
 /// plugin sends NPPM_ADDTOOLBARICON_FORDARKMODE.

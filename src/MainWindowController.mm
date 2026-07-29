@@ -1972,8 +1972,8 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
     NSLayoutConstraint *_subTabBarVZeroHeight;
     NSTimer          *_autoSaveTimer;
     /// YES once restoreLastSession has successfully opened ≥1 tab from the
-    /// stored session this launch. Used by saveSession to decide whether the
-    /// "preserve when empty" guard applies — see saveSession's Issue #87
+    /// stored session this launch. Used by the session save to decide whether
+    /// the "preserve when empty" guard applies — see the Issue #87
     /// comment for details. (Bug fix: closing all restored tabs and quitting
     /// would otherwise leave the prior session.plist untouched, so the same
     /// tabs reappeared on next launch.)
@@ -4230,9 +4230,55 @@ static BOOL groupHasTrailingSep(NSString *ident) {
 
 #pragma mark - Session
 
+- (NSArray<TabManager *> *)sessionTabManagers {
+    NSMutableArray<TabManager *> *mgrs = [NSMutableArray array];
+    if (_tabManager)     [mgrs addObject:_tabManager];
+    if (_subTabManagerH) [mgrs addObject:_subTabManagerH];
+    if (_subTabManagerV) [mgrs addObject:_subTabManagerV];
+    return mgrs;
+}
+
+/// The controllers whose tabs belong in the session: every window that is still
+/// live, plus the receiver. The receiver is included unconditionally because the
+/// usual caller is a window in the middle of closing — its tabs are being closed
+/// as the app goes away, which is exactly the case that has always persisted.
+/// Windows the user closed earlier are excluded; those documents are gone.
+- (NSArray<MainWindowController *> *)_sessionContributingControllers {
+    NSMutableArray<MainWindowController *> *result = [NSMutableArray arrayWithObject:self];
+    id appDel = NSApp.delegate;
+    if (![appDel isKindOfClass:[AppDelegate class]]) return result;  // unit hosts
+
+    for (MainWindowController *mwc in [(AppDelegate *)appDel windowControllers])
+        if (mwc != self && !mwc.windowHasClosed) [result addObject:mwc];
+    return result;
+}
+
+- (void)saveSessionForAllWindows {
+    NSMutableArray<TabManager *> *mgrs = [NSMutableArray array];
+    for (MainWindowController *mwc in [self _sessionContributingControllers])
+        for (TabManager *mgr in [mwc sessionTabManagers])
+            if (![mgrs containsObject:mgr]) [mgrs addObject:mgr];
+
+    // Prefer the front window's active tab for selectedIndex — the save is often
+    // driven by the primary controller even when a secondary window has focus.
+    MainWindowController *key = nil;
+    for (MainWindowController *mwc in [self _sessionContributingControllers])
+        if (mwc.window.isKeyWindow) { key = mwc; break; }
+
+    [self saveSessionWithTabManagers:mgrs
+                       activeEditor:[(key ?: self) currentEditor]];
+}
+
 /// Save session to ~/Library/Application Support/Nextpad++/session.plist.
 /// Untitled modified tabs are written to ~/Library/Application Support/Nextpad++/backup/ automatically.
-- (void)saveSession {
+///
+/// `sessionManagers` must cover every tab whose backup should survive the
+/// stale-backup prune at the end — the prune deletes any backup file not claimed
+/// by one of these managers' editors. Callers therefore go through
+/// -saveSessionForAllWindows rather than passing one window's managers.
+/// `activeEditor` is the tab to reopen selected; ignored if it produced no entry.
+- (void)saveSessionWithTabManagers:(NSArray<TabManager *> *)sessionManagers
+                      activeEditor:(nullable EditorView *)activeEditor {
     ensureNppDirs();
     NSString *backupDir = nppBackupDir();
 
@@ -4250,7 +4296,8 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     // session AND (because its backup wasn't added to activeBackups) deleted its
     // backup in the prune below — silent loss of unsaved content. Restored tabs
     // all reopen in the primary view (split layout is intentionally not kept).
-    NSArray<TabManager *> *sessionManagers = @[_tabManager, _subTabManagerH, _subTabManagerV];
+    // The same reasoning extends across windows, which is why the manager list
+    // is supplied by the caller (see -saveSessionForAllWindows).
     NSMutableArray<EditorView *> *sessionEditors = [NSMutableArray array];
     NSMapTable<EditorView *, TabManager *> *ownerManager =
         [NSMapTable strongToStrongObjectsMapTable];
@@ -4264,6 +4311,10 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     }
 
     NSMutableArray *tabs = [NSMutableArray array];
+    // Parallel to `tabs`: which editor produced each entry. `tabs` skips
+    // untouched untitled tabs, so a tab-bar index is not an index into it —
+    // selectedIndex has to be resolved against this list.
+    NSMutableArray<EditorView *> *tabEditors = [NSMutableArray array];
     for (EditorView *ed in sessionEditors) {
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
 
@@ -4341,6 +4392,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         }
 
         [tabs addObject:info];
+        [tabEditors addObject:ed];
     }
 
     // Issue #87 (refined) — empty-session preserve guard.
@@ -4356,9 +4408,13 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     //   NO  (didn't restore)  | preserve prior plist → original Issue #87 fix
     if (tabs.count == 0 && !_didRestoreSession) return;
 
+    // Resolve the active tab against `tabs`, not against a tab-bar index: with
+    // several windows (or a split view) the tab bars each start at 0, so a raw
+    // tab-bar index restores an unrelated document.
+    NSUInteger selIdx = activeEditor ? [tabEditors indexOfObject:activeEditor] : NSNotFound;
     NSDictionary *session = @{
         @"tabs":          tabs,
-        @"selectedIndex": @(_tabManager.tabBar.selectedIndex)
+        @"selectedIndex": @(selIdx == NSNotFound ? 0 : (NSInteger)selIdx)
     };
     [session writeToFile:nppSessionPath() atomically:YES];
 
@@ -4501,7 +4557,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     if (sel < (NSInteger)_tabManager.allEditors.count)
         [_tabManager selectTabAtIndex:sel];
 
-    // Mark this launch as session-restored. saveSession uses this to allow
+    // Mark this launch as session-restored. The session save uses this to allow
     // writing an empty session.plist if the user explicitly closed all the
     // restored tabs before quitting (otherwise the empty-guard would keep
     // the stale session.plist around and the same tabs would reappear next
@@ -10726,6 +10782,10 @@ static int64_t _sysctlInt(const char *name) {
 #pragma mark - NSWindowDelegate
 
 - (void)windowWillClose:(NSNotification *)n {
+    // The session save already ran in -windowShouldClose:, while this window was
+    // still live. From here on the receiver must not contribute tabs to a later
+    // save — its documents are closed.
+    _windowHasClosed = YES;
     [_autoSaveTimer invalidate];
     _autoSaveTimer = nil;
     // The scroll-sync timer also targets self with repeats:YES; if a split with
@@ -10760,14 +10820,26 @@ static int64_t _sysctlInt(const char *name) {
     // Auto-backup of unsaved files runs separately on its own timer and is
     // intentionally NOT coupled — losing unsaved work to a crash is a separate
     // concern from reopening tabs across launches.
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    BOOL rememberSession = [ud boolForKey:kPrefRememberSession];
+    //
+    // On quit, AppDelegate has already written one session covering every
+    // window (see -applicationShouldTerminate:). Saving again here would be
+    // actively harmful: by the time the second window is torn down the first is
+    // gone from windowControllers, so this save would write a session missing
+    // its tabs and prune away its backups.
     AppDelegate *appDel = (AppDelegate *)NSApp.delegate;
-    BOOL cliNoSession = [appDel isKindOfClass:[AppDelegate class]] ? appDel.cliParams.noSession : NO;
-    if (rememberSession && !cliNoSession) {
-        [self saveSession];
+    BOOL terminating = [appDel isKindOfClass:[AppDelegate class]] ? appDel.isTerminating : NO;
+    if (!terminating && [self sessionPersistenceEnabled]) {
+        [self saveSessionForAllWindows];
     }
     writeConfigXML();
+    return YES;
+}
+
+- (BOOL)sessionPersistenceEnabled {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:kPrefRememberSession]) return NO;
+    AppDelegate *appDel = (AppDelegate *)NSApp.delegate;
+    if ([appDel isKindOfClass:[AppDelegate class]] && appDel.cliParams.noSession) return NO;
     return YES;
 }
 
