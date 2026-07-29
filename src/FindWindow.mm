@@ -1051,6 +1051,13 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                         [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
                             fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
                     }
+                NSInteger replacementCount = 0;
+                NSString *replaced = [SearchEngine stringByReplacingAllInString:content
+                                                                         options:opts
+                                                                replacementCount:&replacementCount];
+                if (replacementCount > 0) {
+                    [replaced writeToFile:fr.filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+                    totalReplacements += replacementCount;
                 }
             }
             [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Replace in Files: %ld replacement(s) in %ld file(s)."],
@@ -1216,6 +1223,13 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                         [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
                             fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
                     }
+                NSInteger replacementCount = 0;
+                NSString *replaced = [SearchEngine stringByReplacingAllInString:content
+                                                                         options:opts
+                                                                replacementCount:&replacementCount];
+                if (replacementCount > 0) {
+                    [replaced writeToFile:fr.filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+                    totalReplacements += replacementCount;
                 }
             }
             [self _showStatus:[NSString stringWithFormat:

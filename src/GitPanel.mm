@@ -550,18 +550,32 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
     return _items[row];
 }
 
+- (void)_showGitFailure:(NSString *)title error:(nullable NSString *)error {
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleWarning;
+    alert.messageText = [[NppLocalizer shared] translate:title];
+    alert.informativeText = error.length ? error : [[NppLocalizer shared] translate:@"Unknown error"];
+    [alert runModal];
+}
+
 - (void)_stageSelected:(id)sender {
     _GitStatusItem *it = [self _itemAtClickedRow];
     if (!it || !_repoRoot) return;
     NSString *root = _repoRoot, *path = it.path;
-    [GitHelper stageFile:path root:root completion:^(BOOL ok) { [self refresh]; }];
+    [GitHelper stageFile:path root:root completion:^(BOOL ok, NSString *error) {
+        if (!ok) [self _showGitFailure:@"Stage Failed" error:error];
+        [self refresh];
+    }];
 }
 
 - (void)_unstageSelected:(id)sender {
     _GitStatusItem *it = [self _itemAtClickedRow];
     if (!it || !_repoRoot) return;
     NSString *root = _repoRoot, *path = it.path;
-    [GitHelper unstageFile:path root:root completion:^(BOOL ok) { [self refresh]; }];
+    [GitHelper unstageFile:path root:root completion:^(BOOL ok, NSString *error) {
+        if (!ok) [self _showGitFailure:@"Unstage Failed" error:error];
+        [self refresh];
+    }];
 }
 
 - (void)_openSelected:(id)sender {
@@ -579,8 +593,11 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
         task.launchPath = @"/usr/bin/git";
         task.arguments = @[@"add", @"-A"];
         task.currentDirectoryPath = root;
-        task.standardOutput = [NSPipe pipe];
-        task.standardError  = [NSPipe pipe];
+        // Output is intentionally unused. Send both streams to /dev/null rather
+        // than unread pipes, whose bounded buffers can deadlock a verbose git
+        // invocation before waitUntilExit returns.
+        task.standardOutput = [NSFileHandle fileHandleWithNullDevice];
+        task.standardError  = [NSFileHandle fileHandleWithNullDevice];
         @try { [task launch]; [task waitUntilExit]; } @catch (NSException *) {}
         dispatch_async(dispatch_get_main_queue(), ^{ [self refresh]; });
     });
@@ -594,8 +611,9 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
         task.launchPath = @"/usr/bin/git";
         task.arguments = @[@"restore", @"--staged", @"."];
         task.currentDirectoryPath = root;
-        task.standardOutput = [NSPipe pipe];
-        task.standardError  = [NSPipe pipe];
+        // See _stageAll: — unread NSPipes can fill and block the child forever.
+        task.standardOutput = [NSFileHandle fileHandleWithNullDevice];
+        task.standardError  = [NSFileHandle fileHandleWithNullDevice];
         @try { [task launch]; [task waitUntilExit]; } @catch (NSException *) {}
         dispatch_async(dispatch_get_main_queue(), ^{ [self refresh]; });
     });

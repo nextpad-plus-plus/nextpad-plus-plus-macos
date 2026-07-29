@@ -73,6 +73,13 @@ typedef NS_ENUM(NSInteger, NPPSearchDir) {
 /// Replace all occurrences. Returns replacement count.
 + (NSInteger)replaceAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts;
 
+/// Replace all occurrences in an external file's decoded text using the same
+/// normal/extended/regex, case, and whole-word semantics as Find in Files.
+/// Returns the transformed text and writes the actual replacement count.
++ (NSString *)stringByReplacingAllInString:(NSString *)content
+                                   options:(NPPFindOptions *)opts
+                          replacementCount:(NSInteger *)replacementCount;
+
 /// Count all occurrences. Returns count.
 + (NSInteger)countInView:(ScintillaView *)sci options:(NPPFindOptions *)opts;
 
