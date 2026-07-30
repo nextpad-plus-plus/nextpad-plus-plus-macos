@@ -300,25 +300,29 @@ static NSImage *_FPWLoadPinIcon(BOOL pinned) {
     acc.view = holder;
     [self addTitlebarAccessoryViewController:acc];
 
-    // Center the first pop-out on the main screen; autosave will then
-    // remember the user-chosen location on subsequent pops.
-    [self center];
-
-    // Autosave name must be stable across launches — derive from the
-    // wrapped content view's class so each panel remembers its own
-    // frame independently.
     if (frame.contentView) {
         NSString *cls = NSStringFromClass([frame.contentView class]);
-        NSString *autosave = [@"NppFloatingPanel_" stringByAppendingString:cls];
-        // setFrameAutosaveName: returns NO if the name is already in use
-        // (rare edge case: two FloatingPanelWindows for panels of the
-        // same class existed simultaneously). Fall back to a per-pointer
-        // name so both panels still remember their frames independently
-        // within this launch.
-        if (![self setFrameAutosaveName:autosave]) {
-            NSString *unique = [NSString stringWithFormat:@"%@_%p", autosave, (void *)frame.contentView];
-            [self setFrameAutosaveName:unique];
+        NSString *autosave = [@"NppFloatingPanelRect_" stringByAppendingString:cls];
+        NSString *savedRectStr = [[NSUserDefaults standardUserDefaults] stringForKey:autosave];
+        if (savedRectStr.length > 0) {
+            NSRect rect = NSRectFromString(savedRectStr);
+            BOOL isVisible = NO;
+            for (NSScreen *screen in [NSScreen screens]) {
+                if (NSIntersectsRect(rect, screen.visibleFrame)) {
+                    isVisible = YES;
+                    break;
+                }
+            }
+            if (isVisible) {
+                [self setFrame:rect display:NO];
+            } else {
+                [self center];
+            }
+        } else {
+            [self center];
         }
+    } else {
+        [self center];
     }
 
     // Restore per-panel pin state from NSUserDefaults. Default is
@@ -335,9 +339,9 @@ static NSImage *_FPWLoadPinIcon(BOOL pinned) {
 // Per-panel NSUserDefaults key. Shares the autosave name with the frame
 // autosave so each panel class remembers its pin state independently.
 - (NSString *)_pinDefaultsKey {
-    NSString *autosave = self.frameAutosaveName;
-    if (autosave.length == 0) return @"";
-    return [@"NppFloatingPanelPinned_" stringByAppendingString:autosave];
+    if (!self.panelFrame.contentView) return @"";
+    NSString *cls = NSStringFromClass([self.panelFrame.contentView class]);
+    return [@"NppFloatingPanelPinned_" stringByAppendingString:cls];
 }
 
 - (BOOL)_loadPinnedStateDefault:(BOOL)fallback {
@@ -414,6 +418,21 @@ static NSImage *_FPWLoadPinIcon(BOOL pinned) {
 }
 
 // ── NSWindowDelegate ──────────────────────────────────────────────────────
+
+- (void)windowDidMove:(NSNotification *)notification {
+    [self _persistFrameRect];
+}
+
+- (void)windowDidResize:(NSNotification *)notification {
+    [self _persistFrameRect];
+}
+
+- (void)_persistFrameRect {
+    if (!self.panelFrame.contentView) return;
+    NSString *cls = NSStringFromClass([self.panelFrame.contentView class]);
+    NSString *autosave = [@"NppFloatingPanelRect_" stringByAppendingString:cls];
+    [[NSUserDefaults standardUserDefaults] setObject:NSStringFromRect(self.frame) forKey:autosave];
+}
 
 // Red traffic-light close: route through the PanelFrame's close chain so
 // the hide flow (panelWillClose → _setPanelVisible:show:NO → SidePanelHost

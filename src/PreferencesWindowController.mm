@@ -73,7 +73,13 @@ static NSString *const kDefaultClickableLinkSchemes =
     @"svn:// cvs:// git:// imap:// irc:// irc6:// ircs:// ldap:// ldaps:// news: "
     @"telnet:// gopher:// ssh:// sftp:// smb:// skype: snmp:// spotify: steam:// "
     @"sms: slack:// chrome:// bitcoin:";
+extern NSString *const kPrefShowStatusBar;
+extern NSString *const kPrefToolbarVisible;
+extern NSString *const kPrefDockPanelsOnLeft;
 NSString *const kPrefShowStatusBar       = @"showStatusBar";
+NSString *const kPrefToolbarVisible      = @"toolbarVisible";
+NSString *const kPrefDockPanelsOnLeft    = @"dockPanelsOnLeft";
+NSString *const kPrefSidePanelWidth      = @"SidePanelWidth";
 NSString *const kPrefMuteSounds          = @"muteSounds";
 NSString *const kPrefSaveAllConfirm      = @"saveAllConfirm";
 NSString *const kPrefPluginSplitViewRouting = @"pluginSplitViewRouting";
@@ -233,6 +239,9 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefClickableLinkFullBox:     @NO,
         kPrefClickableLinkSchemes:     kDefaultClickableLinkSchemes,
         kPrefShowStatusBar:        @YES,
+        kPrefToolbarVisible:       @YES,
+        kPrefDockPanelsOnLeft:     @NO,
+        kPrefSidePanelWidth:       @280.0,
         kPrefMuteSounds:           @NO,
         kPrefSaveAllConfirm:       @NO,
         kPrefPluginSplitViewRouting: @YES,
@@ -718,6 +727,22 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
                    ? NSControlStateValueOn : NSControlStateValueOff;
     showSB.tag = 901;
     [v addSubview:showSB];
+    y -= 32;
+
+    // ── Panel Placement ──
+    NSTextField *panelSection = [NSTextField labelWithString:[[NppLocalizer shared] translate:@"Panel Placement"]];
+    panelSection.font = [NSFont boldSystemFontOfSize:NSFont.systemFontSize];
+    panelSection.frame = NSMakeRect(20, y, 300, 20);
+    [v addSubview:panelSection];
+    y -= 28;
+
+    NSButton *dockLeft = [NSButton checkboxWithTitle:[[NppLocalizer shared] translate:@"Dock side panels on the left"]
+                                              target:self action:@selector(prefChanged:)];
+    dockLeft.frame = NSMakeRect(20, y, 350, 20);
+    dockLeft.state = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft]
+                     ? NSControlStateValueOn : NSControlStateValueOff;
+    dockLeft.tag = 902;
+    [v addSubview:dockLeft];
 
     return v;
 }
@@ -2353,6 +2378,11 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         }
         // General
         case 901: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowStatusBar]; break;
+        case 902: {
+            [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefDockPanelsOnLeft];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NPPDockPanelsLeftChanged" object:nil];
+            break;
+        }
         // Editor
         case 707: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefRightClickKeepsSel]; break;
         case 708: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefDisableTextDragDrop]; break;

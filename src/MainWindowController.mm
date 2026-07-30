@@ -1978,6 +1978,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
     /// would otherwise leave the prior session.plist untouched, so the same
     /// tabs reappeared on next launch.)
     BOOL              _didRestoreSession;
+    BOOL              _isWindowReadyForResizeEvents;
 
     // Side panel host
     NSSplitView       *_editorSplitView;
@@ -2253,6 +2254,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
         tb.allowsDisplayModeCustomization = NO;
     }
     self.window.toolbar = tb;
+    self.window.toolbar.visible = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefToolbarVisible];
     // Expanded style keeps the toolbar in its OWN row below the title bar for
     // BOTH profiles — matching the Classic layout and the Tahoe mockup. (Unified
     // crammed the icons into the title row, so we don't use it.) For Tahoe we make
@@ -4087,8 +4089,16 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     _editorSplitView.dividerStyle = NSSplitViewDividerStyleThin;
     _editorSplitView.delegate = self;
     _editorSplitView.translatesAutoresizingMaskIntoConstraints = NO;
-    [_editorSplitView addSubview:_hSplitView];
-    [_editorSplitView addSubview:_sidePanelHost];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft]) {
+        [_editorSplitView addSubview:_sidePanelHost];
+        [_editorSplitView addSubview:_hSplitView];
+    } else {
+        [_editorSplitView addSubview:_hSplitView];
+        [_editorSplitView addSubview:_sidePanelHost];
+    }
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_dockPanelsLeftChanged)
+               name:@"NPPDockPanelsLeftChanged" object:nil];
     // Tahoe: round the side-panel "card" corners to match the editor card. Gated.
     if ([NppThemeManager shared].usesGlassMaterials) {
         _sidePanelHost.wantsLayer = YES;
@@ -4193,10 +4203,12 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self->_vSplitView   setPosition:MAX(NSWidth(self->_vSplitView.frame),   9999) ofDividerAtIndex:0];
         [self->_hSplitView   setPosition:MAX(NSHeight(self->_hSplitView.frame),  9999) ofDividerAtIndex:0];
-        [self->_editorSplitView setPosition:MAX(NSWidth(self->_editorSplitView.frame), 9999) ofDividerAtIndex:0];
+        BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+        [self->_editorSplitView setPosition:(dockLeft ? 0 : MAX(NSWidth(self->_editorSplitView.frame), 9999)) ofDividerAtIndex:0];
         // Collapse search results panel initially
         [self->_searchSplitView setPosition:NSHeight(self->_searchSplitView.frame) ofDividerAtIndex:0];
         [self _refreshToolbarStates];
+        self->_isWindowReadyForResizeEvents = YES;
     });
 
     // Session restore is handled by AppDelegate (which checks CLI flags like -nosession).
@@ -5676,9 +5688,13 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         [_panelTitleKeys setObject:key forKey:panel];
         NSString *localized = [[NppLocalizer shared] translate:key];
         [_sidePanelHost showPanel:panel withTitle:localized];
-        if ([_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
+        if ([_sidePanelHost hasVisiblePanels] && [_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
             CGFloat w = NSWidth(_editorSplitView.frame);
-            [_editorSplitView setPosition:MAX(200, w - 280) ofDividerAtIndex:0];
+            BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+            CGFloat targetWidth = [[NSUserDefaults standardUserDefaults] doubleForKey:kPrefSidePanelWidth];
+            if (targetWidth < 150) targetWidth = 280;
+            CGFloat position = dockLeft ? MIN(w - 200, targetWidth) : MAX(200, w - targetWidth);
+            [_editorSplitView setPosition:position ofDividerAtIndex:0];
         }
     } else {
         // Informal selector: any panel that needs to flush state (e.g.
@@ -5689,9 +5705,11 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             [(id)panel performSelector:@selector(panelWillClose)];
         [_sidePanelHost hidePanel:panel];
         [_panelTitleKeys removeObjectForKey:panel];
-        if (!_sidePanelHost.hasVisiblePanels)
-            [_editorSplitView setPosition:NSWidth(_editorSplitView.frame)
-                         ofDividerAtIndex:0];
+        if (!_sidePanelHost.hasVisiblePanels) {
+            BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+            CGFloat position = dockLeft ? 0 : NSWidth(_editorSplitView.frame);
+            [_editorSplitView setPosition:position ofDividerAtIndex:0];
+        }
     }
     [self _refreshToolbarStates];
     [self _saveOpenSidePanels];
@@ -5704,12 +5722,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 - (void)_saveOpenSidePanels {
     if (!_panelTitleKeys) return;
     NSDictionary *whitelist = _restorableSidePanels();
-    NSMutableArray<NSString *> *openKeys = [NSMutableArray array];
+    NSMutableArray *openPanels = [NSMutableArray array];
     for (NSView *panel in [[_panelTitleKeys keyEnumerator] allObjects]) {
         NSString *key = [_panelTitleKeys objectForKey:panel];
-        if (key && whitelist[key]) [openKeys addObject:key];
+        if (key && whitelist[key]) {
+            BOOL popped = [_sidePanelHost isPanelPopped:panel];
+            [openPanels addObject:@{@"id": key, @"popped": @(popped)}];
+        }
     }
-    [[NSUserDefaults standardUserDefaults] setObject:openKeys forKey:kOpenSidePanelsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:openPanels forKey:kOpenSidePanelsKey];
 }
 
 // Re-open the side panels that were open at last quit (issue #132).
@@ -5722,7 +5743,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (![saved isKindOfClass:[NSArray class]]) return;
 
     NSDictionary<NSString *, NSString *> *whitelist = _restorableSidePanels();
-    for (NSString *key in saved) {
+    for (id item in saved) {
+        NSString *key = nil;
+        BOOL popped = NO;
+        if ([item isKindOfClass:[NSString class]]) {
+            key = item;
+        } else if ([item isKindOfClass:[NSDictionary class]]) {
+            key = item[@"id"];
+            popped = [item[@"popped"] boolValue];
+        }
         if (![key isKindOfClass:[NSString class]]) continue;
         NSString *selName = whitelist[key];
         if (!selName) continue;                       // unknown / plugin / Git
@@ -5734,6 +5763,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:sel withObject:nil];
         #pragma clang diagnostic pop
+
+        if (popped) {
+            // Find the panel instance that was just opened (it will now be in _panelTitleKeys)
+            NSView *openedPanel = nil;
+            for (NSView *p in [[_panelTitleKeys keyEnumerator] allObjects]) {
+                if ([[_panelTitleKeys objectForKey:p] isEqualToString:key]) {
+                    openedPanel = p;
+                    break;
+                }
+            }
+            if (openedPanel) {
+                [_sidePanelHost popOutPanel:openedPanel];
+            }
+        }
     }
 }
 
@@ -5794,12 +5837,16 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 // (everything is popped), re-expand when a dock-back brings a panel into
 // an otherwise-empty pane.
 - (void)sidePanelHostDidChangePanelLayout:(SidePanelHost *)host {
+    BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
     if (!host.hasVisiblePanels) {
-        [_editorSplitView setPosition:NSWidth(_editorSplitView.frame)
-                     ofDividerAtIndex:0];
+        CGFloat position = dockLeft ? 0 : NSWidth(_editorSplitView.frame);
+        [_editorSplitView setPosition:position ofDividerAtIndex:0];
     } else if ([_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
         CGFloat w = NSWidth(_editorSplitView.frame);
-        [_editorSplitView setPosition:MAX(200, w - 280) ofDividerAtIndex:0];
+        CGFloat targetWidth = [[NSUserDefaults standardUserDefaults] doubleForKey:kPrefSidePanelWidth];
+        if (targetWidth < 150) targetWidth = 280;
+        CGFloat position = dockLeft ? MIN(w - 200, targetWidth) : MAX(200, w - targetWidth);
+        [_editorSplitView setPosition:position ofDividerAtIndex:0];
     }
     [self _refreshToolbarStates];
 }
@@ -7288,6 +7335,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 #pragma mark - FindWindowDelegate
 
+- (void)_dockPanelsLeftChanged {
+    // Reorder subviews of _editorSplitView
+    [_sidePanelHost removeFromSuperview];
+    [_hSplitView removeFromSuperview];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft]) {
+        [_editorSplitView addSubview:_sidePanelHost];
+        [_editorSplitView addSubview:_hSplitView];
+    } else {
+        [_editorSplitView addSubview:_hSplitView];
+        [_editorSplitView addSubview:_sidePanelHost];
+    }
+}
+
 - (EditorView *)currentEditorForFindWindow { return [self currentEditor]; }
 
 // FindWindowDelegate
@@ -8064,6 +8124,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 }
 
 #pragma mark - NSSplitViewDelegate
+
+- (void)splitViewDidResizeSubviews:(NSNotification *)notification {
+    if (!_isWindowReadyForResizeEvents) return;
+    NSSplitView *sv = notification.object;
+    if (sv == _editorSplitView) {
+        if (![_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
+            CGFloat width = NSWidth(_sidePanelHost.frame);
+            if (width >= 150) {
+                [[NSUserDefaults standardUserDefaults] setDouble:width forKey:kPrefSidePanelWidth];
+            }
+        }
+    }
+}
 
 - (BOOL)splitView:(NSSplitView *)sv canCollapseSubview:(NSView *)sub {
     if (sv == _editorSplitView) return sub == _sidePanelHost;
@@ -11021,6 +11094,7 @@ static NSString *languageDisplayName(NSString *langCode) {
 - (void)saveWindowFrame {
     [[NSUserDefaults standardUserDefaults]
         setObject:NSStringFromRect(self.window.frame) forKey:kWindowFrameKey];
+    [[NSUserDefaults standardUserDefaults] setBool:self.window.toolbar.visible forKey:kPrefToolbarVisible];
 }
 
 - (void)restoreWindowFrame {
