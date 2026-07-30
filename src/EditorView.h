@@ -40,6 +40,15 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 /// Write current content to dir using NPP-style timestamped filename.
 /// Updates backupFilePath on success. Returns the backup path or nil.
 - (nullable NSString *)saveBackupToDirectory:(NSString *)dir;
+
+/// `dir`/`filename`, made unique by appending "-2", "-3", … while a file already
+/// exists there. Backup names are "<display name>@<timestamp>" at one-second
+/// resolution, and neither part is unique across buffers: two tabs for
+/// same-named files in different directories, or an untitled "new 1" in each
+/// window, produce the same name when first backed up in the same second. Every
+/// caller that materialises a backup file must claim its name through here,
+/// because an unsaved buffer's backup is the only copy of its text.
++ (NSString *)uniqueBackupPathInDirectory:(NSString *)dir filename:(NSString *)filename;
 @property (nonatomic, readonly) BOOL isModified;
 @property (nonatomic, readonly) NSString *displayName;
 

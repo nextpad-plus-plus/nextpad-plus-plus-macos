@@ -8432,11 +8432,14 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         NSString *suffix  = @"";
         NSRange at = [oldFile rangeOfString:@"@" options:NSBackwardsSearch];
         if (at.location != NSNotFound) suffix = [oldFile substringFromIndex:at.location];
-        NSString *newBackup = [dir stringByAppendingPathComponent:
-                               [newName stringByAppendingString:suffix]];
+        // Claim the new name through the uniquifier instead of deleting whatever
+        // sits there: renaming a tab to a name another buffer already backed up
+        // in the same second would otherwise destroy that buffer's only copy of
+        // its unsaved text.
+        NSString *newBackup = [EditorView uniqueBackupPathInDirectory:dir
+                                                            filename:[newName stringByAppendingString:suffix]];
         if (![newBackup isEqualToString:oldBackup]) {
             NSFileManager *fm = [NSFileManager defaultManager];
-            [fm removeItemAtPath:newBackup error:nil];               // overwrite any stale file
             if ([fm moveItemAtPath:oldBackup toPath:newBackup error:nil])
                 ed.backupFilePath = newBackup;
         }

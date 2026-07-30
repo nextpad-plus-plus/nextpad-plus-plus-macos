@@ -857,6 +857,18 @@ static NSUInteger nppLargeFileThreshold(void) {
 /// no encoding roundtrip, preserves null bytes and BOM.
 /// Mirrors NPP Buffer.cpp: creates ONE timestamped file per buffer on first backup,
 /// then overwrites that same file in-place on every subsequent backup cycle.
++ (NSString *)uniqueBackupPathInDirectory:(NSString *)dir filename:(NSString *)filename {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *path = [dir stringByAppendingPathComponent:filename];
+    // The suffix goes after the timestamp so the "@<timestamp>" tail that tab
+    // rename splits on (see -_renameUntitledTab: in MainWindowController) stays
+    // intact.
+    for (NSUInteger n = 2; [fm fileExistsAtPath:path]; n++)
+        path = [dir stringByAppendingPathComponent:
+                [NSString stringWithFormat:@"%@-%lu", filename, (unsigned long)n]];
+    return path;
+}
+
 - (nullable NSString *)saveBackupToDirectory:(NSString *)dir {
     NSString *dest = _backupFilePath;
 
@@ -869,7 +881,9 @@ static NSUInteger nppLargeFileThreshold(void) {
         fmt.dateFormat = @"yyyy-MM-dd_HHmmss";
         NSString *name = [NSString stringWithFormat:@"%@@%@", base,
                           [fmt stringFromDate:[NSDate date]]];
-        dest = [dir stringByAppendingPathComponent:name];
+        // Never reuse a name another buffer already claimed — the earlier
+        // buffer's unsaved text is the only copy and this write would erase it.
+        dest = [EditorView uniqueBackupPathInDirectory:dir filename:name];
     }
 
     // Get raw UTF-8 bytes directly from Scintilla (no NSString conversion)
