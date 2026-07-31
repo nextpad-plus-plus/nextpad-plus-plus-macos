@@ -64,7 +64,7 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
         case 45:  return @"Ins";
         case 46:  return @"\u2326"; // ⌦ Delete
         case 186: return @";";
-        case 187: return @"=";
+        case 187: return @"+";
         case 188: return @",";
         case 189: return @"-";
         case 190: return @".";
@@ -95,7 +95,7 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     for (int i = 1; i <= 12; i++) [keys addObject:[NSString stringWithFormat:@"F%d", i]];
     [keys addObjectsFromArray:@[@"Backspace", @"Tab", @"Enter", @"Escape", @"Space",
         @"Page Up", @"Page Down", @"End", @"Home", @"Left", @"Up", @"Right", @"Down",
-        @"Insert", @"Delete", @";", @"=", @",", @"-", @".", @"/", @"`", @"[", @"\\", @"]", @"'"]];
+        @"Insert", @"Delete", @";", @"+", @"=", @",", @"-", @".", @"/", @"`", @"[", @"\\", @"]", @"'"]];
     return keys;
 }
 
@@ -108,7 +108,7 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     NSDictionary *map = @{@8:@"Backspace", @9:@"Tab", @13:@"Enter", @27:@"Escape", @32:@"Space",
         @33:@"Page Up", @34:@"Page Down", @35:@"End", @36:@"Home", @37:@"Left", @38:@"Up",
         @39:@"Right", @40:@"Down", @45:@"Insert", @46:@"Delete",
-        @186:@";", @187:@"=", @188:@",", @189:@"-", @190:@".", @191:@"/",
+        @186:@";", @187:@"+", @188:@",", @189:@"-", @190:@".", @191:@"/",
         @192:@"`", @219:@"[", @220:@"\\", @221:@"]", @222:@"'",
         @0xF728:@"Delete", @0xF729:@"Home", @0xF72B:@"End",
         @0xF72C:@"Page Up", @0xF72D:@"Page Down",
@@ -118,14 +118,46 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
 
 + (NSUInteger)keyCodeForName:(NSString *)name {
     if ([name isEqualToString:@"None"] || name.length == 0) return 0;
-    if (name.length == 1) return [name characterAtIndex:0];
-    if ([name hasPrefix:@"F"] && name.length <= 3) return 111 + [name substringFromIndex:1].intValue;
     NSDictionary *map = @{@"Backspace":@8, @"Tab":@9, @"Enter":@13, @"Escape":@27, @"Space":@32,
         @"Page Up":@33, @"Page Down":@34, @"End":@35, @"Home":@36, @"Left":@37, @"Up":@38,
-        @"Right":@39, @"Down":@40, @"Insert":@45, @"Delete":@46, @";":@186, @"=":@187,
+        @"Right":@39, @"Down":@40, @"Insert":@45, @"Delete":@46, @";":@186, @"+":@187, @"=":@187,
         @",":@188, @"-":@189, @".":@190, @"/":@191, @"`":@192, @"[":@219, @"\\":@220,
         @"]":@221, @"'":@222};
-    return [map[name] unsignedIntegerValue];
+    NSNumber *mapped = map[name];
+    if (mapped) return mapped.unsignedIntegerValue;
+    if (name.length == 1) return [name characterAtIndex:0];
+    if ([name hasPrefix:@"F"] && name.length <= 3) return 111 + [name substringFromIndex:1].intValue;
+    return 0;
+}
+
++ (NSString *)menuKeyEquivalentForCode:(NSUInteger)code {
+    if (code >= 'A' && code <= 'Z')
+        return [[NSString stringWithFormat:@"%c", (char)code] lowercaseString];
+    if (code >= '0' && code <= '9')
+        return [NSString stringWithFormat:@"%c", (char)code];
+    if (code >= 112 && code <= 123) {
+        unichar fk = NSF1FunctionKey + (code - 112);
+        return [NSString stringWithCharacters:&fk length:1];
+    }
+    switch (code) {
+        case 8:   return [NSString stringWithFormat:@"%C", (unichar)NSBackspaceCharacter];
+        case 9:   return @"\t";
+        case 13:  return @"\r";
+        case 27:  return [NSString stringWithFormat:@"%C", (unichar)0x1B];
+        case 46:  return [NSString stringWithFormat:@"%C", (unichar)NSDeleteCharacter];
+        case 186: return @";";
+        case 187: return @"=";
+        case 188: return @",";
+        case 189: return @"-";
+        case 190: return @".";
+        case 191: return @"/";
+        case 192: return @"`";
+        case 219: return @"[";
+        case 220: return @"\\";
+        case 221: return @"]";
+        case 222: return @"'";
+        default:  return [[NSString stringWithFormat:@"%c", (char)code] lowercaseString];
+    }
 }
 @end
 
@@ -1234,25 +1266,9 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     if (e.hasAlt)   mods |= NSEventModifierFlagOption;
     if (e.hasShift) mods |= NSEventModifierFlagShift;
 
-    NSString *key = @"";
-    if (e.keyCode >= 'A' && e.keyCode <= 'Z') {
-        key = [[NSString stringWithFormat:@"%c", (char)e.keyCode] lowercaseString];
-    } else if (e.keyCode >= '0' && e.keyCode <= '9') {
-        key = [NSString stringWithFormat:@"%c", (char)e.keyCode];
-    } else if (e.keyCode >= 112 && e.keyCode <= 123) {
-        unichar fk = NSF1FunctionKey + (e.keyCode - 112);
-        key = [NSString stringWithCharacters:&fk length:1];
+    NSString *key = [ShortcutEntry menuKeyEquivalentForCode:e.keyCode];
+    if (e.keyCode >= 112 && e.keyCode <= 123) {
         mods &= ~NSEventModifierFlagCommand; // function keys don't need Cmd implicit
-    } else {
-        // Special keys
-        switch (e.keyCode) {
-            case 8:  key = [NSString stringWithFormat:@"%C", (unichar)NSBackspaceCharacter]; break;
-            case 9:  key = @"\t"; break;
-            case 13: key = @"\r"; break;
-            case 27: key = [NSString stringWithFormat:@"%C", (unichar)0x1B]; break;
-            case 46: key = [NSString stringWithFormat:@"%C", (unichar)NSDeleteCharacter]; break;
-            default: key = [[NSString stringWithFormat:@"%c", (char)e.keyCode] lowercaseString]; break;
-        }
     }
     mi.keyEquivalent = key;
     mi.keyEquivalentModifierMask = mods;

@@ -15,6 +15,36 @@
 // Files opened from a folder beyond this count trigger a confirmation.
 static const NSUInteger kFolderOpenConfirmThreshold = 20;
 
+static NSString *NPPMenuKeyEquivalentForShortcutKeyCode(NSUInteger keyCode) {
+    if (keyCode >= 'A' && keyCode <= 'Z')
+        return [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
+    if (keyCode >= '0' && keyCode <= '9')
+        return [NSString stringWithFormat:@"%c", (char)keyCode];
+    if (keyCode >= 112 && keyCode <= 123) {
+        unichar fk = NSF1FunctionKey + (keyCode - 112);
+        return [NSString stringWithCharacters:&fk length:1];
+    }
+    switch (keyCode) {
+        case 8:   return [NSString stringWithFormat:@"%C", (unichar)NSBackspaceCharacter];
+        case 9:   return @"\t";
+        case 13:  return @"\r";
+        case 27:  return [NSString stringWithFormat:@"%C", (unichar)0x1B];
+        case 46:  return [NSString stringWithFormat:@"%C", (unichar)NSDeleteCharacter];
+        case 186: return @";";
+        case 187: return @"=";
+        case 188: return @",";
+        case 189: return @"-";
+        case 190: return @".";
+        case 191: return @"/";
+        case 192: return @"`";
+        case 219: return @"[";
+        case 220: return @"\\";
+        case 221: return @"]";
+        case 222: return @"'";
+        default:  return [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
+    }
+}
+
 @interface AppDelegate ()
 - (NSArray<NSString *> *)_expandFolderArguments:(NSArray<NSString *> *)paths;
 @end
@@ -608,18 +638,7 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
             if (hasAlt)   mods |= NSEventModifierFlagOption;
             if (hasShift) mods |= NSEventModifierFlagShift;
 
-            NSString *key = @"";
-            if (keyCode >= 'A' && keyCode <= 'Z')
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-            else if (keyCode >= '0' && keyCode <= '9')
-                key = [NSString stringWithFormat:@"%c", (char)keyCode];
-            else if (keyCode >= 112 && keyCode <= 123) {
-                unichar fk = NSF1FunctionKey + (keyCode - 112);
-                key = [NSString stringWithCharacters:&fk length:1];
-            } else
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-
-            mi.keyEquivalent = key;
+            mi.keyEquivalent = NPPMenuKeyEquivalentForShortcutKeyCode(keyCode);
             mi.keyEquivalentModifierMask = mods;
         }
     };
