@@ -5895,8 +5895,21 @@ static const unsigned int kSCI_GetBidirectional = 2708;
 
     static const NSInteger kScanWindow = 500000;
     sptr_t docLen    = [sci message:SCI_GETLENGTH];
-    sptr_t scanStart = MAX(0, wordStart - kScanWindow);
-    sptr_t scanEnd   = MIN(docLen, pos + kScanWindow);
+    // Snap the window to line boundaries. wordStart ± kScanWindow is an arbitrary
+    // byte offset that can land in the middle of a UTF-8 sequence, and a range
+    // starting or ending on a partial character does not decode as UTF-8 — the
+    // NSString below comes back nil and completion silently stops working for the
+    // rest of the document. Line starts and line ends are always character
+    // boundaries.
+    sptr_t rawStart  = MAX(0, wordStart - kScanWindow);
+    sptr_t rawEnd    = MIN(docLen, pos + kScanWindow);
+    sptr_t scanStart = [sci message:SCI_POSITIONFROMLINE
+                             wParam:(uptr_t)[sci message:SCI_LINEFROMPOSITION
+                                                   wParam:(uptr_t)rawStart]];
+    sptr_t scanEnd   = [sci message:SCI_GETLINEENDPOSITION
+                             wParam:(uptr_t)[sci message:SCI_LINEFROMPOSITION
+                                                   wParam:(uptr_t)rawEnd]];
+    if (scanEnd < pos) scanEnd = MIN(docLen, pos);
     sptr_t scanLen   = scanEnd - scanStart;
     if (scanLen <= 0 || wordStart < scanStart) { if (beep) NSBeep(); return; }
 
@@ -5911,18 +5924,33 @@ static const unsigned int kSCI_GetBidirectional = 2708;
                                                   freeWhenDone:YES];
     if (!scanText) { free(buf); if (beep) NSBeep(); return; }
 
-    NSUInteger prefixOffset = (NSUInteger)(wordStart - scanStart);
-    if (prefixOffset + (NSUInteger)prefixLen > scanText.length) {
-        if (beep) NSBeep(); return;
-    }
-    NSString *prefix = [scanText substringWithRange:NSMakeRange(prefixOffset,
-                                                                (NSUInteger)prefixLen)];
+    // Read the prefix out of the document instead of indexing scanText with
+    // (wordStart - scanStart). Scintilla positions count UTF-8 bytes while
+    // scanText is an NSString indexed in UTF-16 units, so that delta is only
+    // correct while everything ahead of the caret is ASCII. One accented or CJK
+    // character earlier in the window makes the byte offset overshoot: either the
+    // bounds check trips and completion quietly stops, or a prefix is lifted from
+    // the wrong place and the popup offers words matching something the user
+    // never typed — accepting one then replaces prefixLen bytes before the caret
+    // with it, writing wrong text into the document.
+    char *prefixBuf = (char *)malloc((size_t)prefixLen + 1);
+    if (!prefixBuf) { if (beep) NSBeep(); return; }
+    Sci_TextRangeFull prefixRange = { {(Sci_Position)wordStart, (Sci_Position)pos}, prefixBuf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&prefixRange];
+    prefixBuf[prefixLen] = '\0';
+    NSString *prefix = [[NSString alloc] initWithBytesNoCopy:prefixBuf
+                                                      length:(NSUInteger)prefixLen
+                                                    encoding:NSUTF8StringEncoding
+                                                freeWhenDone:YES];
+    if (!prefix) { free(prefixBuf); if (beep) NSBeep(); return; }
 
     NSMutableCharacterSet *wordCS = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
     [wordCS addCharactersInString:@"_"];
     NSMutableSet<NSString *> *wordSet = [NSMutableSet set];
     for (NSString *word in [scanText componentsSeparatedByCharactersInSet:wordCS.invertedSet]) {
-        if (word.length > (NSUInteger)prefixLen && [word hasPrefix:prefix])
+        // prefix.length, not prefixLen: the latter is a byte count and would
+        // wrongly reject candidates whose prefix is non-ASCII.
+        if (word.length > prefix.length && [word hasPrefix:prefix])
             [wordSet addObject:word];
     }
     [wordSet removeObject:prefix];
