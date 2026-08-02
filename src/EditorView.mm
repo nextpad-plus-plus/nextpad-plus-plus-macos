@@ -286,6 +286,8 @@ static NSUInteger nppLargeFileThreshold(void) {
     NSDate            *_lastKnownModDate; // mtime recorded after each load/save
     BOOL               _externalChangePending;
     BOOL               _monitoringMode;   // tail -f: auto-reload silently
+    NSInteger          _reloadFailureCount; // consecutive failed silent reloads
+    BOOL               _externalChangeMuted; // user kept their version; stop asking
 
     // Spell check
     BOOL               _spellCheckEnabled;
@@ -1011,24 +1013,60 @@ static NSUInteger nppLargeFileThreshold(void) {
     BOOL updateSilently = [ud boolForKey:kPrefFileStatusUpdateSilently];
     if (!autoDetect && !_monitoringMode) return;
 
-    _lastKnownModDate = mtime;
+    // The user already chose to keep their version of this file. Do not ask
+    // again while those edits are still unsaved: on a file that keeps changing —
+    // a log being appended to, which is exactly what a monitored tab watches —
+    // every later revision has a newer mtime and would raise the same prompt
+    // again a second later, with no answer that makes it stop. Saving or
+    // reloading clears the buffer's dirty flag and re-arms detection.
+    if (_externalChangeMuted) {
+        if (_isModified) { _lastKnownModDate = mtime; return; }
+        _externalChangeMuted = NO;
+    }
+
     _externalChangePending = YES;
 
     // Reload without prompting when this tab is monitoring (tail -f), or when
-    // "Update silently" is on and the buffer has no unsaved edits. Dirty buffers
-    // always fall through to the prompt so unsaved changes are never discarded
-    // silently. Both silent paths preserve the caret (line + column) and scroll
-    // position; loadFileAtPath: otherwise resets the caret to 0, which would
-    // snap the view back to the top on every external change.
-    if (_monitoringMode || (updateSilently && !_isModified)) {
+    // "Update silently" is on — in both cases only while the buffer has no
+    // unsaved edits. Dirty buffers always fall through to the prompt so unsaved
+    // changes are never discarded silently. Both silent paths preserve the caret
+    // (line + column) and scroll position; loadFileAtPath: otherwise resets the
+    // caret to 0, which would snap the view back to the top on every external
+    // change.
+    //
+    // _lastKnownModDate is deliberately not advanced here. loadFileAtPath:
+    // records it itself on success, and the paths below record it when the user
+    // declines the reload. Advancing it up front made a load that never happened
+    // look like one that had, so a transient read error lost the change for good.
+    if ((_monitoringMode || updateSilently) && !_isModified) {
         ScintillaView *sci = _scintillaView;
         sptr_t savedPos          = [sci message:SCI_GETCURRENTPOS];
         sptr_t savedLine         = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)savedPos];
         sptr_t savedColumn       = [sci message:SCI_GETCOLUMN wParam:(uptr_t)savedPos];
         sptr_t savedFirstVisible = [sci message:SCI_GETFIRSTVISIBLELINE];
 
-        NSError *err;
-        [self loadFileAtPath:_filePath error:&err];
+        NSError *err = nil;
+        if (![self loadFileAtPath:_filePath error:&err]) {
+            // A cancelled large-file prompt is a decision, not a failure: record
+            // the mtime so the same version is not offered again every second.
+            //
+            // Any other error leaves _lastKnownModDate alone so the next poll
+            // retries, which is the point — a transient read error must not be
+            // recorded as a reload that happened. Give up after a few attempts
+            // though, or a persistent failure (permissions, a vanished network
+            // volume) becomes a failing read every second for as long as the tab
+            // is open.
+            static const NSInteger kMaxReloadRetries = 3;
+            if (([err.domain isEqualToString:NSCocoaErrorDomain] &&
+                 err.code == NSUserCancelledError) ||
+                ++_reloadFailureCount >= kMaxReloadRetries) {
+                _lastKnownModDate = mtime;
+                _reloadFailureCount = 0;
+            }
+            _externalChangePending = NO;
+            return;
+        }
+        _reloadFailureCount = 0;
 
         // Clamp to the reloaded file's bounds — guards the case where the
         // file shrank and the old caret line no longer exists. SCI_FINDCOLUMN
@@ -1062,8 +1100,29 @@ static NSUInteger nppLargeFileThreshold(void) {
     }
 
     if ([alert runModal] == NSAlertFirstButtonReturn) {
-        NSError *err;
-        [self loadFileAtPath:_filePath error:&err];
+        NSError *err = nil;
+        if (![self loadFileAtPath:_filePath error:&err]) {
+            // Record the mtime even on failure: the user asked for this reload
+            // and is told below that it did not happen, whereas re-prompting on
+            // every poll would trap them in a dialog loop.
+            _lastKnownModDate = mtime;
+            if (!([err.domain isEqualToString:NSCocoaErrorDomain] &&
+                  err.code == NSUserCancelledError)) {
+                NSAlert *failure = [[NSAlert alloc] init];
+                failure.messageText = [NSString stringWithFormat:@"Could not reload \"%@\"",
+                                       _filePath.lastPathComponent];
+                failure.informativeText = err.localizedDescription
+                                          ?: @"The file could not be read.";
+                [failure addButtonWithTitle:@"OK"];
+                [failure runModal];
+            }
+        }
+    } else {
+        // The user kept what is in the editor. Record the mtime so this same
+        // on-disk version is not reported as a new change on the next poll, and
+        // mute further prompts until those edits are saved or discarded.
+        _lastKnownModDate = mtime;
+        _externalChangeMuted = _isModified;
     }
     _externalChangePending = NO;
 }
