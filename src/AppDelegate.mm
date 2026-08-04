@@ -742,16 +742,78 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
     NSString *themesDir = NppConfigSubpath(@"themes");
     [fm createDirectoryAtPath:themesDir withIntermediateDirectories:YES attributes:nil error:nil];
 
-    NSInteger imported = 0;
+    // Clear scratch files a crash or a failed cleanup left behind: staging below
+    // names them ".<uuid>", so anything matching that and nothing else is ours.
+    for (NSString *name in [fm contentsOfDirectoryAtPath:themesDir error:nil]) {
+        if (![name hasPrefix:@"."]) continue;
+        if (![[NSUUID alloc] initWithUUIDString:[name substringFromIndex:1]]) continue;
+        [fm removeItemAtPath:[themesDir stringByAppendingPathComponent:name] error:nil];
+    }
+
+    NSInteger imported = 0, alreadyInstalled = 0;
+    NSMutableArray<NSString *> *failures = [NSMutableArray array];
+    NSString *firstFailureReason = nil;
+
     for (NSURL *url in panel.URLs) {
         NSString *destPath = [themesDir stringByAppendingPathComponent:url.lastPathComponent];
-        [fm removeItemAtPath:destPath error:nil]; // overwrite existing
-        if ([fm copyItemAtPath:url.path toPath:destPath error:nil]) {
+        NSURL    *destURL  = [NSURL fileURLWithPath:destPath];
+
+        // Picking a theme that already lives in themesDir used to delete the file
+        // and then fail the copy from it — destroying the theme outright. Source
+        // and destination being the same file means there is nothing to do.
+        if ([destURL.URLByResolvingSymlinksInPath.URLByStandardizingPath
+                isEqual:url.URLByResolvingSymlinksInPath.URLByStandardizingPath]) {
+            alreadyInstalled++;   // counted apart from imported: nothing was copied
+            continue;
+        }
+
+        // Stage the copy under a scratch name, then swap it in. The old code
+        // deleted the destination first, so any failed copy — unreadable source,
+        // full disk — left the user with neither the old theme nor the new one.
+        // The dot prefix and missing .xml suffix keep the scratch file out of the
+        // theme list if the app dies mid-import.
+        NSString *tmpPath = [themesDir stringByAppendingPathComponent:
+                             [@"." stringByAppendingString:[[NSUUID UUID] UUIDString]]];
+        NSError *err = nil;
+        if (![fm copyItemAtPath:url.path toPath:tmpPath error:&err]) {
+            [fm removeItemAtPath:tmpPath error:nil];
+            [failures addObject:url.lastPathComponent];
+            if (!firstFailureReason) firstFailureReason = err.localizedDescription;
+            continue;
+        }
+
+        BOOL replaced = [fm fileExistsAtPath:destPath]
+            ? [fm replaceItemAtURL:destURL
+                     withItemAtURL:[NSURL fileURLWithPath:tmpPath]
+                    backupItemName:nil
+                           options:0
+                  resultingItemURL:nil
+                             error:&err]
+            : [fm moveItemAtPath:tmpPath toPath:destPath error:&err];
+
+        if (replaced) {
             imported++;
+        } else {
+            [fm removeItemAtPath:tmpPath error:nil];
+            [failures addObject:url.lastPathComponent];
+            if (!firstFailureReason) firstFailureReason = err.localizedDescription;
         }
     }
 
-    if (imported > 0) {
+    // Silence used to be the only report of a failed import.
+    if (failures.count) {
+        NSAlert *a = [[NSAlert alloc] init];
+        a.messageText = [loc translate:@"Import Style Theme"];
+        NSString *list = [NSString stringWithFormat:
+            [loc translate:@"Could not import: %@"],
+            [failures componentsJoinedByString:@", "]];
+        a.informativeText = firstFailureReason.length
+            ? [NSString stringWithFormat:@"%@\n\n%@", list, firstFailureReason]
+            : list;
+        [a runModal];
+    }
+
+    if (imported > 0 || alreadyInstalled > 0) {
         // Open Style Configurator so user can select the newly imported theme
         [[StyleConfiguratorWindowController sharedController] showWindow:nil];
     }
