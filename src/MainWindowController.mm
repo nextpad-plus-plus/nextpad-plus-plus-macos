@@ -4302,6 +4302,14 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     // Clean up stale backups after saving.
     NSMutableSet *activeBackups = [NSMutableSet set];
 
+    // Set when session.plist itself could not be written. The backups just made
+    // are then unreferenced by any manifest, so the prune at the end is skipped
+    // rather than allowed to delete them as strays. Per-editor backup failures do
+    // NOT set this — -_claimBackupFor:inDirectory: already claims whatever that
+    // buffer still has on disk, so the prune stays safe and keeps collecting
+    // genuine garbage.
+    BOOL manifestWriteFailed = NO;
+
     // Issue #162: enumerate editors across ALL views (primary + both split
     // views), not just the primary. A tab moved via "Move to Other …View" lives
     // in a different TabManager; iterating only _tabManager omitted it from the
@@ -4336,13 +4344,13 @@ static BOOL groupHasTrailingSep(NSString *ident) {
             // Untitled tab — restore if it has content OR was renamed (#177), so a
             // renamed organizational tab survives relaunch even when empty.
             if (!ed.isModified && !ed.customTabName.length) continue;
-            NSString *backup = [ed saveBackupToDirectory:backupDir];
+            NSString *backup = [self _claimBackupFor:ed inDirectory:backupDir];
             if (backup) { info[@"backupFilePath"] = backup; [activeBackups addObject:backup]; }
             info[@"untitledIndex"] = @(ed.untitledIndex);
             if (ed.customTabName.length) info[@"customTabName"] = ed.customTabName;
         } else if (ed.isModified && !ed.largeFileMode) {
             // Named file with unsaved changes — back up content
-            NSString *backup = [ed saveBackupToDirectory:backupDir];
+            NSString *backup = [self _claimBackupFor:ed inDirectory:backupDir];
             if (backup) { info[@"backupFilePath"] = backup; [activeBackups addObject:backup]; }
         }
 
@@ -4428,9 +4436,19 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         @"tabs":          tabs,
         @"selectedIndex": @(selIdx == NSNotFound ? 0 : (NSInteger)selIdx)
     };
-    [session writeToFile:nppSessionPath() atomically:YES];
+    // A manifest that did not land leaves any backup written under a NEW name
+    // unreferenced: restoreLastSession: reads only this file, so nothing claims
+    // those on the next launch and the following successful save would prune them
+    // as strays. Keeping them costs disk; deleting them costs the user's text.
+    if (![session writeToFile:nppSessionPath() atomically:YES]) {
+        NSLog(@"[Nextpad++] could not write %@ — skipping the backup prune so this "
+              @"session's backups survive for manual recovery", nppSessionPath());
+        manifestWriteFailed = YES;
+    }
 
-    // Prune stale backup files no longer referenced by any open editor
+    // Prune stale backup files no longer referenced by any open editor.
+    if (manifestWriteFailed) return;
+
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *backupFiles = [fm contentsOfDirectoryAtPath:backupDir error:nil];
     for (NSString *name in backupFiles) {
@@ -4438,6 +4456,45 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         if (![activeBackups containsObject:full])
             [fm removeItemAtPath:full error:nil];
     }
+}
+
+/// Write a backup for `ed` and return the path the session should claim.
+///
+/// The prune at the end of a session save deletes every backup no editor claims,
+/// so a buffer whose write failed used to have its previous, still-valid backup
+/// deleted along with its session entry. Two steps avoid that, in order of how
+/// much they save:
+///
+///   1. Retry under a fresh name. A write can fail for reasons local to one
+///      pathname — a directory sitting where the file should be, permissions on
+///      that one file — and a retry then captures the CURRENT text, which is the
+///      only outcome that loses nothing. `saveBackupToDirectory:` picks a new
+///      timestamped, uniquified name whenever backupFilePath is nil.
+///   2. Failing that (full disk, unwritable backup directory), claim the last
+///      backup that did land. It is older than what is on screen — possibly much
+///      older — but claiming it keeps it out of the prune and records it in the
+///      session, so the next launch restores that snapshot instead of nothing.
+- (nullable NSString *)_claimBackupFor:(EditorView *)ed inDirectory:(NSString *)dir {
+    NSString *fresh = [ed saveBackupToDirectory:dir];
+    if (fresh) return fresh;
+
+    NSString *previous = ed.backupFilePath;
+    if (previous.length) {
+        ed.backupFilePath = nil;                    // forces a new name below
+        NSString *retry = [ed saveBackupToDirectory:dir];
+        if (retry) return retry;                    // current text captured
+        ed.backupFilePath = previous;               // keep naming the good file
+    }
+
+    if (previous.length && [[NSFileManager defaultManager] fileExistsAtPath:previous]) {
+        NSLog(@"[Nextpad++] backup write failed for \"%@\" — the session will restore "
+              @"the older snapshot at %@", ed.displayName, previous);
+        return previous;
+    }
+
+    NSLog(@"[Nextpad++] backup write failed for \"%@\" and it has no earlier backup; "
+          @"its unsaved changes are not protected", ed.displayName);
+    return nil;
 }
 
 /// Restore session from ~/Library/Application Support/Nextpad++/session.plist.
