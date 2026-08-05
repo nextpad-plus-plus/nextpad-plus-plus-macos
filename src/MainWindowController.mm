@@ -8573,11 +8573,22 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     NppLocalizer *loc = [NppLocalizer shared];
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = [NSString stringWithFormat:[loc translate:@"Save '%@' before closing?"], ed.displayName];
+    // These titles are translated, and AppKit's automatic key equivalents match on
+    // the ENGLISH title — so in a non-English build "Don't Save" and "Cancel" had
+    // no shortcut (issue #294). The default button gets Return whatever it is
+    // called, so Save is already reachable and needs nothing here.
     [alert addButtonWithTitle:[loc translate:@"Save"]];        // NSAlertFirstButtonReturn
-    [alert addButtonWithTitle:[loc translate:@"Don't Save"]];  // NSAlertSecondButtonReturn
-    if (allowAll)
+    NSButton *dontSave = [alert addButtonWithTitle:[loc translate:@"Don't Save"]]; // NSAlertSecondButtonReturn
+    dontSave.keyEquivalent = @"d";
+    dontSave.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+    if (allowAll) {
+        // Deliberately no key equivalent. The obvious choice, ⇧⌘D, is unsafe here:
+        // this alert is usually reached by Close All (⇧⌘W), which leaves Shift
+        // under the user's finger, so reaching for ⌘D would discard every
+        // remaining modified document instead of one. Bulk discard stays click-only.
         [alert addButtonWithTitle:[loc translate:@"Don't Save All"]]; // NSAlertThirdButtonReturn
-    [alert addButtonWithTitle:[loc translate:@"Cancel"]];      // Third (or fourth) button
+    }
+    [alert addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033"; // Third (or fourth) button
 
     NSModalResponse r = [alert runModal];
     if (r == NSAlertFirstButtonReturn) {            // Save

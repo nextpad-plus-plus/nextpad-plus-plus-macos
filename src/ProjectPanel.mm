@@ -738,9 +738,14 @@ static void _PPCollectFiles(_ProjectItem *item, NSMutableArray<NSString *> *out)
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = [loc translate:@"The workspace was modified."];
     alert.informativeText = [loc translate:@"Do you want to save changes?"];
+    // Explicit key equivalents: AppKit's automatic ones match on the English
+    // button title, so a translated alert would have no keyboard path at all
+    // (issue #294). The first button is the default and gets Return regardless.
     [alert addButtonWithTitle:[loc translate:@"Save"]];
-    [alert addButtonWithTitle:[loc translate:@"Don't Save"]];
-    [alert addButtonWithTitle:[loc translate:@"Cancel"]];
+    NSButton *dontSave = [alert addButtonWithTitle:[loc translate:@"Don't Save"]];
+    dontSave.keyEquivalent = @"d";
+    dontSave.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+    [alert addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     NSModalResponse resp = [alert runModal];
     if (resp == NSAlertFirstButtonReturn) {
         if (ws.filePath)
