@@ -1222,40 +1222,47 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     [[NSNotificationCenter defaultCenter] postNotificationName:NPPShortcutsChangedNotification object:nil];
 }
 
-- (void)_applyShortcutEntry:(ShortcutEntry *)e toMenuItem:(NSMenuItem *)mi {
-    if (e.keyCode == 0) {
+void NppApplyShortcutToMenuItem(NSMenuItem *mi, NSUInteger keyCode,
+                               BOOL hasCmd, BOOL hasCtrl, BOOL hasAlt, BOOL hasShift) {
+    if (keyCode == 0) {
         mi.keyEquivalent = @"";
         mi.keyEquivalentModifierMask = 0;
         return;
     }
     NSEventModifierFlags mods = 0;
-    if (e.hasCmd)   mods |= NSEventModifierFlagCommand;
-    if (e.hasCtrl)  mods |= NSEventModifierFlagControl;
-    if (e.hasAlt)   mods |= NSEventModifierFlagOption;
-    if (e.hasShift) mods |= NSEventModifierFlagShift;
+    if (hasCmd)   mods |= NSEventModifierFlagCommand;
+    if (hasCtrl)  mods |= NSEventModifierFlagControl;
+    if (hasAlt)   mods |= NSEventModifierFlagOption;
+    if (hasShift) mods |= NSEventModifierFlagShift;
 
     NSString *key = @"";
-    if (e.keyCode >= 'A' && e.keyCode <= 'Z') {
-        key = [[NSString stringWithFormat:@"%c", (char)e.keyCode] lowercaseString];
-    } else if (e.keyCode >= '0' && e.keyCode <= '9') {
-        key = [NSString stringWithFormat:@"%c", (char)e.keyCode];
-    } else if (e.keyCode >= 112 && e.keyCode <= 123) {
-        unichar fk = NSF1FunctionKey + (e.keyCode - 112);
+    if (keyCode >= 'A' && keyCode <= 'Z') {
+        key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
+    } else if (keyCode >= '0' && keyCode <= '9') {
+        key = [NSString stringWithFormat:@"%c", (char)keyCode];
+    } else if (keyCode >= 112 && keyCode <= 123) {
+        // F1–F12. The modifiers are kept exactly as the user chose them: an
+        // F-key is a complete shortcut on its own, but ⌘F8 is equally valid and
+        // is what the mapper shows and what shortcuts.xml stores.
+        unichar fk = NSF1FunctionKey + (keyCode - 112);
         key = [NSString stringWithCharacters:&fk length:1];
-        mods &= ~NSEventModifierFlagCommand; // function keys don't need Cmd implicit
     } else {
         // Special keys
-        switch (e.keyCode) {
+        switch (keyCode) {
             case 8:  key = [NSString stringWithFormat:@"%C", (unichar)NSBackspaceCharacter]; break;
             case 9:  key = @"\t"; break;
             case 13: key = @"\r"; break;
             case 27: key = [NSString stringWithFormat:@"%C", (unichar)0x1B]; break;
             case 46: key = [NSString stringWithFormat:@"%C", (unichar)NSDeleteCharacter]; break;
-            default: key = [[NSString stringWithFormat:@"%c", (char)e.keyCode] lowercaseString]; break;
+            default: key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString]; break;
         }
     }
     mi.keyEquivalent = key;
     mi.keyEquivalentModifierMask = mods;
+}
+
+- (void)_applyShortcutEntry:(ShortcutEntry *)e toMenuItem:(NSMenuItem *)mi {
+    NppApplyShortcutToMenuItem(mi, e.keyCode, e.hasCmd, e.hasCtrl, e.hasAlt, e.hasShift);
 }
 
 // Resolve a plugin menu item by (pluginName, commandID) instead of by

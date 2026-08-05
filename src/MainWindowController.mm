@@ -5559,25 +5559,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
                 hasCmd = YES; hasCtrl = NO;
             }
 
-            NSEventModifierFlags mods = 0;
-            if (hasCmd)   mods |= NSEventModifierFlagCommand;
-            if (hasCtrl)  mods |= NSEventModifierFlagControl;
-            if (hasAlt)   mods |= NSEventModifierFlagOption;
-            if (hasShift) mods |= NSEventModifierFlagShift;
-
-            NSString *key = @"";
-            if (keyCode >= 'A' && keyCode <= 'Z')
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-            else if (keyCode >= '0' && keyCode <= '9')
-                key = [NSString stringWithFormat:@"%c", (char)keyCode];
-            else if (keyCode >= 112 && keyCode <= 123) {
-                unichar fk = NSF1FunctionKey + (keyCode - 112);
-                key = [NSString stringWithCharacters:&fk length:1];
-            } else
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-
-            item.keyEquivalent = key;
-            item.keyEquivalentModifierMask = mods;
+            NppApplyShortcutToMenuItem(item, keyCode, hasCmd, hasCtrl, hasAlt, hasShift);
         }
 
         [macroMenu insertItem:item atIndex:insertIdx++];
@@ -5635,21 +5617,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
                 hasCmd = YES; hasCtrl = NO;
             }
 
-            NSEventModifierFlags mods = 0;
-            if (hasCmd)   mods |= NSEventModifierFlagCommand;
-            if (hasCtrl)  mods |= NSEventModifierFlagControl;
-            if (hasAlt)   mods |= NSEventModifierFlagOption;
-            if (hasShift) mods |= NSEventModifierFlagShift;
-
-            unichar kc = 0;
-            if (keyCode >= 112 && keyCode <= 123) kc = NSF1FunctionKey + (keyCode - 112);
-            else if (keyCode >= 'A' && keyCode <= 'Z') kc = keyCode + 32;
-            else if (keyCode >= '0' && keyCode <= '9') kc = keyCode;
-            else kc = keyCode;
-            if (kc) {
-                item.keyEquivalent = [NSString stringWithCharacters:&kc length:1];
-                item.keyEquivalentModifierMask = mods;
-            }
+            NppApplyShortcutToMenuItem(item, keyCode, hasCmd, hasCtrl, hasAlt, hasShift);
         }
 
         [runMenu insertItem:item atIndex:insertIdx++];
