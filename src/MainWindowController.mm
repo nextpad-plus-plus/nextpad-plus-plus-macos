@@ -6767,7 +6767,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = [[NppLocalizer shared] translate:@"Go to Line"];
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Go"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0,0,160,22)];
     input.placeholderString = [NSString stringWithFormat:@"1 – %ld", (long)ed.lineCount];
     alert.accessoryView = input;
@@ -7001,7 +7001,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     alert.messageText = [[NppLocalizer shared] translate:@"Insert Date/Time"];
     alert.informativeText = [[NppLocalizer shared] translate:@"Enter an NSDateFormatter format string:"];
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Insert"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     NSTextField *input = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 260, 22)];
     input.stringValue = @"yyyy-MM-dd HH:mm:ss";
     alert.accessoryView = input;
@@ -7793,7 +7793,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             a.messageText = [[NppLocalizer shared] translate:@"Encoding Change"];
             a.informativeText = [[NppLocalizer shared] translate:@"The file has unsaved changes. Reloading with the new encoding will discard them. Continue?"];
             [a addButtonWithTitle:[[NppLocalizer shared] translate:@"Reload"]];
-            [a addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+            [a addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
             a.alertStyle = NSAlertStyleWarning;
             if ([a runModal] != NSAlertFirstButtonReturn) return;
         }
@@ -8388,7 +8388,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         alert.informativeText = [NSString stringWithFormat:[[NppLocalizer shared] translate:@"'%@' has unsaved changes.\nReload and discard changes?"],
                                  path.lastPathComponent];
         [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Reload"]];
-        [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+        [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
         if ([alert runModal] != NSAlertFirstButtonReturn) return;
     }
     NSError *err;
@@ -8450,7 +8450,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     tf.stringValue = path.lastPathComponent;
     alert.accessoryView = tf;
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Rename"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     alert.window.initialFirstResponder = tf;
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
     NSString *newName = tf.stringValue;
@@ -8480,7 +8480,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     tf.stringValue = ed.displayName;
     alert.accessoryView = tf;
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Rename"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     alert.window.initialFirstResponder = tf;
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
 
@@ -8533,7 +8533,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     alert.informativeText = [NSString stringWithFormat:[[NppLocalizer shared] translate:@"Move '%@' to the Trash?"],
                              path.lastPathComponent];
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Move to Trash"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
     NSError *err;
     if ([[NSFileManager defaultManager] trashItemAtURL:[NSURL fileURLWithPath:path]
@@ -8846,7 +8846,7 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     alert.messageText     = [[NppLocalizer shared] translate:@"Change Search Engine"];
     alert.informativeText = [[NppLocalizer shared] translate:@"Enter the search URL. Use %s as the query placeholder (or append the query at the end):"];
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"OK"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     NSTextField *tf = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 380, 22)];
     tf.stringValue = current;
     alert.accessoryView = tf;
@@ -10163,7 +10163,7 @@ static BOOL _writeCLIScript(NSString *script, NSString *path, NSError **outErr) 
              "• ~/.local/bin (no password — you may need to add it to your PATH)"];
         [prompt addButtonWithTitle:@"/usr/local/bin"];
         [prompt addButtonWithTitle:@"~/.local/bin"];
-        [prompt addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+        [prompt addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
         NSModalResponse resp = [prompt runModal];
 
         if (resp == NSAlertThirdButtonReturn) return; // Cancel

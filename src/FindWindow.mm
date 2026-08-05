@@ -1012,7 +1012,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         [[NppLocalizer shared] translate:@"Replace all occurrences of \"%@\" with \"%@\" in directory:\n%@\n\nThis cannot be undone."],
         opts.searchText, opts.replaceText, opts.directory];
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Replace"]];
-    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
 
     [self _addToHistory:_findCombo key:kHistoryFind];
@@ -1176,7 +1176,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         (long)allPaths.count,
         [loc translate:@"project file(s). This cannot be undone."]];
     [alert addButtonWithTitle:[loc translate:@"Replace"]];
-    [alert addButtonWithTitle:[loc translate:@"Cancel"]];
+    [alert addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
 
     [self _addToHistory:_findCombo key:kHistoryFind];

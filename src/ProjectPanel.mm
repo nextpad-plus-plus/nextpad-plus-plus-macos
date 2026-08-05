@@ -887,7 +887,7 @@ static void _PPCollectFiles(_ProjectItem *item, NSMutableArray<NSString *> *out)
         alert.messageText = [NSString stringWithFormat:@"Remove \"%@\"?", item.name];
         alert.informativeText = [loc translate:@"This will remove it and all its contents from the project. No files on disk will be affected."];
         [alert addButtonWithTitle:[loc translate:@"Remove"]];
-        [alert addButtonWithTitle:[loc translate:@"Cancel"]];
+        [alert addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
         if ([alert runModal] != NSAlertFirstButtonReturn) return;
     }
 
