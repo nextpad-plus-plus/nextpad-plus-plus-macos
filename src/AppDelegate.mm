@@ -443,7 +443,26 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
     // Windows NPP behaviour: no save prompts on quit.
-    // Each window saves session + backups, then closes silently.
+    _isTerminating = YES;
+    //
+    // Write the session ONCE, up front, covering every window — session.plist
+    // and the backup directory are shared, single resources. The teardown loop
+    // below removes each controller as it closes it, so a per-window save would
+    // see fewer and fewer windows: the last window to close would overwrite
+    // session.plist with only its own tabs and then delete every other window's
+    // backup file, discarding unsaved work that had never been written to disk.
+    //
+    // Skip it when no live window is left. That happens when the user quits by
+    // closing the last window: AppKit runs windowShouldClose: (which saved,
+    // while that window was still registered), then the close observer
+    // deregisters it, and only then does AppKit ask us to terminate. Saving
+    // again here would see the just-closed window gone and overwrite its
+    // session entry and backups — reintroducing the very loss above.
+    MainWindowController *saver = nil;
+    for (MainWindowController *mwc in _windowControllers)
+        if (!mwc.windowHasClosed) { saver = mwc; break; }
+    if (saver && [saver sessionPersistenceEnabled]) [saver saveSessionForAllWindows];
+
     for (NSInteger i = (NSInteger)_windowControllers.count - 1; i >= 0; i--) {
         MainWindowController *mwc = _windowControllers[i];
         NSWindow *win = mwc.window;

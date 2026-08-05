@@ -18,6 +18,32 @@ static int kRegexEmptyFlagsFindNext      = SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND
 static int kRegexEmptyFlagsFindForReplace = SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART | SCFIND_REGEXP_SKIPCRLFASONE;
 static int kRegexEmptyFlagsLoopOp        = SCFIND_REGEXP_EMPTYMATCH_NOTAFTERMATCH | SCFIND_REGEXP_SKIPCRLFASONE;
 
+/// Expand Scintilla replacement tags (\0 through \9) for one regex match.
+/// All other characters, including backslashes, remain literal.
+static NSString *nppRegexReplacement(NSString *replacement,
+                                     NSTextCheckingResult *match,
+                                     NSString *line) {
+    NSMutableString *expanded = [NSMutableString string];
+    for (NSUInteger i = 0; i < replacement.length; i++) {
+        unichar c = [replacement characterAtIndex:i];
+        if (c == '\\' && i + 1 < replacement.length) {
+            unichar next = [replacement characterAtIndex:i + 1];
+            if (next >= '0' && next <= '9') {
+                NSUInteger group = (NSUInteger)(next - '0');
+                if (group < match.numberOfRanges) {
+                    NSRange range = [match rangeAtIndex:group];
+                    if (range.location != NSNotFound)
+                        [expanded appendString:[line substringWithRange:range]];
+                }
+                i++;
+                continue;
+            }
+        }
+        [expanded appendFormat:@"%C", c];
+    }
+    return expanded;
+}
+
 // ── NPPFindOptions ───────────────────────────────────────────────────────────
 
 @implementation NPPFindOptions
@@ -299,6 +325,87 @@ static int kRegexEmptyFlagsLoopOp        = SCFIND_REGEXP_EMPTYMATCH_NOTAFTERMATC
 
     [sci message:SCI_ENDUNDOACTION];
     return count;
+}
+
++ (NSString *)stringByReplacingAllInString:(NSString *)content
+                                   options:(NPPFindOptions *)opts
+                          replacementCount:(NSInteger *)replacementCount {
+    if (replacementCount) *replacementCount = 0;
+    if (!opts.searchText.length || !content.length) return content;
+
+    NSString *search = opts.searchText;
+    NSString *replacement = opts.replaceText ?: @"";
+    if (opts.searchType == NPPSearchExtended) {
+        search = [self expandExtendedString:search];
+        replacement = [self expandExtendedString:replacement];
+    }
+    if (!search.length) return content;
+
+    if (opts.searchType == NPPSearchRegex) {
+        NSRegularExpressionOptions reOptions = 0;
+        if (!opts.matchCase) reOptions |= NSRegularExpressionCaseInsensitive;
+        if (opts.dotMatchesNewline) reOptions |= NSRegularExpressionDotMatchesLineSeparators;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:search
+                                                                                options:reOptions
+                                                                                  error:nil];
+        if (!regex) return content;
+        // Find in Files evaluates each line independently. Replace the same way
+        // so anchors and Dot Matches Newline cannot affect text the search did
+        // not preview. Splitting and rejoining on LF also preserves CRLF bytes:
+        // each line retains its trailing CR.
+        NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
+        NSMutableArray<NSString *> *replacedLines = [NSMutableArray arrayWithCapacity:lines.count];
+        NSInteger count = 0;
+        for (NSString *line in lines) {
+            NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:line
+                                                                      options:0
+                                                                        range:NSMakeRange(0, line.length)];
+            if (!matches.count) {
+                [replacedLines addObject:line];
+                continue;
+            }
+            NSMutableString *replacedLine = [line mutableCopy];
+            for (NSTextCheckingResult *match in matches.reverseObjectEnumerator) {
+                NSString *expanded = nppRegexReplacement(replacement, match, line);
+                [replacedLine replaceCharactersInRange:match.range withString:expanded];
+            }
+            count += (NSInteger)matches.count;
+            [replacedLines addObject:replacedLine];
+        }
+        if (replacementCount) *replacementCount = count;
+        return [replacedLines componentsJoinedByString:@"\n"];
+    }
+
+    NSStringCompareOptions compareOptions = opts.matchCase ? 0 : NSCaseInsensitiveSearch;
+    NSMutableArray<NSValue *> *ranges = [NSMutableArray array];
+    NSMutableCharacterSet *wordCharacters = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+    [wordCharacters addCharactersInString:@"_"];
+    NSRange remaining = NSMakeRange(0, content.length);
+    while (remaining.length > 0) {
+        NSRange match = [content rangeOfString:search options:compareOptions range:remaining];
+        if (match.location == NSNotFound) break;
+
+        BOOL isWholeWord = YES;
+        if (opts.wholeWord) {
+            if (match.location > 0)
+                isWholeWord = ![wordCharacters characterIsMember:[content characterAtIndex:match.location - 1]];
+            NSUInteger matchEnd = NSMaxRange(match);
+            if (isWholeWord && matchEnd < content.length)
+                isWholeWord = ![wordCharacters characterIsMember:[content characterAtIndex:matchEnd]];
+        }
+        if (isWholeWord) [ranges addObject:[NSValue valueWithRange:match]];
+
+        NSUInteger next = NSMaxRange(match);
+        if (next <= match.location) next = match.location + 1;
+        remaining = NSMakeRange(next, content.length - next);
+    }
+
+    if (replacementCount) *replacementCount = (NSInteger)ranges.count;
+    if (!ranges.count) return content;
+    NSMutableString *result = [content mutableCopy];
+    for (NSValue *value in ranges.reverseObjectEnumerator)
+        [result replaceCharactersInRange:value.rangeValue withString:replacement];
+    return result;
 }
 
 #pragma mark - Count

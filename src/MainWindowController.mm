@@ -1972,12 +1972,13 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
     NSLayoutConstraint *_subTabBarVZeroHeight;
     NSTimer          *_autoSaveTimer;
     /// YES once restoreLastSession has successfully opened ≥1 tab from the
-    /// stored session this launch. Used by saveSession to decide whether the
-    /// "preserve when empty" guard applies — see saveSession's Issue #87
+    /// stored session this launch. Used by the session save to decide whether
+    /// the "preserve when empty" guard applies — see the Issue #87
     /// comment for details. (Bug fix: closing all restored tabs and quitting
     /// would otherwise leave the prior session.plist untouched, so the same
     /// tabs reappeared on next launch.)
     BOOL              _didRestoreSession;
+    BOOL              _isWindowReadyForResizeEvents;
 
     // Side panel host
     NSSplitView       *_editorSplitView;
@@ -2253,6 +2254,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
         tb.allowsDisplayModeCustomization = NO;
     }
     self.window.toolbar = tb;
+    self.window.toolbar.visible = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefToolbarVisible];
     // Expanded style keeps the toolbar in its OWN row below the title bar for
     // BOTH profiles — matching the Classic layout and the Tahoe mockup. (Unified
     // crammed the icons into the title row, so we don't use it.) For Tahoe we make
@@ -4087,8 +4089,16 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     _editorSplitView.dividerStyle = NSSplitViewDividerStyleThin;
     _editorSplitView.delegate = self;
     _editorSplitView.translatesAutoresizingMaskIntoConstraints = NO;
-    [_editorSplitView addSubview:_hSplitView];
-    [_editorSplitView addSubview:_sidePanelHost];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft]) {
+        [_editorSplitView addSubview:_sidePanelHost];
+        [_editorSplitView addSubview:_hSplitView];
+    } else {
+        [_editorSplitView addSubview:_hSplitView];
+        [_editorSplitView addSubview:_sidePanelHost];
+    }
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_dockPanelsLeftChanged)
+               name:@"NPPDockPanelsLeftChanged" object:nil];
     // Tahoe: round the side-panel "card" corners to match the editor card. Gated.
     if ([NppThemeManager shared].usesGlassMaterials) {
         _sidePanelHost.wantsLayer = YES;
@@ -4193,10 +4203,12 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self->_vSplitView   setPosition:MAX(NSWidth(self->_vSplitView.frame),   9999) ofDividerAtIndex:0];
         [self->_hSplitView   setPosition:MAX(NSHeight(self->_hSplitView.frame),  9999) ofDividerAtIndex:0];
-        [self->_editorSplitView setPosition:MAX(NSWidth(self->_editorSplitView.frame), 9999) ofDividerAtIndex:0];
+        BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+        [self->_editorSplitView setPosition:(dockLeft ? 0 : MAX(NSWidth(self->_editorSplitView.frame), 9999)) ofDividerAtIndex:0];
         // Collapse search results panel initially
         [self->_searchSplitView setPosition:NSHeight(self->_searchSplitView.frame) ofDividerAtIndex:0];
         [self _refreshToolbarStates];
+        self->_isWindowReadyForResizeEvents = YES;
     });
 
     // Session restore is handled by AppDelegate (which checks CLI flags like -nosession).
@@ -4230,9 +4242,55 @@ static BOOL groupHasTrailingSep(NSString *ident) {
 
 #pragma mark - Session
 
+- (NSArray<TabManager *> *)sessionTabManagers {
+    NSMutableArray<TabManager *> *mgrs = [NSMutableArray array];
+    if (_tabManager)     [mgrs addObject:_tabManager];
+    if (_subTabManagerH) [mgrs addObject:_subTabManagerH];
+    if (_subTabManagerV) [mgrs addObject:_subTabManagerV];
+    return mgrs;
+}
+
+/// The controllers whose tabs belong in the session: every window that is still
+/// live, plus the receiver. The receiver is included unconditionally because the
+/// usual caller is a window in the middle of closing — its tabs are being closed
+/// as the app goes away, which is exactly the case that has always persisted.
+/// Windows the user closed earlier are excluded; those documents are gone.
+- (NSArray<MainWindowController *> *)_sessionContributingControllers {
+    NSMutableArray<MainWindowController *> *result = [NSMutableArray arrayWithObject:self];
+    id appDel = NSApp.delegate;
+    if (![appDel isKindOfClass:[AppDelegate class]]) return result;  // unit hosts
+
+    for (MainWindowController *mwc in [(AppDelegate *)appDel windowControllers])
+        if (mwc != self && !mwc.windowHasClosed) [result addObject:mwc];
+    return result;
+}
+
+- (void)saveSessionForAllWindows {
+    NSMutableArray<TabManager *> *mgrs = [NSMutableArray array];
+    for (MainWindowController *mwc in [self _sessionContributingControllers])
+        for (TabManager *mgr in [mwc sessionTabManagers])
+            if (![mgrs containsObject:mgr]) [mgrs addObject:mgr];
+
+    // Prefer the front window's active tab for selectedIndex — the save is often
+    // driven by the primary controller even when a secondary window has focus.
+    MainWindowController *key = nil;
+    for (MainWindowController *mwc in [self _sessionContributingControllers])
+        if (mwc.window.isKeyWindow) { key = mwc; break; }
+
+    [self saveSessionWithTabManagers:mgrs
+                       activeEditor:[(key ?: self) currentEditor]];
+}
+
 /// Save session to ~/Library/Application Support/Nextpad++/session.plist.
 /// Untitled modified tabs are written to ~/Library/Application Support/Nextpad++/backup/ automatically.
-- (void)saveSession {
+///
+/// `sessionManagers` must cover every tab whose backup should survive the
+/// stale-backup prune at the end — the prune deletes any backup file not claimed
+/// by one of these managers' editors. Callers therefore go through
+/// -saveSessionForAllWindows rather than passing one window's managers.
+/// `activeEditor` is the tab to reopen selected; ignored if it produced no entry.
+- (void)saveSessionWithTabManagers:(NSArray<TabManager *> *)sessionManagers
+                      activeEditor:(nullable EditorView *)activeEditor {
     ensureNppDirs();
     NSString *backupDir = nppBackupDir();
 
@@ -4250,7 +4308,8 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     // session AND (because its backup wasn't added to activeBackups) deleted its
     // backup in the prune below — silent loss of unsaved content. Restored tabs
     // all reopen in the primary view (split layout is intentionally not kept).
-    NSArray<TabManager *> *sessionManagers = @[_tabManager, _subTabManagerH, _subTabManagerV];
+    // The same reasoning extends across windows, which is why the manager list
+    // is supplied by the caller (see -saveSessionForAllWindows).
     NSMutableArray<EditorView *> *sessionEditors = [NSMutableArray array];
     NSMapTable<EditorView *, TabManager *> *ownerManager =
         [NSMapTable strongToStrongObjectsMapTable];
@@ -4264,6 +4323,10 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     }
 
     NSMutableArray *tabs = [NSMutableArray array];
+    // Parallel to `tabs`: which editor produced each entry. `tabs` skips
+    // untouched untitled tabs, so a tab-bar index is not an index into it —
+    // selectedIndex has to be resolved against this list.
+    NSMutableArray<EditorView *> *tabEditors = [NSMutableArray array];
     for (EditorView *ed in sessionEditors) {
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
 
@@ -4341,6 +4404,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         }
 
         [tabs addObject:info];
+        [tabEditors addObject:ed];
     }
 
     // Issue #87 (refined) — empty-session preserve guard.
@@ -4356,9 +4420,13 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     //   NO  (didn't restore)  | preserve prior plist → original Issue #87 fix
     if (tabs.count == 0 && !_didRestoreSession) return;
 
+    // Resolve the active tab against `tabs`, not against a tab-bar index: with
+    // several windows (or a split view) the tab bars each start at 0, so a raw
+    // tab-bar index restores an unrelated document.
+    NSUInteger selIdx = activeEditor ? [tabEditors indexOfObject:activeEditor] : NSNotFound;
     NSDictionary *session = @{
         @"tabs":          tabs,
-        @"selectedIndex": @(_tabManager.tabBar.selectedIndex)
+        @"selectedIndex": @(selIdx == NSNotFound ? 0 : (NSInteger)selIdx)
     };
     [session writeToFile:nppSessionPath() atomically:YES];
 
@@ -4501,7 +4569,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     if (sel < (NSInteger)_tabManager.allEditors.count)
         [_tabManager selectTabAtIndex:sel];
 
-    // Mark this launch as session-restored. saveSession uses this to allow
+    // Mark this launch as session-restored. The session save uses this to allow
     // writing an empty session.plist if the user explicitly closed all the
     // restored tabs before quitting (otherwise the empty-guard would keep
     // the stale session.plist around and the same tabs would reappear next
@@ -5620,9 +5688,13 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         [_panelTitleKeys setObject:key forKey:panel];
         NSString *localized = [[NppLocalizer shared] translate:key];
         [_sidePanelHost showPanel:panel withTitle:localized];
-        if ([_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
+        if ([_sidePanelHost hasVisiblePanels] && [_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
             CGFloat w = NSWidth(_editorSplitView.frame);
-            [_editorSplitView setPosition:MAX(200, w - 280) ofDividerAtIndex:0];
+            BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+            CGFloat targetWidth = [[NSUserDefaults standardUserDefaults] doubleForKey:kPrefSidePanelWidth];
+            if (targetWidth < 150) targetWidth = 280;
+            CGFloat position = dockLeft ? MIN(w - 200, targetWidth) : MAX(200, w - targetWidth);
+            [_editorSplitView setPosition:position ofDividerAtIndex:0];
         }
     } else {
         // Informal selector: any panel that needs to flush state (e.g.
@@ -5633,9 +5705,11 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             [(id)panel performSelector:@selector(panelWillClose)];
         [_sidePanelHost hidePanel:panel];
         [_panelTitleKeys removeObjectForKey:panel];
-        if (!_sidePanelHost.hasVisiblePanels)
-            [_editorSplitView setPosition:NSWidth(_editorSplitView.frame)
-                         ofDividerAtIndex:0];
+        if (!_sidePanelHost.hasVisiblePanels) {
+            BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
+            CGFloat position = dockLeft ? 0 : NSWidth(_editorSplitView.frame);
+            [_editorSplitView setPosition:position ofDividerAtIndex:0];
+        }
     }
     [self _refreshToolbarStates];
     [self _saveOpenSidePanels];
@@ -5648,12 +5722,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 - (void)_saveOpenSidePanels {
     if (!_panelTitleKeys) return;
     NSDictionary *whitelist = _restorableSidePanels();
-    NSMutableArray<NSString *> *openKeys = [NSMutableArray array];
+    NSMutableArray *openPanels = [NSMutableArray array];
     for (NSView *panel in [[_panelTitleKeys keyEnumerator] allObjects]) {
         NSString *key = [_panelTitleKeys objectForKey:panel];
-        if (key && whitelist[key]) [openKeys addObject:key];
+        if (key && whitelist[key]) {
+            BOOL popped = [_sidePanelHost isPanelPopped:panel];
+            [openPanels addObject:@{@"id": key, @"popped": @(popped)}];
+        }
     }
-    [[NSUserDefaults standardUserDefaults] setObject:openKeys forKey:kOpenSidePanelsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:openPanels forKey:kOpenSidePanelsKey];
 }
 
 // Re-open the side panels that were open at last quit (issue #132).
@@ -5666,7 +5743,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (![saved isKindOfClass:[NSArray class]]) return;
 
     NSDictionary<NSString *, NSString *> *whitelist = _restorableSidePanels();
-    for (NSString *key in saved) {
+    for (id item in saved) {
+        NSString *key = nil;
+        BOOL popped = NO;
+        if ([item isKindOfClass:[NSString class]]) {
+            key = item;
+        } else if ([item isKindOfClass:[NSDictionary class]]) {
+            key = item[@"id"];
+            popped = [item[@"popped"] boolValue];
+        }
         if (![key isKindOfClass:[NSString class]]) continue;
         NSString *selName = whitelist[key];
         if (!selName) continue;                       // unknown / plugin / Git
@@ -5678,6 +5763,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         [self performSelector:sel withObject:nil];
         #pragma clang diagnostic pop
+
+        if (popped) {
+            // Find the panel instance that was just opened (it will now be in _panelTitleKeys)
+            NSView *openedPanel = nil;
+            for (NSView *p in [[_panelTitleKeys keyEnumerator] allObjects]) {
+                if ([[_panelTitleKeys objectForKey:p] isEqualToString:key]) {
+                    openedPanel = p;
+                    break;
+                }
+            }
+            if (openedPanel) {
+                [_sidePanelHost popOutPanel:openedPanel];
+            }
+        }
     }
 }
 
@@ -5738,12 +5837,16 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 // (everything is popped), re-expand when a dock-back brings a panel into
 // an otherwise-empty pane.
 - (void)sidePanelHostDidChangePanelLayout:(SidePanelHost *)host {
+    BOOL dockLeft = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft];
     if (!host.hasVisiblePanels) {
-        [_editorSplitView setPosition:NSWidth(_editorSplitView.frame)
-                     ofDividerAtIndex:0];
+        CGFloat position = dockLeft ? 0 : NSWidth(_editorSplitView.frame);
+        [_editorSplitView setPosition:position ofDividerAtIndex:0];
     } else if ([_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
         CGFloat w = NSWidth(_editorSplitView.frame);
-        [_editorSplitView setPosition:MAX(200, w - 280) ofDividerAtIndex:0];
+        CGFloat targetWidth = [[NSUserDefaults standardUserDefaults] doubleForKey:kPrefSidePanelWidth];
+        if (targetWidth < 150) targetWidth = 280;
+        CGFloat position = dockLeft ? MIN(w - 200, targetWidth) : MAX(200, w - targetWidth);
+        [_editorSplitView setPosition:position ofDividerAtIndex:0];
     }
     [self _refreshToolbarStates];
 }
@@ -7232,6 +7335,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 #pragma mark - FindWindowDelegate
 
+- (void)_dockPanelsLeftChanged {
+    // Reorder subviews of _editorSplitView
+    [_sidePanelHost removeFromSuperview];
+    [_hSplitView removeFromSuperview];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:kPrefDockPanelsOnLeft]) {
+        [_editorSplitView addSubview:_sidePanelHost];
+        [_editorSplitView addSubview:_hSplitView];
+    } else {
+        [_editorSplitView addSubview:_hSplitView];
+        [_editorSplitView addSubview:_sidePanelHost];
+    }
+}
+
 - (EditorView *)currentEditorForFindWindow { return [self currentEditor]; }
 
 // FindWindowDelegate
@@ -8009,6 +8125,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 #pragma mark - NSSplitViewDelegate
 
+- (void)splitViewDidResizeSubviews:(NSNotification *)notification {
+    if (!_isWindowReadyForResizeEvents) return;
+    NSSplitView *sv = notification.object;
+    if (sv == _editorSplitView) {
+        if (![_editorSplitView isSubviewCollapsed:_sidePanelHost]) {
+            CGFloat width = NSWidth(_sidePanelHost.frame);
+            if (width >= 150) {
+                [[NSUserDefaults standardUserDefaults] setDouble:width forKey:kPrefSidePanelWidth];
+            }
+        }
+    }
+}
+
 - (BOOL)splitView:(NSSplitView *)sv canCollapseSubview:(NSView *)sub {
     if (sv == _editorSplitView) return sub == _sidePanelHost;
     if (sv == _hSplitView)      return sub == _subEditorContainerH;
@@ -8376,11 +8505,14 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         NSString *suffix  = @"";
         NSRange at = [oldFile rangeOfString:@"@" options:NSBackwardsSearch];
         if (at.location != NSNotFound) suffix = [oldFile substringFromIndex:at.location];
-        NSString *newBackup = [dir stringByAppendingPathComponent:
-                               [newName stringByAppendingString:suffix]];
+        // Claim the new name through the uniquifier instead of deleting whatever
+        // sits there: renaming a tab to a name another buffer already backed up
+        // in the same second would otherwise destroy that buffer's only copy of
+        // its unsaved text.
+        NSString *newBackup = [EditorView uniqueBackupPathInDirectory:dir
+                                                            filename:[newName stringByAppendingString:suffix]];
         if (![newBackup isEqualToString:oldBackup]) {
             NSFileManager *fm = [NSFileManager defaultManager];
-            [fm removeItemAtPath:newBackup error:nil];               // overwrite any stale file
             if ([fm moveItemAtPath:oldBackup toPath:newBackup error:nil])
                 ed.backupFilePath = newBackup;
         }
@@ -10726,6 +10858,10 @@ static int64_t _sysctlInt(const char *name) {
 #pragma mark - NSWindowDelegate
 
 - (void)windowWillClose:(NSNotification *)n {
+    // The session save already ran in -windowShouldClose:, while this window was
+    // still live. From here on the receiver must not contribute tabs to a later
+    // save — its documents are closed.
+    _windowHasClosed = YES;
     [_autoSaveTimer invalidate];
     _autoSaveTimer = nil;
     // The scroll-sync timer also targets self with repeats:YES; if a split with
@@ -10760,14 +10896,26 @@ static int64_t _sysctlInt(const char *name) {
     // Auto-backup of unsaved files runs separately on its own timer and is
     // intentionally NOT coupled — losing unsaved work to a crash is a separate
     // concern from reopening tabs across launches.
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    BOOL rememberSession = [ud boolForKey:kPrefRememberSession];
+    //
+    // On quit, AppDelegate has already written one session covering every
+    // window (see -applicationShouldTerminate:). Saving again here would be
+    // actively harmful: by the time the second window is torn down the first is
+    // gone from windowControllers, so this save would write a session missing
+    // its tabs and prune away its backups.
     AppDelegate *appDel = (AppDelegate *)NSApp.delegate;
-    BOOL cliNoSession = [appDel isKindOfClass:[AppDelegate class]] ? appDel.cliParams.noSession : NO;
-    if (rememberSession && !cliNoSession) {
-        [self saveSession];
+    BOOL terminating = [appDel isKindOfClass:[AppDelegate class]] ? appDel.isTerminating : NO;
+    if (!terminating && [self sessionPersistenceEnabled]) {
+        [self saveSessionForAllWindows];
     }
     writeConfigXML();
+    return YES;
+}
+
+- (BOOL)sessionPersistenceEnabled {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:kPrefRememberSession]) return NO;
+    AppDelegate *appDel = (AppDelegate *)NSApp.delegate;
+    if ([appDel isKindOfClass:[AppDelegate class]] && appDel.cliParams.noSession) return NO;
     return YES;
 }
 
@@ -10946,6 +11094,7 @@ static NSString *languageDisplayName(NSString *langCode) {
 - (void)saveWindowFrame {
     [[NSUserDefaults standardUserDefaults]
         setObject:NSStringFromRect(self.window.frame) forKey:kWindowFrameKey];
+    [[NSUserDefaults standardUserDefaults] setBool:self.window.toolbar.visible forKey:kPrefToolbarVisible];
 }
 
 - (void)restoreWindowFrame {

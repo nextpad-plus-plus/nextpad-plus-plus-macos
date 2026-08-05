@@ -286,6 +286,8 @@ static NSUInteger nppLargeFileThreshold(void) {
     NSDate            *_lastKnownModDate; // mtime recorded after each load/save
     BOOL               _externalChangePending;
     BOOL               _monitoringMode;   // tail -f: auto-reload silently
+    NSInteger          _reloadFailureCount; // consecutive failed silent reloads
+    BOOL               _externalChangeMuted; // user kept their version; stop asking
 
     // Spell check
     BOOL               _spellCheckEnabled;
@@ -857,6 +859,18 @@ static NSUInteger nppLargeFileThreshold(void) {
 /// no encoding roundtrip, preserves null bytes and BOM.
 /// Mirrors NPP Buffer.cpp: creates ONE timestamped file per buffer on first backup,
 /// then overwrites that same file in-place on every subsequent backup cycle.
++ (NSString *)uniqueBackupPathInDirectory:(NSString *)dir filename:(NSString *)filename {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *path = [dir stringByAppendingPathComponent:filename];
+    // The suffix goes after the timestamp so the "@<timestamp>" tail that tab
+    // rename splits on (see -_renameUntitledTab: in MainWindowController) stays
+    // intact.
+    for (NSUInteger n = 2; [fm fileExistsAtPath:path]; n++)
+        path = [dir stringByAppendingPathComponent:
+                [NSString stringWithFormat:@"%@-%lu", filename, (unsigned long)n]];
+    return path;
+}
+
 - (nullable NSString *)saveBackupToDirectory:(NSString *)dir {
     NSString *dest = _backupFilePath;
 
@@ -869,7 +883,9 @@ static NSUInteger nppLargeFileThreshold(void) {
         fmt.dateFormat = @"yyyy-MM-dd_HHmmss";
         NSString *name = [NSString stringWithFormat:@"%@@%@", base,
                           [fmt stringFromDate:[NSDate date]]];
-        dest = [dir stringByAppendingPathComponent:name];
+        // Never reuse a name another buffer already claimed — the earlier
+        // buffer's unsaved text is the only copy and this write would erase it.
+        dest = [EditorView uniqueBackupPathInDirectory:dir filename:name];
     }
 
     // Get raw UTF-8 bytes directly from Scintilla (no NSString conversion)
@@ -997,24 +1013,60 @@ static NSUInteger nppLargeFileThreshold(void) {
     BOOL updateSilently = [ud boolForKey:kPrefFileStatusUpdateSilently];
     if (!autoDetect && !_monitoringMode) return;
 
-    _lastKnownModDate = mtime;
+    // The user already chose to keep their version of this file. Do not ask
+    // again while those edits are still unsaved: on a file that keeps changing —
+    // a log being appended to, which is exactly what a monitored tab watches —
+    // every later revision has a newer mtime and would raise the same prompt
+    // again a second later, with no answer that makes it stop. Saving or
+    // reloading clears the buffer's dirty flag and re-arms detection.
+    if (_externalChangeMuted) {
+        if (_isModified) { _lastKnownModDate = mtime; return; }
+        _externalChangeMuted = NO;
+    }
+
     _externalChangePending = YES;
 
     // Reload without prompting when this tab is monitoring (tail -f), or when
-    // "Update silently" is on and the buffer has no unsaved edits. Dirty buffers
-    // always fall through to the prompt so unsaved changes are never discarded
-    // silently. Both silent paths preserve the caret (line + column) and scroll
-    // position; loadFileAtPath: otherwise resets the caret to 0, which would
-    // snap the view back to the top on every external change.
-    if (_monitoringMode || (updateSilently && !_isModified)) {
+    // "Update silently" is on — in both cases only while the buffer has no
+    // unsaved edits. Dirty buffers always fall through to the prompt so unsaved
+    // changes are never discarded silently. Both silent paths preserve the caret
+    // (line + column) and scroll position; loadFileAtPath: otherwise resets the
+    // caret to 0, which would snap the view back to the top on every external
+    // change.
+    //
+    // _lastKnownModDate is deliberately not advanced here. loadFileAtPath:
+    // records it itself on success, and the paths below record it when the user
+    // declines the reload. Advancing it up front made a load that never happened
+    // look like one that had, so a transient read error lost the change for good.
+    if ((_monitoringMode || updateSilently) && !_isModified) {
         ScintillaView *sci = _scintillaView;
         sptr_t savedPos          = [sci message:SCI_GETCURRENTPOS];
         sptr_t savedLine         = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)savedPos];
         sptr_t savedColumn       = [sci message:SCI_GETCOLUMN wParam:(uptr_t)savedPos];
         sptr_t savedFirstVisible = [sci message:SCI_GETFIRSTVISIBLELINE];
 
-        NSError *err;
-        [self loadFileAtPath:_filePath error:&err];
+        NSError *err = nil;
+        if (![self loadFileAtPath:_filePath error:&err]) {
+            // A cancelled large-file prompt is a decision, not a failure: record
+            // the mtime so the same version is not offered again every second.
+            //
+            // Any other error leaves _lastKnownModDate alone so the next poll
+            // retries, which is the point — a transient read error must not be
+            // recorded as a reload that happened. Give up after a few attempts
+            // though, or a persistent failure (permissions, a vanished network
+            // volume) becomes a failing read every second for as long as the tab
+            // is open.
+            static const NSInteger kMaxReloadRetries = 3;
+            if (([err.domain isEqualToString:NSCocoaErrorDomain] &&
+                 err.code == NSUserCancelledError) ||
+                ++_reloadFailureCount >= kMaxReloadRetries) {
+                _lastKnownModDate = mtime;
+                _reloadFailureCount = 0;
+            }
+            _externalChangePending = NO;
+            return;
+        }
+        _reloadFailureCount = 0;
 
         // Clamp to the reloaded file's bounds — guards the case where the
         // file shrank and the old caret line no longer exists. SCI_FINDCOLUMN
@@ -1048,8 +1100,29 @@ static NSUInteger nppLargeFileThreshold(void) {
     }
 
     if ([alert runModal] == NSAlertFirstButtonReturn) {
-        NSError *err;
-        [self loadFileAtPath:_filePath error:&err];
+        NSError *err = nil;
+        if (![self loadFileAtPath:_filePath error:&err]) {
+            // Record the mtime even on failure: the user asked for this reload
+            // and is told below that it did not happen, whereas re-prompting on
+            // every poll would trap them in a dialog loop.
+            _lastKnownModDate = mtime;
+            if (!([err.domain isEqualToString:NSCocoaErrorDomain] &&
+                  err.code == NSUserCancelledError)) {
+                NSAlert *failure = [[NSAlert alloc] init];
+                failure.messageText = [NSString stringWithFormat:@"Could not reload \"%@\"",
+                                       _filePath.lastPathComponent];
+                failure.informativeText = err.localizedDescription
+                                          ?: @"The file could not be read.";
+                [failure addButtonWithTitle:@"OK"];
+                [failure runModal];
+            }
+        }
+    } else {
+        // The user kept what is in the editor. Record the mtime so this same
+        // on-disk version is not reported as a new change on the next poll, and
+        // mute further prompts until those edits are saved or discarded.
+        _lastKnownModDate = mtime;
+        _externalChangeMuted = _isModified;
     }
     _externalChangePending = NO;
 }
@@ -2933,10 +3006,15 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
         NSInteger i = 0;
         while (i < len && (buf[i]==' ' || buf[i]=='\t')) i++;
         if (i >= len || buf[i]=='\r' || buf[i]=='\n') { free(buf); continue; }
-        if (strncmp(buf + i, prefix.UTF8String, prefix.length) == 0) {
+        // Byte count, not -[NSString length]: the prefix comes from langs.xml and
+        // may be non-ASCII, in which case a UTF-16 count both compares too few
+        // bytes and deletes a partial character, leaving invalid UTF-8 behind.
+        size_t prefixBytes = (size_t)[prefix lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        if ((size_t)(len - i) >= prefixBytes &&
+            strncmp(buf + i, prefix.UTF8String, prefixBytes) == 0) {
             sptr_t lineStart = [sci message:SCI_POSITIONFROMLINE wParam:(uptr_t)ln];
             sptr_t removeStart = lineStart + i;
-            NSInteger removeLen = (NSInteger)prefix.length;
+            NSInteger removeLen = (NSInteger)prefixBytes;
             if (i + removeLen < len && buf[i + removeLen] == ' ') removeLen++;
             [sci message:SCI_DELETERANGE wParam:(uptr_t)removeStart lParam:removeLen];
         }
@@ -2968,32 +3046,67 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     return fallback[_currentLanguage.lowercaseString];
 }
 
+// Block-comment positions are Scintilla positions, i.e. BYTE offsets into the
+// UTF-8 document — not indices into -[ScintillaView string], which is UTF-16.
+// The helpers below keep everything in byte space; -[NSString length] is never a
+// substitute for a delimiter's byte count either, since the user-editable
+// langs.xml (loaded in preference to the bundled ASCII-only model) may define
+// non-ASCII delimiters.
+
+/// UTF-8 byte count of `s`.
+static inline sptr_t utf8Len(NSString *s) {
+    return (sptr_t)[s lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+}
+
+/// YES when the document bytes at [pos, pos + len) equal `bytes`. NO if that
+/// range falls outside the document.
+- (BOOL)_documentBytesAt:(sptr_t)pos equal:(const char *)bytes length:(sptr_t)len {
+    ScintillaView *sci = _scintillaView;
+    if (len <= 0 || pos < 0 || pos + len > [sci message:SCI_GETLENGTH]) return NO;
+
+    char *buf = (char *)calloc((size_t)len + 1, 1);
+    if (!buf) return NO;
+    Sci_TextRangeFull tr = { {(Sci_Position)pos, (Sci_Position)(pos + len)}, buf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+    BOOL equal = (memcmp(buf, bytes, (size_t)len) == 0);
+    free(buf);
+    return equal;
+}
+
+/// Locate `needle` in [from, to) — or, when `from` > `to`, the nearest match
+/// searching backwards. Returns the match's start byte position or -1.
+/// On success the search target end holds the match end.
+- (sptr_t)_findLiteral:(NSString *)needle from:(sptr_t)from to:(sptr_t)to {
+    ScintillaView *sci = _scintillaView;
+    sptr_t len = utf8Len(needle);
+    if (len <= 0) return -1;
+    [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_MATCHCASE];
+    [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)from lParam:to];
+    return [sci message:SCI_SEARCHINTARGET wParam:(uptr_t)len lParam:(sptr_t)needle.UTF8String];
+}
+
 - (void)toggleBlockComment:(id)sender {
     NSArray<NSString *> *pair = [self _blockCommentDelimiters];
     if (!pair) return;
 
     NSString *open  = pair[0];
     NSString *close = pair[1];
+    sptr_t openLen  = utf8Len(open);
+    sptr_t closeLen = utf8Len(close);
     ScintillaView *sci = _scintillaView;
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
 
-    // Check whether selection is already wrapped — if so, remove delimiters
-    NSString *docText = sci.string;
-    if ((sptr_t)docText.length >= selStart + (sptr_t)open.length + (sptr_t)close.length) {
-        NSString *before = [docText substringWithRange:NSMakeRange((NSUInteger)selStart,
-                                                                    (NSUInteger)open.length)];
-        NSString *after  = selEnd >= (sptr_t)close.length
-            ? [docText substringWithRange:NSMakeRange((NSUInteger)(selEnd - close.length),
-                                                      (NSUInteger)close.length)]
-            : @"";
-        if ([before isEqualToString:open] && [after isEqualToString:close]) {
-            [sci message:SCI_BEGINUNDOACTION];
-            [sci message:SCI_DELETERANGE wParam:(uptr_t)(selEnd - close.length) lParam:(sptr_t)close.length];
-            [sci message:SCI_DELETERANGE wParam:(uptr_t)selStart lParam:(sptr_t)open.length];
-            [sci message:SCI_ENDUNDOACTION];
-            return;
-        }
+    // Already wrapped? The selection has to be long enough to hold both
+    // delimiters and start/end with them.
+    if (selEnd - selStart >= openLen + closeLen &&
+        [self _documentBytesAt:selStart equal:open.UTF8String length:openLen] &&
+        [self _documentBytesAt:selEnd - closeLen equal:close.UTF8String length:closeLen]) {
+        [sci message:SCI_BEGINUNDOACTION];
+        [sci message:SCI_DELETERANGE wParam:(uptr_t)(selEnd - closeLen) lParam:closeLen];
+        [sci message:SCI_DELETERANGE wParam:(uptr_t)selStart lParam:openLen];
+        [sci message:SCI_ENDUNDOACTION];
+        return;
     }
 
     // Wrap selection with open/close
@@ -3002,7 +3115,7 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     [sci message:SCI_INSERTTEXT wParam:(uptr_t)selStart lParam:(sptr_t)open.UTF8String];
     [sci message:SCI_SETSEL
           wParam:(uptr_t)selStart
-           lParam:selEnd + (sptr_t)(open.length + close.length)];
+           lParam:selEnd + openLen + closeLen];
     [sci message:SCI_ENDUNDOACTION];
 }
 
@@ -3023,36 +3136,59 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     NSArray<NSString *> *pair = [self _blockCommentDelimiters];
     if (!pair) { NSBeep(); return; }
     ScintillaView *sci = _scintillaView;
-    NSString *docText = sci.string;
+    sptr_t docLen   = [sci message:SCI_GETLENGTH];
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
 
-    // Search backward from selStart for opening delimiter
-    NSString *open = pair[0], *openTrim = [pair[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSString *close = pair[1], *closeTrim = [pair[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    NSUInteger searchStart = (NSUInteger)MAX(0LL, selStart - (sptr_t)open.length);
-    NSRange openRange = [docText rangeOfString:open  options:NSBackwardsSearch
-                                         range:NSMakeRange(0, (NSUInteger)selStart + open.length)];
-    if (openRange.location == NSNotFound)
-        openRange = [docText rangeOfString:openTrim options:NSBackwardsSearch
-                                     range:NSMakeRange(0, (NSUInteger)selStart + openTrim.length)];
-    (void)searchStart;
+    // langs.xml delimiters may carry padding ("/* "), so each is tried as given
+    // and then trimmed.
+    NSCharacterSet *ws = [NSCharacterSet whitespaceCharacterSet];
+    NSString *open  = pair[0], *openTrim  = [pair[0] stringByTrimmingCharactersInSet:ws];
+    NSString *close = pair[1], *closeTrim = [pair[1] stringByTrimmingCharactersInSet:ws];
 
-    NSUInteger closeSearchStart = (NSUInteger)MAX(0LL, selEnd - (sptr_t)close.length);
-    NSRange closeRange = [docText rangeOfString:close options:0
-                                          range:NSMakeRange(closeSearchStart, docText.length - closeSearchStart)];
-    if (closeRange.location == NSNotFound) {
-        NSUInteger cs2 = (NSUInteger)MAX(0LL, selEnd - (sptr_t)closeTrim.length);
-        closeRange = [docText rangeOfString:closeTrim options:0
-                                      range:NSMakeRange(cs2, docText.length - cs2)];
+    // Nearest opening delimiter at or before the selection start (target start >
+    // target end makes SCI_SEARCHINTARGET search backwards). The window extends a
+    // delimiter past selStart so a selection sitting just inside the comment
+    // still finds it; Scintilla requires the match to fit inside the target, so
+    // the result never starts after selStart. Each delimiter is tried in both
+    // forms and the NEAREST hit wins, so a distant exact match cannot outrank a
+    // nearby padded one.
+    sptr_t openPos = -1, openLen = 0;
+    for (NSString *v in @[open, openTrim]) {
+        sptr_t p = [self _findLiteral:v from:MIN(docLen, selStart + utf8Len(v)) to:0];
+        if (p > openPos) { openPos = p; openLen = utf8Len(v); }  // backwards: larger is nearer
     }
 
-    if (openRange.location == NSNotFound || closeRange.location == NSNotFound) { NSBeep(); return; }
+    if (openPos < 0) { NSBeep(); return; }
+
+    // That comment ends at the FIRST closing delimiter after the opener. The
+    // search is anchored to the opener, not to the selection, because that is
+    // what keeps both delimiters part of one comment. Searching forward from the
+    // selection instead pairs them across comments: in "/* one */ gap /* two */"
+    // it finds the first "/*" and the second "*/", and deleting both splices the
+    // two comments together and mangles the text between them.
+    sptr_t closePos = -1, closeLen = 0;
+    for (NSString *v in @[close, closeTrim]) {
+        sptr_t p = [self _findLiteral:v from:openPos + openLen to:docLen];
+        if (p >= 0 && (closePos < 0 || p < closePos)) { closePos = p; closeLen = utf8Len(v); }
+    }
+    if (closePos < 0) { NSBeep(); return; }
+
+    // Finally, the selection has to lie inside the comment we found. This is what
+    // rejects a caret that is merely between two comments, or a selection that
+    // starts in one comment and ends in the next.
+    //
+    // Nested block comments are not resolved: with "/* outer /* inner */ x */" and
+    // the caret on x, the enclosing comment is the outer one but this finds the
+    // inner opener and its own closer, and beeps. Separating those needs a
+    // depth-counting scan; beeping is at least safe, where the previous code
+    // paired the inner opener with the outer closer and corrupted the text.
+    if (selEnd > closePos + closeLen) { NSBeep(); return; }
 
     [sci message:SCI_BEGINUNDOACTION];
     // Remove close first (higher position) so start positions stay valid
-    [sci message:SCI_DELETERANGE wParam:(uptr_t)closeRange.location lParam:(sptr_t)closeRange.length];
-    [sci message:SCI_DELETERANGE wParam:(uptr_t)openRange.location  lParam:(sptr_t)openRange.length];
+    [sci message:SCI_DELETERANGE wParam:(uptr_t)closePos lParam:closeLen];
+    [sci message:SCI_DELETERANGE wParam:(uptr_t)openPos  lParam:openLen];
     [sci message:SCI_ENDUNDOACTION];
 }
 
@@ -3064,6 +3200,7 @@ static const unsigned int kSCI_SetAdditionalSelTyping   = 2565;
 static const unsigned int kSCI_GetSelections             = 2570;
 static const unsigned int kSCI_AddSelection              = 2573;
 static const unsigned int kSCI_SetMainSelection          = 2574;
+static const unsigned int kSCI_GetMainSelection          = 2575;
 static const unsigned int kSCI_GetSelectionNCaret        = 2577;
 static const unsigned int kSCI_DropSelectionN            = 2671;
 static const unsigned int kSCI_SetRectSelCaret           = 2588;
@@ -3103,7 +3240,25 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
     [_scintillaView message:kSCI_SetAdditionalSelTyping wParam:1];
 }
 
-- (NSString *)_currentSelectionOrWord {
+// ── Multi-Select helpers ─────────────────────────────────────────────────────
+//
+// Everything here works in Scintilla's position space, which counts BYTES of the
+// UTF-8 document. -[ScintillaView string] hands back an NSString indexed in
+// UTF-16 code units, so the two spaces diverge as soon as the document holds a
+// single non-ASCII character. Searching the NSString and feeding the resulting
+// index straight back to SCI_ADDSELECTION (or vice versa) selects the wrong text
+// and can land a caret mid-sequence, so matching is done with Scintilla's own
+// SCI_SEARCHINTARGET — the same approach SearchEngine uses.
+
+/// Read the needle to match: the current selection, or the word under the caret
+/// when the selection is empty. Returns NO when there is nothing to match, in
+/// which case no output is written. On success `outNeedle` receives the raw
+/// document bytes (NUL-terminated, caller frees), `outLen` their byte count, and
+/// `outStart`/`outEnd` (both optional) the byte range they came from.
+- (BOOL)_multiSelectNeedle:(char **)outNeedle
+                    length:(sptr_t *)outLen
+                     start:(sptr_t *)outStart
+                       end:(sptr_t *)outEnd {
     ScintillaView *sci = _scintillaView;
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
@@ -3111,76 +3266,82 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
         selStart = [sci message:SCI_WORDSTARTPOSITION wParam:(uptr_t)selStart lParam:1];
         selEnd   = [sci message:SCI_WORDENDPOSITION   wParam:(uptr_t)selEnd   lParam:1];
     }
-    if (selStart >= selEnd) return nil;
-    NSString *text = sci.string;
-    NSUInteger len = (NSUInteger)(selEnd - selStart);
-    if ((NSUInteger)selStart + len > text.length) return nil;
-    return [text substringWithRange:NSMakeRange((NSUInteger)selStart, len)];
-}
+    if (selStart >= selEnd) return NO;
 
-// ── Multi-Select helpers ─────────────────────────────────────────────────────
+    sptr_t len = selEnd - selStart;
+    char *buf = (char *)calloc((size_t)len + 1, 1);
+    if (!buf) return NO;
+    Sci_TextRangeFull tr = { {(Sci_Position)selStart, (Sci_Position)selEnd}, buf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
 
-/// Check if character at pos is a word character (alphanumeric or underscore)
-- (BOOL)_isWordCharAtPos:(sptr_t)pos inText:(NSString *)text {
-    if (pos < 0 || (NSUInteger)pos >= text.length) return NO;
-    unichar c = [text characterAtIndex:(NSUInteger)pos];
-    return [[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_';
-}
-
-/// Check if match at range is a whole word (not part of a larger word)
-- (BOOL)_isWholeWord:(NSRange)range inText:(NSString *)text {
-    if (range.location > 0 && [self _isWordCharAtPos:(sptr_t)(range.location - 1) inText:text])
-        return NO;
-    NSUInteger end = range.location + range.length;
-    if (end < text.length && [self _isWordCharAtPos:(sptr_t)end inText:text])
-        return NO;
+    *outNeedle = buf;
+    *outLen    = len;
+    if (outStart) *outStart = selStart;
+    if (outEnd)   *outEnd   = selEnd;
     return YES;
 }
 
-- (void)_multiSelectAll_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
-    NSString *word = [self _currentSelectionOrWord];
-    if (!word.length) return;
+/// Find `needle` in [from, to) using Scintilla's search. Returns the match's
+/// start byte position, or -1 when there is no match. On success the target end
+/// holds the match end.
+- (sptr_t)_findNeedle:(const char *)needle
+               length:(sptr_t)needleLen
+                 from:(sptr_t)from
+                   to:(sptr_t)to
+            matchCase:(BOOL)matchCase
+            wholeWord:(BOOL)wholeWord {
     ScintillaView *sci = _scintillaView;
-    NSString *text = sci.string;
+    int flags = 0;
+    if (matchCase) flags |= SCFIND_MATCHCASE;
+    if (wholeWord) flags |= SCFIND_WHOLEWORD;
+    [sci message:SCI_SETSEARCHFLAGS wParam:(uptr_t)flags];
+    [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)from lParam:to];
+    return [sci message:SCI_SEARCHINTARGET wParam:(uptr_t)needleLen lParam:(sptr_t)needle];
+}
+
+- (void)_multiSelectAll_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
+    char *needle = NULL; sptr_t needleLen = 0;
+    if (![self _multiSelectNeedle:&needle length:&needleLen start:NULL end:NULL]) return;
+
+    ScintillaView *sci = _scintillaView;
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
     [self _enableMultiSelect];
 
-    NSStringCompareOptions opts = matchCase ? NSLiteralSearch : NSCaseInsensitiveSearch;
     BOOL first = YES;
-    NSRange search = NSMakeRange(0, text.length);
-    NSRange found;
-    while ((found = [text rangeOfString:word options:opts range:search]).location != NSNotFound) {
-        if (!wholeWord || [self _isWholeWord:found inText:text]) {
-            uptr_t caret  = (uptr_t)(found.location + found.length);
-            sptr_t anchor = (sptr_t)found.location;
-            if (first) {
-                [sci message:SCI_SETSEL wParam:caret lParam:anchor];
-                first = NO;
-            } else {
-                [sci message:kSCI_AddSelection wParam:caret lParam:anchor];
-            }
+    sptr_t pos = 0;
+    // `pos < docLen`, not `pos <= docLen - needleLen`: a case-insensitive match
+    // need not be as long as the needle. Scintilla folds case per code point, so
+    // the two-byte "ſ" matches a one-byte "s" (see testUTFDifferentLength in
+    // scintilla/test/simpleTests.py) — bounding by needle length would drop such
+    // a match near the end of the document. SearchEngine bounds it the same way.
+    while (pos < docLen) {
+        sptr_t found = [self _findNeedle:needle length:needleLen from:pos to:docLen
+                               matchCase:matchCase wholeWord:wholeWord];
+        if (found < 0) break;
+        sptr_t end = [sci message:SCI_GETTARGETEND];
+        if (first) {
+            [sci message:SCI_SETSEL wParam:(uptr_t)end lParam:found];
+            first = NO;
+        } else {
+            [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
         }
-        NSUInteger next = found.location + 1;
-        if (next >= text.length) break;
-        search = NSMakeRange(next, text.length - next);
+        // Advance past the match so occurrences never overlap — two selections
+        // sharing bytes is not a state Scintilla's multi-selection can hold.
+        // The `found + 1` arm is belt-and-braces against a zero-length match
+        // pinning the loop on one position.
+        pos = (end > found) ? end : found + 1;
     }
+    free(needle);
 }
 
 - (void)_multiSelectNext_matchCase:(BOOL)matchCase wholeWord:(BOOL)wholeWord {
     ScintillaView *sci = _scintillaView;
-    NSString *word = [self _currentSelectionOrWord];
-    if (!word.length) return;
+    char *needle = NULL; sptr_t needleLen = 0, selStart = 0, selEnd = 0;
+    if (![self _multiSelectNeedle:&needle length:&needleLen start:&selStart end:&selEnd]) return;
 
-    // If nothing was selected, select the word under caret first
-    sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
-    sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
-    if (selStart == selEnd) {
-        selStart = [sci message:SCI_WORDSTARTPOSITION wParam:(uptr_t)selStart lParam:1];
-        selEnd   = [sci message:SCI_WORDENDPOSITION   wParam:(uptr_t)selEnd   lParam:1];
+    // If nothing was selected, select the word under the caret first.
+    if ([sci message:SCI_GETSELECTIONSTART] == [sci message:SCI_GETSELECTIONEND])
         [sci message:SCI_SETSEL wParam:(uptr_t)selEnd lParam:selStart];
-    }
-
-    NSString *text = sci.string;
-    NSStringCompareOptions opts = matchCase ? NSLiteralSearch : NSCaseInsensitiveSearch;
 
     // Find the furthest caret position across all current selections
     NSInteger n = [sci message:kSCI_GetSelections];
@@ -3190,33 +3351,19 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
         if (c > searchFrom) searchFrom = c;
     }
 
-    // Search forward from last selection, then wrap
-    NSRange search = NSMakeRange((NSUInteger)searchFrom, text.length - (NSUInteger)searchFrom);
-    BOOL wrapped = NO;
-    while (YES) {
-        NSRange found = [text rangeOfString:word options:opts range:search];
-        if (found.location == NSNotFound) {
-            if (wrapped) return;
-            wrapped = YES;
-            search = NSMakeRange(0, text.length);
-            continue;
-        }
-        if (!wholeWord || [self _isWholeWord:found inText:text]) {
-            [self _enableMultiSelect];
-            [sci message:kSCI_AddSelection
-                  wParam:(uptr_t)(found.location + found.length)
-                   lParam:(sptr_t)found.location];
-            return;
-        }
-        NSUInteger next = found.location + 1;
-        if (next >= text.length) {
-            if (wrapped) return;
-            wrapped = YES;
-            search = NSMakeRange(0, text.length);
-        } else {
-            search = NSMakeRange(next, text.length - next);
-        }
-    }
+    // Search forward from the last selection, then wrap to the top.
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
+    sptr_t found  = [self _findNeedle:needle length:needleLen from:searchFrom to:docLen
+                           matchCase:matchCase wholeWord:wholeWord];
+    if (found < 0)
+        found = [self _findNeedle:needle length:needleLen from:0 to:docLen
+                        matchCase:matchCase wholeWord:wholeWord];
+    if (found < 0) { free(needle); return; }
+
+    sptr_t end = [sci message:SCI_GETTARGETEND];
+    [self _enableMultiSelect];
+    [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
+    free(needle);
 }
 
 // Multi-Select All — 4 variants
@@ -3243,29 +3390,40 @@ static const unsigned int kSCI_SetRectSelAnchor          = 2590;
     sptr_t mainStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t mainEnd   = [sci message:SCI_GETSELECTIONEND];
     if (mainStart == mainEnd) return;
-    NSString *text = sci.string;
-    NSUInteger wordLen = (NSUInteger)(mainEnd - mainStart);
-    if ((NSUInteger)mainStart + wordLen > text.length) return;
-    NSString *word = [text substringWithRange:NSMakeRange((NSUInteger)mainStart, wordLen)];
 
-    // Drop the main selection (index 0)
+    sptr_t needleLen = mainEnd - mainStart;
+    char *needle = (char *)calloc((size_t)needleLen + 1, 1);
+    if (!needle) return;
+    Sci_TextRangeFull tr = { {(Sci_Position)mainStart, (Sci_Position)mainEnd}, needle };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+
+    // Drop the selection we are skipping — the MAIN one, which is what
+    // SCI_GETSELECTIONSTART/END above reported. It is not index 0: every
+    // SCI_ADDSELECTION makes the newly added range main, so after Multi-Select
+    // Next the main selection is the last one added. Dropping index 0
+    // unconditionally kept the occurrence the user asked to skip and discarded
+    // their original selection instead.
     NSInteger n = [sci message:kSCI_GetSelections];
     if (n > 1) {
-        [sci message:kSCI_DropSelectionN wParam:0];
-        [sci message:kSCI_SetMainSelection wParam:0];
+        sptr_t main = [sci message:kSCI_GetMainSelection];
+        [sci message:kSCI_DropSelectionN wParam:(uptr_t)main];
+        [sci message:kSCI_SetMainSelection wParam:(uptr_t)MAX((sptr_t)0, main - 1)];
     }
 
-    // Find next occurrence after old mainEnd (case-sensitive, no whole-word)
-    NSRange search = NSMakeRange((NSUInteger)mainEnd, text.length - (NSUInteger)mainEnd);
-    NSRange found = [text rangeOfString:word options:NSLiteralSearch range:search];
-    if (found.location == NSNotFound)
-        found = [text rangeOfString:word options:NSLiteralSearch];
-    if (found.location == NSNotFound) return;
+    // Find next occurrence after old mainEnd (case-sensitive, no whole-word),
+    // wrapping to the top of the document.
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
+    sptr_t found = [self _findNeedle:needle length:needleLen from:mainEnd to:docLen
+                          matchCase:YES wholeWord:NO];
+    if (found < 0)
+        found = [self _findNeedle:needle length:needleLen from:0 to:docLen
+                        matchCase:YES wholeWord:NO];
+    if (found < 0) { free(needle); return; }
 
+    sptr_t end = [sci message:SCI_GETTARGETEND];
     [self _enableMultiSelect];
-    [sci message:kSCI_AddSelection
-          wParam:(uptr_t)(found.location + found.length)
-           lParam:(sptr_t)found.location];
+    [sci message:kSCI_AddSelection wParam:(uptr_t)end lParam:found];
+    free(needle);
 }
 
 #pragma mark - Blank / EOL Cleanup
@@ -5796,8 +5954,21 @@ static const unsigned int kSCI_GetBidirectional = 2708;
 
     static const NSInteger kScanWindow = 500000;
     sptr_t docLen    = [sci message:SCI_GETLENGTH];
-    sptr_t scanStart = MAX(0, wordStart - kScanWindow);
-    sptr_t scanEnd   = MIN(docLen, pos + kScanWindow);
+    // Snap the window to line boundaries. wordStart ± kScanWindow is an arbitrary
+    // byte offset that can land in the middle of a UTF-8 sequence, and a range
+    // starting or ending on a partial character does not decode as UTF-8 — the
+    // NSString below comes back nil and completion silently stops working for the
+    // rest of the document. Line starts and line ends are always character
+    // boundaries.
+    sptr_t rawStart  = MAX(0, wordStart - kScanWindow);
+    sptr_t rawEnd    = MIN(docLen, pos + kScanWindow);
+    sptr_t scanStart = [sci message:SCI_POSITIONFROMLINE
+                             wParam:(uptr_t)[sci message:SCI_LINEFROMPOSITION
+                                                   wParam:(uptr_t)rawStart]];
+    sptr_t scanEnd   = [sci message:SCI_GETLINEENDPOSITION
+                             wParam:(uptr_t)[sci message:SCI_LINEFROMPOSITION
+                                                   wParam:(uptr_t)rawEnd]];
+    if (scanEnd < pos) scanEnd = MIN(docLen, pos);
     sptr_t scanLen   = scanEnd - scanStart;
     if (scanLen <= 0 || wordStart < scanStart) { if (beep) NSBeep(); return; }
 
@@ -5812,18 +5983,33 @@ static const unsigned int kSCI_GetBidirectional = 2708;
                                                   freeWhenDone:YES];
     if (!scanText) { free(buf); if (beep) NSBeep(); return; }
 
-    NSUInteger prefixOffset = (NSUInteger)(wordStart - scanStart);
-    if (prefixOffset + (NSUInteger)prefixLen > scanText.length) {
-        if (beep) NSBeep(); return;
-    }
-    NSString *prefix = [scanText substringWithRange:NSMakeRange(prefixOffset,
-                                                                (NSUInteger)prefixLen)];
+    // Read the prefix out of the document instead of indexing scanText with
+    // (wordStart - scanStart). Scintilla positions count UTF-8 bytes while
+    // scanText is an NSString indexed in UTF-16 units, so that delta is only
+    // correct while everything ahead of the caret is ASCII. One accented or CJK
+    // character earlier in the window makes the byte offset overshoot: either the
+    // bounds check trips and completion quietly stops, or a prefix is lifted from
+    // the wrong place and the popup offers words matching something the user
+    // never typed — accepting one then replaces prefixLen bytes before the caret
+    // with it, writing wrong text into the document.
+    char *prefixBuf = (char *)malloc((size_t)prefixLen + 1);
+    if (!prefixBuf) { if (beep) NSBeep(); return; }
+    Sci_TextRangeFull prefixRange = { {(Sci_Position)wordStart, (Sci_Position)pos}, prefixBuf };
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&prefixRange];
+    prefixBuf[prefixLen] = '\0';
+    NSString *prefix = [[NSString alloc] initWithBytesNoCopy:prefixBuf
+                                                      length:(NSUInteger)prefixLen
+                                                    encoding:NSUTF8StringEncoding
+                                                freeWhenDone:YES];
+    if (!prefix) { free(prefixBuf); if (beep) NSBeep(); return; }
 
     NSMutableCharacterSet *wordCS = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
     [wordCS addCharactersInString:@"_"];
     NSMutableSet<NSString *> *wordSet = [NSMutableSet set];
     for (NSString *word in [scanText componentsSeparatedByCharactersInSet:wordCS.invertedSet]) {
-        if (word.length > (NSUInteger)prefixLen && [word hasPrefix:prefix])
+        // prefix.length, not prefixLen: the latter is a byte count and would
+        // wrongly reject candidates whose prefix is non-ASCII.
+        if (word.length > prefix.length && [word hasPrefix:prefix])
             [wordSet addObject:word];
     }
     [wordSet removeObject:prefix];
