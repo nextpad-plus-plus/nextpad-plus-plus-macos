@@ -579,7 +579,13 @@ static NSMenu *buildLanguageMenu() {
 
     [viewMenu addItem:itemMod(@"Command Palette…", @selector(showCommandPalette:), @"p",
                               NSEventModifierFlagCommand | NSEventModifierFlagShift)];
-    [viewMenu addItem:item(@"Toggle Toolbar", @selector(toggleToolbarShown:), @"")];
+    // Checked when the toolbar is hidden — the checkmark reads as "hiding is on",
+    // matching the Show Symbol > "Hide Line Marks" item below. ⌥⌘T is the
+    // macOS-standard toolbar shortcut. Handled by MainWindowController (not
+    // NSWindow's toggleToolbarShown:) so the choice is persisted to
+    // kPrefToolbarVisible right away.
+    [viewMenu addItem:itemMod(@"Hide Toolbar", @selector(toggleToolbar:), @"t",
+                              NSEventModifierFlagCommand | NSEventModifierFlagOption)];
     addSep(viewMenu);
     [viewMenu addItem:item(@"Always on Top", @selector(toggleAlwaysOnTop:), @"")];
     [viewMenu addItem:itemMod(@"Toggle Full Screen Mode", @selector(toggleFullScreen:), @"f",

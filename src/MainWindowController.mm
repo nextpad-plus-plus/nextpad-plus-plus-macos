@@ -6431,6 +6431,13 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (action == @selector(resetView:))
         return vHasTabs || hHasTabs;
 
+    // Hide Toolbar — checked while the toolbar IS hidden. Disabled in Post-It
+    // mode, which removes the toolbar object altogether.
+    if (action == @selector(toggleToolbar:)) {
+        NSToolbar *tb = self.window.toolbar;
+        [mi setState:(tb && !tb.isVisible) ? NSControlStateValueOn : NSControlStateValueOff];
+        return tb != nil;
+    }
     // Always on Top checkmark
     if (action == @selector(toggleAlwaysOnTop:)) {
         [mi setState:(self.window.level == NSFloatingWindowLevel) ? NSControlStateValueOn : NSControlStateValueOff];
@@ -7055,6 +7062,23 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 - (void)unfoldLevel7:(id)s { [[self currentEditor] unfoldLevel7:s]; }
 - (void)unfoldLevel8:(id)s { [[self currentEditor] unfoldLevel8:s]; }
 - (void)unfoldCurrentLevel:(id)sender { [[self currentEditor] unfoldCurrentLevel:sender]; }
+
+#pragma mark - View: Toolbar visibility
+
+// View > Hide Toolbar. The pref is written immediately so the toolbar
+// comes back in the same state after a crash or a Force Quit — saveWindowFrame
+// only runs on a clean shutdown.
+- (void)toggleToolbar:(id)sender {
+    NSToolbar *tb = self.window.toolbar;
+    if (!tb) return;   // Post-It mode removes the toolbar entirely
+    BOOL nowVisible = !tb.isVisible;
+    tb.visible = nowVisible;
+    [[NSUserDefaults standardUserDefaults] setBool:nowVisible forKey:kPrefToolbarVisible];
+    // Keep the saved state used to restore Post-It / Distraction Free in sync,
+    // so leaving those modes doesn't resurrect a toolbar the user just hid.
+    _postItSavedToolbarVisible = nowVisible;
+    _savedToolbarVisible       = nowVisible;
+}
 
 #pragma mark - Window: Always on Top
 
