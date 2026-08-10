@@ -17,6 +17,7 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
 
 @interface AppDelegate ()
 - (NSArray<NSString *> *)_expandFolderArguments:(NSArray<NSString *> *)paths;
+- (BOOL)_openPendingFilesInController:(MainWindowController *)mwc;
 @end
 
 @implementation AppDelegate {
@@ -157,6 +158,12 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
     } else if (cli.filePaths.count > 0) {
         [self _openFilesFromCLI:cli inController:self.mainWindowController];
         hasContent = YES;
+    } else if (_pendingFilePaths.count > 0) {
+        // Finder and `open -a Nextpad++ file.txt` deliver document URLs through
+        // application:openFile(s): before applicationDidFinishLaunching:. Treat
+        // those requests like CLI file paths so they suppress session restore and
+        // the fallback "new 1" tab (issue #315).
+        hasContent = [self _openPendingFilesInController:self.mainWindowController];
     } else if (!cli.noSession &&
                [[NSUserDefaults standardUserDefaults] boolForKey:kPrefRememberSession]) {
         // Issue #87 — Preferences > Backup > "Remember current session for next launch"
@@ -247,21 +254,11 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
         [self openNewWindow];
     }
 
-    // ── Mark launch complete and process any pending file-open requests ────
+    // ── Mark launch complete and process any late file-open requests ────────
     _didFinishLaunching = YES;
-    if (_pendingFilePaths.count > 0) {
-        NSArray<NSString *> *files = [self _expandFolderArguments:_pendingFilePaths];
-        [_pendingFilePaths removeAllObjects];
-        for (NSString *path in files) {
-            [self.mainWindowController openFileAtPath:path];
-        }
-        // Files queued during launch mean the user explicitly asked us to
-        // open something. NSApplication usually foregrounds a launching
-        // app naturally, but state restoration can leave the window
-        // miniaturized — call the helper so the freshly-loaded files are
-        // actually visible (issue #63).
-        if (files.count > 0) [self.mainWindowController bringWindowForward];
-    }
+    // Normally the queue was drained above as the initial content. Keep this
+    // second drain for requests that arrived later while launch work was running.
+    [self _openPendingFilesInController:self.mainWindowController];
 
     // ── Initial keyboard focus to the active editor (issue #34) ─────────
     // Without this, the user's first keystrokes after relaunch go nowhere
@@ -323,6 +320,29 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
 }
 
 // ── Folder argument expansion ────────────────────────────────────────────────
+
+// Opens and clears file-open Apple events received while the app is launching.
+// The queue is cleared before folder expansion because its confirmation alert
+// runs a nested event loop; any new requests delivered there remain queued for
+// the final launch-completion drain.
+- (BOOL)_openPendingFilesInController:(MainWindowController *)mwc {
+    if (_pendingFilePaths.count == 0) return NO;
+
+    NSArray<NSString *> *pendingPaths = [_pendingFilePaths copy];
+    [_pendingFilePaths removeAllObjects];
+
+    NSArray<NSString *> *files = [self _expandFolderArguments:pendingPaths];
+    for (NSString *path in files) {
+        [mwc openFileAtPath:path];
+    }
+
+    BOOL openedAny = [mwc currentEditor] != nil;
+    if (openedAny) {
+        // State restoration can leave a cold-launched window miniaturized.
+        [mwc bringWindowForward];
+    }
+    return openedAny;
+}
 
 // Expands any directory in `paths` to its TOP-LEVEL regular files. There
 // is no recursion: subdirectories and hidden entries (dotfiles) are
