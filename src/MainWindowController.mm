@@ -4048,6 +4048,10 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_prefsChanged:)
                name:@"NPPPreferencesChanged" object:nil];
+    // Listen for toolbar visibility toggles to update window state.
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_toolbarVisibilityChanged:)
+               name:@"NPPToolbarVisibilityChanged" object:nil];
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_toolbarColorChanged:)
                name:@"NPPToolbarColorChanged" object:nil];
@@ -10386,9 +10390,24 @@ static BOOL _writeCLIScript(NSString *script, NSString *path, NSError **outErr) 
     // Title bar (full path vs filename only)
     [self updateTitle];
 
+    // Apply toolbar visibility preference.
+    BOOL targetVisible = [ud boolForKey:kPrefToolbarVisible];
+    if (self.window.toolbar && self.window.toolbar.visible != targetVisible) {
+        [self.window toggleToolbarShown:nil];
+    }
+
     // Toolbar toggle states (Word wrap, etc.) follow prefs — keep them
     // in sync after a Preferences-pane change.
     [self _refreshToolbarStates];
+}
+
+- (void)_toolbarVisibilityChanged:(NSNotification *)note {
+    // Sync window toolbar visibility when toggled from preferences.
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL targetVisible = [ud boolForKey:kPrefToolbarVisible];
+    if (self.window.toolbar && self.window.toolbar.visible != targetVisible) {
+        [self.window toggleToolbarShown:nil];
+    }
 }
 
 - (void)_darkModeChanged:(NSNotification *)n {
