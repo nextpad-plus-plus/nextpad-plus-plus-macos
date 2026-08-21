@@ -2116,6 +2116,9 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
             addObserver:self selector:@selector(_editorDidSave:)
                    name:EditorViewDidSaveNotification object:nil];
         [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_editorZoomDidChange:)
+                   name:EditorViewZoomDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_shortcutsChanged:)
                    name:NPPShortcutsChangedNotification object:nil];
         // (scroll sync uses a timer, not notifications)
@@ -7550,6 +7553,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     NSInteger zoom = [ed.scintillaView message:SCI_GETZOOM];
     [[NSUserDefaults standardUserDefaults] setInteger:zoom forKey:kPrefZoomLevel];
     [self _propagateEditorZoom:zoom];
+    [self updateStatusBar];
 }
 
 - (void)zoomOut:(id)sender {
@@ -7561,6 +7565,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     NSInteger zoom = [ed.scintillaView message:SCI_GETZOOM];
     [[NSUserDefaults standardUserDefaults] setInteger:zoom forKey:kPrefZoomLevel];
     [self _propagateEditorZoom:zoom];
+    [self updateStatusBar];
 }
 
 - (void)resetZoom:(id)sender {
@@ -7571,6 +7576,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     [ed.scintillaView message:SCI_SETZOOM wParam:0];
     [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:kPrefZoomLevel];
     [self _propagateEditorZoom:0];
+    [self updateStatusBar];
 }
 
 - (void)toggleShowAllChars:(id)sender {
@@ -8355,6 +8361,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (ed == [self currentEditor]) {
         [self updateStatusBar];
         [self refreshCurrentTab];
+    }
+}
+
+- (void)_editorZoomDidChange:(NSNotification *)note {
+    EditorView *ed = note.object;
+    if (ed == [self currentEditor]) {
+        NSInteger zoom = ed.zoomLevel;
+        [[NSUserDefaults standardUserDefaults] setInteger:zoom forKey:kPrefZoomLevel];
+        [self updateStatusBar];
     }
 }
 
@@ -11039,8 +11054,8 @@ static NSString *languageDisplayName(NSString *langCode) {
     EditorView *ed = [self currentEditor];
     if (!ed) { _statusLeft.stringValue = _statusRight.stringValue = @""; return; }
     sptr_t docLength = [ed.scintillaView message:SCI_GETLENGTH wParam:0 lParam:0];
-    _statusLeft.stringValue  = [NSString stringWithFormat:@"Ln %ld, Col %ld  |  Length: %ld  |  Lines: %ld",
-                                 (long)ed.cursorLine, (long)ed.cursorColumn, (long)docLength, (long)ed.lineCount];
+    _statusLeft.stringValue  = [NSString stringWithFormat:@"Ln %ld, Col %ld  |  Length: %ld  |  Lines: %ld  |  Zoom: %ld%%",
+                                 (long)ed.cursorLine, (long)ed.cursorColumn, (long)docLength, (long)ed.lineCount, (long)ed.zoomPercentage];
     NSString *lang = languageDisplayName(ed.currentLanguage);
     NSString *mode = ed.isOverwriteMode ? @"OVR" : @"INS";
     _statusRight.stringValue = [NSString stringWithFormat:@"%@  |  %@  |  %@  |  %@",
@@ -11053,7 +11068,32 @@ static NSString *languageDisplayName(NSString *langCode) {
 // ignored — and nothing about the status bar's appearance changes.
 - (void)_statusBarDoubleClicked:(NSClickGestureRecognizer *)gr {
     EditorView *ed = [self currentEditor];
-    if (!ed || !_statusRight.stringValue.length) return;
+    if (!ed) return;
+
+    const NSPoint p = [gr locationInView:_statusBar];
+    const CGFloat pad = 6.0;                          // forgiving hit area
+
+    // ── Zoom token double-click (Notepad++ parity) ──
+    // Double-clicking the "Zoom: X%" segment on the left status bar resets the
+    // editor zoom back to default 100% (SCI_SETZOOM 0), matching Notepad++ Windows.
+    if (_statusLeft.stringValue.length) {
+        NSString *leftFull = _statusLeft.stringValue;
+        NSRange zoomRange = [leftFull rangeOfString:@"Zoom:"];
+        if (zoomRange.location != NSNotFound) {
+            NSDictionary *attrs = @{ NSFontAttributeName: _statusLeft.font };
+            NSString *preZoom = [leftFull substringToIndex:zoomRange.location];
+            CGFloat preW = [preZoom sizeWithAttributes:attrs].width;
+            CGFloat zoomW = [[leftFull substringFromIndex:zoomRange.location] sizeWithAttributes:attrs].width;
+            const NSRect leftFr = _statusLeft.frame;
+            const CGFloat zoomLeft = NSMinX(leftFr) + preW;
+            if (p.x >= zoomLeft - pad && p.x <= zoomLeft + zoomW + pad) {
+                [self resetZoom:nil];
+                return;
+            }
+        }
+    }
+
+    if (!_statusRight.stringValue.length) return;
 
     // Compute the language token's x-range inside the right-aligned label by
     // measuring text widths with the field's own font. The text hugs the field's
@@ -11066,8 +11106,6 @@ static NSString *languageDisplayName(NSString *langCode) {
     const NSRect fr = _statusRight.frame;            // already in _statusBar coords
     const CGFloat textLeft = NSMaxX(fr) - wFull;
 
-    const NSPoint p = [gr locationInView:_statusBar];
-    const CGFloat pad = 6.0;                          // forgiving hit area
     if (p.x < textLeft - pad || p.x > textLeft + wLang + pad) return;
 
     // Pop up the LIVE menu-bar Language submenu (locale-stable tag) so its

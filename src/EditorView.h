@@ -15,6 +15,9 @@ extern NSNotificationName const EditorViewDidGainFocusNotification;
 /// invocations gated to the panel-visible state (issue #76).
 extern NSNotificationName const EditorViewDidSaveNotification;
 
+/// Posted when an editor's zoom level changes (SCN_ZOOM). Object is the EditorView.
+extern NSNotificationName const EditorViewZoomDidChangeNotification;
+
 /// Wraps ScintillaView and provides Nextpad++-style editor functionality.
 @interface EditorView : NSView <ScintillaNotificationProtocol>
 
@@ -65,6 +68,12 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 
 // YES when in overwrite (OVR) mode, NO for normal insert (INS) mode.
 @property (nonatomic, readonly) BOOL isOverwriteMode;
+
+/// Live zoom points from Scintilla (SCI_GETZOOM). 0 is default 100%.
+@property (nonatomic, readonly) NSInteger zoomLevel;
+
+/// Live zoom percentage (e.g. 100 for 100%, 110 for 110%, etc.).
+@property (nonatomic, readonly) NSInteger zoomPercentage;
 
 // Word wrap — stored per-editor tab.
 @property (nonatomic) BOOL wordWrapEnabled;

@@ -26,6 +26,7 @@ NSNotificationName const EditorViewCursorDidMoveNotification = @"EditorViewCurso
 NSNotificationName const EditorViewDidGainFocusNotification  = @"EditorViewDidGainFocusNotification";
 NSNotificationName const EditorViewDidSaveNotification        = @"EditorViewDidSaveNotification";
 NSNotificationName const EditorViewDidScrollNotification = @"EditorViewDidScrollNotification";
+NSNotificationName const EditorViewZoomDidChangeNotification  = @"EditorViewZoomDidChangeNotification";
 
 // Forward-declare Lexilla's CreateLexer (statically linked)
 namespace Scintilla { struct ILexer5; }
@@ -1254,6 +1255,16 @@ static NSUInteger nppLargeFileThreshold(void) {
 
 - (NSInteger)lineCount {
     return [_scintillaView message:SCI_GETLINECOUNT];
+}
+#pragma mark - Zoom Info
+
+- (NSInteger)zoomLevel {
+    return [_scintillaView message:SCI_GETZOOM wParam:0 lParam:0];
+}
+
+- (NSInteger)zoomPercentage {
+    NSInteger zoom = self.zoomLevel;
+    return 100 + zoom * 10;
 }
 
 - (BOOL)hasBOM { return _hasBOM; }
@@ -4751,6 +4762,9 @@ static NSSet<NSString *> *_cLikeLanguages() {
             // from inside SCI_SETZOOM / SCI_ZOOMIN / SCI_ZOOMOUT, covering
             // every zoom path (menu, Ctrl+scroll, plugin SCI_SETZOOM).
             [self recomputeLineNumberMargin];
+            [[NSNotificationCenter defaultCenter]
+                postNotificationName:EditorViewZoomDidChangeNotification
+                              object:self];
             break;
         default:
             break;
