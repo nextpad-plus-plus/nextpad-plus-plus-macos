@@ -307,6 +307,65 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     return shared;
 }
 
+- (void)showWindow:(id)sender {
+    // Sync toolbar visibility with the main window before showing the page.
+    [self _syncToolbarVisibilityFromMainWindow];
+
+    [_pageViews removeAllObjects];
+    [super showWindow:sender];
+    NSInteger selectedRow = [_sidebarTable selectedRow];
+    if (selectedRow >= 0) {
+        [self _showPageAtIndex:selectedRow];
+    }
+
+    // Watch for toolbar toggles while the preferences window is open.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_mainWindowDidUpdate:)
+                                                 name:NSWindowDidUpdateNotification
+                                               object:nil];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSWindowDidUpdateNotification
+                                                  object:nil];
+}
+
+- (void)_mainWindowDidUpdate:(NSNotification *)note {
+    // Avoid feedback loops if preferences window is currently active.
+    if (self.window.isKeyWindow) return;
+
+    // Ignore updates from the preferences window itself.
+    NSWindow *updatedWin = note.object;
+    if (updatedWin == self.window || !updatedWin.toolbar) return;
+
+    [self _syncToolbarVisibilityFromMainWindow];
+}
+
+- (void)_syncToolbarVisibilityFromMainWindow {
+    // Find the main window toolbar and sync its state to defaults and the checkbox.
+    for (NSWindow *win in [NSApp windows]) {
+        if (win == self.window) continue;
+        if (win.toolbar) {
+            BOOL actuallyVisible = win.toolbar.visible;
+            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+            if ([ud boolForKey:kPrefToolbarVisible] != actuallyVisible) {
+                [ud setBool:actuallyVisible forKey:kPrefToolbarVisible];
+                // Update the checkbox state.
+                BOOL isHidden = !actuallyVisible;
+                for (NSView *pageView in _pageViews.allValues) {
+                    NSButton *hideBtn = [pageView viewWithTag:903];
+                    if (hideBtn) {
+                        hideBtn.state = isHidden ? NSControlStateValueOn : NSControlStateValueOff;
+                        [self _updateToolbarPageControlsEnabledState:pageView hidden:isHidden];
+                    }
+                }
+            }
+            break;
+        }
+    }
+}
+
 - (instancetype)init {
     NSWindow *win = [[NSWindow alloc]
         initWithContentRect:NSMakeRect(0, 0, 700, 480)
@@ -324,6 +383,11 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         [self retranslateUI];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locChanged:)
                                                      name:NPPLocalizationChanged object:nil];
+        // Observe application-wide preference alterations to ensure synchronization of UI states.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_prefsChanged:)
+                                                     name:@"NPPPreferencesChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_prefsChanged:)
+                                                     name:@"NPPToolbarVisibilityChanged" object:nil];
     }
     return self;
 }
@@ -331,6 +395,32 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 - (void)_locChanged:(NSNotification *)n {
     [self retranslateUI];
     [self _rebuildLanguagePopup];
+}
+
+- (void)_prefsChanged:(NSNotification *)note {
+    // Update the "Hide" checkbox and color settings when the toolbar visibility changes.
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL isHidden = ![ud boolForKey:kPrefToolbarVisible];
+    for (NSView *pageView in _pageViews.allValues) {
+        NSButton *hideBtn = [pageView viewWithTag:903];
+        if (hideBtn) {
+            hideBtn.state = isHidden ? NSControlStateValueOn : NSControlStateValueOff;
+            [self _updateToolbarPageControlsEnabledState:pageView hidden:isHidden];
+        }
+    }
+}
+
+- (void)_updateToolbarPageControlsEnabledState:(NSView *)pageView hidden:(BOOL)isHidden {
+    // Enable or disable all color and styling settings on the page, except for the "Hide" checkbox.
+    for (NSView *sub in pageView.subviews) {
+        if ([sub respondsToSelector:@selector(setEnabled:)]) {
+            if (sub.tag != 903) {
+                [((id)sub) setEnabled:!isHidden];
+                // Dim the controls to 50% opacity to visually signify they are inactive
+                sub.alphaValue = isHidden ? 0.5 : 1.0;
+            }
+        }
+    }
 }
 
 - (void)retranslateUI {
@@ -825,6 +915,21 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     note.textColor = NSColor.secondaryLabelColor;
     note.frame = NSMakeRect(38, y - 18, 400, 34);
     [v addSubview:note];
+
+    // Decrement layout origin coordinate to space the checkbox appropriately.
+    y -= 52;
+
+    // Instantiate and configure the "Hide" checkbox.
+    NSButton *hideBtn = [NSButton checkboxWithTitle:[loc translate:@"Hide"]
+                                             target:self action:@selector(prefChanged:)];
+    hideBtn.tag = 903;
+    hideBtn.frame = NSMakeRect(20, y, 400, 20);
+    // Check the box if the toolbar is hidden.
+    hideBtn.state = ![ud boolForKey:kPrefToolbarVisible] ? NSControlStateValueOn : NSControlStateValueOff;
+    [v addSubview:hideBtn];
+
+    // Disable all options above if the toolbar is currently hidden.
+    [self _updateToolbarPageControlsEnabledState:v hidden:![ud boolForKey:kPrefToolbarVisible]];
 
     return v;
 }
@@ -2381,6 +2486,18 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 902: {
             [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefDockPanelsOnLeft];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NPPDockPanelsLeftChanged" object:nil];
+            break;
+        }
+        case 903: {
+            // Save the toolbar visibility state to preferences.
+            BOOL hide = [(NSButton *)sender state] == NSControlStateValueOn;
+            [ud setBool:!hide forKey:kPrefToolbarVisible];
+            
+            // Disable or enable the color options above the checkbox.
+            [self _updateToolbarPageControlsEnabledState:[(NSButton *)sender superview] hidden:hide];
+            
+            // Tell the main window to update the toolbar visibility.
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NPPToolbarVisibilityChanged" object:nil];
             break;
         }
         // Editor
