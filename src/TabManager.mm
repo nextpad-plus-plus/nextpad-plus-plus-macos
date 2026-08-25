@@ -179,6 +179,13 @@
         [_tabBar setTitle:_editors[i].displayName modified:_editors[i].isModified atIndex:i];
 }
 
+- (void)refreshTitleForEditor:(EditorView *)editor {
+    if (!editor) return;
+    NSInteger idx = [_editors indexOfObject:editor];
+    if (idx == NSNotFound) return;
+    [_tabBar setTitle:editor.displayName modified:editor.isModified atIndex:idx];
+}
+
 - (void)selectTabAtIndex:(NSInteger)index {
     if (index < 0 || index >= (NSInteger)_editors.count) return;
     [self activateTabAtIndex:index];

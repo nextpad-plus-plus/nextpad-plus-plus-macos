@@ -57,6 +57,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Refresh all tab titles and modified icons (e.g. after Save All).
 - (void)refreshAllTabTitles;
 
+/// Refresh the tab showing `editor`, wherever it sits in this manager. Does
+/// nothing if this manager does not own it, so a caller can offer the same
+/// editor to every manager and let the owner respond.
+- (void)refreshTitleForEditor:(EditorView *)editor;
+
 /// Select tab by index programmatically (fires delegate).
 - (void)selectTabAtIndex:(NSInteger)index;
 

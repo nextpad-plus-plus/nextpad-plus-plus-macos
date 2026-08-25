@@ -4873,7 +4873,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     if (!ed.filePath) { [self saveDocumentAs:sender]; return; }
     NSError *err;
     if (![ed saveError:&err]) [[NSAlert alertWithError:err] runModal];
-    [self refreshCurrentTab];
+    [self refreshTabsForEditor:ed];
 }
 
 - (void)saveDocumentAs:(id)sender {
@@ -4886,7 +4886,10 @@ static void removeMacroFromShortcutsXML(NSString *name) {
             NSError *err;
             if (![ed saveToPath:panel.URL.path error:&err])
                 [[NSAlert alertWithError:err] runModal];
-            [self refreshCurrentTab];
+            // ed, not -currentEditor: the panel is modeless, so the active pane
+            // can change while it is open, and the tab that needs repainting is
+            // the one holding the editor this save actually wrote.
+            [self refreshTabsForEditor:ed];
         }
     }];
 }
@@ -11122,11 +11125,36 @@ static NSString *languageDisplayName(NSString *langCode) {
                                 inView:_statusBar];
 }
 
-- (void)refreshCurrentTab {
-    [_tabManager refreshCurrentTabTitle];
+/// Repaint every tab that shows `editor`, in whichever pane owns it.
+///
+/// Addressing the tab by editor rather than by "the current tab of the primary
+/// manager" matters in split view for two reasons. An editor moved into a pane
+/// is owned by _subTabManagerH/V, so refreshing _tabManager repainted an
+/// unrelated primary tab, if any, and left the pane's own tab stale — the
+/// tab kept reading "new N" after Save As, and kept its modified dot after
+/// Save, while -updateTitle (which goes through -currentEditor) showed the new
+/// name. A *cloned* editor additionally has a sibling in the other pane sharing
+/// its document, and -[EditorView saveToPath:] propagates filePath and modified
+/// state to that sibling, so its tab goes stale at the same moment and has to
+/// be repainted too.
+///
+/// Note cloneSibling holds a single peer, so a buffer cloned into both panes is
+/// only partly reached here. That is the existing clone model, not a limit of
+/// this method.
+- (void)refreshTabsForEditor:(EditorView *)editor {
+    if (!editor) return;
+    EditorView *sibling = editor.cloneSibling;
+    for (TabManager *mgr in @[_tabManager, _subTabManagerH, _subTabManagerV]) {
+        [mgr refreshTitleForEditor:editor];
+        if (sibling) [mgr refreshTitleForEditor:sibling];
+    }
     [self updateTitle];
     if (_docListPanel && [_sidePanelHost hasPanel:_docListPanel])
         [_docListPanel refreshModifiedStates];
+}
+
+- (void)refreshCurrentTab {
+    [self refreshTabsForEditor:[self currentEditor]];
 }
 
 - (void)saveWindowFrame {
