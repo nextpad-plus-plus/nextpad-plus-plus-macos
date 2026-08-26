@@ -363,7 +363,7 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
             [[NppLocalizer shared] translate:@"This will open %lu files in new tabs."],
             (unsigned long)result.count];
         [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Open"]];
-        [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+        [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
         if ([alert runModal] != NSAlertFirstButtonReturn) return nil;
     }
     return result;
@@ -968,7 +968,7 @@ static NSString *const kUpdateMenuItemTag = @"checkForUpdatesMenuItem";
         (notes.length > 500) ? [[notes substringToIndex:500] stringByAppendingString:@"…"] : (notes ?: @"")];
     [alert addButtonWithTitle:[loc translate:@"Download"]];
     [alert addButtonWithTitle:[loc translate:@"Release Page"]];
-    [alert addButtonWithTitle:[loc translate:@"Later"]];
+    [alert addButtonWithTitle:[loc translate:@"Later"]].keyEquivalent = @"\033";
 
     NSModalResponse resp = [alert runModal];
 

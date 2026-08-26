@@ -899,7 +899,7 @@ static NSString *getTextEscaped(NSScrollView *sv) {
     NppLocalizer *loc = [NppLocalizer shared];
     NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Create New Language"]; a.informativeText=[loc translate:@"Enter a name:"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.placeholderString=[loc translate:@"Language name"];
-    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Create"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]];
+    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Create"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if(!nm.length||[[UserDefineLangManager shared]languageNamed:nm])return;
@@ -919,7 +919,7 @@ static NSString *getTextEscaped(NSScrollView *sv) {
 - (void)_saveAs:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Save As"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.stringValue=_cur.name;
-    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Save"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]];
+    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Save"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if(!nm.length||[nm isEqualToString:_cur.name])return;
@@ -933,14 +933,14 @@ static NSString *getTextEscaped(NSScrollView *sv) {
 - (void)_remove:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init];
     a.messageText=[NSString stringWithFormat:@"%@ \"%@\"?", [loc translate:@"Remove"], _cur.name];
-    [a addButtonWithTitle:[loc translate:@"Remove"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]]; a.buttons.firstObject.hasDestructiveAction=YES;
+    [a addButtonWithTitle:[loc translate:@"Remove"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033"; a.buttons.firstObject.hasDestructiveAction=YES;
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     [[UserDefineLangManager shared]deleteLanguage:_cur]; _cur=nil; [self _rebuildPopup]; [self _load];
 }
 - (void)_rename:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Rename"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.stringValue=_cur.name;
-    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Rename"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]];
+    a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Rename"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if(!nm.length||[nm isEqualToString:_cur.name])return;

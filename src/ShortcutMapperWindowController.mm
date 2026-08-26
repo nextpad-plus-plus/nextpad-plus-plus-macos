@@ -1148,7 +1148,7 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     confirm.messageText = [[NppLocalizer shared] translate:@"Delete Shortcut"];
     confirm.informativeText = [NSString stringWithFormat:[[NppLocalizer shared] translate:@"Delete \"%@\"?"], e.name];
     [confirm addButtonWithTitle:[[NppLocalizer shared] translate:@"Delete"]];
-    [confirm addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]];
+    [confirm addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([confirm runModal] != NSAlertFirstButtonReturn) return;
 
     NSMutableArray *source = [self _entriesForCurrentTab];
