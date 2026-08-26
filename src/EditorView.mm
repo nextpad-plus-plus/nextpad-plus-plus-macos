@@ -942,9 +942,14 @@ static NSUInteger nppLargeFileThreshold(void) {
         _backupFilePath = [dest copy];
         return dest;
     }
-    // Backup file write failed — reset path if it was a first-time attempt
-    if (!_backupFilePath) return nil;
-    _backupFilePath = nil;
+    // Backup write failed. Leave _backupFilePath alone: on a first attempt it is
+    // already nil, and on a later one it still names the last backup that DID
+    // land, which writeToFile:atomically: left untouched when this write failed.
+    // Clearing it stranded that file — the session pruner deletes every backup no
+    // editor claims — and it also denied the caller the one piece of state it
+    // needs to retry under a fresh name (see -_claimBackupFor:inDirectory: in
+    // MainWindowController). The UTF-8/no-BOM branch above never cleared it
+    // either; the two paths now agree.
     return nil;
 }
 
