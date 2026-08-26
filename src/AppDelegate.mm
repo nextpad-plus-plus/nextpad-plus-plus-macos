@@ -11,6 +11,7 @@
 #import "UserDefineLangManager.h"
 #import "NppLangsManager.h"
 #import "EditorView.h"
+#import "ShortcutMapperWindowController.h"
 
 // Files opened from a folder beyond this count trigger a confirmation.
 static const NSUInteger kFolderOpenConfirmThreshold = 20;
@@ -598,30 +599,7 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
             hasCmd = YES; hasCtrl = NO;
         }
 
-        if (keyCode == 0) {
-            mi.keyEquivalent = @"";
-            mi.keyEquivalentModifierMask = 0;
-        } else {
-            NSEventModifierFlags mods = 0;
-            if (hasCmd)   mods |= NSEventModifierFlagCommand;
-            if (hasCtrl)  mods |= NSEventModifierFlagControl;
-            if (hasAlt)   mods |= NSEventModifierFlagOption;
-            if (hasShift) mods |= NSEventModifierFlagShift;
-
-            NSString *key = @"";
-            if (keyCode >= 'A' && keyCode <= 'Z')
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-            else if (keyCode >= '0' && keyCode <= '9')
-                key = [NSString stringWithFormat:@"%c", (char)keyCode];
-            else if (keyCode >= 112 && keyCode <= 123) {
-                unichar fk = NSF1FunctionKey + (keyCode - 112);
-                key = [NSString stringWithCharacters:&fk length:1];
-            } else
-                key = [[NSString stringWithFormat:@"%c", (char)keyCode] lowercaseString];
-
-            mi.keyEquivalent = key;
-            mi.keyEquivalentModifierMask = mods;
-        }
+        NppApplyShortcutToMenuItem(mi, keyCode, hasCmd, hasCtrl, hasAlt, hasShift);
     };
 
     NSInteger totalApplied = 0;
