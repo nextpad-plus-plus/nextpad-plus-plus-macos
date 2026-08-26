@@ -123,9 +123,17 @@
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = [NSString stringWithFormat:@"Save changes to \"%@\"?", editor.displayName];
         alert.informativeText = @"Your changes will be lost if you don't save them.";
+        // Key equivalents are assigned explicitly rather than left to AppKit.
+        // AppKit does supply them, but it matches on the ENGLISH button title —
+        // "Don't Save" gets ⌘D and "Cancel" gets ⎋, while a translated title
+        // gets nothing at all. Setting them here keeps the keyboard path working
+        // if these strings are ever localized (issue #294). The first button is
+        // the default and gets Return whatever it is called, so Save needs none.
         [alert addButtonWithTitle:@"Save"];
-        [alert addButtonWithTitle:@"Don't Save"];
-        [alert addButtonWithTitle:@"Cancel"];
+        NSButton *dontSave = [alert addButtonWithTitle:@"Don't Save"];
+        dontSave.keyEquivalent = @"d";
+        dontSave.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+        [alert addButtonWithTitle:@"Cancel"].keyEquivalent = @"\033";
         NSModalResponse resp = [alert runModal];
 
         if (resp == NSAlertFirstButtonReturn) {
