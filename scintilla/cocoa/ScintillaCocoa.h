@@ -222,6 +222,10 @@ public:
 	void SetDocPointer(Document *document) override;
 
 	bool KeyboardInput(NSEvent *event);
+	/// The keymap command this event would run, or Message(0) for none. Answers the
+	/// same question KeyboardInput does and applies the same skips, so a caller can
+	/// look ahead at a key without executing it.
+	Scintilla::Message CommandForKeyEvent(NSEvent *event);
 	void MouseDown(NSEvent *event);
 	void MarginMouseDown(NSEvent *event, NSView *marginView);
 	void RightMouseDown(NSEvent *event);

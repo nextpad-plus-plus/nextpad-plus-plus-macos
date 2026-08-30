@@ -795,6 +795,26 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 			return; // not a key that should collapse the column selection
 	}
 
+	// A rectangular-extend command must never collapse the block it is extending,
+	// whatever key it happens to be bound to. The Option test above covers only the
+	// stock Opt+Shift+arrow bindings; a shortcut reassigned in the Shortcut Mapper
+	// carries no Option, so without this the selection collapsed on every press and
+	// the block could never grow past two lines.
+	switch (mOwner.backend->CommandForKeyEvent(theEvent)) {
+		case Message::LineDownRectExtend:
+		case Message::LineUpRectExtend:
+		case Message::CharLeftRectExtend:
+		case Message::CharRightRectExtend:
+		case Message::HomeRectExtend:
+		case Message::VCHomeRectExtend:
+		case Message::LineEndRectExtend:
+		case Message::PageUpRectExtend:
+		case Message::PageDownRectExtend:
+			return;
+		default:
+			break;
+	}
+
 	// Switch to stream mode so the key acts on independent carets. The second
 	// call clears the lingering rectangular anchor so subsequent caret movement
 	// stays multi-caret (Neil Hodgson, https://sourceforge.net/p/scintilla/bugs/2412/).
