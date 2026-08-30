@@ -404,3 +404,15 @@ extern NSNotificationName const EditorViewZoomDidChangeNotification;
 @end
 
 NS_ASSUME_NONNULL_END
+
+/// Default macOS key bindings for a Scintilla command, read from the same generated
+/// table the editor installs (kSciDefaultKeys in EditorView.mm — built from
+/// scintilla/src/KeyMap.cxx MapDefault plus the scintilla/cocoa/ScintillaCocoa.mm
+/// macMapDefault overlay). Writes up to maxCombos key definitions
+/// (keyDef = sckKey | (mod << 16)) into combos and returns how many it WROTE, so the
+/// count is always safe as a loop bound. 0 means the command has no default binding
+/// on macOS — every command with one is present in the table.
+///
+/// Exposed so the Shortcut Mapper can show what the editor really does rather than
+/// keeping a second, hand-maintained copy of the defaults that can drift from it.
+int NppScintillaDefaultKeyCombos(int sciID, int *combos, int maxCombos);
