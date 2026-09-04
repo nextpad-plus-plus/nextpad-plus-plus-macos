@@ -2310,6 +2310,17 @@ static const struct SciDefaultKeys *sciDefaultKeysFor(int sciID) {
     return NULL;
 }
 
+// Declared in EditorView.h — lets the Shortcut Mapper read the real defaults instead of
+// carrying its own copy. Keeps the table private; only the combos leave this file.
+int NppScintillaDefaultKeyCombos(int sciID, int *combos, int maxCombos) {
+    const struct SciDefaultKeys *d = sciDefaultKeysFor(sciID);
+    if (!d) return 0;
+    int n = (d->n < maxCombos) ? d->n : maxCombos;   // return what was WRITTEN, so a
+    for (int i = 0; i < n; i++)                      // caller can use it as a loop bound
+        combos[i] = (int)d->combos[i];
+    return n;
+}
+
 // Push the user's Scintilla-command shortcut overrides (from ~/Library/Application Support/Nextpad++/shortcuts.xml)
 // into this editor's Scintilla keymap. Called once at construction and live on every
 // NPPShortcutsChangedNotification (via MainWindowController). Authoritative-per-command:

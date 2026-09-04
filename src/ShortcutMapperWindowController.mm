@@ -3,6 +3,7 @@
 #import "AppDelegate.h"
 #import "MainWindowController.h"
 #import "MenuBuilder.h"          // kMenuTagPlugins
+#import "EditorView.h"           // NppScintillaDefaultKeyCombos
 #import "NppPluginManager.h"
 #import "NppLocalizer.h"
 
@@ -604,6 +605,46 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
     NSLog(@"[ShortcutMapper] Plugin commands: %lu entries", (unsigned long)_pluginEntries.count);
 }
 
+/// Inverse of EditorView.mm's vkToScintillaKey(): turns a Scintilla key code back into
+/// the Windows-style VK code a ShortcutEntry stores. Returns 0 for keys this window has
+/// no vocabulary for — Scintilla puts zoom on the numeric-keypad +, - and /, which
+/// keyNameForCode: cannot render and the key popup cannot offer.
+static NSUInteger sciKeyToVKCode(int sck) {
+    switch (sck) {
+        case 8:    return 8;    // Backspace
+        case 9:    return 9;    // Tab
+        case 13:   return 13;   // Enter
+        case 7:    return 27;   // SCK_ESCAPE
+        case 306:  return 33;   // Page Up
+        case 307:  return 34;   // Page Down
+        case 305:  return 35;   // End
+        case 304:  return 36;   // Home
+        case 302:  return 37;   // Left
+        case 301:  return 38;   // Up
+        case 303:  return 39;   // Right
+        case 300:  return 40;   // Down
+        case 309:  return 45;   // Insert
+        case 308:  return 46;   // Delete
+        case ';':  return 186;
+        case '=':  return 187;
+        case ',':  return 188;
+        case '-':  return 189;
+        case '.':  return 190;
+        case '/':  return 191;
+        case '`':  return 192;
+        case '[':  return 219;
+        case '\\': return 220;
+        case ']':  return 221;
+        case '\'': return 222;
+        default:   break;
+    }
+    if (sck >= 0xF704 && sck <= 0xF70F) return 112 + (sck - 0xF704);  // F1-F12
+    if (sck >= 'a' && sck <= 'z') return sck - 32;   // entries hold upper case
+    if (sck >= 'A' && sck <= 'Z') return sck;
+    if (sck >= '0' && sck <= '9') return sck;
+    return 0;
+}
+
 - (void)_loadScintillaEntries {
     _scintillaEntries = [NSMutableArray array];
     // Hardcoded Scintilla command definitions matching Windows scintKeyDefs[]
@@ -745,11 +786,48 @@ NSNotificationName const NPPShortcutsChangedNotification = @"NPPShortcutsChanged
             e.keyCode  = keyCode;
             e.isModified = YES; // mark so it gets re-saved
         } else {
-            // Map Windows Ctrl to macOS Cmd (defaults)
-            e.hasCmd   = defs[i].ctrl;
-            e.hasAlt   = defs[i].alt;
-            e.hasShift = defs[i].shift;
-            e.keyCode  = defs[i].key;
+            // Defaults come from the editor's real keymap, not from the Windows table
+            // above. ScintillaCocoa lays macMapDefault over the generic MapDefault, which
+            // rebinds a dozen of these commands, so mapping Windows Ctrl to Cmd describes
+            // a keyboard nobody has: it claimed ⌘↓ scrolls a line when ⌘↓ actually runs
+            // SCI_DOCUMENTEND, and listed SCI_HOME on Home when Home runs SCI_VCHOME.
+            //
+            // Prefer the hardcoded combo when it IS one of the real bindings — for a
+            // multi-bound command it is the one a mac user recognises (Cut keeps ⌘X
+            // rather than the equally-real ⇧⌦) — and otherwise show the first real one.
+            int combos[8];
+            int n = NppScintillaDefaultKeyCombos(defs[i].sciID, combos, 8);
+            int chosen = -1;
+            for (int c = 0; c < n; c++) {
+                NSUInteger cvk = sciKeyToVKCode(combos[c] & 0xFFFF);
+                int mod = combos[c] >> 16;
+                // The hardcoded table cannot express Meta, so a match needs it clear.
+                if (cvk != 0 && cvk == (NSUInteger)defs[i].key && (mod & 16) == 0 &&
+                    defs[i].ctrl  == ((mod & 2) != 0) &&
+                    defs[i].alt   == ((mod & 4) != 0) &&
+                    defs[i].shift == ((mod & 1) != 0)) { chosen = combos[c]; break; }
+            }
+            if (chosen < 0 && n > 0) chosen = combos[0];
+
+            NSUInteger vk = (chosen < 0) ? 0 : sciKeyToVKCode(chosen & 0xFFFF);
+            if (vk != 0) {
+                int mod = chosen >> 16;
+                e.hasShift = (mod & 1)  != 0;   // KeyMod::Shift
+                e.hasCmd   = (mod & 2)  != 0;   // KeyMod::Ctrl — Command on macOS
+                e.hasAlt   = (mod & 4)  != 0;   // KeyMod::Alt  — Option
+                e.hasCtrl  = (mod & 16) != 0;   // KeyMod::Meta — the physical Control key
+                e.keyCode  = vk;
+            } else if (n > 0) {
+                // Bound to a key this window has no name for (zoom lives on the numeric
+                // keypad). Keep the old value rather than blanking a bound command; the
+                // View menu's ⌘+/⌘-/⌘0 are what a mac user presses for these anyway.
+                e.hasCmd   = defs[i].ctrl;
+                e.hasAlt   = defs[i].alt;
+                e.hasShift = defs[i].shift;
+                e.keyCode  = defs[i].key;
+            } else {
+                e.keyCode = 0;   // genuinely unbound on macOS
+            }
         }
         // The 6 standard-edit commands whose Scintilla-tab shortcut sits on the EXACT
         // same key as a Cocoa Edit-menu item (Select All ⌘A, Undo ⌘Z, Redo ⌘⇧Z, Cut ⌘X,
