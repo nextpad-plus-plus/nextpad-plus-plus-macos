@@ -2282,6 +2282,50 @@ static KeyMod TranslateModifierFlags(NSUInteger modifiers) {
  * @param event The event instance associated with the key down event.
  * @return True if the input was handled, false otherwise.
  */
+/**
+ * Decide whether one UTF-16 unit of an event's charactersIgnoringModifiers should be
+ * offered to the command keymap, and if so what key and modifiers to look it up with.
+ * Shared by KeyboardInput and CommandForKeyEvent so the two cannot drift apart: a
+ * caller that looks ahead at a key must apply exactly the skips that decide whether
+ * the command runs.
+ */
+static bool ScintillaCommandKey(UniChar originalKey, NSEventModifierFlags modifierFlags,
+				Keys &key, KeyMod &modifiers) {
+	// Some Unicode extended Latin characters overlap the Keys enumeration so treat them
+	// only as and not as command keys.
+	if (originalKey >= static_cast<UniChar>(Keys::Down) && originalKey <= static_cast<UniChar>(Keys::Menu))
+		return false;
+
+	key = KeyTranslate(originalKey, modifierFlags);
+
+	// Let AppKit's interpretKeyEvents dispatch the standard macOS
+	// text-edit shortcuts via NSResponder selectors instead of
+	// firing Scintilla's own command (which is keyed off Windows
+	// conventions). Cmd→Ctrl and Option→Alt translation in
+	// TranslateModifierFlags below would otherwise route:
+	//   Cmd+Backspace     → Ctrl+Back  → DelWordLeft  (wrong; want DelLineLeft)
+	//   Option+Backspace  → Alt+Back   → DelWordLeft  (right action, but route via selector for consistency / System Settings)
+	//   Option+Delete fwd → Alt+Delete → (no entry, falls through)
+	// Short-circuit only the three combos that AppKit binds to a
+	// matching selector. Cmd+Delete fwd is NOT bound by AppKit, so
+	// it stays in Scintilla's keymap (fixed there separately).
+	const NSEventModifierFlags allMods =
+		NSEventModifierFlagCommand | NSEventModifierFlagOption |
+		NSEventModifierFlagShift   | NSEventModifierFlagControl;
+	const NSEventModifierFlags onlyMods = modifierFlags & allMods;
+	const bool cmdOnly    = (onlyMods == NSEventModifierFlagCommand);
+	const bool optionOnly = (onlyMods == NSEventModifierFlagOption);
+	if ((key == Keys::Back   && (cmdOnly || optionOnly)) ||
+	    (key == Keys::Delete &&  optionOnly)) {
+		return false;
+	}
+
+	modifiers = TranslateModifierFlags(modifierFlags);
+	return true;
+}
+
+//--------------------------------------------------------------------------------------------------
+
 bool ScintillaCocoa::KeyboardInput(NSEvent *event) {
 	// For now filter out function keys.
 	NSString *input = event.charactersIgnoringModifiers;
@@ -2290,46 +2334,43 @@ bool ScintillaCocoa::KeyboardInput(NSEvent *event) {
 
 	// Handle each entry individually. Usually we only have one entry anyway.
 	for (size_t i = 0; i < input.length; i++) {
-		const UniChar originalKey = [input characterAtIndex: i];
-		// Some Unicode extended Latin characters overlap the Keys enumeration so treat them
-		// only as and not as command keys.
-		if (originalKey >= static_cast<UniChar>(Keys::Down) && originalKey <= static_cast<UniChar>(Keys::Menu))
+		Keys key = static_cast<Keys>(0);
+		KeyMod modifiers = KeyMod::Norm;
+		if (!ScintillaCommandKey([input characterAtIndex: i], event.modifierFlags, key, modifiers))
 			continue;
-		NSEventModifierFlags modifierFlags = event.modifierFlags;
-
-		Keys key = KeyTranslate(originalKey, modifierFlags);
-
-		// Let AppKit's interpretKeyEvents dispatch the standard macOS
-		// text-edit shortcuts via NSResponder selectors instead of
-		// firing Scintilla's own command (which is keyed off Windows
-		// conventions). Cmd→Ctrl and Option→Alt translation in
-		// TranslateModifierFlags below would otherwise route:
-		//   Cmd+Backspace     → Ctrl+Back  → DelWordLeft  (wrong; want DelLineLeft)
-		//   Option+Backspace  → Alt+Back   → DelWordLeft  (right action, but route via selector for consistency / System Settings)
-		//   Option+Delete fwd → Alt+Delete → (no entry, falls through)
-		// Short-circuit only the three combos that AppKit binds to a
-		// matching selector. Cmd+Delete fwd is NOT bound by AppKit, so
-		// it stays in Scintilla's keymap (fixed there separately).
-		const NSEventModifierFlags allMods =
-			NSEventModifierFlagCommand | NSEventModifierFlagOption |
-			NSEventModifierFlagShift   | NSEventModifierFlagControl;
-		const NSEventModifierFlags onlyMods = modifierFlags & allMods;
-		const bool cmdOnly    = (onlyMods == NSEventModifierFlagCommand);
-		const bool optionOnly = (onlyMods == NSEventModifierFlagOption);
-		if ((key == Keys::Back   && (cmdOnly || optionOnly)) ||
-		    (key == Keys::Delete &&  optionOnly)) {
-			continue;
-		}
 
 		bool consumed = false; // Consumed as command?
 
-		if (KeyDownWithModifiers(key, TranslateModifierFlags(modifierFlags), &consumed))
+		if (KeyDownWithModifiers(key, modifiers, &consumed))
 			handled = true;
 		if (consumed)
 			handled = true;
 	}
 
 	return handled;
+}
+
+//--------------------------------------------------------------------------------------------------
+
+/**
+ * The command KeyboardInput would run for this event, or Message(0) when it would run
+ * none — including the combinations KeyboardInput deliberately hands to AppKit, which
+ * a raw kmap.Find would wrongly report as commands.
+ */
+Message ScintillaCocoa::CommandForKeyEvent(NSEvent *event) {
+	NSString *input = event.charactersIgnoringModifiers;
+
+	for (size_t i = 0; i < input.length; i++) {
+		Keys key = static_cast<Keys>(0);
+		KeyMod modifiers = KeyMod::Norm;
+		if (!ScintillaCommandKey([input characterAtIndex: i], event.modifierFlags, key, modifiers))
+			continue;
+		const Message msg = kmap.Find(key, modifiers);
+		if (msg != static_cast<Message>(0))
+			return msg;
+	}
+
+	return static_cast<Message>(0);
 }
 
 //--------------------------------------------------------------------------------------------------
