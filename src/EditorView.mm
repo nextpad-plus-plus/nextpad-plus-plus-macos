@@ -2188,6 +2188,43 @@ static int vkToScintillaKey(int vk) {
     return vk;
 }
 
+/// The character a printable key produces WITH Shift held, for the US layout that
+/// shortcuts.xml's Windows VK codes already assume (same assumption as the OEM table
+/// in vkToScintillaKey above). Returns 0 for keys that carry no case — navigation and
+/// function keys, which -charactersIgnoringModifiers reports identically either way.
+///
+/// Needed because macOS delivers the SHIFTED character in -charactersIgnoringModifiers
+/// while vkToScintillaKey() returns the unshifted one ('D' → 'd', VK_OEM_PLUS → '='),
+/// and Scintilla's KeyMap::Find is an exact lookup with no case folding. A Shift
+/// shortcut registered only under the unshifted character can therefore never match.
+static int shiftedScintillaKey(int vk) {
+    if (vk >= 'A' && vk <= 'Z') return vk;  // vkToScintillaKey folded these to lower case
+    switch (vk) {
+        case '1': return '!';
+        case '2': return '@';
+        case '3': return '#';
+        case '4': return '$';
+        case '5': return '%';
+        case '6': return '^';
+        case '7': return '&';
+        case '8': return '*';
+        case '9': return '(';
+        case '0': return ')';
+        case 186: return ':';   // VK_OEM_1      ;
+        case 187: return '+';   // VK_OEM_PLUS   =
+        case 188: return '<';   // VK_OEM_COMMA  ,
+        case 189: return '_';   // VK_OEM_MINUS  -
+        case 190: return '>';   // VK_OEM_PERIOD .
+        case 191: return '?';   // VK_OEM_2      /
+        case 192: return '~';   // VK_OEM_3      `
+        case 219: return '{';   // VK_OEM_4      [
+        case 220: return '|';   // VK_OEM_5      \
+        case 221: return '}';   // VK_OEM_6      ]
+        case 222: return '"';   // VK_OEM_7      '
+        default:  return 0;
+    }
+}
+
 // Accurate macOS default keymap for the Shortcut-Mapper commands — GENERATED from
 // the real Scintilla tables (scintilla/src/KeyMap.cxx MapDefault +
 // scintilla/cocoa/ScintillaCocoa.mm macMapDefault) by tools/gen_keymap.py. Maps each
@@ -2284,7 +2321,7 @@ static const struct SciDefaultKeys *sciDefaultKeysFor(int sciID) {
     NSString *path = NppConfigSubpath(@"shortcuts.xml");
     NSData *data = [NSData dataWithContentsOfFile:path];
 
-    // Parse the overrides into a flat list first (sciID, keyCode, keyDef).
+    // Parse the overrides into a flat list first (sciID, keyCode, keyDefs).
     NSMutableArray<NSDictionary *> *overrides = [NSMutableArray array];
     if (data) {
         NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
@@ -2304,8 +2341,19 @@ static const struct SciDefaultKeys *sciDefaultKeysFor(int sciID) {
             if (hasCtrl)  mods |= 16;
             if (hasAlt)   mods |= 4;
             if (hasShift) mods |= 1;
-            sptr_t keyDef = (sptr_t)vkToScintillaKey(keyCode) | (mods << 16);
-            [overrides addObject:@{ @"sciID": @(sciID), @"keyCode": @(keyCode), @"keyDef": @(keyDef) }];
+            NSMutableArray<NSNumber *> *keyDefs = [NSMutableArray array];
+            [keyDefs addObject:@((sptr_t)vkToScintillaKey(keyCode) | (mods << 16))];
+            // With Shift held, -charactersIgnoringModifiers delivers the SHIFTED
+            // character ('D', '!', '+'), so also register that form. Without this a
+            // Shift shortcut silently never fires — and can fall through to an
+            // unrelated stock binding instead of doing nothing, because the generic
+            // KeyMap.cxx table registers upper-case letters Windows-style (e.g.
+            // Cmd+Shift+U reaches SCI_UPPERCASE).
+            if (hasShift) {
+                int shifted = shiftedScintillaKey(keyCode);
+                if (shifted) [keyDefs addObject:@((sptr_t)shifted | (mods << 16))];
+            }
+            [overrides addObject:@{ @"sciID": @(sciID), @"keyCode": @(keyCode), @"keyDefs": keyDefs }];
         }
     }
 
@@ -2335,7 +2383,8 @@ static const struct SciDefaultKeys *sciDefaultKeysFor(int sciID) {
         if (d) for (int j = 0; j < d->n; j++)
             [sci message:2071 wParam:(uptr_t)d->combos[j] lParam:0]; // SCI_CLEARCMDKEY
         if (keyCode != 0)
-            [sci message:2070 wParam:(uptr_t)[o[@"keyDef"] longLongValue] lParam:sciID]; // SCI_ASSIGNCMDKEY
+            for (NSNumber *kd in o[@"keyDefs"])
+                [sci message:2070 wParam:(uptr_t)kd.longLongValue lParam:sciID]; // SCI_ASSIGNCMDKEY
     }
 
     _scintillaOverridesApplied = hasOverrides;
