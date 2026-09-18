@@ -12,7 +12,8 @@
 // their visibility persists in NSUserDefaults. Click a header to sort;
 // the sort choice is kept for the running session (this panel object
 // lives for the whole session). Right-clicking a row shows the same
-// context menu as an editor tab.
+// context menu as an editor tab, and middle-clicking one closes that
+// document, as middle-clicking its tab does.
 
 static NSString *const kDocListShowExt  = @"DocList_ShowExt";
 static NSString *const kDocListShowPath = @"DocList_ShowPath";
@@ -37,7 +38,7 @@ static void _docFields(EditorView *ed, NSString **outName,
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-#pragma mark - Table view subclass (routes right-click to the panel)
+#pragma mark - Table view subclass (routes right- and middle-clicks to the panel)
 
 @interface _DocListTableView : NSTableView
 @property (nonatomic, weak) DocumentListPanel *ownerPanel;
@@ -51,6 +52,8 @@ static void _docFields(EditorView *ed, NSString **outName,
 /// empty-area column-toggle menu). For a valid row it first selects that
 /// editor so the tab-context-menu commands target it.
 - (NSMenu *)contextMenuForRow:(NSInteger)row;
+/// Closes the row's document (middle-click gesture). No-op for row < 0.
+- (void)closeEditorAtRow:(NSInteger)row;
 @end
 
 // Name-column cell that exposes its floppy-icon size constraints so they can be
@@ -382,6 +385,19 @@ static void _docFields(EditorView *ed, NSString **outName,
         [_tabManager selectTabAtIndex:(NSInteger)tabIdx];
 }
 
+// Unlike the right-click path this does NOT select the row first — closing a
+// background document shouldn't pull focus to it on the way out.
+- (void)closeEditorAtRow:(NSInteger)row {
+    if (row < 0 || row >= (NSInteger)_items.count) return;
+    EditorView *ed = _items[row];
+    // Let the delegate close it in whichever view owns it (primary or split).
+    if ([self.delegate respondsToSelector:@selector(documentListPanel:closeEditor:)] &&
+        [self.delegate documentListPanel:self closeEditor:ed])
+        return;
+    if ([_tabManager.allEditors indexOfObject:ed] != NSNotFound)
+        [_tabManager closeEditor:ed];
+}
+
 // ── Context menus ─────────────────────────────────────────────────────────────
 
 - (NSMenu *)contextMenuForRow:(NSInteger)row {
@@ -439,12 +455,40 @@ static void _docFields(EditorView *ed, NSString **outName,
 // ─────────────────────────────────────────────────────────────────────────────
 #pragma mark - _DocListTableView
 
-@implementation _DocListTableView
+@implementation _DocListTableView {
+    NSInteger _middleDownRow;  // row the middle-button press landed on (-1 = none)
+}
+
+// Row 0 is a valid row, so the "no press yet" sentinel can't be the zero-init.
+- (instancetype)initWithFrame:(NSRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) _middleDownRow = -1;
+    return self;
+}
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
     NSPoint pt = [self convertPoint:event.locationInWindow fromView:nil];
     NSInteger row = [self rowAtPoint:pt];
     return [_ownerPanel contextMenuForRow:row];
+}
+
+// Middle-click closes the row's document, matching the editor tab bar: on the
+// up, and only when press and release landed on the same row. otherMouseDown:
+// has to claim the event or AppKit won't deliver the matching up.
+- (void)otherMouseDown:(NSEvent *)event {
+    if (event.buttonNumber != 2) { [super otherMouseDown:event]; return; }
+    NSPoint pt = [self convertPoint:event.locationInWindow fromView:nil];
+    _middleDownRow = [self rowAtPoint:pt];
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    if (event.buttonNumber != 2) { [super otherMouseUp:event]; return; }
+    NSInteger downRow = _middleDownRow;
+    _middleDownRow = -1;
+    if (downRow < 0) return;
+    NSPoint pt = [self convertPoint:event.locationInWindow fromView:nil];
+    if ([self rowAtPoint:pt] != downRow) return;
+    [_ownerPanel closeEditorAtRow:downRow];
 }
 
 @end

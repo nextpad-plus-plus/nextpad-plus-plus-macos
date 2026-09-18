@@ -12,6 +12,7 @@
 
 @interface NppTabBar (TabItemEvents)
 - (void)tabItemMouseDown:(_NppTabItem *)item event:(NSEvent *)event;
+- (void)tabItemClosed:(_NppTabItem *)item;
 @end
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -367,6 +368,21 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
 - (void)mouseDown:(NSEvent *)event {
     [(NppTabBar *)_target tabItemMouseDown:self event:event];
+}
+
+// Middle-click closes the tab, as Notepad++ does off WM_MBUTTONUP — hence
+// acting on the up, and only when it lands back on the tab. A view that
+// doesn't claim the down event is never sent the matching up, so
+// otherMouseDown: has to swallow the middle button even though it does nothing.
+- (void)otherMouseDown:(NSEvent *)event {
+    if (event.buttonNumber != 2) [super otherMouseDown:event];
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    if (event.buttonNumber != 2) { [super otherMouseUp:event]; return; }
+    NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+    if (!NSPointInRect(p, self.bounds)) return;
+    [(NppTabBar *)_target tabItemClosed:self];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {

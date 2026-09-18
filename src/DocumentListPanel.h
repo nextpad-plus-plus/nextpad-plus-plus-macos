@@ -17,6 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// Activate an editor that may live in any view (primary or a split pane).
 /// Return YES if handled; the panel falls back to the primary tab manager on NO.
 - (BOOL)documentListPanel:(DocumentListPanel *)panel activateEditor:(EditorView *)editor;
+/// Close an editor that may live in any view (primary or a split pane).
+/// Return YES if handled; the panel falls back to the primary tab manager on NO.
+- (BOOL)documentListPanel:(DocumentListPanel *)panel closeEditor:(EditorView *)editor;
 /// The currently-active editor across all views, for the selected-row highlight.
 - (nullable EditorView *)documentListPanelCurrentEditor:(DocumentListPanel *)panel;
 /// The tab color assigned to this document (nil if none) — used to tint the row,

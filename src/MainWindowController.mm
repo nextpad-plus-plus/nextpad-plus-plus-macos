@@ -5926,6 +5926,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     return NO;
 }
 
+// Close a middle-clicked editor in whichever view owns it, so a document moved
+// to a split pane is still closeable from the list.
+- (BOOL)documentListPanel:(DocumentListPanel *)panel closeEditor:(EditorView *)editor {
+    for (TabManager *mgr in @[_tabManager, _subTabManagerH, _subTabManagerV]) {
+        if (!mgr) continue;
+        if ([mgr.allEditors indexOfObject:editor] != NSNotFound) {
+            [mgr closeEditor:editor];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (EditorView *)documentListPanelCurrentEditor:(DocumentListPanel *)panel {
     return [self currentEditor];
 }
