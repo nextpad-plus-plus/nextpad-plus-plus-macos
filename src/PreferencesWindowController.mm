@@ -151,10 +151,15 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 
 // ── PreferencesWindowController ───────────────────────────────────────────────
 
-@interface PreferencesWindowController () <NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
+@interface PreferencesWindowController () <NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
 @end
 
 @implementation PreferencesWindowController {
+    // Value each preference text field held when its current edit session
+    // began, so a commit can tell a real change from a field the user only
+    // passed through (issue #341). Weak keys: a discarded page view takes its
+    // fields with it.
+    NSMapTable<NSTextField *, NSString *> *_editingBaselines;
     NSTableView          *_sidebarTable;
     NSScrollView         *_contentScroll;
     NSView               *_contentArea;
@@ -326,6 +331,11 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
+    // The window is closable, so the red button and Cmd-W bypass closePrefs:.
+    // Ending editing here is what sends the field's action (issue #341); the
+    // close itself does not, even with sendsActionOnEndEditing set.
+    [self.window makeFirstResponder:nil];
+
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:NSWindowDidUpdateNotification
                                                   object:nil];
@@ -378,6 +388,10 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     [win center];
     self = [super initWithWindow:win];
     if (self) {
+        // -initWithWindow: does not make the controller the window's delegate,
+        // so windowWillClose: below never ran until this was wired up.
+        win.delegate = self;
+        _editingBaselines = [NSMapTable weakToStrongObjectsMapTable];
         [self registerDefaults];
         [self _buildSidebarLayout];
         [self retranslateUI];
@@ -1248,6 +1262,7 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     NSTextField *brField = [[NSTextField alloc] initWithFrame:NSMakeRect(190, y-2, 60, 22)];
     brField.integerValue = [ud integerForKey:kPrefCaretBlinkRate];
     brField.tag = 704; brField.target = self; brField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:brField];
     [v addSubview:brField];
     y -= 32;
 
@@ -1396,6 +1411,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     sizeField.tag = 100;
     sizeField.target = self;
     sizeField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:sizeField];
     sizeField.enabled = NO;
     [optBox addSubview:sizeField];
     oy -= 30;
@@ -1723,6 +1739,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *mwField = [[NSTextField alloc] initWithFrame:NSMakeRect(200, y-2, 60, 22)];
     mwField.integerValue = [ud integerForKey:kPrefTabMaxLabelWidth];
     mwField.tag = 802; mwField.target = self; mwField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:mwField];
     [v addSubview:mwField];
 
     return v;
@@ -1759,6 +1776,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *ecField = [[NSTextField alloc] initWithFrame:NSMakeRect(130, y-2, 50, 22)];
     ecField.integerValue = [ud integerForKey:kPrefEdgeColumn];
     ecField.tag = 1100; ecField.target = self; ecField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:ecField];
     [v addSubview:ecField];
     y -= 36;
 
@@ -1798,6 +1816,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *plField = [[NSTextField alloc] initWithFrame:NSMakeRect(65, y-2, 50, 22)];
     plField.integerValue = [ud integerForKey:kPrefPaddingLeft];
     plField.tag = 1102; plField.target = self; plField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:plField];
     [v addSubview:plField];
 
     NSTextField *prLabel = [NSTextField labelWithString:[loc translate:@"Right:"]];
@@ -1806,6 +1825,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *prField = [[NSTextField alloc] initWithFrame:NSMakeRect(195, y-2, 50, 22)];
     prField.integerValue = [ud integerForKey:kPrefPaddingRight];
     prField.tag = 1103; prField.target = self; prField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:prField];
     [v addSubview:prField];
 
     return v;
@@ -1932,6 +1952,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     intField.tag = 301;
     intField.target = self;
     intField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:intField];
     [v addSubview:intField];
     y -= 36;
 
@@ -1980,6 +2001,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     minField.tag = 601;
     minField.target = self;
     minField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:minField];
     [v addSubview:minField];
 
     return v;
@@ -2019,6 +2041,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *threshField = [[NSTextField alloc] initWithFrame:NSMakeRect(330, y-2, 60, 22)];
     threshField.integerValue = [ud integerForKey:kPrefInSelThreshold];
     threshField.tag = 1007; threshField.target = self; threshField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:threshField];
     [v addSubview:threshField];
 
     return v;
@@ -2138,6 +2161,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *sizeField = [[NSTextField alloc] initWithFrame:NSMakeRect(225, y-2, 70, 22)];
     sizeField.integerValue = [ud integerForKey:kPrefLargeFileSizeMB];
     sizeField.tag = 1401; sizeField.target = self; sizeField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:sizeField];
     [v addSubview:sizeField];
 
     NSTextField *sizeUnit = [NSTextField labelWithString:@"MB    (1 - 2046)"];
@@ -2233,6 +2257,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     charsField.tag = 1502;
     charsField.target = self;
     charsField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:charsField];
     charsField.enabled = !useDefault;
     [v addSubview:charsField];
     _delimWordCharsField = charsField;  // cached for the radio toggle to re-enable
@@ -2258,6 +2283,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     openerField.tag = 1503;
     openerField.target = self;
     openerField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:openerField];
     [v addSubview:openerField];
 
     NSTextField *previewLabel = [NSTextField labelWithString:@"bla bla bla bla bla"];
@@ -2272,6 +2298,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     closerField.tag = 1504;
     closerField.target = self;
     closerField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:closerField];
     [v addSubview:closerField];
 
     NSTextField *closeLabel = [NSTextField labelWithString:[loc translate:@"Close"]];
@@ -2411,9 +2438,45 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
 // Actions
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// AppKit sends an NSTextField's action on Return only: NSTextFieldCell's
+// sendsActionOnEndEditing defaults to NO, so a value that is typed and then
+// left by clicking another control — or by closing the window — never reaches
+// prefChanged: and is silently discarded (issue #341). Every preference text
+// field persists solely through that action, so each one opts in here.
+//
+// The controller also becomes the field's delegate, so it can record what the
+// field held when editing began and drop a commit that changes nothing. Without
+// that, passing through a field would broadcast NPPPreferencesChanged, and that
+// broadcast is not free: it makes each EditorView re-apply the saved whitespace,
+// EOL and zoom settings, undoing a Show All Characters toggle or a per-window
+// zoom that was never written to defaults.
+- (void)_commitOnEndEditing:(NSTextField *)field {
+    field.cell.sendsActionOnEndEditing = YES;
+    field.delegate = self;
+}
+
+- (void)controlTextDidBeginEditing:(NSNotification *)note {
+    if ([note.object isKindOfClass:[NSTextField class]])
+        [_editingBaselines setObject:[(NSTextField *)note.object stringValue]
+                              forKey:(NSTextField *)note.object];
+}
+
 - (void)prefChanged:(id)sender {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSInteger tag = [(NSControl *)sender tag];
+
+    // A text field commits when its edit session ends, which includes ending one
+    // the user only tabbed through, and one whose value was typed and then put
+    // back. Neither has anything to store, and the broadcast at the end of this
+    // method has side effects (see -_commitOnEndEditing:). A missing baseline
+    // means the field was never typed into, because AppKit posts the
+    // begin-editing notification on the first keystroke rather than on focus.
+    if ([sender isKindOfClass:[NSTextField class]]) {
+        NSString *baseline = [_editingBaselines objectForKey:sender];
+        [_editingBaselines removeObjectForKey:sender];
+        if (!baseline || [baseline isEqualToString:[(NSTextField *)sender stringValue]])
+            return;
+    }
 
     switch (tag) {
         case 100: {
