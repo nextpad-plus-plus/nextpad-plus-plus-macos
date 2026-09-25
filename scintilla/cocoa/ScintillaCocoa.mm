@@ -88,13 +88,18 @@ static const KeyToCommand macMapDefault[] = {
 	{Keys::Left,      SCI_ALT,    Message::WordLeft},
 	{Keys::Left,      SCI_META,   Message::WordLeft},
 	{Keys::Left,      SCI_SMETA,  Message::WordLeftExtend},
-	{Keys::Left,      SCI_ASHIFT, Message::CharLeftRectExtend},
+	// LOCAL CHANGE: Option+Shift+Left/Right select by word, as everywhere else on
+	// macOS. The Windows Alt+Shift column extend moves to Ctrl+Option+Shift;
+	// Option+Shift+Up/Down still extend a column block.
+	{Keys::Left,      SCI_ASHIFT, Message::WordLeftExtend},
+	{Keys::Left,      SCI_ASHIFT | SCI_META, Message::CharLeftRectExtend},
 	{Keys::Right,     SCI_NORM,   Message::CharRight},
 	{Keys::Right,     SCI_SHIFT,  Message::CharRightExtend},
 	{Keys::Right,     SCI_ALT,    Message::WordRight},
 	{Keys::Right,     SCI_META,   Message::WordRight},
 	{Keys::Right,     SCI_SMETA,  Message::WordRightExtend},
-	{Keys::Right,     SCI_ASHIFT, Message::CharRightRectExtend},
+	{Keys::Right,     SCI_ASHIFT, Message::WordRightExtend},
+	{Keys::Right,     SCI_ASHIFT | SCI_META, Message::CharRightRectExtend},
 	{Key('/'),           SCI_CTRL,   Message::WordPartLeft},
 	{Key('/'),           SCI_CSHIFT, Message::WordPartLeftExtend},
 	{Key('\\'),          SCI_CTRL,   Message::WordPartRight},
