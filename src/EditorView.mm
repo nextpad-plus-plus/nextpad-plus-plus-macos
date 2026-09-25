@@ -2260,14 +2260,14 @@ static const struct SciDefaultKeys { int sciID; int n; sptr_t combos[4]; } kSciD
     { 2416, 1, { 0x3005B, 0, 0, 0 } },  // SCI_PARAUPEXTEND
     { 2304, 1, { 0x12E, 0, 0, 0 } },  // SCI_CHARLEFT
     { 2305, 1, { 0x1012E, 0, 0, 0 } },  // SCI_CHARLEFTEXTEND
-    { 2428, 1, { 0x5012E, 0, 0, 0 } },  // SCI_CHARLEFTRECTEXTEND
+    { 2428, 1, { 0x15012E, 0, 0, 0 } },  // SCI_CHARLEFTRECTEXTEND
     { 2306, 1, { 0x12F, 0, 0, 0 } },  // SCI_CHARRIGHT
     { 2307, 1, { 0x1012F, 0, 0, 0 } },  // SCI_CHARRIGHTEXTEND
-    { 2429, 1, { 0x5012F, 0, 0, 0 } },  // SCI_CHARRIGHTRECTEXTEND
+    { 2429, 1, { 0x15012F, 0, 0, 0 } },  // SCI_CHARRIGHTRECTEXTEND
     { 2308, 2, { 0x4012E, 0x10012E, 0, 0 } },  // SCI_WORDLEFT
-    { 2309, 1, { 0x11012E, 0, 0, 0 } },  // SCI_WORDLEFTEXTEND
+    { 2309, 2, { 0x11012E, 0x5012E, 0, 0 } },  // SCI_WORDLEFTEXTEND
     { 2310, 2, { 0x4012F, 0x10012F, 0, 0 } },  // SCI_WORDRIGHT
-    { 2311, 1, { 0x11012F, 0, 0, 0 } },  // SCI_WORDRIGHTEXTEND
+    { 2311, 2, { 0x11012F, 0x5012F, 0, 0 } },  // SCI_WORDRIGHTEXTEND
     { 2390, 1, { 0x2002F, 0, 0, 0 } },  // SCI_WORDPARTLEFT
     { 2391, 1, { 0x3002F, 0, 0, 0 } },  // SCI_WORDPARTLEFTEXTEND
     { 2392, 1, { 0x2005C, 0, 0, 0 } },  // SCI_WORDPARTRIGHT
