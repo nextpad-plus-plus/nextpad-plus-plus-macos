@@ -472,6 +472,9 @@ static void _placeChk(NSView *parent, NSButton *chk, CGFloat x, CGFloat y) {
     _filtersCombo = _mkCombo();
     _filtersCombo.stringValue = @"*.*";
     _directoryCombo = _mkCombo();
+    for (NSComboBox *combo in @[_findCombo, _replaceCombo, _filtersCombo, _directoryCombo]) {
+        combo.delegate = self;
+    }
 
     // ── Build each tab ───────────────────────────────────────────────────
     [self _buildFindTab];
@@ -1317,6 +1320,16 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findComboEnterPressed:(id)sender {
     if (_currentTab != FindWindowTabFind) return;
     [self _findNext:nil];
+}
+
+- (BOOL)control:(NSControl *)control
+       textView:(NSTextView *)textView
+doCommandBySelector:(SEL)commandSelector {
+    if (commandSelector == @selector(cancelOperation:)) {
+        [self _close:nil];
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark - Transparency (issue #143)
