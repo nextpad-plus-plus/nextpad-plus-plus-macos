@@ -1466,13 +1466,13 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90006" name="Källkontroll"/>
 				<Item id="90007" name="Begå"/>
 				<Item id="90008" name="Commit misslyckades"/>
-				<Item id="90009" name="Inget git-förråd\nAnvänd Bläddra för att öppna ett arkiv."/>
+				<Item id="90009" name="Inget git-förråd&#10;Använd Bläddra för att öppna ett arkiv."/>
 				<Item id="90010" name="Scen"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Steg alla"/>
 				<Item id="90013" name="Ta bort alla"/>
-				<Item id="90014" name="Bekräfta meddelande\u2026"/>
-				<Item id="90015" name="Bläddra efter arkivet\u2026"/>
+				<Item id="90014" name="Bekräfta meddelande…"/>
+				<Item id="90015" name="Bläddra efter arkivet…"/>
 				<Item id="90016" name="Välj en git repository mapp"/>
 				<Item id="90017" name="(inget arkiv)"/>
 				<Item id="90018" name="(fristående)"/>
@@ -1486,9 +1486,9 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90026" name="Resultat"/>
 				<Item id="90027" name="Stopp"/>
 				<Item id="90028" name="Sökningen avbröts."/>
-				<Item id="90029" name="Söker\u2026"/>
+				<Item id="90029" name="Söker…"/>
 				<Item id="90030" name="Text att söka efter"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Söker..."/>
 				<Item id="90033" name="Ersätt:"/>
 				<Item id="90034" name="Hela ordet"/>
@@ -1548,7 +1548,7 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90088" name="Installera plugins"/>
 				<Item id="90089" name="Ta bort plugins"/>
 				<Item id="90090" name="Inga kommandon hittades"/>
-				<Item id="90091" name="Skriv för att söka\u2026"/>
+				<Item id="90091" name="Skriv för att söka…"/>
 				<Item id="90092" name="Användardefinierat språk v.2.1"/>
 				<Item id="90093" name="Skapa nytt språk"/>
 				<Item id="90094" name="Ange ett namn:"/>
@@ -1557,11 +1557,9 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90097" name="Spara inte"/>
 				<Item id="90098" name="Klar"/>
 				<Item id="90099" name="Växla Word Wrap"/>
-				<Item id="90100" name="Visa alla tecken"/>
 				<Item id="90101" name="Visa teckenalternativ"/>
 				<Item id="90102" name="Växla indragsguide"/>
 				<Item id="90103" name="Ännu inte implementerad"/>
-				<Item id="90104" name="Ladda om från disk"/>
 				<Item id="90105" name="Ändra sökmotor"/>
 				<Item id="90106" name="Körfel"/>
 				<Item id="90107" name="Nextpad++ Laddningstid"/>
@@ -1570,16 +1568,12 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90110" name="Ladda ner"/>
 				<Item id="90111" name="Släppsida"/>
 				<Item id="90112" name="Senare"/>
-				<Item id="90113" name="Filtrera plugins\u2026"/>
-				<Item id="90114" name="Tillgänglig"/>
-				<Item id="90115" name="Uppdateringar"/>
-				<Item id="90116" name="Installerad"/>
-				<Item id="90117" name="Inkompatibel"/>
+				<Item id="90113" name="Filtrera plugins…"/>
 				<Item id="90118" name="Det gick inte att installera"/>
 				<Item id="90119" name="Vill du ta bort följande plugins?"/>
 				<Item id="90120" name="Installera följande plugins?"/>
 				<Item id="90121" name="Detta kommer att radera plugin-filerna."/>
-				<Item id="90122" name="Sökkommandon\u2026"/>
+				<Item id="90122" name="Sökkommandon…"/>
 				<Item id="90123" name="Förgrundsfärg"/>
 				<Item id="90124" name="Bakgrundsfärg"/>
 				<Item id="90125" name="Makronamn"/>
@@ -1599,7 +1593,7 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90139" name="Alla märken rensade."/>
 				<Item id="90140" name="Markerad text kopierad till urklipp."/>
 				<Item id="90141" name="Ingen markerad text att kopiera."/>
-				<Item id="90142" name="Söker... %ld träffar \u2014 %@"/>
+				<Item id="90142" name="Söker... %ld träffar — %@"/>
 				<Item id="90143" name="Ersätter i filer..."/>
 				<Item id="90144" name="Ersätt i projekt: Ej ansluten ännu."/>
 				<Item id="90145" name="Hitta i projekt: Ännu inte ansluten till projektpanelens fillista."/>
@@ -1626,14 +1620,12 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90165" name="Bekräfta innan Spara alla"/>
 				<Item id="90166" name="Bekräfta Ersätt allt i öppna dokument"/>
 				<Item id="90167" name="Ersätt: flytta inte till nästa förekomst"/>
-				<Item id="90168" name="Använd teckensnitt med monospace i dialogrutan Sök"/>
 				<Item id="90169" name="Högerklicka behåller valet"/>
 				<Item id="90170" name="Omvänd standarddatum/tidsordning"/>
 				<Item id="90171" name="Använd XML-baserade funktionslisttolkare"/>
 				<Item id="90172" name="Stäng parenteser automatiskt ( ) [ ] { }"/>
 				<Item id="90173" name="Från N:te tecken:"/>
 				<Item id="90174" name="In-selection auto-check tröskel (byte):"/>
-				<Item id="90175" name="Utökad (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktör"/>
 				<Item id="90177" name="Marginaler"/>
 				<Item id="90178" name="Mörk"/>
@@ -1647,12 +1639,10 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD-optimerad"/>
 				<Item id="90188" name="Enkel +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Instickslistförråd"/>
 				<Item id="90192" name="Välj en XML-fil för Nextpad++-tema att tillämpa"/>
-				<Item id="90193" name="Skapa nytt\u2026"/>
-				<Item id="90194" name="Spara som\u2026"/>
+				<Item id="90193" name="Skapa nytt…"/>
+				<Item id="90194" name="Spara som…"/>
 				<Item id="90195" name="Användarspråk:"/>
 				<Item id="90196" name="Språknamn"/>
 				<Item id="90197" name="Skapa"/>
@@ -1682,6 +1672,216 @@ Du kan aktivera denna dialogruta i inställningarna senare."/>
 				<Item id="90221" name="Låst attribut (macOS)"/>
 				<Item id="90222" name="Sök efter uppdateringar..."/>
 				<Item id="90223" name="Öppna Senaste"/>
+				<Item id="90226" name="Hjälp"/>
+				<Item id="90227" name="Steget misslyckades"/>
+				<Item id="90228" name="Unstage misslyckades"/>
+				<Item id="90229" name="finns tillgänglig"/>
+				<Item id="90230" name="Du springer"/>
+				<Item id="90231" name="Påminn mig aldrig igen"/>
+				<Item id="90233" name="Sök automatiskt efter uppdateringar"/>
+				<Item id="90234" name="Automatiska uppdateringskontroller är avstängda."/>
+				<Item id="90235" name="Senast kontrollerad:"/>
+				<Item id="90236" name="Ingen internetuppkoppling."/>
+				<Item id="90237" name="Oväntat svar från uppdateringsservern."/>
+				<Item id="90238" name="Ingen publicerad version hittades."/>
+				<Item id="90239" name="Uppdateringsservern är inte tillgänglig för tillfället.Försök igen senare."/>
+				<Item id="90240" name="Uppdateringsservern avvisade begäran.En proxy, brandvägg eller VPN kan blockera åtkomst till GitHub."/>
+				<Item id="90241" name="För många uppdateringskontroller från ditt nätverk (denna gräns delas av alla på det).Försök igen efter"/>
+				<Item id="90242" name="För många uppdateringskontroller från ditt nätverk (denna gräns delas av alla på det).Försök igen senare."/>
+				<Item id="90243" name="Uppdateringsservern returnerade status"/>
+				<Item id="90244" name="Försök igen"/>
+				<Item id="90245" name="Skriv ut textstorlek:"/>
+				<Item id="90246" name="Använd skärmzoom"/>
+				<Item id="90247" name="Verklig storlek"/>
+				<Item id="90248" name="Vissa filer kunde inte ersättas"/>
+				<Item id="90249" name="...och %lu till"/>
+				<Item id="90250" name="Filassociationer hanteras av din organisation."/>
+				<Item id="90251" name="Väntar på bekräftelse från macOS…"/>
+				<Item id="90252" name="macOS tillämpade inte ändringen."/>
+				<Item id="90253" name="Registrerade"/>
+				<Item id="90254" name="Öppna alla filer i mappen?"/>
+				<Item id="90255" name="Detta öppnar %lu filer på nya flikar."/>
+				<Item id="90256" name="Kunde inte importera: %@"/>
+				<Item id="90258" name="Hittade %ld matchningar i %ld fil(er)."/>
+				<Item id="90259" name="Söker... %ld matchningar hittills"/>
+				<Item id="90260" name="%@ (%ld matchning%@)"/>
+				<Item id="90261" name="Luddrig sökning"/>
+				<Item id="90266" name="Antal: %ld matchningar."/>
+				<Item id="90267" name="Ersätt alla: %ld förekomst(er) ersattes %@."/>
+				<Item id="90268" name="Ersätt i öppnade filer: %ld förekomst(er) ersattes."/>
+				<Item id="90269" name="Hitta i filer: %ld träff(ar) i %ld fil(er)."/>
+				<Item id="90270" name="Hitta i filer: 0 träffar."/>
+				<Item id="90271" name="Ersätt alla förekomster av &quot;%@&quot; med &quot;%@&quot; i katalogen:&#10;%@&#10;&#10;Detta kan inte ångras."/>
+				<Item id="90272" name="Ersätt i filer: %ld ersättning(er) i %ld fil(er)."/>
+				<Item id="90273" name="Öppna en projektpanel först."/>
+				<Item id="90274" name="Välj minst en projektpanel att söka efter."/>
+				<Item id="90275" name="Inga filer att söka efter."/>
+				<Item id="90276" name="Hitta i projekt: %ld träff(ar) i %ld fil(er)."/>
+				<Item id="90277" name="Hitta i Projekt: 0 träffar."/>
+				<Item id="90278" name="Ersätt alla förekomster av"/>
+				<Item id="90279" name="med"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="projektfil(er).Detta kan inte ångras."/>
+				<Item id="90282" name="Ersätt i projekt: %ld ersättning(er) i %ld fil(er)."/>
+				<Item id="90283" name="Markera: %ld match(ar) markerade."/>
+				<Item id="90284" name="Filtrera fil-/mappnamn..."/>
+				<Item id="90285" name="Vissa dokument kunde inte sparas"/>
+				<Item id="90286" name="⌘ Kommando"/>
+				<Item id="90287" name="⌃ Kontroll"/>
+				<Item id="90288" name="⌥ Alternativ"/>
+				<Item id="90289" name="⇧ Skift"/>
+				<Item id="90290" name="Ange en NSDateFormatter-formatsträng:"/>
+				<Item id="90291" name="'%@' är ännu inte implementerad i den här versionen."/>
+				<Item id="90292" name="Importera plugin"/>
+				<Item id="90293" name="Omstart krävs"/>
+				<Item id="90294" name="Inga filer att bearbeta"/>
+				<Item id="90295" name="Denna projektnod innehåller inga filer."/>
+				<Item id="90296" name="'%@' har ändringar som inte har sparats.&#10;Ladda in och kassera ändringar?"/>
+				<Item id="90297" name="Ange ett nytt filnamn:"/>
+				<Item id="90299" name="Nytt namn:"/>
+				<Item id="90301" name="Namnet får inte innehålla &quot;/&quot; eller &quot;:&quot;."/>
+				<Item id="90304" name="Spara inte alla"/>
+				<Item id="90306" name="Det finns tre sätt att växla till kolumnvalsläge:&#10;&#10;1.(Tangentbord och mus) Håll ned Alternativ medan du drar med vänster musknapp&#10;&#10;2.(Endast tangentbord) Håll ned Alternativ+Skift medan du använder piltangenterna&#10;&#10;3.(tangentbord eller mus)&#10; Sätt indikatorn vid önskad start av kolumnblockets position,&#10; utför sedan kommandot &quot;Starta/avsluta i kolumnläge&quot;-kommandot;&#10; Flytta raden till önskad ände av kolumnblockspositionen,&#10; utför sedan kommandot &quot;Börja/sluta i kolumnläge&quot; igen"/>
+				<Item id="90307" name="Ange sökadressen.Använd %s som platshållare för frågan (eller lägg till frågan i slutet):"/>
+				<Item id="90308" name="Ange kommando eller URL..."/>
+				<Item id="90309" name="Det gick inte att köra:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Genom att redigera contextMenu.xml kan du ändra din snabbmeny för Nextpad++ i redigeringszonen.&#10;Du måste starta om din Nextpad++ för att träda i kraft efter att du har ändrat contextMenu.xml."/>
+				<Item id="90312" name="Redan installerad"/>
+				<Item id="90313" name="Installera nextpad++ Kommandoradsverktyget"/>
+				<Item id="90314" name="Installationen misslyckades"/>
+				<Item id="90315" name="Installerad – men ~/.local/bin finns inte på din PATH"/>
+				<Item id="90316" name="Redan i din konfiguration"/>
+				<Item id="90317" name="Tillagd till PATH"/>
+				<Item id="90318" name="Kunde inte skriva"/>
+				<Item id="90319" name="Kopierade"/>
+				<Item id="90321" name="Dina ändringar kommer att gå förlorade om du inte sparar dem."/>
+				<Item id="90322" name="Gäller alla dokument"/>
+				<Item id="90323" name="Kör makro på filer"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Mapp:"/>
+				<Item id="90326" name="Välj en mapp..."/>
+				<Item id="90327" name="Bläddra..."/>
+				<Item id="90328" name="Tillägg:"/>
+				<Item id="90329" name="Recurse underkataloger"/>
+				<Item id="90330" name="Inkludera dolda filer"/>
+				<Item id="90331" name="Max storlek:"/>
+				<Item id="90332" name="Obegränsad"/>
+				<Item id="90333" name="Per fil:"/>
+				<Item id="90334" name="Spara om det ändras"/>
+				<Item id="90335" name="Stäng efter"/>
+				<Item id="90336" name="Stäng även filer som redan var öppna"/>
+				<Item id="90337" name="Vid fel:"/>
+				<Item id="90338" name="Hoppa över filen och fortsätt"/>
+				<Item id="90339" name="Sluta vid första felet"/>
+				<Item id="90340" name="(inga sparade makron)"/>
+				<Item id="90341" name="%lu fil(er) matchar"/>
+				<Item id="90342" name="Mappen hittades inte"/>
+				<Item id="90343" name="Välj en mapp som finns."/>
+				<Item id="90344" name="Inga filer matchar"/>
+				<Item id="90345" name="Justera tilläggsfiltret, rekursionen eller alternativet för dolda filer."/>
+				<Item id="90346" name="Börjar..."/>
+				<Item id="90347" name="Bearbetning:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Hoppade över: %ld Misslyckades: %ld"/>
+				<Item id="90349" name="Batch avbruten"/>
+				<Item id="90350" name="Batch klar"/>
+				<Item id="90351" name="Totalt: %lu Ok: %ld Hoppat över: %ld Misslyckades: %ld"/>
+				<Item id="90352" name="Byggt datum"/>
+				<Item id="90353" name="Operativsystem"/>
+				<Item id="90354" name="senaste"/>
+				<Item id="90355" name="föråldrade"/>
+				<Item id="90356" name="okänt"/>
+				<Item id="90357" name="Starta om programmet för att ändringar ska träda i kraft."/>
+				<Item id="90358" name="Uppdatera plugins"/>
+				<Item id="90359" name="Uppdatera följande plugins?"/>
+				<Item id="90360" name="Aktuella versioner säkerhetskopieras till ~/Library/Application Support/Nextpad++/plugin-backups/ innan de ersätts."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Byt till det nya Tahoe-utseendet (beta)"/>
+				<Item id="90363" name="Använd menyer i macOS-stil (beta)"/>
+				<Item id="90364" name="Det nya Tahoe-utseendet kommer att tillämpas när du startar om Nextpad++."/>
+				<Item id="90365" name="Det klassiska utseendet kommer att återställas när du startar om Nextpad++."/>
+				<Item id="90366" name="Avsluta nu"/>
+				<Item id="90367" name="Menyerna kommer att ordnas om i macOS-stilen när du startar om Nextpad++."/>
+				<Item id="90368" name="Den klassiska menylayouten kommer att återställas när du startar om Nextpad++."/>
+				<Item id="90369" name="Färg"/>
+				<Item id="90370" name="Applicera på plugin-verktygsfältikoner"/>
+				<Item id="90371" name="I komplett läge blir plugin-ikoner en enda enfärgad färg."/>
+				<Item id="90372" name="Verktygsfältsgrupper"/>
+				<Item id="90373" name="Välj var varje knapp ska visas i verktygsfältet Liquid Glass: på"/>
+				<Item id="90374" name="Knapp"/>
+				<Item id="90375" name="Placering"/>
+				<Item id="90376" name="Återställ till standardvärden"/>
+				<Item id="90377" name="Overflow-meny"/>
+				<Item id="90378" name="Dold"/>
+				<Item id="90379" name="CJK-vänlig ordlindning"/>
+				<Item id="90380" name="Kolumnval växlar till multiredigering"/>
+				<Item id="90381" name="Radavstånd:"/>
+				<Item id="90382" name="1.0 (standard)"/>
+				<Item id="90383" name="Dölj flikfält"/>
+				<Item id="90384" name="Flikstorlek följer dokumentzoom"/>
+				<Item id="90385" name="Välj..."/>
+				<Item id="90386" name="Återställ till standard"/>
+				<Item id="90387" name="Använder standardplatsen."/>
+				<Item id="90388" name="Anpassad plats."/>
+				<Item id="90389" name="Ogiltig sökväg – säkerhetskopior kommer att använda standardplatsen."/>
+				<Item id="90390" name="Välj"/>
+				<Item id="90391" name="Infoga urval:"/>
+				<Item id="90392" name="Använd Boost Regex-läge (flera rader; starta om för att tillämpa)"/>
+				<Item id="90395" name="Starta om nu"/>
+				<Item id="90397" name="(välj det inte om du inte vet vad du gör)"/>
+				<Item id="90398" name="Verktygsfältets ikonstorlek"/>
+				<Item id="90399" name="100 % (standard)"/>
+				<Item id="90400" name="Mushjulets rullningshastighet"/>
+				<Item id="90401" name="1× (av)"/>
+				<Item id="90402" name="Verktygsfältets ikonstorlek har ändrats"/>
+				<Item id="90403" name="Den nya storleken på verktygsfältsikonen träder i kraft nästa gång Nextpad++ startas."/>
+				<Item id="90404" name="Verktygsfältets ikoner har ändrats"/>
+				<Item id="90405" name="De nya verktygsfältsikonerna träder i kraft nästa gång Nextpad++ startas."/>
+				<Item id="90411" name="Kör makro på filer..."/>
+				<Item id="90418" name="Detta tar bort det och allt dess innehåll från projektet.Inga filer på disken kommer att påverkas."/>
+				<Item id="90420" name="Mapp"/>
+				<Item id="90427" name="Hittade inte"/>
+				<Item id="90428" name="KONFLIKT: %@"/>
+				<Item id="90429" name="Ta bort &quot;%@&quot;?"/>
+				<Item id="90430" name="Användardefinierad språkadmin"/>
+				<Item id="90431" name="Filtrera språk..."/>
+				<Item id="90432" name="Källa"/>
+				<Item id="90433" name="AC-källor"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Installera/Uppdatera"/>
+				<Item id="90436" name="%lu språk · %lu installerat · %lu uppdateringar"/>
+				<Item id="90437" name="Författare"/>
+				<Item id="90438" name="Kombinerat: %ld poster från %lu källor (sammanslagna)"/>
+				<Item id="90439" name="Välj ett eller flera språk att installera."/>
+				<Item id="90440" name="Inget nedladdningsbart för urvalet."/>
+				<Item id="90441" name="Nedladdningen misslyckades"/>
+				<Item id="90442" name="Kontrollsumman överensstämmer inte"/>
+				<Item id="90443" name="De valda språken är nu tillgängliga i Språk-menyn."/>
+				<Item id="90444" name="Välj ett eller flera installerade språk att ta bort."/>
+				<Item id="90445" name="Borttagen"/>
+				<Item id="90446" name="Detta namn används redan av ett annat språk."/>
+				<Item id="90447" name="Detta språk kunde inte tas bort."/>
+				<Item id="90448" name="Förinstallerade språk kan inte tas bort."/>
+				<Item id="90449" name="Det gick inte att byta namn på detta språk."/>
+				<Item id="90450" name="Den här filen är %@.Om du öppnar den inaktiveras syntaxmarkering och ångra historik för att hålla appen responsiv.&#10;&#10;Vill du fortsätta?"/>
+				<Item id="90451" name="Öppet i alla fall"/>
+				<Item id="90452" name="&quot;%@&quot; ändrades på disken"/>
+				<Item id="90453" name="Ignorera"/>
+				<Item id="90454" name="Behåll min version"/>
+				<Item id="90455" name="Kunde inte ladda om &quot;%@&quot;"/>
+				<Item id="90456" name="Filen kunde inte läsas."/>
+				<Item id="90457" name="Välj var varje knapp ska visas i verktygsfältet Liquid Glass: i gruppkapseln (verktygsfältet), i gruppens ▾ översvämningsmeny eller Dold."/>
+				<Item id="90458" name="Donera för att stödja utveckling"/>
+				<Item id="90459" name="Installera kommandoradsverktyg"/>
+				<Item id="90460" name="Visa skuggor bakom verktygsfältskapslar"/>
+				<Item id="90461" name="Donera"/>
+				<Item id="90462" name="Karaktärsuppsättningar"/>
+				<Item id="90463" name="Minimera"/>
+				<Item id="90464" name="Dölj Nextpad++"/>
+				<Item id="90465" name="Göm andra"/>
+				<Item id="90466" name="Visa alla"/>
+				<Item id="90467" name="Avsluta Nextpad++"/>
+				<Item id="90468" name="Spara aktuellt inspelat makro..."/>
+				<Item id="90469" name="Trimma efterföljande utrymme och spara"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

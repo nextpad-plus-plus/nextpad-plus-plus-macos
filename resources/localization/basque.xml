@@ -1222,13 +1222,13 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90006" name="Iturburu-kontrola"/>
 				<Item id="90007" name="Konprometitu"/>
 				<Item id="90008" name="Konpromisoak huts egin du"/>
-				<Item id="90009" name="Ez dago git biltegirik\nErabili Arakatu biltegi bat irekitzeko."/>
+				<Item id="90009" name="Ez dago git biltegirik&#10;Erabili Arakatu biltegi bat irekitzeko."/>
 				<Item id="90010" name="Etapa"/>
 				<Item id="90011" name="Eszenatokirik gabe"/>
 				<Item id="90012" name="Etapa guztiak"/>
 				<Item id="90013" name="Eszenaratu Guztiak"/>
-				<Item id="90014" name="Konprometitu mezua\u2026"/>
-				<Item id="90015" name="Bilatu biltegia\u2026"/>
+				<Item id="90014" name="Konprometitu mezua…"/>
+				<Item id="90015" name="Bilatu biltegia…"/>
 				<Item id="90016" name="Aukeratu git biltegiaren karpeta"/>
 				<Item id="90017" name="(biltegirik ez)"/>
 				<Item id="90018" name="(bateratua)"/>
@@ -1242,9 +1242,9 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90026" name="Emaitzak"/>
 				<Item id="90027" name="Gelditu"/>
 				<Item id="90028" name="Bilaketa gelditu da."/>
-				<Item id="90029" name="Bilatzen\u2026"/>
+				<Item id="90029" name="Bilatzen…"/>
 				<Item id="90030" name="Bilatzeko testua"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Bilatzen..."/>
 				<Item id="90033" name="Ordezkatu:"/>
 				<Item id="90034" name="Hitz osoa"/>
@@ -1304,7 +1304,7 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90088" name="Instalatu pluginak"/>
 				<Item id="90089" name="Kendu pluginak"/>
 				<Item id="90090" name="Ez da komandorik aurkitu"/>
-				<Item id="90091" name="Idatzi bilatzeko\u2026"/>
+				<Item id="90091" name="Idatzi bilatzeko…"/>
 				<Item id="90092" name="Erabiltzaileak Definitutako Hizkuntza v.2.1"/>
 				<Item id="90093" name="Sortu hizkuntza berria"/>
 				<Item id="90094" name="Idatzi izen bat:"/>
@@ -1313,11 +1313,9 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90097" name="Ez gorde"/>
 				<Item id="90098" name="Eginda"/>
 				<Item id="90099" name="Aktibatu/desaktibatu hitz-bilketa"/>
-				<Item id="90100" name="Erakutsi karaktere guztiak"/>
 				<Item id="90101" name="Erakutsi karaktereen aukerak"/>
 				<Item id="90102" name="Aldatu koska-gida"/>
 				<Item id="90103" name="Oraindik ez da ezarri"/>
-				<Item id="90104" name="Diskotik birkargatu"/>
 				<Item id="90105" name="Aldatu bilatzailea"/>
 				<Item id="90106" name="Exekutatu errorea"/>
 				<Item id="90107" name="Nextpad++ Kargatzeko denbora"/>
@@ -1326,16 +1324,13 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90110" name="Deskargatu"/>
 				<Item id="90111" name="Askatu orria"/>
 				<Item id="90112" name="Geroago"/>
-				<Item id="90113" name="Iragazi pluginak\u2026"/>
-				<Item id="90114" name="Eskuragarri"/>
-				<Item id="90115" name="Eguneraketak"/>
-				<Item id="90116" name="Instalatu"/>
+				<Item id="90113" name="Iragazi pluginak…"/>
 				<Item id="90117" name="Bateraezina"/>
 				<Item id="90118" name="Ezin izan da instalatu"/>
 				<Item id="90119" name="Plugin hauek kendu nahi dituzu?"/>
 				<Item id="90120" name="Hurrengo pluginak instalatu nahi dituzu?"/>
 				<Item id="90121" name="Honek plugin-fitxategiak ezabatuko ditu."/>
-				<Item id="90122" name="Bilatu komandoak\u2026"/>
+				<Item id="90122" name="Bilatu komandoak…"/>
 				<Item id="90123" name="Lehen planoko kolorea"/>
 				<Item id="90124" name="Atzeko planoaren kolorea"/>
 				<Item id="90125" name="Makro izena"/>
@@ -1355,7 +1350,7 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90139" name="Marka guztiak garbitu dira."/>
 				<Item id="90140" name="Markatutako testua arbelean kopiatu da."/>
 				<Item id="90141" name="Ez dago markatutako testurik kopiatzeko."/>
-				<Item id="90142" name="Bilatzen... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Bilatzen... %ld hit(s) — %@"/>
 				<Item id="90143" name="Fitxategietan ordezkatzen..."/>
 				<Item id="90144" name="Ordezkatu proiektuetan: oraindik ez dago konektatuta."/>
 				<Item id="90145" name="Bilatu Proiektuetan: Oraindik ez dago konektatuta Project Panel fitxategien zerrendara."/>
@@ -1376,20 +1371,19 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90160" name="Nabarmendu adimenduna: hitz osoa soilik"/>
 				<Item id="90161" name="Egin klik bikoitza fitxa ixteko"/>
 				<Item id="90162" name="Erakutsi fitxetan ixteko botoia"/>
+				<Item id="90191" name="Plugin zerrendaren biltegia"/>
 				<Item id="90224" name="Erakutsi fitxak hainbat lerrotan"/>
 				<Item id="90163" name="Gogoratu panelen ikusgaitasuna saio guztietan"/>
 				<Item id="90164" name="Mantendu ez dauden fitxategien sarrerak saioan"/>
 				<Item id="90165" name="Gorde guztiak aurretik berretsi"/>
 				<Item id="90166" name="Berretsi Ordeztu guztiak dokumentu irekietan"/>
 				<Item id="90167" name="Ordezkatu: ez joan hurrengo agerraldira"/>
-				<Item id="90168" name="Erabili tarte bakarreko letra-tipoa Bilatu elkarrizketa-koadroan"/>
 				<Item id="90169" name="Eskuineko botoiarekin klik egitean aukeraketa mantentzen da"/>
 				<Item id="90170" name="Alderantzikatu lehenetsitako data/ordu ordena"/>
 				<Item id="90171" name="Erabili XML-n oinarritutako funtzio-zerrenda analizatzaileak"/>
 				<Item id="90172" name="Itxi automatikoki parentesiak ( ) [ ] { }"/>
 				<Item id="90173" name="Ngarren karakteretik:"/>
 				<Item id="90174" name="Hautapenean automatikoki egiaztatzeko atalasea (byte):"/>
-				<Item id="90175" name="Hedatua (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editore"/>
 				<Item id="90177" name="Marjinak"/>
 				<Item id="90178" name="Iluna"/>
@@ -1403,12 +1397,10 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimizatua"/>
 				<Item id="90188" name="Sinplea +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plugin zerrendaren biltegia"/>
 				<Item id="90192" name="Hautatu Nextpad++ gaiaren XML fitxategi bat aplikatzeko"/>
-				<Item id="90193" name="Sortu berria\u2026"/>
-				<Item id="90194" name="Gorde honela\u2026"/>
+				<Item id="90193" name="Sortu berria…"/>
+				<Item id="90194" name="Gorde honela…"/>
 				<Item id="90195" name="Erabiltzailearen hizkuntza:"/>
 				<Item id="90196" name="Hizkuntza izena"/>
 				<Item id="90197" name="Sortu"/>
@@ -1438,6 +1430,218 @@ Beranduago mezu hau Hobespenak ataletik berriz aktibatu dezakezu."/>
 				<Item id="90221" name="Blokeatutako atributua (macOS)"/>
 				<Item id="90222" name="Egiaztatu eguneratzeak..."/>
 				<Item id="90223" name="Ireki Berriak"/>
+				<Item id="90226" name="Laguntza"/>
+				<Item id="90227" name="Etapa huts egin du"/>
+				<Item id="90228" name="Huts egin du"/>
+				<Item id="90229" name="eskuragarri dago"/>
+				<Item id="90230" name="Korrika ari zara"/>
+				<Item id="90231" name="Ez didazu berriro gogorarazi"/>
+				<Item id="90233" name="Egiaztatu automatikoki eguneratzeak"/>
+				<Item id="90234" name="Eguneratze-egiaztapen automatikoak desaktibatuta daude."/>
+				<Item id="90235" name="Azken egiaztatutakoa:"/>
+				<Item id="90236" name="Ez dago Interneteko konexiorik."/>
+				<Item id="90237" name="Eguneratze zerbitzariaren ustekabeko erantzuna."/>
+				<Item id="90238" name="Ez da argitaratutako argitalpenik aurkitu."/>
+				<Item id="90239" name="Eguneratze zerbitzaria ez dago aldi baterako erabilgarri.Saiatu berriro geroago."/>
+				<Item id="90240" name="Eguneratze zerbitzariak eskaerari uko egin dio.Baliteke proxy, suebaki edo VPN batek GitHub-erako sarbidea blokeatzea."/>
+				<Item id="90241" name="Eguneratze egiaztapen gehiegi zure saretik (muga hau denek partekatzen dute).Saiatu berriro ondoren"/>
+				<Item id="90242" name="Eguneratze egiaztapen gehiegi zure saretik (muga hau denek partekatzen dute).Saiatu berriro geroago."/>
+				<Item id="90243" name="Eguneratze zerbitzariak egoera itzuli du"/>
+				<Item id="90244" name="Saiatu berriro"/>
+				<Item id="90245" name="Inprimatu testuaren tamaina:"/>
+				<Item id="90246" name="Erabili pantailaren zooma"/>
+				<Item id="90247" name="Benetako tamaina"/>
+				<Item id="90248" name="Ezin izan dira fitxategi batzuk ordeztu"/>
+				<Item id="90249" name="...eta %lu gehiago"/>
+				<Item id="90250" name="Fitxategi-elkarketak zure erakundeak kudeatzen ditu."/>
+				<Item id="90251" name="macOS-en berrespenaren zain…"/>
+				<Item id="90252" name="macOS-ek ez du aldaketa aplikatu."/>
+				<Item id="90253" name="Erregistratuta"/>
+				<Item id="90254" name="Karpetako fitxategi guztiak ireki nahi dituzu?"/>
+				<Item id="90255" name="Honek %lu fitxategi irekiko ditu fitxa berrietan."/>
+				<Item id="90256" name="Ezin izan da inportatu: %@"/>
+				<Item id="90258" name="%ld bat-etortze aurkitu dira %ld fitxategitan."/>
+				<Item id="90259" name="Bilatzen… %ld bat-etortze(k) orain arte"/>
+				<Item id="90260" name="%@ (%ld bat%@)"/>
+				<Item id="90261" name="Bilaketa lausoa"/>
+				<Item id="90266" name="Zenbaketa: %ld partida(k)."/>
+				<Item id="90267" name="Ordeztu guztiak: %ld agerraldi(k) ordezkatu dira %@."/>
+				<Item id="90268" name="Ordeztu irekitako fitxategietan: %ld agerraldi(k) ordezkatu dira."/>
+				<Item id="90269" name="Bilatu Fitxategietan: %ld hit(k) %ld fitxategitan."/>
+				<Item id="90270" name="Bilatu Fitxategietan: 0 hits."/>
+				<Item id="90271" name="Ordeztu &quot;%@&quot;-ren agerraldi guztiak &quot;%@&quot;-rekin direktorioan:&#10;%@&#10;&#10;Ezin da desegin."/>
+				<Item id="90272" name="Ordeztu Fitxategietan: %ld ordezkapena(k) %ld fitxategitan."/>
+				<Item id="90273" name="Ireki proiektuen panel bat lehenik."/>
+				<Item id="90274" name="Hautatu gutxienez proiektu-panel bat bilatzeko."/>
+				<Item id="90275" name="Ez dago bilatu beharreko fitxategirik."/>
+				<Item id="90276" name="Bilatu Proiektuetan: %ld hit(k) %ld fitxategitan."/>
+				<Item id="90277" name="Aurkitu Proiektuetan: 0 hits."/>
+				<Item id="90278" name="Ordeztu agerraldi guztiak"/>
+				<Item id="90279" name="rekin"/>
+				<Item id="90280" name="urtean"/>
+				<Item id="90281" name="proiektuaren fitxategia(k).Hau ezin da desegin."/>
+				<Item id="90282" name="Ordezkatu proiektuetan: %ld ordezkapena(k) %ld fitxategitan."/>
+				<Item id="90283" name="Markatu: %ld partida markatu dira."/>
+				<Item id="90284" name="Iragazi fitxategi/karpeta izena..."/>
+				<Item id="90285" name="Ezin izan dira dokumentu batzuk gorde"/>
+				<Item id="90286" name="⌘ Agindua"/>
+				<Item id="90287" name="⌃ Kontrola"/>
+				<Item id="90288" name="⌥ Aukera"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Sartu NSDateFormatter formatu-katea:"/>
+				<Item id="90291" name="'%@' ez dago oraindik bertsio honetan inplementatu."/>
+				<Item id="90292" name="Inportatu plugina"/>
+				<Item id="90293" name="Berrabiarazi Beharrezkoa"/>
+				<Item id="90294" name="Ez dago prozesatu beharreko fitxategirik"/>
+				<Item id="90295" name="Proiektu-nodo honek ez dauka fitxategirik."/>
+				<Item id="90296" name="&quot;%@&quot;-k gorde gabeko aldaketak ditu.&#10;Aldaketak berriro kargatu eta baztertu?"/>
+				<Item id="90297" name="Sartu fitxategi-izen berri bat:"/>
+				<Item id="90299" name="Izen berria:"/>
+				<Item id="90301" name="Izenak ezin du izan “/” edo “:”."/>
+				<Item id="90304" name="Ez gorde guztiak"/>
+				<Item id="90306" name="Zutabe-hautaketa modura aldatzeko 3 modu daude:&#10;&#10;1.(Teklatua eta sagua) Eduki sakatuta Aukerak ezkerreko botoiarekin arrastatzean&#10;&#10;2.(Teklatua soilik) Eduki sakatuta Aukera+Maius gezi-teklak erabiltzen dituzun bitartean&#10;&#10;3.(Teklatua edo sagua)&#10; Jarri ikurra zutabe-blokearen posizioaren hasieran nahi duzunean, eta, ondoren,&#10; exekutatu &quot;Hasi/Amaitu hautapena zutabe moduan&quot; komandoa;&#10; Mugitu ikurra zutabe-blokearen amaieran nahi duzun posiziora, eta, ondoren,&#10; exekutatu &quot;Hasi/Amaitu hautapena zutabe moduan&quot; komandoa berriro."/>
+				<Item id="90307" name="Sartu bilaketa-URLa.Erabili %s kontsultaren leku-marka gisa (edo erantsi kontsulta amaieran):"/>
+				<Item id="90308" name="Sartu komandoa edo URLa..."/>
+				<Item id="90309" name="Ezin izan da exekutatu:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="contextMenu.xml editatzeak aukera ematen dizu zure Nextpad++ laster-menua aldatzeko editatzeko eremuan.&#10;Berrabiarazi behar duzu Nextpad++ contextMenu.xml aldatu ondoren eragina izan dezan."/>
+				<Item id="90312" name="Dagoeneko instalatuta"/>
+				<Item id="90313" name="Instalatu nextpad++ Komando lerroko tresna"/>
+				<Item id="90314" name="Instalazioak huts egin du"/>
+				<Item id="90315" name="Instalatua, baina ~/.local/bin ez dago zure PATH-en"/>
+				<Item id="90316" name="Dagoeneko zure konfigurazioan"/>
+				<Item id="90317" name="PATH-en gehitu da"/>
+				<Item id="90318" name="Ezin izan da idatzi"/>
+				<Item id="90319" name="Kopiatua"/>
+				<Item id="90321" name="Zure aldaketak galduko dira ez badituzu gordetzen."/>
+				<Item id="90322" name="Aplikatu dokumentu guztietan"/>
+				<Item id="90323" name="Exekutatu makroa Fitxategietan"/>
+				<Item id="90324" name="Makroa:"/>
+				<Item id="90325" name="Karpeta:"/>
+				<Item id="90326" name="Aukeratu karpeta bat..."/>
+				<Item id="90327" name="Arakatu…"/>
+				<Item id="90328" name="Luzapenak:"/>
+				<Item id="90329" name="Azpidirektorioak errepikatu"/>
+				<Item id="90330" name="Sartu ezkutuko fitxategiak"/>
+				<Item id="90331" name="Gehienezko tamaina:"/>
+				<Item id="90332" name="Mugagabea"/>
+				<Item id="90333" name="Fitxategi bakoitzeko:"/>
+				<Item id="90334" name="Gorde aldatu bada"/>
+				<Item id="90335" name="Itxi ondoren"/>
+				<Item id="90336" name="Itxi irekita zeuden fitxategiak ere"/>
+				<Item id="90337" name="Errore batean:"/>
+				<Item id="90338" name="Saltatu fitxategia eta jarraitu"/>
+				<Item id="90339" name="Gelditu lehen errorean"/>
+				<Item id="90340" name="(ez dago gordetako makrorik)"/>
+				<Item id="90341" name="%lu fitxategi bat datoz"/>
+				<Item id="90342" name="Ez da karpeta aurkitu"/>
+				<Item id="90343" name="Aukeratu dagoen karpeta bat."/>
+				<Item id="90344" name="Ez dago fitxategirik bat"/>
+				<Item id="90345" name="Doitu luzapenen iragazkia, errekurtsioa edo ezkutuko fitxategien aukera."/>
+				<Item id="90346" name="Abiatzen…"/>
+				<Item id="90347" name="Prozesatzea:"/>
+				<Item id="90348" name="%ld / %ld Ados: %ld Saltatu: %ld Huts egin: %ld"/>
+				<Item id="90349" name="Sortea bertan behera utzi da"/>
+				<Item id="90350" name="Lotea osatuta"/>
+				<Item id="90351" name="Guztira: %lu Ados: %ld Saltatu: %ld Huts egin: %ld"/>
+				<Item id="90352" name="Eraiki data"/>
+				<Item id="90353" name="Sistema eragilea"/>
+				<Item id="90354" name="azkena"/>
+				<Item id="90355" name="zaharkitua"/>
+				<Item id="90356" name="ezezaguna"/>
+				<Item id="90357" name="Berrabiarazi aplikazioa aldaketak indarrean egon daitezen."/>
+				<Item id="90358" name="Eguneratu pluginak"/>
+				<Item id="90359" name="Hurrengo pluginak eguneratu nahi dituzu?"/>
+				<Item id="90360" name="Uneko bertsioen babeskopiak ~/Library/Application Support/Nextpad++/plugin-backups/-n egiten dira ordeztu aurretik."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Aldatu Tahoe itxura berrira (Beta)"/>
+				<Item id="90363" name="Erabili macOS estiloko menuak (Beta)"/>
+				<Item id="90364" name="Tahoe itxura berria Nextpad++ berrabiarazi ondoren aplikatuko da."/>
+				<Item id="90365" name="Nextpad++ berrabiarazi ondoren itxura klasikoa berreskuratuko da."/>
+				<Item id="90366" name="Irten orain"/>
+				<Item id="90367" name="Menuak macOS estiloan berrantolatuko dira Nextpad++ berrabiarazi ondoren."/>
+				<Item id="90368" name="Menuen diseinu klasikoa berrezarri egingo da Nextpad++ berrabiarazi ondoren."/>
+				<Item id="90369" name="Kolorea"/>
+				<Item id="90370" name="Aplikatu pluginen tresna-barrako ikonoetan"/>
+				<Item id="90371" name="Osoa moduan pluginen ikonoak kolore solido bakarrean bihurtzen dira."/>
+				<Item id="90372" name="Tresna-barra Taldeak"/>
+				<Item id="90373" name="Aukeratu botoi bakoitza non agertzen den Liquid Glass tresna-barran: gunean"/>
+				<Item id="90374" name="Botoia"/>
+				<Item id="90375" name="Kokatzea"/>
+				<Item id="90376" name="Berrezarri lehenespenetara"/>
+				<Item id="90377" name="Gainerako menua"/>
+				<Item id="90378" name="Ezkutuan"/>
+				<Item id="90379" name="CJK errespetatzen duen hitz-bilketa"/>
+				<Item id="90380" name="Zutabeen hautapena anitzeko ediziora aldatzen da"/>
+				<Item id="90381" name="Lerro-tartea:"/>
+				<Item id="90382" name="1.0 (lehenetsia)"/>
+				<Item id="90383" name="Ezkutatu fitxa-barra"/>
+				<Item id="90384" name="Fitxaren tamaina dokumentuaren zoomari jarraitzen dio"/>
+				<Item id="90385" name="Aukeratu…"/>
+				<Item id="90386" name="Berrezarri lehenespenera"/>
+				<Item id="90387" name="Kokapen lehenetsia erabiliz."/>
+				<Item id="90388" name="Kokapen pertsonalizatua."/>
+				<Item id="90389" name="Bide baliogabea - babeskopiek kokapen lehenetsia erabiliko dute."/>
+				<Item id="90390" name="Aukeratu"/>
+				<Item id="90391" name="Txertatu hautapena:"/>
+				<Item id="90392" name="Erabili Boost Regex modua (lerro anitzeko; berrabiarazi aplikatzeko)"/>
+				<Item id="90395" name="Berrabiarazi orain"/>
+				<Item id="90397" name="(Ez aukeratu zer egiten ari zaren jakin ezean)"/>
+				<Item id="90398" name="Tresna-barraren ikonoaren tamaina"/>
+				<Item id="90399" name="% 100 (lehenetsia)"/>
+				<Item id="90400" name="Saguaren gurpilaren korritze abiadura"/>
+				<Item id="90401" name="1× (desaktibatuta)"/>
+				<Item id="90402" name="Tresna-barraren ikonoaren tamaina aldatu da"/>
+				<Item id="90403" name="Tresna-barrako ikonoaren tamaina berria Nextpad++ abiarazten den hurrengoan izango du eragina."/>
+				<Item id="90404" name="Tresna-barraren ikonoak aldatu dira"/>
+				<Item id="90405" name="Tresna-barrako ikono berriak Nextpad++ abiarazten den hurrengoan izango dira indarrean."/>
+				<Item id="90411" name="Exekutatu makroa Fitxategietan..."/>
+				<Item id="90418" name="Honek proiektutik kenduko du hura eta bere eduki guztia.Ez da diskoko fitxategirik eragingo."/>
+				<Item id="90420" name="Karpeta"/>
+				<Item id="90423" name="Kopiatu hautatutako bide-izena(k)"/>
+				<Item id="90424" name="Ireki Hautatutako Bide-izena(k)"/>
+				<Item id="90427" name="Ez da aurkitu"/>
+				<Item id="90428" name="GATAZKA: %@"/>
+				<Item id="90429" name="&quot;%@&quot; ezabatu?"/>
+				<Item id="90430" name="Erabiltzaileak definitutako hizkuntza administratzailea"/>
+				<Item id="90431" name="Iragazi hizkuntzak..."/>
+				<Item id="90432" name="Iturria"/>
+				<Item id="90433" name="AC iturriak"/>
+				<Item id="90434" name="Egoera"/>
+				<Item id="90435" name="Instalatu / Eguneratu"/>
+				<Item id="90436" name="%lu hizkuntza · %lu instalatuta · %lu eguneratze"/>
+				<Item id="90437" name="Egilea"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="Hautatu instalatzeko hizkuntza bat edo gehiago."/>
+				<Item id="90440" name="Ez dago ezer deskargatu aukeraketarako."/>
+				<Item id="90441" name="Deskargatu huts egin du"/>
+				<Item id="90442" name="Checksum bat ez datoz bat"/>
+				<Item id="90443" name="Hautatutako hizkuntza(k) eskuragarri daude orain Hizkuntza menuan."/>
+				<Item id="90444" name="Hautatu instalatutako hizkuntza bat edo gehiago kentzeko."/>
+				<Item id="90445" name="Kendua"/>
+				<Item id="90446" name="Izen hau beste hizkuntza batek erabiltzen du jada."/>
+				<Item id="90447" name="Ezin izan da hizkuntza hori kendu."/>
+				<Item id="90448" name="Aurrez instalatutako hizkuntzak ezin dira kendu."/>
+				<Item id="90449" name="Hizkuntza honi ezin izan zaio izena aldatu."/>
+				<Item id="90450" name="Fitxategi hau %@ da.Irekiz gero, sintaxia nabarmentzea eta historia desegingo dira aplikazioak erantzuten duen.&#10;&#10;Jarraitu nahi duzu?"/>
+				<Item id="90451" name="Ireki Dena den"/>
+				<Item id="90452" name="&quot;%@&quot; diskoan aldatu da"/>
+				<Item id="90453" name="Ez ikusi"/>
+				<Item id="90454" name="Mantendu nire bertsioa"/>
+				<Item id="90455" name="Ezin izan da berriro kargatu &quot;%@&quot;"/>
+				<Item id="90456" name="Ezin izan da fitxategia irakurri."/>
+				<Item id="90457" name="Aukeratu botoi bakoitza non agertzen den Liquid Glass tresna-barran: taldeko kapsulan (Tresna-barra), taldearen ▾ gainezka-menuan edo Ezkutuan."/>
+				<Item id="90458" name="Eman garapena laguntzeko"/>
+				<Item id="90459" name="Instalatu Komando lerroko tresnak"/>
+				<Item id="90460" name="Erakutsi itzalak tresna-barrako kapsulen atzean"/>
+				<Item id="90461" name="Dohaintza eman"/>
+				<Item id="90462" name="Karaktere multzoak"/>
+				<Item id="90463" name="Minimizatu"/>
+				<Item id="90464" name="Ezkutatu Nextpad++"/>
+				<Item id="90465" name="Ezkutatu Besteak"/>
+				<Item id="90466" name="Erakutsi guztiak"/>
+				<Item id="90467" name="Irten Nextpad++"/>
+				<Item id="90468" name="Gorde uneko grabatutako makroa…"/>
+				<Item id="90469" name="Moztu amaierako espazioa eta gorde"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox><!-- $INT_REPLACE$ is a place holder, don't translate it -->

@@ -1466,13 +1466,13 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90006" name="Isi mmalite njikwa"/>
 				<Item id="90007" name="Nkwenye"/>
 				<Item id="90008" name="Nkwenye adabaghị"/>
-				<Item id="90009" name="Enweghị ebe nchekwa git\nJiri Chọgharịa imepe repo."/>
+				<Item id="90009" name="Enweghị ebe nchekwa git&#10;Jiri Chọgharịa imepe repo."/>
 				<Item id="90010" name="Ogbo"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Agba niile"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Nyefee ozi\u2026"/>
-				<Item id="90015" name="Chọgharịa maka ebe nchekwa\u2026"/>
+				<Item id="90014" name="Nyefee ozi…"/>
+				<Item id="90015" name="Chọgharịa maka ebe nchekwa…"/>
 				<Item id="90016" name="Họrọ ebe nchekwa git"/>
 				<Item id="90017" name="(enweghị ebe nchekwa)"/>
 				<Item id="90018" name="(nkewapụrụ)"/>
@@ -1486,9 +1486,9 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90026" name="Nsonaazụ"/>
 				<Item id="90027" name="Kwụsị"/>
 				<Item id="90028" name="Ọchụchọ kwụsịrị."/>
-				<Item id="90029" name="Ịchọ\u2026"/>
+				<Item id="90029" name="Ịchọ…"/>
 				<Item id="90030" name="Ederede iji chọọ"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Na-achọ..."/>
 				<Item id="90033" name="Dochie:"/>
 				<Item id="90034" name="Okwu dum"/>
@@ -1548,7 +1548,7 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90088" name="Wụnye ngwa mgbakwunye"/>
 				<Item id="90089" name="Wepu ngwa mgbakwunye"/>
 				<Item id="90090" name="Enweghị iwu ahụrụ"/>
-				<Item id="90091" name="Pịnye ka ịchọọ\u2026"/>
+				<Item id="90091" name="Pịnye ka ịchọọ…"/>
 				<Item id="90092" name="Asụsụ akọwara onye ọrụ v.2.1"/>
 				<Item id="90093" name="Mepụta Asụsụ Ọhụrụ"/>
 				<Item id="90094" name="Tinye aha:"/>
@@ -1557,11 +1557,9 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90097" name="Echekwala"/>
 				<Item id="90098" name="Emeela"/>
 				<Item id="90099" name="Tụgharịa Kechie Okwu"/>
-				<Item id="90100" name="Gosi agwa niile"/>
 				<Item id="90101" name="Gosi nhọrọ ndị mkpụrụedemede"/>
 				<Item id="90102" name="Ntugharị ntinye aka"/>
 				<Item id="90103" name="Emebeghị ya"/>
-				<Item id="90104" name="Bugharịa na diski"/>
 				<Item id="90105" name="Gbanwee ihe nchọta"/>
 				<Item id="90106" name="Gbaa mperi"/>
 				<Item id="90107" name="Oge ntinye akwụkwọ Nextpad++"/>
@@ -1570,7 +1568,7 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Ibe mwepụta"/>
 				<Item id="90112" name="Mgbe e mesịrị"/>
-				<Item id="90113" name="Filter plugins\u2026"/>
+				<Item id="90113" name="Filter plugins…"/>
 				<Item id="90114" name="Dị"/>
 				<Item id="90115" name="Mmelite"/>
 				<Item id="90116" name="arụnyere"/>
@@ -1579,7 +1577,7 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90119" name="Wepu plugins ndị a?"/>
 				<Item id="90120" name="Wụnye plugins ndị a?"/>
 				<Item id="90121" name="Nke a ga-ehichapụ faịlụ ngwa mgbakwunye."/>
-				<Item id="90122" name="Chọọ iwu\u2026"/>
+				<Item id="90122" name="Chọọ iwu…"/>
 				<Item id="90123" name="Agba nke ihu"/>
 				<Item id="90124" name="Agba ndabere"/>
 				<Item id="90125" name="Aha Makiro"/>
@@ -1599,7 +1597,7 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90139" name="E kpochapụrụ akara niile."/>
 				<Item id="90140" name="Eṅomiri ederede na klipbọọdụ."/>
 				<Item id="90141" name="Enweghị ederede akara ka idetuo."/>
-				<Item id="90142" name="Na-achọ... %ld kụrụ(s) \u2014 %@"/>
+				<Item id="90142" name="Na-achọ... %ld kụrụ(s) — %@"/>
 				<Item id="90143" name="Dochie na faịlụ..."/>
 				<Item id="90144" name="Dochie na Projects: Ejikọtabeghị."/>
 				<Item id="90145" name="Chọta na Projects: Ejikọtabeghị na listi faịlụ Project Panel."/>
@@ -1626,14 +1624,12 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90165" name="Kwenye tupu echekwa ihe niile"/>
 				<Item id="90166" name="Kwenye Dochie ihe niile na akwụkwọ mepere emepe"/>
 				<Item id="90167" name="Dochie: agagharịla na ihe ọzọ mere"/>
-				<Item id="90168" name="Jiri mkpụrụedemede monospaced na Chọta dialog"/>
 				<Item id="90169" name="Pịa aka nri na-edobe nhọrọ"/>
 				<Item id="90170" name="Weghachite usoro ụbọchị/oge ndabara"/>
 				<Item id="90171" name="Jiri nyocha ndepụta ọrụ dabere na XML"/>
 				<Item id="90172" name="Ihe nkwado imechi onwe ya ( ) [ ] {}"/>
 				<Item id="90173" name="Site na agwa Nth:"/>
 				<Item id="90174" name="Ọnụ ụzọ nlele akpaaka nke nhọrọ (bytes):"/>
-				<Item id="90175" name="Agbatịpụrụ (\n, \\r, \\t, \\0, \\ x...)"/>
 				<Item id="90176" name="Onye nchịkọta akụkọ"/>
 				<Item id="90177" name="Oke"/>
 				<Item id="90178" name="Ọchịchịrị"/>
@@ -1647,12 +1643,10 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD kachasị"/>
 				<Item id="90188" name="Mfe +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Ebe nchekwa ndepụta ngwa mgbakwunye"/>
 				<Item id="90192" name="Họrọ faịlụ XML Nextpad++ ka itinye"/>
-				<Item id="90193" name="Mepụta ọhụrụ\u2026"/>
-				<Item id="90194" name="Chekwa dị ka\u2026"/>
+				<Item id="90193" name="Mepụta ọhụrụ…"/>
+				<Item id="90194" name="Chekwa dị ka…"/>
 				<Item id="90195" name="Asụsụ onye ọrụ:"/>
 				<Item id="90196" name="Aha asụsụ"/>
 				<Item id="90197" name="Mepụta"/>
@@ -1682,6 +1676,217 @@ Họrọ &quot;Ee mgbe niile&quot; ma ọ bụrụ na ịchọghị ịhụ mkpa
 				<Item id="90221" name="Njirimara akpọchiri (macOS)"/>
 				<Item id="90222" name="Lelee maka mmelite…"/>
 				<Item id="90223" name="Mepee nso nso a"/>
+				<Item id="90226" name="Enyemaka"/>
+				<Item id="90227" name="Ọkwa agaghị"/>
+				<Item id="90228" name="Ọkwa adịghị"/>
+				<Item id="90229" name="dị"/>
+				<Item id="90230" name="Ị na-agba ọsọ"/>
+				<Item id="90231" name="Echetakwala m ọzọ"/>
+				<Item id="90232" name="Mmelite"/>
+				<Item id="90233" name="Lelee mmelite na-akpaghị aka"/>
+				<Item id="90234" name="Agbanyụrụ nlele mmelite akpaaka."/>
+				<Item id="90235" name="Nyocha ikpeazụ:"/>
+				<Item id="90236" name="Enweghị njikọ ịntanetị."/>
+				<Item id="90237" name="Nzaghachi na-atụghị anya ya site na ihe nkesa mmelite."/>
+				<Item id="90238" name="Ọnweghị mwepụta ebipụtara ahụghị."/>
+				<Item id="90239" name="Ihe nkesa mmelite adịghị adị nwa oge.Biko nwaa ọzọ ma emechaa."/>
+				<Item id="90240" name="Ihe nkesa mmelite jụrụ arịrịọ ahụ.Proxy, firewall ma ọ bụ VPN nwere ike na-egbochi ohere GitHub."/>
+				<Item id="90241" name="Ọtụtụ nlele mmelite sitere na netwọkụ gị (onye ọ bụla nọ na ya na-ekerịta oke a).Gbalịa ọzọ ma emechaa"/>
+				<Item id="90242" name="Ọtụtụ nlele mmelite sitere na netwọkụ gị (onye ọ bụla nọ na ya na-ekerịta oke a).Biko nwaa ọzọ ma emechaa."/>
+				<Item id="90243" name="Ihe nkesa mmelite weghachiri ọkwa"/>
+				<Item id="90244" name="Gbalịa ọzọ"/>
+				<Item id="90245" name="Bipụta nha ederede:"/>
+				<Item id="90246" name="Jiri mbugharị ihuenyo"/>
+				<Item id="90247" name="Nha n'ezie"/>
+				<Item id="90248" name="Enweghị ike dochie ụfọdụ faịlụ"/>
+				<Item id="90249" name="...na %lu ndị ọzọ"/>
+				<Item id="90250" name="Ọ bụ ọgbakọ gị na-elekọta ndị otu faịlụ."/>
+				<Item id="90251" name="Na-eche macOS iji kwado…"/>
+				<Item id="90252" name="macOS etinyeghị mgbanwe ahụ."/>
+				<Item id="90253" name="Edebara aha"/>
+				<Item id="90254" name="Mepee faịlụ niile na nchekwa?"/>
+				<Item id="90255" name="Nke a ga-emepe faịlụ %lu na taabụ ọhụrụ."/>
+				<Item id="90256" name="Enweghị ike ibubata: %@"/>
+				<Item id="90258" name="Achọtara %ld dakọtara na faịlụ %ld"/>
+				<Item id="90259" name="Na-achọ… %ld dakọtara ruo ugbu a"/>
+				<Item id="90260" name="%@ (%ld dakọtara%@)"/>
+				<Item id="90261" name="Ọchụchọ efu"/>
+				<Item id="90266" name="Ọgụgụ: %ld dakọtara."/>
+				<Item id="90267" name="Dochie ihe niile: %ld ka edochiri ihe omume %@."/>
+				<Item id="90268" name="Dochie n'ime faịlụ ndị emepere emepe: %ld ka edochiri ihe omume."/>
+				<Item id="90269" name="Chọta na faịlụ: %ld kụrụ(s) na faịlụ %ld."/>
+				<Item id="90270" name="Chọta na faịlụ: 0 hits."/>
+				<Item id="90271" name="Dochie ihe niile mere &quot;%@&quot; na &quot;%@&quot; na ndekọ:&#10;%@&#10;&#10;Enweghị ike imezi nke a."/>
+				<Item id="90272" name="Dochie na Faịlụ: %ld nnọchi(s) na %ld faịlụ."/>
+				<Item id="90273" name="Mepee Panel Project mbụ."/>
+				<Item id="90274" name="Họrọ opekata mpe otu Project Panel ka ịchọọ."/>
+				<Item id="90275" name="Enweghị faịlụ a ga-achọ."/>
+				<Item id="90276" name="Chọta na Projects: %ld kụrụ(s) na faịlụ %ld."/>
+				<Item id="90277" name="Chọta na Projects: 0 hits."/>
+				<Item id="90278" name="Dochie ihe niile mere"/>
+				<Item id="90279" name="ya na"/>
+				<Item id="90280" name="n'ime"/>
+				<Item id="90281" name="faịlụ (s).Enweghị ike imegharị nke a."/>
+				<Item id="90282" name="Dochie n'ime oru ngo: %ld nnọchi(s) na %ld faịlụ."/>
+				<Item id="90283" name="Kaa: %ld akara (ụtụ) akara."/>
+				<Item id="90284" name="Tọgharịa faịlụ/aha nchekwa..."/>
+				<Item id="90285" name="Enweghị ike ịchekwa ụfọdụ akwụkwọ"/>
+				<Item id="90286" name="⌘ Iwu"/>
+				<Item id="90287" name="⌃ njikwa"/>
+				<Item id="90288" name="⌥ Nhọrọ"/>
+				<Item id="90289" name="⇧ Mgbanwe"/>
+				<Item id="90290" name="Tinye eriri usoro NSDateFormatter:"/>
+				<Item id="90291" name="Emebebeghị '%@' na ụdị a."/>
+				<Item id="90292" name="Bubata ngwa mgbakwunye"/>
+				<Item id="90293" name="Achọrọ ịmalitegharịa"/>
+				<Item id="90294" name="Enweghị faịlụ iji hazie"/>
+				<Item id="90295" name="Ọnụ ọrụ a enweghị faịlụ."/>
+				<Item id="90296" name="'%@' enweela mgbanwe echekwara.&#10;Bugharia ma tufuo mgbanwe?"/>
+				<Item id="90297" name="Tinye aha faịlụ ọhụrụ:"/>
+				<Item id="90299" name="Aha ọhụrụ:"/>
+				<Item id="90301" name="Aha enweghị ike ịnwe &quot;/&quot; ma ọ bụ &quot;:&quot;."/>
+				<Item id="90304" name="Echekwala Ha niile"/>
+				<Item id="90306" name="Enwere ụzọ atọ iji gbanwee gaa na ọnọdụ kọlụm họrọ:&#10;&#10;1.(Keyọdụ ahụ na òké) Jide nhọrọ ka ị na-adọkpụrụ aka ekpe&#10;&#10;2.(naanị ahụigodo) Jide Nhọrọ+Mgbanwe ka ị na-eji igodo akụ&#10;&#10;3.(Keybọọdụ ma ọ bụ òké)&#10; Tinye caret na mmalite achọrọ nke ọnọdụ ngọngọ kọlụm, wee&#10; mee iwu &quot;Malite/Nkwụsị Họrọ n'ụdị kọlụm&quot;;&#10; Bugharịa caret gaa na njedebe nke ọnọdụ ngọngọ kọlụm, wee&#10; mebie iwu &quot;Malite/End Select in Column Mode&quot; ọzọ."/>
+				<Item id="90307" name="Tinye URL ọchụchọ.Jiri %s dị ka onye na-edobe ajụjụ (ma ọ bụ tinye ajụjụ ahụ na njedebe):"/>
+				<Item id="90308" name="Tinye iwu ma ọ bụ URL..."/>
+				<Item id="90309" name="Emenwughị:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Edezi contextMenu.xml na-enye gị ohere ịgbanwe Nextpad++ onodu onodu mpụta mmapụta na mpaghara edit.&#10;Ị ga-amalitegharị Nextpad++ gị ka ọ malite ka emegharịa contextMenu.xml."/>
+				<Item id="90312" name="Awụnyelarị"/>
+				<Item id="90313" name="Wụnye Ngwá Ọrụ Ahịrị Command nextpad++"/>
+				<Item id="90314" name="Nwụnye dara"/>
+				<Item id="90315" name="Awụnyere - mana ~/.local/bin anọghị na PATH gị"/>
+				<Item id="90316" name="Ugbua na nhazi gị"/>
+				<Item id="90317" name="Etinyere na PATH"/>
+				<Item id="90318" name="Enweghị ike ide"/>
+				<Item id="90319" name="Eṅomiri"/>
+				<Item id="90321" name="Mgbanwe gị ga-efunahụ ma ọ bụrụ na ichekwaghị ha."/>
+				<Item id="90322" name="Tinye akwụkwọ na akwụkwọ niile"/>
+				<Item id="90323" name="Gbaa Macro na faịlụ"/>
+				<Item id="90324" name="nnukwu:"/>
+				<Item id="90325" name="nchekwa:"/>
+				<Item id="90326" name="Họrọ folda…"/>
+				<Item id="90327" name="Chọgharịa…"/>
+				<Item id="90328" name="Mgbatị:"/>
+				<Item id="90329" name="Tinyegharịa akwụkwọ ndekọ aha"/>
+				<Item id="90330" name="Tinye faịlụ zoro ezo"/>
+				<Item id="90331" name="Oke kacha:"/>
+				<Item id="90332" name="Enweghị oke"/>
+				<Item id="90333" name="Kwa faịlụ:"/>
+				<Item id="90334" name="Chekwa ma ọ bụrụ na agbanwere ya"/>
+				<Item id="90335" name="Mechie ma emechaa"/>
+				<Item id="90336" name="Mechie ọbụna faịlụ ndị emepeela"/>
+				<Item id="90337" name="Na mperi:"/>
+				<Item id="90338" name="Mafee faịlụ wee gaa n'ihu"/>
+				<Item id="90339" name="Kwụsị na njehie mbụ"/>
+				<Item id="90340" name="(enweghị macros echekwara)"/>
+				<Item id="90341" name="%lu faịlụ dakọtara"/>
+				<Item id="90342" name="Ahụghị folda"/>
+				<Item id="90343" name="Họrọ folda dị."/>
+				<Item id="90344" name="Enweghị faịlụ dabara"/>
+				<Item id="90345" name="Hazie nzacha ndọtị, ntughari, ma ọ bụ nhọrọ faịlụ zoro ezo."/>
+				<Item id="90346" name="Bido…"/>
+				<Item id="90347" name="Na-ahazi:"/>
+				<Item id="90348" name="%ld / %ld Ọ dị mma: %ld Mafere: %ld Ọ dara: %ld"/>
+				<Item id="90349" name="Kagbuo ogbe"/>
+				<Item id="90350" name="Ogbe ezuola"/>
+				<Item id="90351" name="Mkpokọta: %lu Ọ dị mma: %ld Mafere: %ld Ọ dara: %ld"/>
+				<Item id="90352" name="Ụbọchị wuru"/>
+				<Item id="90353" name="Sistemụ arụmọrụ"/>
+				<Item id="90354" name="kacha ọhụrụ"/>
+				<Item id="90355" name="oge ochie"/>
+				<Item id="90356" name="amaghị"/>
+				<Item id="90357" name="Malitegharịa ngwa maka mgbanwe ka ọ rụọ ọrụ."/>
+				<Item id="90358" name="Melite ngwa mgbakwunye"/>
+				<Item id="90359" name="Melite plugins ndị a?"/>
+				<Item id="90360" name="A na-akwado ụdịdị dị ugbu a ruo ~/Library/Application Support/Nextpad++/plugin-backups/ tupu edochie ya."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Banye na anya Tahoe ọhụrụ (Beta)"/>
+				<Item id="90363" name="Jiri menu ụdị ụdị macOS (Beta)"/>
+				<Item id="90364" name="A ga-etinye anya Tahoe ọhụrụ ahụ ka ịmalitegharịa Nextpad++."/>
+				<Item id="90365" name="A ga-eweghachite ọdịdị Omuma mgbe ị malitegharịrị Nextpad++."/>
+				<Item id="90366" name="Kwụsị Ugbu a"/>
+				<Item id="90367" name="A ga-ahazigharị menus n'ụdị macOS ka ịmalitegharịa Nextpad++."/>
+				<Item id="90368" name="A ga-eweghachi okirikiri nhọrọ ukwuu nke menu mgbe ị malitegharịrị Nextpad++."/>
+				<Item id="90369" name="Agba"/>
+				<Item id="90370" name="Tinye na akara ngosi ngwaọrụ ngwa mgbakwunye"/>
+				<Item id="90371" name="Akara ngosi ngwa mgbakwunye zuru oke na-aghọ otu agba siri ike."/>
+				<Item id="90372" name="Otu ngwaọrụ ngwaọrụ"/>
+				<Item id="90373" name="Họrọ ebe bọtịnụ ọ bụla pụtara na Liquid Glass toolbar: na"/>
+				<Item id="90374" name="Bọtịnụ"/>
+				<Item id="90375" name="Ndokwa"/>
+				<Item id="90376" name="Tọgharịa na ndabara"/>
+				<Item id="90377" name="Nribiga nri ókè"/>
+				<Item id="90378" name="Zoro ezo"/>
+				<Item id="90379" name="Kechie okwu enyi na enyi CJK"/>
+				<Item id="90380" name="Nhọrọ kọlụm na-atụgharị gaa na ndezi ọtụtụ"/>
+				<Item id="90381" name="Ogologo ahịrị:"/>
+				<Item id="90382" name="1.0 (Ebube)"/>
+				<Item id="90383" name="Zoo mmanya taabụ"/>
+				<Item id="90384" name="Ogo tab na-eso mbugharị akwụkwọ"/>
+				<Item id="90385" name="Họrọ…"/>
+				<Item id="90386" name="Tọgharịa ka ọ bụrụ nke an-kpọ"/>
+				<Item id="90387" name="Iji ọnọdụ ndabara."/>
+				<Item id="90388" name="Ọnọdụ omenala."/>
+				<Item id="90389" name="Ụzọ na-ezighi ezi - nkwado ndabere ga-eji ọnọdụ ndabara."/>
+				<Item id="90390" name="Họrọ"/>
+				<Item id="90391" name="Fanye Nhọrọ:"/>
+				<Item id="90392" name="Jiri ọnọdụ Regex Boost (otutu ahịrị; malitegharịa ka itinye)"/>
+				<Item id="90395" name="Malitegharịa ekwentị Ugbu a"/>
+				<Item id="90397" name="(dola họrọ ya ma ọ bụrụ na ị maara ihe ị na-eme)"/>
+				<Item id="90398" name="Ogo akara ngosi ngwaọrụ"/>
+				<Item id="90399" name="100% (nke ndabara)"/>
+				<Item id="90400" name="Ọsọ mpịakọta wiil òké"/>
+				<Item id="90401" name="1 × (gbanyụọ)"/>
+				<Item id="90402" name="Agbanwere nha akara ngosi ngwaọrụ"/>
+				<Item id="90403" name="Ogo akara ngosi ngwaọrụ ọhụrụ ga-amalite oge ọzọ Nextpad++ ga-ebido."/>
+				<Item id="90404" name="Agbanwere akara ngosi ngwaọrụ"/>
+				<Item id="90405" name="Akara ngosi ngwaọrụ ọhụrụ a ga-amalite n'oge ọzọ Nextpad++ ga-ebido."/>
+				<Item id="90411" name="Gbaa Macro na faịlụ..."/>
+				<Item id="90418" name="Nke a ga-ewepụ ya na ihe niile dị n'ime ya na ọrụ ahụ.Ọ nweghị faịlụ dị na diski agaghị emetụta."/>
+				<Item id="90420" name="nchekwa"/>
+				<Item id="90427" name="Ahụghị ya"/>
+				<Item id="90428" name="Esemokwu: %@"/>
+				<Item id="90429" name="Hichapụ &quot;%@&quot;?"/>
+				<Item id="90430" name="Onye nchịkwa Asụsụ akọwapụtara"/>
+				<Item id="90431" name="Wepụta asụsụ…"/>
+				<Item id="90432" name="Isi mmalite"/>
+				<Item id="90433" name="Isi mmalite AC"/>
+				<Item id="90434" name="Ọnọdụ"/>
+				<Item id="90435" name="Wụnye / Mmelite"/>
+				<Item id="90436" name="%lu asụsụ · %lu arụnyere · %lu nwelite"/>
+				<Item id="90437" name="Odee"/>
+				<Item id="90438" name="Ejikọtara: ndenye %ld sitere na isi mmalite %lu (jikọtara)"/>
+				<Item id="90439" name="Họrọ otu asụsụ ma ọ bụ karịa ka ịwụnye."/>
+				<Item id="90440" name="Ọ nweghị ihe nbudata maka nhọrọ."/>
+				<Item id="90441" name="Nbudata agaghị"/>
+				<Item id="90442" name="Checksum adabaghị"/>
+				<Item id="90443" name="Asụsụ ahọpụtara dị ugbu a na nchịkọta asụsụ."/>
+				<Item id="90444" name="Họrọ otu asụsụ arụnyere ma ọ bụ karịa ka ị wepụ."/>
+				<Item id="90445" name="Ewepụrụ"/>
+				<Item id="90446" name="Asụsụ ọzọ ejirila aha a."/>
+				<Item id="90447" name="Enweghị ike iwepụ asụsụ a."/>
+				<Item id="90448" name="Enweghị ike iwepụ asụsụ etinyegoro mbụ."/>
+				<Item id="90449" name="Enweghị ike ịnyegharị asụsụ a."/>
+				<Item id="90450" name="Faịlụ a bụ %@.Imepe ya ga-eme ka ọ pụta ìhè syntax wee mebie akụkọ ihe mere eme iji mee ka ngwa ahụ na-anabata ya.&#10;&#10;Ị chọrọ ịga n'ihu?"/>
+				<Item id="90451" name="Mepee agbanyeghị"/>
+				<Item id="90452" name="&quot;%@&quot; gbanwere na diski"/>
+				<Item id="90453" name="Ileghara anya"/>
+				<Item id="90454" name="Debe ụdị m"/>
+				<Item id="90455" name="Enweghị ike ibugharị &quot;%@&quot;"/>
+				<Item id="90456" name="Enweghị ike ịgụ faịlụ a."/>
+				<Item id="90457" name="Họrọ ebe bọtịnụ ọ bụla na-apụta na Liquid Glass toolbar: na capsule otu (Toolbar), na otu ▾ ngafe menu, ma ọ bụ zoro ezo."/>
+				<Item id="90458" name="Nye onyinye iji kwado mmepe"/>
+				<Item id="90459" name="Wụnye Ngwa Ahịrị Iwu"/>
+				<Item id="90460" name="Gosi onyinyo dị n'azụ capsules toolbar"/>
+				<Item id="90461" name="Nye onyinye"/>
+				<Item id="90462" name="Ntọala agwa"/>
+				<Item id="90463" name="Wedata"/>
+				<Item id="90464" name="Zoo Nextpad++"/>
+				<Item id="90465" name="Zoo Ndị Ọzọ"/>
+				<Item id="90466" name="Gosi ihe niile"/>
+				<Item id="90467" name="kwụsị Nextpad++"/>
+				<Item id="90468" name="Chekwaa nnukwu ihe edekọtara ugbu a…"/>
+				<Item id="90469" name="Kpachapụta oghere n'azụ wee chekwaa"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

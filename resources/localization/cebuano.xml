@@ -1466,13 +1466,13 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90006" name="Pagkontrol sa Tinubdan"/>
 				<Item id="90007" name="Ipasalig"/>
 				<Item id="90008" name="Napakyas ang Commit"/>
-				<Item id="90009" name="Walay git repository\nGamita ang Browse para maablihan ang repo."/>
+				<Item id="90009" name="Walay git repository&#10;Gamita ang Browse para maablihan ang repo."/>
 				<Item id="90010" name="Yugto"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Yugto Tanan"/>
 				<Item id="90013" name="Unstage Tanan"/>
-				<Item id="90014" name="Itugyan ang mensahe\u2026"/>
-				<Item id="90015" name="I-browse ang repository\u2026"/>
+				<Item id="90014" name="Itugyan ang mensahe…"/>
+				<Item id="90015" name="I-browse ang repository…"/>
 				<Item id="90016" name="Pagpili og git repository folder"/>
 				<Item id="90017" name="(walay repository)"/>
 				<Item id="90018" name="(nagbulag)"/>
@@ -1486,9 +1486,9 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90026" name="Resulta"/>
 				<Item id="90027" name="Hunong"/>
 				<Item id="90028" name="Nahunong ang pagpangita."/>
-				<Item id="90029" name="Gipangita\u2026"/>
+				<Item id="90029" name="Gipangita…"/>
 				<Item id="90030" name="Text para pangitaon"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Gipangita..."/>
 				<Item id="90033" name="Ilisan:"/>
 				<Item id="90034" name="Tibuok Pulong"/>
@@ -1548,7 +1548,7 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90088" name="I-install ang mga Plugin"/>
 				<Item id="90089" name="Kuhaa ang mga Plugin"/>
 				<Item id="90090" name="Walay mga sugo nga nakit-an"/>
-				<Item id="90091" name="Type para pangitaon\u2026"/>
+				<Item id="90091" name="Type para pangitaon…"/>
 				<Item id="90092" name="Pinulongan nga Gitakda sa Gumagamit v.2.1"/>
 				<Item id="90093" name="Paghimo og Bag-ong Pinulongan"/>
 				<Item id="90094" name="Pagsulod ug ngalan:"/>
@@ -1557,11 +1557,9 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90097" name="Ayaw Pagtipig"/>
 				<Item id="90098" name="Nahuman"/>
 				<Item id="90099" name="I-toggle ang Word Wrap"/>
-				<Item id="90100" name="Ipakita ang Tanang Karakter"/>
 				<Item id="90101" name="Ipakita ang mga Opsyon sa mga Karakter"/>
 				<Item id="90102" name="I-toggle ang Giya sa Indent"/>
 				<Item id="90103" name="Wala Pa Gipatuman"/>
-				<Item id="90104" name="I-reload gikan sa Disk"/>
 				<Item id="90105" name="Usba ang Search Engine"/>
 				<Item id="90106" name="Run Error"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90110" name="Pag-download"/>
 				<Item id="90111" name="Ipagawas ang Panid"/>
 				<Item id="90112" name="Sa ulahi"/>
-				<Item id="90113" name="Pagsala sa mga plugin\u2026"/>
+				<Item id="90113" name="Pagsala sa mga plugin…"/>
 				<Item id="90114" name="Anaa"/>
 				<Item id="90115" name="Mga update"/>
 				<Item id="90116" name="Gi-install"/>
@@ -1579,7 +1577,7 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90119" name="Kuhaa ang mosunod nga mga plugins?"/>
 				<Item id="90120" name="I-install ang mosunod nga mga plugins?"/>
 				<Item id="90121" name="Mapapas niini ang mga file sa plugin."/>
-				<Item id="90122" name="Mga sugo sa pagpangita\u2026"/>
+				<Item id="90122" name="Mga sugo sa pagpangita…"/>
 				<Item id="90123" name="Kolor sa atubangan"/>
 				<Item id="90124" name="Kolor sa background"/>
 				<Item id="90125" name="Macro nga ngalan"/>
@@ -1599,7 +1597,7 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90139" name="Ang tanan nga mga marka gitangtang."/>
 				<Item id="90140" name="Gimarkahan nga teksto nga gikopya sa clipboard."/>
 				<Item id="90141" name="Walay gimarkahan nga teksto nga kopyahon."/>
-				<Item id="90142" name="Nangita... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Nangita... %ld hit(s) — %@"/>
 				<Item id="90143" name="Pag-ilis sa mga file..."/>
 				<Item id="90144" name="Ilisan sa Mga Proyekto: Wala pa konektado."/>
 				<Item id="90145" name="Pangitaa sa Mga Proyekto: Wala pa konektado sa lista sa file sa Project Panel."/>
@@ -1626,14 +1624,12 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90165" name="Kumpirma sa dili pa I-save ang Tanan"/>
 				<Item id="90166" name="Kumpirma ang Ilisan ang Tanan sa bukas nga mga dokumento"/>
 				<Item id="90167" name="Ilisan: ayaw pagbalhin sa sunod nga panghitabo"/>
-				<Item id="90168" name="Gamita ang monospaced nga font sa Find dialog"/>
 				<Item id="90169" name="Ang right-click nagpadayon sa pagpili"/>
 				<Item id="90170" name="Balika ang default han-ay sa petsa/oras"/>
 				<Item id="90171" name="Gamita ang XML-based function list parsers"/>
 				<Item id="90172" name="Auto-close bracket ( ) [ ] { }"/>
 				<Item id="90173" name="Gikan sa Nth nga karakter:"/>
 				<Item id="90174" name="In-selection auto-check threshold (bytes):"/>
-				<Item id="90175" name="Gipadako (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Mga margin"/>
 				<Item id="90178" name="Ngitngit"/>
@@ -1647,12 +1643,10 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="Gi-optimize ang LCD"/>
 				<Item id="90188" name="Yano +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repository sa listahan sa plugin"/>
 				<Item id="90192" name="Pagpili ug Nextpad++ theme XML file aron magamit"/>
-				<Item id="90193" name="Paghimo og bag-o\u2026"/>
-				<Item id="90194" name="I-save ingon\u2026"/>
+				<Item id="90193" name="Paghimo og bag-o…"/>
+				<Item id="90194" name="I-save ingon…"/>
 				<Item id="90195" name="Pinulongan sa tiggamit:"/>
 				<Item id="90196" name="Ngalan sa pinulongan"/>
 				<Item id="90197" name="Paghimo"/>
@@ -1682,6 +1676,217 @@ Mahimo nimong i-aktibo pag-usab kini nga dialog sa Mga Kagustuhan sa ulahi."/>
 				<Item id="90221" name="Naka-lock nga Attribute (macOS)"/>
 				<Item id="90222" name="Susiha ang mga Update…"/>
 				<Item id="90223" name="Bukas Bag-o"/>
+				<Item id="90226" name="Tabang"/>
+				<Item id="90227" name="Ang Yugto Napakyas"/>
+				<Item id="90228" name="Napakyas ang Unstage"/>
+				<Item id="90229" name="anaa na"/>
+				<Item id="90230" name="Nagdagan ka"/>
+				<Item id="90231" name="Ayaw na ako pahinumdomi pag-usab"/>
+				<Item id="90232" name="Mga update"/>
+				<Item id="90233" name="Awtomatikong susihon ang mga update"/>
+				<Item id="90234" name="Ang mga pagsusi sa awtomatikong pag-update wala na."/>
+				<Item id="90235" name="Katapusan nga gisusi:"/>
+				<Item id="90236" name="Walay koneksyon sa internet."/>
+				<Item id="90237" name="Wala damha nga tubag gikan sa update server."/>
+				<Item id="90238" name="Wala'y nakit-an nga gipatik nga pagpagawas."/>
+				<Item id="90239" name="Ang update server temporaryo nga dili magamit.Palihug sulayi pag-usab unya."/>
+				<Item id="90240" name="Ang update server mibalibad sa hangyo.Mahimong gibabagan sa usa ka proxy, firewall o VPN ang pag-access sa GitHub."/>
+				<Item id="90241" name="Daghan kaayo nga mga pagsusi sa update gikan sa imong network (kini nga limitasyon gipaambit sa tanan nga naa niini).Sulayi pag-usab pagkahuman"/>
+				<Item id="90242" name="Daghan kaayo nga mga pagsusi sa update gikan sa imong network (kini nga limitasyon gipaambit sa tanan nga naa niini).Palihug sulayi pag-usab unya."/>
+				<Item id="90243" name="Ang update server mibalik sa kahimtang"/>
+				<Item id="90244" name="Sulayi Pag-usab"/>
+				<Item id="90245" name="I-print ang gidak-on sa teksto:"/>
+				<Item id="90246" name="Gamit ug screen zoom"/>
+				<Item id="90247" name="Aktuwal nga gidak-on"/>
+				<Item id="90248" name="Ang ubang mga file dili mapulihan"/>
+				<Item id="90249" name="...ug %lu pa"/>
+				<Item id="90250" name="Ang mga asosasyon sa file gidumala sa imong organisasyon."/>
+				<Item id="90251" name="Naghulat alang sa macOS aron makumpirma…"/>
+				<Item id="90252" name="Wala gigamit ni macOS ang pagbag-o."/>
+				<Item id="90253" name="Narehistro"/>
+				<Item id="90254" name="Ablihi ang tanan nga mga file sa folder?"/>
+				<Item id="90255" name="Kini moabli sa %lu mga payl sa bag-ong mga tab."/>
+				<Item id="90256" name="Dili ma-import: %@"/>
+				<Item id="90258" name="Nakit-an ang %ld (mga) tugma sa %ld (mga) payl."/>
+				<Item id="90259" name="Gipangita… %ld (mga) tugma hangtod karon"/>
+				<Item id="90260" name="%@ (%ld duwa%@)"/>
+				<Item id="90261" name="Fuzzy nga pagpangita"/>
+				<Item id="90266" name="Ihap: %ld (mga) duwa."/>
+				<Item id="90267" name="Ilisan Tanan: %ld(mga) panghitabo giilisan %@."/>
+				<Item id="90268" name="Ilisan sa Giablihan nga mga File: %ld (mga) panghitabo ang giilisan."/>
+				<Item id="90269" name="Pangitaa sa Files: %ld (mga) hit sa %ld (mga) file."/>
+				<Item id="90270" name="Pangitaa sa Files: 0 hits."/>
+				<Item id="90271" name="Ilisan ang tanang panghitabo sa &quot;%@&quot; sa &quot;%@&quot; sa direktoryo:&#10;%@&#10;&#10;Kini dili na mabawi."/>
+				<Item id="90272" name="Ilisan sa mga File: %ld (mga) puli sa %ld (mga) file."/>
+				<Item id="90273" name="Ablihi una ang Project Panel."/>
+				<Item id="90274" name="Pagpili bisan usa ka Project Panel aron pangitaon."/>
+				<Item id="90275" name="Walay mga file nga pangitaon."/>
+				<Item id="90276" name="Pangitaa sa Mga Proyekto: %ld (mga) hit sa %ld (mga) file."/>
+				<Item id="90277" name="Pangitaa sa Mga Proyekto: 0 hits."/>
+				<Item id="90278" name="Ilisan ang tanang panghitabo sa"/>
+				<Item id="90279" name="uban sa"/>
+				<Item id="90280" name="sa"/>
+				<Item id="90281" name="project file(s).Kini dili na mabawi."/>
+				<Item id="90282" name="Ilisan sa Mga Proyekto: %ld (mga) puli sa %ld (mga) payl."/>
+				<Item id="90283" name="Markahan: %ld (mga) tugma nga gimarkahan."/>
+				<Item id="90284" name="Filter file/ngalan sa folder..."/>
+				<Item id="90285" name="Ang ubang mga dokumento dili ma-save"/>
+				<Item id="90286" name="⌘ Sugo"/>
+				<Item id="90287" name="⌃ Pagkontrol"/>
+				<Item id="90288" name="⌥ Opsyon"/>
+				<Item id="90289" name="⇧ Pagbalhin"/>
+				<Item id="90290" name="Pagsulod ug NSDateFormatter format nga string:"/>
+				<Item id="90291" name="'%@' wala pa gipatuman niini nga bersyon."/>
+				<Item id="90292" name="Import nga Plugin"/>
+				<Item id="90293" name="Pag-restart Gikinahanglan"/>
+				<Item id="90294" name="Walay mga file nga iproseso"/>
+				<Item id="90295" name="Kini nga node sa proyekto walay mga file."/>
+				<Item id="90296" name="Ang '%@' adunay wala ma-save nga mga pagbag-o.&#10;I-reload ug isalikway ang mga pagbag-o?"/>
+				<Item id="90297" name="Pagsulod ug bag-ong filename:"/>
+				<Item id="90299" name="Bag-ong ngalan:"/>
+				<Item id="90301" name="Ang ngalan dili adunay &quot;/&quot; o &quot;:&quot;."/>
+				<Item id="90304" name="Ayaw I-save ang Tanan"/>
+				<Item id="90306" name="Adunay 3 ka paagi sa pagbalhin ngadto sa column-select mode:&#10;&#10;1.(Keyboard ug Mouse) Hupti ang Opsyon samtang nag-left-click sa pagguyod&#10;&#10;2.(Keyboard lang) Hupti ang Option+Shift samtang naggamit sa mga arrow key&#10;&#10;3.(Keyboard o Mouse)&#10; Ibutang ang caret sa gusto nga pagsugod sa column block nga posisyon, dayon&#10; ipatuman ang “Begin/End Select in Column Mode” nga sugo;&#10; Ibalhin ang caret sa gusto nga katapusan sa column block position, unya&#10; i-execute ang “Start/End Select in Column Mode” command pag-usab"/>
+				<Item id="90307" name="Pagsulod sa search URL.Gamita ang %s isip placeholder sa pangutana (o idugang ang pangutana sa katapusan):"/>
+				<Item id="90308" name="Pagsulod sa command o URL..."/>
+				<Item id="90309" name="Napakyas sa pagpatuman:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ang pag-edit sa contextMenu.xml nagtugot kanimo sa pag-usab sa imong Nextpad++ popup context menu sa edit zone.&#10;Kinahanglan nimo nga i-restart ang imong Nextpad++ aron ma-epekto human sa pag-usab sa contextMenu.xml."/>
+				<Item id="90312" name="Na-install na"/>
+				<Item id="90313" name="I-install ang nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Napakyas ang pag-instalar"/>
+				<Item id="90315" name="Gi-install — apan ang ~/.local/bin wala sa imong PATH"/>
+				<Item id="90316" name="Naa na sa imong config"/>
+				<Item id="90317" name="Gidugang sa PATH"/>
+				<Item id="90318" name="Dili makasulat"/>
+				<Item id="90319" name="Gikopya"/>
+				<Item id="90321" name="Mawala ang imong mga pagbag-o kung dili nimo kini i-save."/>
+				<Item id="90322" name="Pag-apply sa tanan nga mga dokumento"/>
+				<Item id="90323" name="Pagdalagan ang Macro sa mga File"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Pagpili og folder…"/>
+				<Item id="90327" name="Pag-browse…"/>
+				<Item id="90328" name="Mga extension:"/>
+				<Item id="90329" name="Ibalik ang mga subdirektoryo"/>
+				<Item id="90330" name="Ilakip ang mga tinago nga mga file"/>
+				<Item id="90331" name="Max nga gidak-on:"/>
+				<Item id="90332" name="Walay kinutuban"/>
+				<Item id="90333" name="kada file:"/>
+				<Item id="90334" name="I-save kung giusab"/>
+				<Item id="90335" name="Close pagkahuman"/>
+				<Item id="90336" name="Isira bisan ang mga file nga bukas na"/>
+				<Item id="90337" name="Sa sayop:"/>
+				<Item id="90338" name="Laktawan ang file ug magpadayon"/>
+				<Item id="90339" name="Hunong sa unang sayop"/>
+				<Item id="90340" name="(walay gitipigan nga mga macro)"/>
+				<Item id="90341" name="%lu (mga) payl nga tugma"/>
+				<Item id="90342" name="Wala makit-an ang folder"/>
+				<Item id="90343" name="Pagpili og usa ka folder nga anaa."/>
+				<Item id="90344" name="Walay mga file nga magkatugma"/>
+				<Item id="90345" name="I-adjust ang mga extension filter, recursion, o hidden-files nga opsyon."/>
+				<Item id="90346" name="Nagsugod…"/>
+				<Item id="90347" name="Pagproseso:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Gilaktawan: %ld Napakyas: %ld"/>
+				<Item id="90349" name="Gikanselar ang batch"/>
+				<Item id="90350" name="Kumpleto ang batch"/>
+				<Item id="90351" name="Total: %lu Ok: %ld Gilaktawan: %ld Napakyas: %ld"/>
+				<Item id="90352" name="Petsa sa Pagtukod"/>
+				<Item id="90353" name="Operating System"/>
+				<Item id="90354" name="pinakabag-o"/>
+				<Item id="90355" name="karaan na"/>
+				<Item id="90356" name="wala mailhi"/>
+				<Item id="90357" name="I-restart ang aplikasyon alang sa mga pagbag-o nga epektibo."/>
+				<Item id="90358" name="Pag-update sa mga Plugin"/>
+				<Item id="90359" name="I-update ang mosunod nga mga plugins?"/>
+				<Item id="90360" name="Kasamtangang mga bersyon gi-back up sa ~/Library/Application Support/Nextpad++/plugin-backups/ sa wala pa ilisan."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Pagbalhin sa Bag-ong Tahoe tan-awon (Beta)"/>
+				<Item id="90363" name="Gamita ang macOS-estilo nga mga menu (Beta)"/>
+				<Item id="90364" name="Ang bag-ong Tahoe tan-awon ipatuman human nimo i-restart ang Nextpad++."/>
+				<Item id="90365" name="Ang klasiko nga hitsura ibalik human nimo i-restart ang Nextpad++."/>
+				<Item id="90366" name="Hunong na"/>
+				<Item id="90367" name="Ang mga menu ihan-ay pag-usab sa macOS estilo human nimo i-restart ang Nextpad++."/>
+				<Item id="90368" name="Ang klasiko nga layout sa menu ibalik human nimo i-restart ang Nextpad++."/>
+				<Item id="90369" name="Kolor"/>
+				<Item id="90370" name="Pag-aplay sa mga icon sa toolbar sa plugin"/>
+				<Item id="90371" name="Sa Kompleto nga mode nga plugin ang mga icon mahimong usa ka solidong kolor."/>
+				<Item id="90372" name="Mga Grupo sa Toolbar"/>
+				<Item id="90373" name="Pilia kung asa makita ang matag buton sa Liquid Glass toolbar: sa"/>
+				<Item id="90374" name="Butang"/>
+				<Item id="90375" name="Pagpahimutang"/>
+				<Item id="90376" name="I-reset sa mga Default"/>
+				<Item id="90377" name="Overflow nga menu"/>
+				<Item id="90378" name="Gitagoan"/>
+				<Item id="90379" name="CJK-friendly nga word wrap"/>
+				<Item id="90380" name="Ang pagpili sa column mobalhin sa multi-editing"/>
+				<Item id="90381" name="Gilay-on sa linya:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Tagoa ang tab bar"/>
+				<Item id="90384" name="Ang gidak-on sa tab nagsunod sa pag-zoom sa dokumento"/>
+				<Item id="90385" name="Pilia ang…"/>
+				<Item id="90386" name="I-reset sa Default"/>
+				<Item id="90387" name="Gamit ang default nga lokasyon."/>
+				<Item id="90388" name="Pasadya nga lokasyon."/>
+				<Item id="90389" name="Dili balido nga agianan - ang mga backup mogamit sa default nga lokasyon."/>
+				<Item id="90390" name="Pilia"/>
+				<Item id="90391" name="Isulod ang Pagpili:"/>
+				<Item id="90392" name="Gamita ang Boost Regex mode (multi-line; i-restart aron magamit)"/>
+				<Item id="90395" name="I-restart Karon"/>
+				<Item id="90397" name="(ayaw pilia kini gawas kung nahibal-an nimo kung unsa ang imong gibuhat)"/>
+				<Item id="90398" name="Gidak-on sa icon sa toolbar"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Katulin sa pag-scroll sa ligid sa mouse"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Gibag-o ang gidak-on sa icon sa toolbar"/>
+				<Item id="90403" name="Ang bag-ong toolbar nga gidak-on sa icon mahimong epektibo sa sunod higayon nga Nextpad++ ilunsad."/>
+				<Item id="90404" name="Nausab ang mga icon sa toolbar"/>
+				<Item id="90405" name="Ang bag-ong mga icon sa toolbar mo-epekto sa sunod higayon nga Nextpad++ ilunsad."/>
+				<Item id="90411" name="Pagdalag Macro sa mga File..."/>
+				<Item id="90418" name="Kini magwagtang niini ug sa tanang sulod niini gikan sa proyekto.Walay mga file sa disk ang maapektuhan."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90427" name="Wala makit-an"/>
+				<Item id="90428" name="PAGSUMBONG: %@"/>
+				<Item id="90429" name="Pagtangtang sa &quot;%@&quot;?"/>
+				<Item id="90430" name="Admin sa Pinulongan nga Pinulongan sa Gumagamit"/>
+				<Item id="90431" name="Pagsala sa mga pinulongan…"/>
+				<Item id="90432" name="Tinubdan"/>
+				<Item id="90433" name="Mga Tinubdan sa AC"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Pag-instalar / Pag-update"/>
+				<Item id="90436" name="%lu mga pinulongan · %lu na-install · %lu mga update"/>
+				<Item id="90437" name="Awtor"/>
+				<Item id="90438" name="Gihiusa: %ld mga entri gikan sa %lu mga tinubdan (gihiusa)"/>
+				<Item id="90439" name="Pagpili og usa o daghang pinulongan aron i-install."/>
+				<Item id="90440" name="Walay ma-download alang sa pagpili."/>
+				<Item id="90441" name="Napakyas ang pag-download"/>
+				<Item id="90442" name="Checksum mismatch"/>
+				<Item id="90443" name="Ang pinili nga (mga) pinulongan anaa na sa menu sa Pinulongan."/>
+				<Item id="90444" name="Pagpili og usa o daghan pang na-install nga lengguwahe nga tangtangon."/>
+				<Item id="90445" name="Gitangtang"/>
+				<Item id="90446" name="Kini nga ngalan gigamit na sa laing pinulongan."/>
+				<Item id="90447" name="Kini nga pinulongan dili matangtang."/>
+				<Item id="90448" name="Ang na-pre-install nga mga pinulongan dili matangtang."/>
+				<Item id="90449" name="Kini nga pinulongan dili mabag-o sa ngalan."/>
+				<Item id="90450" name="Kini nga payl kay %@.Ang pag-abli niini dili na magamit ang syntax highlighting ug i-undo ang kasaysayan aron mapadayon ang pagtubag sa app.&#10;&#10;Gusto ba nimong ipadayon?"/>
+				<Item id="90451" name="Bukas bisan unsa"/>
+				<Item id="90452" name="&quot;%@&quot; giusab sa disk"/>
+				<Item id="90453" name="Ibaliwala"/>
+				<Item id="90454" name="Ipadayon ang Akong Bersyon"/>
+				<Item id="90455" name="Dili ma-reload ang &quot;%@&quot;"/>
+				<Item id="90456" name="Dili mabasa ang file."/>
+				<Item id="90457" name="Pilia kung asa makita ang matag buton sa Liquid Glass toolbar: sa kapsula sa grupo (Toolbar), sa ▾ overflow menu sa grupo, o Nakatago."/>
+				<Item id="90458" name="Pagdonar sa Pagsuporta sa Pag-uswag"/>
+				<Item id="90459" name="I-install ang Command Line Tools"/>
+				<Item id="90460" name="Ipakita ang mga anino sa luyo sa mga kapsula sa toolbar"/>
+				<Item id="90461" name="Pagdonar"/>
+				<Item id="90462" name="Mga set sa karakter"/>
+				<Item id="90463" name="Pagmenos"/>
+				<Item id="90464" name="Tagoa Nextpad++"/>
+				<Item id="90465" name="Tagoa ang Uban"/>
+				<Item id="90466" name="Ipakita ang Tanan"/>
+				<Item id="90467" name="Hunong Nextpad++"/>
+				<Item id="90468" name="I-save ang Karon nga Narekord nga Macro…"/>
+				<Item id="90469" name="Guntinga ang Trailing Space ug I-save"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

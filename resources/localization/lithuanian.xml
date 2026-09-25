@@ -948,13 +948,13 @@
 				<Item id="90006" name="Šaltinio valdymas"/>
 				<Item id="90007" name="Įsipareigoti"/>
 				<Item id="90008" name="Įsipareigojimas nepavyko"/>
-				<Item id="90009" name="Nėra git saugyklos\nNaudokite Naršyti, kad atidarytumėte saugyklą."/>
+				<Item id="90009" name="Nėra git saugyklos&#10;Naudokite Naršyti, kad atidarytumėte saugyklą."/>
 				<Item id="90010" name="Etapas"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Visas etapas"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Įrašyti pranešimą\u2026"/>
-				<Item id="90015" name="Naršykite saugyklą\u2026"/>
+				<Item id="90014" name="Įrašyti pranešimą…"/>
+				<Item id="90015" name="Naršykite saugyklą…"/>
 				<Item id="90016" name="Pasirinkite git saugyklos aplanką"/>
 				<Item id="90017" name="(nėra saugyklos)"/>
 				<Item id="90018" name="(atskiras)"/>
@@ -968,9 +968,9 @@
 				<Item id="90026" name="Rezultatai"/>
 				<Item id="90027" name="Sustoti"/>
 				<Item id="90028" name="Paieška sustabdyta."/>
-				<Item id="90029" name="Ieškoma\u2026"/>
+				<Item id="90029" name="Ieškoma…"/>
 				<Item id="90030" name="Tekstas, kurio reikia ieškoti"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Ieškoma..."/>
 				<Item id="90033" name="Pakeisti:"/>
 				<Item id="90034" name="Visas žodis"/>
@@ -1030,7 +1030,7 @@
 				<Item id="90088" name="Įdiegti papildinius"/>
 				<Item id="90089" name="Pašalinti papildinius"/>
 				<Item id="90090" name="Nerasta jokių komandų"/>
-				<Item id="90091" name="Įveskite norėdami ieškoti\u2026"/>
+				<Item id="90091" name="Įveskite norėdami ieškoti…"/>
 				<Item id="90092" name="Vartotojo nustatyta kalba v.2.1"/>
 				<Item id="90093" name="Sukurti naują kalbą"/>
 				<Item id="90094" name="Įveskite pavadinimą:"/>
@@ -1039,11 +1039,9 @@
 				<Item id="90097" name="Neišsaugoti"/>
 				<Item id="90098" name="Atlikta"/>
 				<Item id="90099" name="Perjungti žodžių laužymą"/>
-				<Item id="90100" name="Rodyti visus simbolius"/>
 				<Item id="90101" name="Rodyti simbolių parinktis"/>
 				<Item id="90102" name="Perjungti įtraukos vadovą"/>
 				<Item id="90103" name="Dar neįgyvendinta"/>
-				<Item id="90104" name="Iš naujo įkelti iš disko"/>
 				<Item id="90105" name="Pakeisti paieškos variklį"/>
 				<Item id="90106" name="Vykdymo klaida"/>
 				<Item id="90107" name="Nextpad++ įkėlimo laikas"/>
@@ -1052,7 +1050,7 @@
 				<Item id="90110" name="Parsisiųsti"/>
 				<Item id="90111" name="Išleidimo puslapis"/>
 				<Item id="90112" name="Vėliau"/>
-				<Item id="90113" name="Filtruoti papildinius\u2026"/>
+				<Item id="90113" name="Filtruoti papildinius…"/>
 				<Item id="90114" name="Yra"/>
 				<Item id="90115" name="Atnaujinimai"/>
 				<Item id="90116" name="Įdiegta"/>
@@ -1061,7 +1059,7 @@
 				<Item id="90119" name="Pašalinti šiuos papildinius?"/>
 				<Item id="90120" name="Įdiegti šiuos papildinius?"/>
 				<Item id="90121" name="Tai ištrins papildinio failus."/>
-				<Item id="90122" name="Ieškoti komandos\u2026"/>
+				<Item id="90122" name="Ieškoti komandos…"/>
 				<Item id="90123" name="Priekinio plano spalva"/>
 				<Item id="90124" name="Fono spalva"/>
 				<Item id="90125" name="Makrokomandos pavadinimas"/>
@@ -1081,7 +1079,7 @@
 				<Item id="90139" name="Visi ženklai nuvalyti."/>
 				<Item id="90140" name="Pažymėtas tekstas nukopijuotas į mainų sritį."/>
 				<Item id="90141" name="Nėra pažymėto teksto, kurį būtų galima kopijuoti."/>
-				<Item id="90142" name="Ieškoma... %ld paspaudimas (-ai) \u2014 %@"/>
+				<Item id="90142" name="Ieškoma... %ld paspaudimas (-ai) — %@"/>
 				<Item id="90143" name="Keičiama failuose..."/>
 				<Item id="90144" name="Pakeisti projektuose: dar neprisijungta."/>
 				<Item id="90145" name="Rasti projektuose: dar neprisijungęs prie projekto skydelio failų sąrašo."/>
@@ -1102,20 +1100,20 @@
 				<Item id="90160" name="Sumanus paryškinimas: tik visas žodis"/>
 				<Item id="90161" name="Dukart spustelėkite, kad uždarytumėte skirtuką"/>
 				<Item id="90162" name="Rodyti uždarymo mygtuką skirtukuose"/>
+				<Item id="90168" name="Dialogo lange „Rasti“ naudokite vienkartinį šriftą"/>
+				<Item id="90191" name="Papildinių sąrašo saugykla"/>
 				<Item id="90224" name="Rodyti skirtukus keliose eilutėse"/>
 				<Item id="90163" name="Prisiminti skydelio matomumą per seansus"/>
 				<Item id="90164" name="Sesijoje nelikti failų įrašų"/>
 				<Item id="90165" name="Patvirtinkite prieš Išsaugoti viską"/>
 				<Item id="90166" name="Patvirtinti Pakeisti viską atidarytuose dokumentuose"/>
 				<Item id="90167" name="Pakeisti: neperkelti prie kito įvykio"/>
-				<Item id="90168" name="Dialogo lange „Rasti“ naudokite vienkartinį šriftą"/>
 				<Item id="90169" name="Dešiniuoju pelės mygtuku spustelėjus išsaugomas pasirinkimas"/>
 				<Item id="90170" name="Atvirkštinė numatytoji datos ir laiko tvarka"/>
 				<Item id="90171" name="Naudokite XML pagrįstus funkcijų sąrašo analizatorius"/>
 				<Item id="90172" name="Automatiškai uždaryti skliaustus ( ) [ ] { }"/>
 				<Item id="90173" name="Nuo N simbolio:"/>
 				<Item id="90174" name="Pasirinkus automatinio tikrinimo slenkstis (baitai):"/>
-				<Item id="90175" name="Išplėstinė (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktorius"/>
 				<Item id="90177" name="Maržos"/>
 				<Item id="90178" name="Tamsus"/>
@@ -1129,12 +1127,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimizuotas"/>
 				<Item id="90188" name="Paprasta +/-"/>
-				<Item id="90189" name="„Windows“ (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Papildinių sąrašo saugykla"/>
 				<Item id="90192" name="Pasirinkite Nextpad++ temos XML failą, kurį norite taikyti"/>
-				<Item id="90193" name="Sukurti naują\u2026"/>
-				<Item id="90194" name="Išsaugoti kaip\u2026"/>
+				<Item id="90193" name="Sukurti naują…"/>
+				<Item id="90194" name="Išsaugoti kaip…"/>
 				<Item id="90195" name="Vartotojo kalba:"/>
 				<Item id="90196" name="Kalbos pavadinimas"/>
 				<Item id="90197" name="Sukurti"/>
@@ -1164,6 +1160,226 @@
 				<Item id="90221" name="Užrakintas atributas (macOS)"/>
 				<Item id="90222" name="Patikrinkite, ar nėra atnaujinimų…"/>
 				<Item id="90223" name="Atidaryti Naujausi"/>
+				<Item id="90226" name="Žinynas"/>
+				<Item id="90227" name="Etapas nepavyko"/>
+				<Item id="90228" name="Nepavyko pašalinti scenos"/>
+				<Item id="90229" name="yra"/>
+				<Item id="90230" name="Jūs bėgate"/>
+				<Item id="90231" name="Niekada daugiau man nepriminkite"/>
+				<Item id="90232" name="Atnaujinimai"/>
+				<Item id="90233" name="Automatiškai tikrinti, ar nėra naujinimų"/>
+				<Item id="90234" name="Automatinės naujinimo patikros išjungtos."/>
+				<Item id="90235" name="Paskutinį kartą tikrinta:"/>
+				<Item id="90236" name="Nėra interneto ryšio."/>
+				<Item id="90237" name="Netikėtas atsakymas iš naujinimo serverio."/>
+				<Item id="90238" name="Nerasta jokio paskelbto leidinio."/>
+				<Item id="90239" name="Atnaujinimo serveris laikinai nepasiekiamas.Bandykite dar kartą vėliau."/>
+				<Item id="90240" name="Atnaujinimo serveris atmetė užklausą.Gali būti, kad tarpinis serveris, ugniasienė arba VPN blokuoja prieigą prie „GitHub“."/>
+				<Item id="90241" name="Per daug naujinimų patikrų iš jūsų tinklo (šiuo apribojimu dalijasi visi tinklo nariai).Po to bandykite dar kartą"/>
+				<Item id="90242" name="Per daug naujinimų patikrų iš jūsų tinklo (šiuo apribojimu dalijasi visi tinklo nariai).Bandykite dar kartą vėliau."/>
+				<Item id="90243" name="Atnaujinimo serveris grąžino būseną"/>
+				<Item id="90244" name="Bandyk dar kartą"/>
+				<Item id="90245" name="Spausdinimo teksto dydis:"/>
+				<Item id="90246" name="Naudokite ekrano priartinimą"/>
+				<Item id="90247" name="Tikrasis dydis"/>
+				<Item id="90248" name="Kai kurių failų pakeisti nepavyko"/>
+				<Item id="90249" name="...ir dar %lu"/>
+				<Item id="90250" name="Failų susiejimus valdo jūsų organizacija."/>
+				<Item id="90251" name="Laukiama macOS patvirtinimo…"/>
+				<Item id="90252" name="macOS nepritaikė pakeitimo."/>
+				<Item id="90253" name="Užregistruoti"/>
+				<Item id="90254" name="Atidaryti visus failus aplanke?"/>
+				<Item id="90255" name="Naujuose skirtukuose bus atidaryta %lu failų."/>
+				<Item id="90256" name="Nepavyko importuoti: %@"/>
+				<Item id="90258" name="Rasta %ld atitikmenų (-ių) %ld faile (-uose)."/>
+				<Item id="90259" name="Ieškoma... Kol kas atitikčių yra %ld"/>
+				<Item id="90260" name="%@ (%ld atitikmuo%@)"/>
+				<Item id="90261" name="Neaiški paieška"/>
+				<Item id="90266" name="Skaičius: %ld atitiktys."/>
+				<Item id="90267" name="Pakeisti viską: %ld įvykis (-ai) buvo pakeistas %@."/>
+				<Item id="90268" name="Pakeisti atidarytuose failuose: buvo pakeistas %ld atvejis (-ai)."/>
+				<Item id="90269" name="Rasti failuose: %ld įvykiai (-ai) %ld faile (-uose)."/>
+				<Item id="90270" name="Rasti failuose: 0 paspaudimų."/>
+				<Item id="90271" name="Pakeiskite visus „%@“ atvejus į „%@“ kataloge:&#10;%@&#10;&#10;To negalima anuliuoti."/>
+				<Item id="90272" name="Pakeisti failuose: %ld pakaitalai %ld faile (-uose)."/>
+				<Item id="90273" name="Pirmiausia atidarykite projekto skydelį."/>
+				<Item id="90274" name="Norėdami ieškoti, pasirinkite bent vieną projekto skydelį."/>
+				<Item id="90275" name="Nėra failų, kurių reikia ieškoti."/>
+				<Item id="90276" name="Rasti projektuose: %ld įvykis (-ai) %ld faile (-uose)."/>
+				<Item id="90277" name="Rasti projektuose: 0 paspaudimų."/>
+				<Item id="90278" name="Pakeiskite visus reiškinius"/>
+				<Item id="90279" name="su"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="projekto failas (-ai).To negalima anuliuoti."/>
+				<Item id="90282" name="Pakeisti projektuose: %ld pakaitalai %ld faile (-uose)."/>
+				<Item id="90283" name="Pažymėti: pažymėta (-os) atitiktis (%ld)."/>
+				<Item id="90284" name="Filtruoti failo / aplanko pavadinimą..."/>
+				<Item id="90285" name="Kai kurių dokumentų nepavyko išsaugoti"/>
+				<Item id="90286" name="⌘ Komanda"/>
+				<Item id="90287" name="⌃ Valdymas"/>
+				<Item id="90288" name="⌥ Parinktis"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Įveskite NSDateFormatter formato eilutę:"/>
+				<Item id="90291" name="„%@“ dar neįdiegta šioje versijoje."/>
+				<Item id="90292" name="Importuoti papildinį"/>
+				<Item id="90293" name="Reikalingas paleidimas iš naujo"/>
+				<Item id="90294" name="Nėra failų, kuriuos būtų galima apdoroti"/>
+				<Item id="90295" name="Šiame projekto mazge nėra failų."/>
+				<Item id="90296" name="„%@“ turi neišsaugotų pakeitimų.&#10;Iš naujo įkelti ir atmesti pakeitimus?"/>
+				<Item id="90297" name="Įveskite naują failo pavadinimą:"/>
+				<Item id="90298" name="Pervardyti dabartinį skirtuką"/>
+				<Item id="90299" name="Naujas pavadinimas:"/>
+				<Item id="90300" name="Pervardyti nepavyko"/>
+				<Item id="90301" name="Pavadinime negali būti „/“ arba „:“."/>
+				<Item id="90303" name="Išsaugoti „%@“ prieš uždarant?"/>
+				<Item id="90304" name="Neišsaugokite visko"/>
+				<Item id="90306" name="Yra 3 būdai, kaip perjungti į stulpelio pasirinkimo režimą:&#10;&#10;1.(Klaviatūra ir pelė) Laikykite parinktį vilkdami kairiuoju pelės klavišu&#10;&#10;2.(Tik klaviatūra) Naudodami rodyklių klavišus laikykite Option + Shift&#10;&#10;3.(Klaviatūra arba pelė)&#10; Nukreipkite žymeklį į norimą stulpelio bloko pradžios padėtį, tada&#10; vykdykite komandą „Pradėti / baigti pasirinkimą stulpelio režimu“;&#10; perkelkite tašką į norimą stulpelio bloko pabaigos vietą, tada&#10; dar kartą vykdykite komandą „Pradėti / baigti pasirinkimą stulpelio režimu“."/>
+				<Item id="90307" name="Įveskite paieškos URL.Naudokite %s kaip užklausos rezervuotąją vietą (arba pridėkite užklausą pabaigoje):"/>
+				<Item id="90308" name="Įveskite komandą arba URL..."/>
+				<Item id="90309" name="Nepavyko vykdyti:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Redaguodami contextMenu.xml galite keisti iššokantįjį kontekstinį meniu Nextpad++ redagavimo zonoje.&#10;Turite iš naujo paleisti Nextpad++, kad pakeitus contextMenu.xml įsigaliotų."/>
+				<Item id="90312" name="Jau įdiegta"/>
+				<Item id="90313" name="Įdiekite nextpad++ komandų eilutės įrankį"/>
+				<Item id="90314" name="Diegimas nepavyko"/>
+				<Item id="90315" name="Įdiegta, bet ~/.local/bin nėra jūsų PATH"/>
+				<Item id="90316" name="Jau jūsų konfigūracijoje"/>
+				<Item id="90317" name="Pridėta prie PATH"/>
+				<Item id="90318" name="Nepavyko parašyti"/>
+				<Item id="90319" name="Nukopijuota"/>
+				<Item id="90320" name="Išsaugoti „%@“ pakeitimus?"/>
+				<Item id="90321" name="Jūsų pakeitimai bus prarasti, jei jų neišsaugosite."/>
+				<Item id="90322" name="Taikyti visiems dokumentams"/>
+				<Item id="90323" name="Paleiskite makrokomandą failuose"/>
+				<Item id="90324" name="Makrokomandas:"/>
+				<Item id="90325" name="Aplankas:"/>
+				<Item id="90326" name="Pasirinkite aplanką…"/>
+				<Item id="90327" name="Naršyti…"/>
+				<Item id="90328" name="Plėtiniai:"/>
+				<Item id="90329" name="Pakartotiniai pakatalogiai"/>
+				<Item id="90330" name="Įtraukti paslėptus failus"/>
+				<Item id="90331" name="Maksimalus dydis:"/>
+				<Item id="90332" name="Neribota"/>
+				<Item id="90333" name="Pagal failą:"/>
+				<Item id="90334" name="Išsaugokite, jei pakeisite"/>
+				<Item id="90335" name="Uždaryti po"/>
+				<Item id="90336" name="Uždarykite net failus, kurie jau buvo atidaryti"/>
+				<Item id="90337" name="Dėl klaidos:"/>
+				<Item id="90338" name="Praleisti failą ir tęsti"/>
+				<Item id="90339" name="Sustokite nuo pirmosios klaidos"/>
+				<Item id="90340" name="(nėra išsaugotų makrokomandų)"/>
+				<Item id="90341" name="Failas (-ai) atitinka %lu"/>
+				<Item id="90342" name="Aplankas nerastas"/>
+				<Item id="90343" name="Pasirinkite esamą aplanką."/>
+				<Item id="90344" name="Failai nesutampa"/>
+				<Item id="90345" name="Koreguokite plėtinių filtrą, rekursiją arba paslėptų failų parinktį."/>
+				<Item id="90346" name="Pradedama…"/>
+				<Item id="90347" name="Apdorojama:"/>
+				<Item id="90348" name="%ld / %ld Gerai: %ld Praleista: %ld Nepavyko: %ld"/>
+				<Item id="90349" name="Partija atšaukta"/>
+				<Item id="90350" name="Partija baigta"/>
+				<Item id="90351" name="Iš viso: %lu Gerai: %ld Praleista: %ld Nepavyko: %ld"/>
+				<Item id="90352" name="Pastatymo data"/>
+				<Item id="90353" name="Operacinė sistema"/>
+				<Item id="90354" name="naujausias"/>
+				<Item id="90355" name="pasenusi"/>
+				<Item id="90356" name="nežinomas"/>
+				<Item id="90357" name="Iš naujo paleiskite programą, kad pakeitimai įsigaliotų."/>
+				<Item id="90358" name="Atnaujinti papildinius"/>
+				<Item id="90359" name="Atnaujinti šiuos papildinius?"/>
+				<Item id="90360" name="Prieš pakeičiant dabartinių versijų atsargines kopijas sukuriama ~/Library/Application Support/Nextpad++/plugin-backups/."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Perjungti į naują Tahoe išvaizdą (beta versija)"/>
+				<Item id="90363" name="Naudokite macOS stiliaus meniu (beta versija)"/>
+				<Item id="90364" name="Nauja Tahoe išvaizda bus pritaikyta iš naujo paleidus Nextpad++."/>
+				<Item id="90365" name="Klasikinė išvaizda bus atkurta iš naujo paleidus Nextpad++."/>
+				<Item id="90366" name="Baigti dabar"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Klasikinis meniu išdėstymas bus atkurtas, kai iš naujo paleisite Nextpad++."/>
+				<Item id="90369" name="Spalva"/>
+				<Item id="90370" name="Taikyti priedų įrankių juostos piktogramoms"/>
+				<Item id="90371" name="Įjungus užbaigtą režimą, papildinio piktogramos tampa vienos spalvos."/>
+				<Item id="90372" name="Įrankių juostos grupės"/>
+				<Item id="90373" name="Pasirinkite, kur Liquid Glass įrankių juostoje bus rodomas kiekvienas mygtukas: ant"/>
+				<Item id="90374" name="Mygtukas"/>
+				<Item id="90375" name="Įdėjimas"/>
+				<Item id="90376" name="Atstatyti į numatytuosius nustatymus"/>
+				<Item id="90377" name="Perpildymo meniu"/>
+				<Item id="90378" name="Paslėpta"/>
+				<Item id="90379" name="CJK draugiškas žodžių vyniojimas"/>
+				<Item id="90380" name="Stulpelių pasirinkimas perjungiamas į kelių redagavimą"/>
+				<Item id="90381" name="Tarpai tarp eilučių:"/>
+				<Item id="90382" name="1.0 (numatytasis)"/>
+				<Item id="90383" name="Slėpti skirtukų juostą"/>
+				<Item id="90384" name="Skirtuko dydis atitinka dokumento mastelį"/>
+				<Item id="90385" name="Pasirinkite…"/>
+				<Item id="90386" name="Atstatyti į numatytuosius"/>
+				<Item id="90387" name="Naudojant numatytąją vietą."/>
+				<Item id="90388" name="Pasirinktinė vieta."/>
+				<Item id="90389" name="Neteisingas kelias – atsarginėms kopijoms bus naudojama numatytoji vieta."/>
+				<Item id="90390" name="Pasirinkite"/>
+				<Item id="90391" name="Įterpti pasirinkimą:"/>
+				<Item id="90392" name="Naudokite Boost reguliarųjį režimą (kelių eilučių; paleiskite iš naujo, kad pritaikytumėte)"/>
+				<Item id="90395" name="Paleiskite iš naujo dabar"/>
+				<Item id="90397" name="(nesirinkite jo, nebent žinote, ką darote)"/>
+				<Item id="90398" name="Įrankių juostos piktogramos dydis"/>
+				<Item id="90399" name="100 % (numatytasis)"/>
+				<Item id="90400" name="Pelės ratuko slinkties greitis"/>
+				<Item id="90401" name="1× (išjungta)"/>
+				<Item id="90402" name="Įrankių juostos piktogramos dydis pakeistas"/>
+				<Item id="90403" name="Naujas įrankių juostos piktogramos dydis įsigalios kitą kartą paleidus Nextpad++."/>
+				<Item id="90404" name="Įrankių juostos piktogramos pakeistos"/>
+				<Item id="90405" name="Naujos įrankių juostos piktogramos įsigalios, kai kitą kartą bus paleista Nextpad++."/>
+				<Item id="90410" name="Rasti projektuose..."/>
+				<Item id="90411" name="Paleisti makrokomandą failuose..."/>
+				<Item id="90418" name="Tai pašalins jį ir visą jo turinį iš projekto.Jokie failai diske nebus paveikti."/>
+				<Item id="90420" name="Aplankas"/>
+				<Item id="90423" name="Kopijuoti pasirinktą (-us) kelio pavadinimą (-us)"/>
+				<Item id="90424" name="Atidaryti pasirinktą (-ius) kelio pavadinimą (-us)"/>
+				<Item id="90425" name="Žodžių vyniojimo ilgos eilutės"/>
+				<Item id="90426" name="Išvalykite kiekvieną paiešką"/>
+				<Item id="90427" name="Nerasta"/>
+				<Item id="90428" name="KONFLIKTAS: %@"/>
+				<Item id="90429" name="Ištrinti „%@“?"/>
+				<Item id="90430" name="Vartotojo nustatytos kalbos administratorius"/>
+				<Item id="90431" name="Filtruoti kalbas…"/>
+				<Item id="90432" name="Šaltinis"/>
+				<Item id="90433" name="AC šaltiniai"/>
+				<Item id="90434" name="Būsena"/>
+				<Item id="90435" name="Įdiegti / atnaujinti"/>
+				<Item id="90436" name="%lu kalbos · Įdiegta %lu · %lu naujinių"/>
+				<Item id="90437" name="Autorius"/>
+				<Item id="90438" name="Sujungta: %ld įrašai iš %lu šaltinių (sujungti)"/>
+				<Item id="90439" name="Pasirinkite vieną ar daugiau kalbų, kurias norite įdiegti."/>
+				<Item id="90440" name="Pasirinkimui nieko negalima atsisiųsti."/>
+				<Item id="90441" name="Atsisiųsti nepavyko"/>
+				<Item id="90442" name="Kontrolinės sumos neatitikimas"/>
+				<Item id="90443" name="Pasirinkta (-os) kalba (-os) dabar pasiekiama meniu Kalba."/>
+				<Item id="90444" name="Pasirinkite vieną ar daugiau įdiegtų kalbų, kurias norite pašalinti."/>
+				<Item id="90445" name="Pašalinta"/>
+				<Item id="90446" name="Šis pavadinimas jau vartojamas kita kalba."/>
+				<Item id="90447" name="Šios kalbos pašalinti nepavyko."/>
+				<Item id="90448" name="Iš anksto įdiegtų kalbų pašalinti negalima."/>
+				<Item id="90449" name="Šios kalbos pervardyti nepavyko."/>
+				<Item id="90450" name="Šis failas yra %@.Ją atidarius bus išjungtas sintaksės paryškinimas ir anuliuota istorija, kad programa reaguotų.&#10;&#10;Ar norite tęsti?"/>
+				<Item id="90451" name="Vis tiek atidarykite"/>
+				<Item id="90452" name="„%@“ pakeistas diske"/>
+				<Item id="90453" name="Ignoruoti"/>
+				<Item id="90454" name="Išsaugoti mano versiją"/>
+				<Item id="90455" name="Nepavyko iš naujo įkelti „%@“"/>
+				<Item id="90456" name="Failo nuskaityti nepavyko."/>
+				<Item id="90457" name="Pasirinkite, kur Liquid Glass įrankių juostoje bus rodomas kiekvienas mygtukas: grupės kapsulėje (įrankių juostoje), grupės ▾ perpildymo meniu arba Paslėptoje."/>
+				<Item id="90458" name="Aukokite plėtrai paremti"/>
+				<Item id="90459" name="Įdiekite komandų eilutės įrankius"/>
+				<Item id="90460" name="Rodyti šešėlius už įrankių juostos kapsulių"/>
+				<Item id="90461" name="Paaukoti"/>
+				<Item id="90462" name="Simbolių rinkiniai"/>
+				<Item id="90463" name="Sumažinti"/>
+				<Item id="90464" name="Slėpti Nextpad++"/>
+				<Item id="90465" name="Slėpti kitus"/>
+				<Item id="90466" name="Rodyti viską"/>
+				<Item id="90467" name="Išeiti iš Nextpad++"/>
+				<Item id="90468" name="Išsaugoti esamą įrašytą makrokomandą…"/>
+				<Item id="90469" name="Apkarpykite užpakalinę erdvę ir sutaupykite"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox><!-- $INT_REPLACE$ saugo bylos vietą, jo neversti -->

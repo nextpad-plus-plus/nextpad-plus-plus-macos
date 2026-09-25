@@ -1470,13 +1470,13 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90006" name="Bronbeheer"/>
 				<Item id="90007" name="Toewijding"/>
 				<Item id="90008" name="Vastleggen mislukt"/>
-				<Item id="90009" name="Geen git-repository\nGebruik Bladeren om een ​​repository te openen."/>
+				<Item id="90009" name="Geen git-repository&#10;Gebruik Bladeren om een ​​repository te openen."/>
 				<Item id="90010" name="Fase"/>
 				<Item id="90011" name="Uitvoeren"/>
 				<Item id="90012" name="Fase Alle"/>
 				<Item id="90013" name="Alles uit de fase halen"/>
-				<Item id="90014" name="Bericht vastleggen\u2026"/>
-				<Item id="90015" name="Blader naar opslagplaats\u2026"/>
+				<Item id="90014" name="Bericht vastleggen…"/>
+				<Item id="90015" name="Blader naar opslagplaats…"/>
 				<Item id="90016" name="Kies een git-repositorymap"/>
 				<Item id="90017" name="(geen opslagplaats)"/>
 				<Item id="90018" name="(vrijstaand)"/>
@@ -1490,9 +1490,9 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90026" name="Resultaten"/>
 				<Item id="90027" name="Houd op"/>
 				<Item id="90028" name="Zoeken gestopt."/>
-				<Item id="90029" name="Zoeken\u2026"/>
+				<Item id="90029" name="Zoeken…"/>
 				<Item id="90030" name="Tekst om te zoeken naar"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Zoeken..."/>
 				<Item id="90033" name="Vervang:"/>
 				<Item id="90034" name="Hele woord"/>
@@ -1552,7 +1552,7 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90088" name="Installeer plug-ins"/>
 				<Item id="90089" name="Plug-ins verwijderen"/>
 				<Item id="90090" name="Geen opdrachten gevonden"/>
-				<Item id="90091" name="Typ om te zoeken\u2026"/>
+				<Item id="90091" name="Typ om te zoeken…"/>
 				<Item id="90092" name="Door gebruiker gedefinieerde taal v.2.1"/>
 				<Item id="90093" name="Nieuwe taal maken"/>
 				<Item id="90094" name="Voer een naam in:"/>
@@ -1561,11 +1561,9 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90097" name="Niet opslaan"/>
 				<Item id="90098" name="Klaar"/>
 				<Item id="90099" name="Schakel Woordomloop"/>
-				<Item id="90100" name="in of uitToon alle karakters"/>
 				<Item id="90101" name="Tekenopties weergeven"/>
 				<Item id="90102" name="Schakel hulplijnen voor inspringen"/>
 				<Item id="90103" name="inNog niet geïmplementeerd"/>
-				<Item id="90104" name="Herladen vanaf schijf"/>
 				<Item id="90105" name="Zoekmachine wijzigen"/>
 				<Item id="90106" name="Uitvoerfout"/>
 				<Item id="90107" name="Kladblok++ Laadtijd"/>
@@ -1574,16 +1572,12 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90110" name=""/>
 				<Item id="90111" name="downloadenPagina vrijgeven"/>
 				<Item id="90112" name="Later"/>
-				<Item id="90113" name="Filterplug-ins\u2026"/>
-				<Item id="90114" name="Beschikbaar"/>
-				<Item id="90115" name="Updates"/>
-				<Item id="90116" name="Geïnstalleerd"/>
-				<Item id="90117" name="Incompatibel"/>
+				<Item id="90113" name="Filterplug-ins…"/>
 				<Item id="90118" name="Kan"/>
 				<Item id="90119" name="niet installerenDe volgende plug-ins verwijderen?"/>
 				<Item id="90120" name="De volgende plug-ins installeren?"/>
 				<Item id="90121" name="Hiermee worden de plug-inbestanden verwijderd."/>
-				<Item id="90122" name="Zoekopdrachten\u2026"/>
+				<Item id="90122" name="Zoekopdrachten…"/>
 				<Item id="90123" name="Voorgrondkleur"/>
 				<Item id="90124" name="Achtergrondkleur"/>
 				<Item id="90125" name="Macronaam"/>
@@ -1603,7 +1597,7 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90139" name="Alle markeringen gewist."/>
 				<Item id="90140" name="Gemarkeerde tekst gekopieerd naar klembord."/>
 				<Item id="90141" name="Geen gemarkeerde tekst om te kopiëren."/>
-				<Item id="90142" name="Zoeken... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Zoeken... %ld hit(s) — %@"/>
 				<Item id="90143" name="Vervangen in bestanden..."/>
 				<Item id="90144" name="Vervangen in projecten: Nog niet verbonden."/>
 				<Item id="90145" name="Zoeken in Projecten: Nog niet verbonden met de bestandenlijst van het Projectpaneel."/>
@@ -1630,14 +1624,12 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90165" name="Bevestig vóór alles opslaan"/>
 				<Item id="90166" name="Bevestig Alles vervangen in geopende documenten"/>
 				<Item id="90167" name="Vervangen: ga niet naar het volgende exemplaar"/>
-				<Item id="90168" name="Gebruik een lettertype met vaste regelafstand in het dialoogvenster Zoeken"/>
 				<Item id="90169" name="Door met de rechtermuisknop te klikken, blijft de selectie"/>
 				<Item id="90170" name="Standaard datum-/tijdvolgorde omkeren"/>
 				<Item id="90171" name="Gebruik op XML gebaseerde functielijstparsers"/>
 				<Item id="90172" name="Haakjes automatisch sluiten ( ) [ ] { }"/>
 				<Item id="90173" name="Van N-de teken:"/>
 				<Item id="90174" name="Drempel voor automatische controle binnen selectie (bytes):"/>
-				<Item id="90175" name="Uitgebreid (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redacteur"/>
 				<Item id="90177" name="Marges"/>
 				<Item id="90178" name="Donker"/>
@@ -1651,12 +1643,10 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90186" name="Anti-aliasing"/>
 				<Item id="90187" name="LCD-geoptimaliseerd"/>
 				<Item id="90188" name="Eenvoudig +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repository voor plug-inlijsten"/>
 				<Item id="90192" name="Selecteer een XML-bestand met een Kladblok++-thema om toe te passen"/>
-				<Item id="90193" name="Nieuw maken\u2026"/>
-				<Item id="90194" name="Opslaan als\u2026"/>
+				<Item id="90193" name="Nieuw maken…"/>
+				<Item id="90194" name="Opslaan als…"/>
 				<Item id="90195" name="Gebruikerstaal:"/>
 				<Item id="90196" name="Taalnaam"/>
 				<Item id="90197" name="Maak"/>
@@ -1686,6 +1676,216 @@ U kunt dit dialoogvenster later terug inschakelen via voorkeuren."/>
 				<Item id="90221" name="Vergrendeld kenmerk (macOS)"/>
 				<Item id="90222" name="Controleer op updates…"/>
 				<Item id="90223" name="Recent geopend"/>
+				<Item id="90226" name="Help"/>
+				<Item id="90227" name="Fase mislukt"/>
+				<Item id="90228" name="Unstage mislukt"/>
+				<Item id="90229" name="is beschikbaar"/>
+				<Item id="90230" name="Je bent aan het rennen"/>
+				<Item id="90231" name="Herinner mij er nooit meer aan"/>
+				<Item id="90233" name="Automatisch controleren op updates"/>
+				<Item id="90234" name="Automatische updatecontroles zijn uitgeschakeld."/>
+				<Item id="90235" name="Laatst gecontroleerd:"/>
+				<Item id="90236" name="Geen internetverbinding."/>
+				<Item id="90237" name="Onverwachte reactie van de updateserver."/>
+				<Item id="90238" name="Er is geen gepubliceerde release gevonden."/>
+				<Item id="90239" name="De updateserver is tijdelijk niet beschikbaar.Probeer het later opnieuw."/>
+				<Item id="90240" name="De updateserver heeft het verzoek geweigerd.Een proxy, firewall of VPN blokkeert mogelijk de toegang tot GitHub."/>
+				<Item id="90241" name="Te veel updatecontroles vanuit uw netwerk (deze limiet wordt door iedereen gedeeld).Probeer het daarna opnieuw"/>
+				<Item id="90242" name="Te veel updatecontroles vanuit uw netwerk (deze limiet wordt door iedereen gedeeld).Probeer het later opnieuw."/>
+				<Item id="90243" name="De updateserver heeft de status geretourneerd"/>
+				<Item id="90244" name="Probeer het opnieuw"/>
+				<Item id="90245" name="Tekstgrootte afdrukken:"/>
+				<Item id="90246" name="Gebruik schermzoom"/>
+				<Item id="90247" name="Ware grootte"/>
+				<Item id="90248" name="Sommige bestanden konden niet worden vervangen"/>
+				<Item id="90249" name="...en nog %lu meer"/>
+				<Item id="90250" name="Bestandskoppelingen worden beheerd door je organisatie."/>
+				<Item id="90251" name="Wachten op bevestiging van macOS…"/>
+				<Item id="90252" name="macOS heeft de wijziging niet toegepast."/>
+				<Item id="90253" name="Geregistreerd"/>
+				<Item id="90254" name="Alle bestanden in de map openen?"/>
+				<Item id="90255" name="Hierdoor worden %lu bestanden op nieuwe tabbladen geopend."/>
+				<Item id="90256" name="Kan niet importeren: %@"/>
+				<Item id="90258" name="%ld overeenkomst(en) gevonden in %ld bestand(en)."/>
+				<Item id="90259" name="Zoekend... %ld overeenkomst(en) tot nu toe"/>
+				<Item id="90260" name="%@ (%ld overeenkomst%@)"/>
+				<Item id="90261" name="Vage zoektocht"/>
+				<Item id="90266" name="Aantal: %ld overeenkomst(en)."/>
+				<Item id="90267" name="Alles vervangen: %ld exemplaar(s) zijn vervangen door %@."/>
+				<Item id="90268" name="Vervangen in geopende bestanden: %ld exemplaar(s) zijn vervangen."/>
+				<Item id="90269" name="Zoeken in bestanden: %ld hit(s) in %ld bestand(en)."/>
+				<Item id="90270" name="Zoeken in bestanden: 0 treffers."/>
+				<Item id="90271" name="Vervang alle exemplaren van '%@' door '%@' in de map:&#10;%@&#10;&#10;Dit kan niet ongedaan worden gemaakt."/>
+				<Item id="90272" name="Vervangen in bestanden: %ld vervanging(en) in %ld bestand(en)."/>
+				<Item id="90273" name="Open eerst een projectpaneel."/>
+				<Item id="90274" name="Selecteer ten minste één projectpaneel om te zoeken."/>
+				<Item id="90275" name="Geen bestanden om te zoeken."/>
+				<Item id="90276" name="Zoek in Projecten: %ld hit(s) in %ld bestand(en)."/>
+				<Item id="90277" name="Zoeken in Projecten: 0 treffers."/>
+				<Item id="90278" name="Vervang alle exemplaren van"/>
+				<Item id="90279" name="met"/>
+				<Item id="90280" name="binnen"/>
+				<Item id="90281" name="projectbestand(en).Dit kan niet ongedaan worden gemaakt."/>
+				<Item id="90282" name="Vervangen in projecten: %ld vervanging(en) in %ld bestand(en)."/>
+				<Item id="90283" name="Markeren: %ld overeenkomst(en) gemarkeerd."/>
+				<Item id="90284" name="Bestands-/mapnaam filteren..."/>
+				<Item id="90285" name="Sommige documenten konden niet worden opgeslagen"/>
+				<Item id="90286" name="⌘ Commando"/>
+				<Item id="90287" name="⌃ Controle"/>
+				<Item id="90288" name="⌥ Optie"/>
+				<Item id="90289" name="⇧ Verschuiving"/>
+				<Item id="90290" name="Voer een notatiereeks van NSDateFormatter in:"/>
+				<Item id="90291" name="'%@' is nog niet geïmplementeerd in deze versie."/>
+				<Item id="90292" name="Plug-in importeren"/>
+				<Item id="90293" name="Opnieuw opstarten vereist"/>
+				<Item id="90294" name="Geen bestanden om te verwerken"/>
+				<Item id="90295" name="Dit projectknooppunt bevat geen bestanden."/>
+				<Item id="90296" name="'%@' bevat niet-opgeslagen wijzigingen.&#10;Wijzigingen opnieuw laden en verwijderen?"/>
+				<Item id="90297" name="Voer een nieuwe bestandsnaam in:"/>
+				<Item id="90299" name="Nieuwe naam:"/>
+				<Item id="90301" name="De naam mag geen “/” of “:” bevatten."/>
+				<Item id="90304" name="Bewaar niet alles"/>
+				<Item id="90306" name="Er zijn drie manieren om over te schakelen naar de kolomselectiemodus:&#10;&#10;1.(Toetsenbord en muis) Houd Option ingedrukt terwijl u met de linkermuisknop klikt en sleept&#10;&#10;2.(Alleen toetsenbord) Houd Option+Shift ingedrukt terwijl je de pijltoetsen gebruikt&#10;&#10;3.(Toetsenbord of muis)&#10; Zet de cursor op het gewenste begin van de kolomblokpositie en&#10; voer de opdracht 'Begin/End selecteren in kolommodus' uit;&#10; Verplaats de cursor naar het gewenste einde van de kolomblokpositie en&#10; voer vervolgens de opdracht 'Begin/End selecteren in kolommodus' opnieuw uit"/>
+				<Item id="90307" name="Voer de zoek-URL in.Gebruik %s als tijdelijke aanduiding voor de zoekopdracht (of voeg de zoekopdracht aan het einde toe):"/>
+				<Item id="90308" name="Voer een opdracht of URL in..."/>
+				<Item id="90309" name="Kan niet worden uitgevoerd:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Als u contextMenu.xml bewerkt, kunt u het pop-upcontextmenu van uw Nextpad++ in de bewerkingszone wijzigen.&#10;U moet uw Nextpad++ opnieuw opstarten voordat deze van kracht wordt nadat u contextMenu.xml heeft gewijzigd."/>
+				<Item id="90312" name="Al geïnstalleerd"/>
+				<Item id="90313" name="Installeer het opdrachtregelprogramma nextpad++"/>
+				<Item id="90314" name="Installatie mislukt"/>
+				<Item id="90315" name="Geïnstalleerd — maar ~/.local/bin staat niet op uw PATH"/>
+				<Item id="90316" name="Staat al in je configuratie"/>
+				<Item id="90317" name="Toegevoegd aan PAD"/>
+				<Item id="90318" name="Kon niet schrijven"/>
+				<Item id="90319" name="Gekopieerd"/>
+				<Item id="90321" name="Uw wijzigingen gaan verloren als u ze niet opslaat."/>
+				<Item id="90322" name="Toepassen op alle documenten"/>
+				<Item id="90323" name="Macro uitvoeren op bestanden"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Map:"/>
+				<Item id="90326" name="Kies een map..."/>
+				<Item id="90327" name="Blader…"/>
+				<Item id="90328" name="Extensies:"/>
+				<Item id="90329" name="Terugkerende submappen"/>
+				<Item id="90330" name="Inclusief verborgen bestanden"/>
+				<Item id="90331" name="Maximale grootte:"/>
+				<Item id="90332" name="Onbeperkt"/>
+				<Item id="90333" name="Per bestand:"/>
+				<Item id="90334" name="Opslaan indien gewijzigd"/>
+				<Item id="90335" name="Sluit daarna"/>
+				<Item id="90336" name="Sluit zelfs bestanden die al geopend waren"/>
+				<Item id="90337" name="Bij fout:"/>
+				<Item id="90338" name="Sla het bestand over en ga verder"/>
+				<Item id="90339" name="Stop bij de eerste fout"/>
+				<Item id="90340" name="(geen opgeslagen macro's)"/>
+				<Item id="90341" name="%lu bestand(en) komen overeen"/>
+				<Item id="90342" name="Map niet gevonden"/>
+				<Item id="90343" name="Kies een map die bestaat."/>
+				<Item id="90344" name="Er komen geen bestanden overeen"/>
+				<Item id="90345" name="Pas de optie voor extensiefilter, recursie of verborgen bestanden aan."/>
+				<Item id="90346" name="Beginnen…"/>
+				<Item id="90347" name="Verwerking:"/>
+				<Item id="90348" name="%ld / %ld Oké: %ld Overgeslagen: %ld Mislukt: %ld"/>
+				<Item id="90349" name="Batch geannuleerd"/>
+				<Item id="90350" name="Partij voltooid"/>
+				<Item id="90351" name="Totaal: %lu Ok: %ld Overgeslagen: %ld Mislukt: %ld"/>
+				<Item id="90352" name="Bouwjaar"/>
+				<Item id="90353" name="Besturingssysteem"/>
+				<Item id="90354" name="laatste"/>
+				<Item id="90355" name="verouderd"/>
+				<Item id="90356" name="onbekend"/>
+				<Item id="90357" name="Start de toepassing opnieuw zodat de wijzigingen van kracht worden."/>
+				<Item id="90358" name="Plug-ins bijwerken"/>
+				<Item id="90359" name="De volgende plug-ins updaten?"/>
+				<Item id="90360" name="Van de huidige versies wordt een back-up gemaakt in ~/Library/Application Support/Nextpad++/plugin-backups/ voordat deze worden vervangen."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Overschakelen naar de nieuwe Tahoe-look (bèta)"/>
+				<Item id="90363" name="Gebruik menu's in macOS-stijl (bèta)"/>
+				<Item id="90364" name="Het nieuwe uiterlijk van Tahoe wordt toegepast nadat u Nextpad++ opnieuw hebt opgestart."/>
+				<Item id="90365" name="Het klassieke uiterlijk wordt hersteld nadat u Nextpad++ opnieuw heeft opgestart."/>
+				<Item id="90366" name="Stop nu"/>
+				<Item id="90367" name="Menu's worden opnieuw ingedeeld in de stijl macOS nadat u Nextpad++ opnieuw hebt opgestart."/>
+				<Item id="90368" name="De klassieke menu-indeling wordt hersteld nadat u Nextpad++ opnieuw heeft opgestart."/>
+				<Item id="90369" name="Kleur"/>
+				<Item id="90370" name="Toepassen op pictogrammen op de plug-inwerkbalk"/>
+				<Item id="90371" name="In de Complete-modus worden plug-inpictogrammen één effen kleur."/>
+				<Item id="90372" name="Werkbalkgroepen"/>
+				<Item id="90373" name="Kies waar elke knop wordt weergegeven in de werkbalk Liquid Glass: op de"/>
+				<Item id="90374" name="Knop"/>
+				<Item id="90375" name="Plaatsing"/>
+				<Item id="90376" name="Terugzetten naar standaardwaarden"/>
+				<Item id="90377" name="Overloopmenu"/>
+				<Item id="90378" name="Verborgen"/>
+				<Item id="90379" name="CJK-vriendelijke woordomslag"/>
+				<Item id="90380" name="Kolomselectie schakelt over naar meervoudige bewerking"/>
+				<Item id="90381" name="Regelafstand:"/>
+				<Item id="90382" name="1,0 (standaard)"/>
+				<Item id="90383" name="Tabbalk verbergen"/>
+				<Item id="90384" name="De tabgrootte volgt de documentzoom"/>
+				<Item id="90385" name="Kies…"/>
+				<Item id="90386" name="Terugzetten naar standaard"/>
+				<Item id="90387" name="De standaardlocatie gebruiken."/>
+				<Item id="90388" name="Aangepaste locatie."/>
+				<Item id="90389" name="Ongeldig pad: back-ups gebruiken de standaardlocatie."/>
+				<Item id="90390" name="Kies"/>
+				<Item id="90391" name="Selectie invoegen:"/>
+				<Item id="90392" name="Gebruik de Boost Regex-modus (meerdere regels; opnieuw opstarten om toe te passen)"/>
+				<Item id="90395" name="Start nu opnieuw op"/>
+				<Item id="90397" name="(kies het niet tenzij je weet wat je doet)"/>
+				<Item id="90398" name="Grootte van het werkbalkpictogram"/>
+				<Item id="90399" name="100% (standaard)"/>
+				<Item id="90400" name="Scrollsnelheid van het muiswiel"/>
+				<Item id="90401" name="1× (uit)"/>
+				<Item id="90402" name="De grootte van het werkbalkpictogram is gewijzigd"/>
+				<Item id="90403" name="De nieuwe grootte van het werkbalkpictogram wordt van kracht de volgende keer dat Nextpad++ wordt gestart."/>
+				<Item id="90404" name="Werkbalkpictogrammen gewijzigd"/>
+				<Item id="90405" name="De nieuwe werkbalkpictogrammen worden van kracht zodra Nextpad++ de volgende keer wordt gestart."/>
+				<Item id="90411" name="Macro uitvoeren op bestanden..."/>
+				<Item id="90418" name="Hierdoor wordt het bestand en de volledige inhoud ervan uit het project verwijderd.Er worden geen bestanden op schijf beïnvloed."/>
+				<Item id="90420" name="Map"/>
+				<Item id="90427" name="Niet gevonden"/>
+				<Item id="90428" name="CONFLICT: %@"/>
+				<Item id="90429" name="'%@' verwijderen?"/>
+				<Item id="90430" name="Door gebruiker gedefinieerde taalbeheerder"/>
+				<Item id="90431" name="Talen filteren…"/>
+				<Item id="90432" name="Bron"/>
+				<Item id="90433" name="AC-bronnen"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Installeren/bijwerken"/>
+				<Item id="90436" name="%lu talen · %lu geïnstalleerd · %lu updates"/>
+				<Item id="90437" name="Auteur"/>
+				<Item id="90438" name="Gecombineerd: %ld vermeldingen uit %lu bronnen (samengevoegd)"/>
+				<Item id="90439" name="Selecteer een of meer talen om te installeren."/>
+				<Item id="90440" name="Niets downloadbaar voor de selectie."/>
+				<Item id="90441" name="Downloaden mislukt"/>
+				<Item id="90442" name="Controlesom komt niet overeen"/>
+				<Item id="90443" name="De geselecteerde taal(en) zijn nu beschikbaar in het Taalmenu."/>
+				<Item id="90444" name="Selecteer een of meer geïnstalleerde talen om te verwijderen."/>
+				<Item id="90445" name="Verwijderd"/>
+				<Item id="90446" name="Deze naam wordt al door een andere taal gebruikt."/>
+				<Item id="90447" name="Deze taal kan niet worden verwijderd."/>
+				<Item id="90448" name="Vooraf geïnstalleerde talen kunnen niet worden verwijderd."/>
+				<Item id="90449" name="Deze taal kan niet worden hernoemd."/>
+				<Item id="90450" name="Dit bestand is %@.Als u de app opent, wordt de syntaxisaccentuering uitgeschakeld en wordt de geschiedenis ongedaan gemaakt, zodat de app responsief blijft.&#10;&#10;Wilt u doorgaan?"/>
+				<Item id="90451" name="Hoe dan ook geopend"/>
+				<Item id="90452" name="&quot;%@&quot; gewijzigd op schijf"/>
+				<Item id="90453" name="Negeer"/>
+				<Item id="90454" name="Bewaar mijn versie"/>
+				<Item id="90455" name="Kan '%@' niet opnieuw laden"/>
+				<Item id="90456" name="Het bestand kon niet worden gelezen."/>
+				<Item id="90457" name="Kies waar elke knop verschijnt in de Liquid Glass-werkbalk: op de groepscapsule (Toolbar), in het ▾ overloopmenu van de groep, of Verborgen."/>
+				<Item id="90458" name="Doneer om ontwikkeling te ondersteunen"/>
+				<Item id="90459" name="Installeer opdrachtregelprogramma's"/>
+				<Item id="90460" name="Toon schaduwen achter werkbalkcapsules"/>
+				<Item id="90461" name="Doneer"/>
+				<Item id="90462" name="Tekensets"/>
+				<Item id="90463" name="Minimaliseer"/>
+				<Item id="90464" name="Verberg Nextpad++"/>
+				<Item id="90465" name="Verberg anderen"/>
+				<Item id="90466" name="Toon alles"/>
+				<Item id="90467" name="Sluit Nextpad++ af"/>
+				<Item id="90468" name="Huidige opgenomen macro opslaan…"/>
+				<Item id="90469" name="Trim de volgruimte en bespaar"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

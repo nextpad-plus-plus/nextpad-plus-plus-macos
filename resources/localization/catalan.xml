@@ -981,13 +981,13 @@ By Hiro5 <groccat at gmail>
 				<Item id="90006" name="Control de font"/>
 				<Item id="90007" name="Compromís"/>
 				<Item id="90008" name="Ha fallat la confirmació"/>
-				<Item id="90009" name="No hi ha repositori git\nUtilitzeu Navega per obrir un dipòsit."/>
+				<Item id="90009" name="No hi ha repositori git&#10;Utilitzeu Navega per obrir un dipòsit."/>
 				<Item id="90010" name="Etapa"/>
 				<Item id="90011" name="Desescena"/>
 				<Item id="90012" name="Etapa Tot"/>
 				<Item id="90013" name="Destaca tots"/>
-				<Item id="90014" name="Missatge de confirmació\u2026"/>
-				<Item id="90015" name="Busqueu el repositori\u2026"/>
+				<Item id="90014" name="Missatge de confirmació…"/>
+				<Item id="90015" name="Busqueu el repositori…"/>
 				<Item id="90016" name="Trieu una carpeta de repositori git"/>
 				<Item id="90017" name="(sense repositori)"/>
 				<Item id="90018" name="(aïllat)"/>
@@ -1001,9 +1001,9 @@ By Hiro5 <groccat at gmail>
 				<Item id="90026" name="Resultats"/>
 				<Item id="90027" name="Atura"/>
 				<Item id="90028" name="La cerca s'ha aturat."/>
-				<Item id="90029" name="S'està cercant\u2026"/>
+				<Item id="90029" name="S'està cercant…"/>
 				<Item id="90030" name="Text per cercar"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="S'està buscant..."/>
 				<Item id="90033" name="Substitueix:"/>
 				<Item id="90034" name="Paraula sencera"/>
@@ -1063,7 +1063,7 @@ By Hiro5 <groccat at gmail>
 				<Item id="90088" name="Instal·leu connectors"/>
 				<Item id="90089" name="Elimina els connectors"/>
 				<Item id="90090" name="No s'han trobat ordres"/>
-				<Item id="90091" name="Escriviu per cercar\u2026"/>
+				<Item id="90091" name="Escriviu per cercar…"/>
 				<Item id="90092" name="Idioma definit per l'usuari v.2.1"/>
 				<Item id="90093" name="Crea un idioma nou"/>
 				<Item id="90094" name="Introduïu un nom:"/>
@@ -1072,11 +1072,9 @@ By Hiro5 <groccat at gmail>
 				<Item id="90097" name="No deseu"/>
 				<Item id="90098" name="Fet"/>
 				<Item id="90099" name="Commuta l'ajustament de paraules"/>
-				<Item id="90100" name="Mostra tots els personatges"/>
 				<Item id="90101" name="Mostra les opcions de caràcters"/>
 				<Item id="90102" name="Commuta la guia de sagnat"/>
 				<Item id="90103" name="Encara no s'ha implementat"/>
-				<Item id="90104" name="Torna a carregar des del disc"/>
 				<Item id="90105" name="Canvia el motor de cerca"/>
 				<Item id="90106" name="Error d'execució"/>
 				<Item id="90107" name="Bloc de notes++ Temps de càrrega"/>
@@ -1085,16 +1083,12 @@ By Hiro5 <groccat at gmail>
 				<Item id="90110" name="Descarrega"/>
 				<Item id="90111" name="Pàgina de llançament"/>
 				<Item id="90112" name="Més tard"/>
-				<Item id="90113" name="Filtre els connectors\u2026"/>
-				<Item id="90114" name="Disponible"/>
-				<Item id="90115" name="Actualitzacions"/>
-				<Item id="90116" name="Instal·lat"/>
-				<Item id="90117" name="Incompatible"/>
+				<Item id="90113" name="Filtre els connectors…"/>
 				<Item id="90118" name="No s'ha pogut instal·lar"/>
 				<Item id="90119" name="Vols suprimir els connectors següents?"/>
 				<Item id="90120" name="Instal·leu els complements següents?"/>
 				<Item id="90121" name="Això suprimirà els fitxers del connector."/>
-				<Item id="90122" name="Ordres de cerca\u2026"/>
+				<Item id="90122" name="Ordres de cerca…"/>
 				<Item id="90123" name="Color de primer pla"/>
 				<Item id="90124" name="Color de fons"/>
 				<Item id="90125" name="Nom de la macro"/>
@@ -1114,7 +1108,7 @@ By Hiro5 <groccat at gmail>
 				<Item id="90139" name="Totes les marques esborrades."/>
 				<Item id="90140" name="El text marcat s'ha copiat al porta-retalls."/>
 				<Item id="90141" name="No hi ha text marcat per copiar."/>
-				<Item id="90142" name="S'està cercant... %ld visita(s) \u2014 %@"/>
+				<Item id="90142" name="S'està cercant... %ld visita(s) — %@"/>
 				<Item id="90143" name="Substituint en fitxers..."/>
 				<Item id="90144" name="Substitueix als projectes: encara no està connectat."/>
 				<Item id="90145" name="Cerca a Projectes: encara no està connectat a la llista de fitxers del panell de projectes."/>
@@ -1135,20 +1129,20 @@ By Hiro5 <groccat at gmail>
 				<Item id="90160" name="Ressaltat intel·ligent: només paraula sencera"/>
 				<Item id="90161" name="Fes doble clic per tancar la pestanya"/>
 				<Item id="90162" name="Mostra el botó de tancament a les pestanyes"/>
+				<Item id="90168" name="Utilitzeu una font monoespai al diàleg de cerca"/>
+				<Item id="90191" name="Repositori de llista de connectors"/>
 				<Item id="90224" name="Mostra les pestanyes en diverses línies"/>
 				<Item id="90163" name="Recordeu la visibilitat del panell a través de les sessions"/>
 				<Item id="90164" name="Mantenir les entrades de fitxers absents a la sessió"/>
 				<Item id="90165" name="Confirmeu abans de desar-ho tot"/>
 				<Item id="90166" name="Confirmeu Reemplaça-ho tot als documents oberts"/>
 				<Item id="90167" name="Substituïu: no passeu a la següent ocurrència"/>
-				<Item id="90168" name="Utilitzeu una font monoespai al diàleg de cerca"/>
 				<Item id="90169" name="El clic dret manté la selecció"/>
 				<Item id="90170" name="Invertir l'ordre de data/hora predeterminat"/>
 				<Item id="90171" name="Utilitzeu analitzadors de llistes de funcions basats en XML"/>
 				<Item id="90172" name="Tancament automàtic de claudàtors ( ) [ ] { }"/>
 				<Item id="90173" name="Del caràcter Nè:"/>
 				<Item id="90174" name="Llindar de comprovació automàtica de la selecció (bytes):"/>
-				<Item id="90175" name="Ampliat (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Marges"/>
 				<Item id="90178" name="Fosc"/>
@@ -1162,12 +1156,10 @@ By Hiro5 <groccat at gmail>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimitzat"/>
 				<Item id="90188" name="Simple +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repositori de llista de connectors"/>
 				<Item id="90192" name="Seleccioneu un fitxer XML del tema Nextpad++ per aplicar"/>
-				<Item id="90193" name="Crea una nova\u2026"/>
-				<Item id="90194" name="Desa com a\u2026"/>
+				<Item id="90193" name="Crea una nova…"/>
+				<Item id="90194" name="Desa com a…"/>
 				<Item id="90195" name="Idioma de l'usuari:"/>
 				<Item id="90196" name="Nom de la llengua"/>
 				<Item id="90197" name="Crear"/>
@@ -1197,6 +1189,222 @@ By Hiro5 <groccat at gmail>
 				<Item id="90221" name="Atribut bloquejat (macOS)"/>
 				<Item id="90222" name="Comproveu si hi ha actualitzacions..."/>
 				<Item id="90223" name="Obre Recent"/>
+				<Item id="90226" name="Ajuda"/>
+				<Item id="90227" name="Etapa fallada"/>
+				<Item id="90228" name="S'ha produït un error"/>
+				<Item id="90229" name="està disponible"/>
+				<Item id="90230" name="Estàs corrent"/>
+				<Item id="90231" name="No m'ho recordis mai més"/>
+				<Item id="90233" name="Comprova automàticament si hi ha actualitzacions"/>
+				<Item id="90234" name="Les comprovacions d'actualització automàtica estan desactivades."/>
+				<Item id="90235" name="Darrera comprovació:"/>
+				<Item id="90236" name="Sense connexió a Internet."/>
+				<Item id="90237" name="Resposta inesperada del servidor d'actualització."/>
+				<Item id="90238" name="No s'ha trobat cap versió publicada."/>
+				<Item id="90239" name="El servidor d'actualització no està disponible temporalment.Si us plau, torna-ho a provar més tard."/>
+				<Item id="90240" name="El servidor d'actualització va rebutjar la sol·licitud.És possible que un servidor intermediari, un tallafoc o una VPN estigui bloquejant l'accés a GitHub."/>
+				<Item id="90241" name="Massa comprovacions d'actualització de la vostra xarxa (aquest límit el comparteixen tothom).Torna-ho a provar després"/>
+				<Item id="90242" name="Massa comprovacions d'actualització de la vostra xarxa (aquest límit el comparteixen tothom).Si us plau, torna-ho a provar més tard."/>
+				<Item id="90243" name="El servidor d'actualització ha retornat l'estat"/>
+				<Item id="90244" name="Torna-ho a provar"/>
+				<Item id="90245" name="Mida del text d'impressió:"/>
+				<Item id="90246" name="Utilitzeu el zoom de la pantalla"/>
+				<Item id="90247" name="Mida real"/>
+				<Item id="90248" name="Alguns fitxers no s'han pogut substituir"/>
+				<Item id="90249" name="...i %lu més"/>
+				<Item id="90250" name="Les associacions de fitxers les gestiona la vostra organització."/>
+				<Item id="90251" name="S'està esperant la confirmació del macOS…"/>
+				<Item id="90252" name="El macOS no ha aplicat el canvi."/>
+				<Item id="90253" name="Registrades"/>
+				<Item id="90254" name="Obre tots els fitxers de la carpeta?"/>
+				<Item id="90255" name="Això obrirà %lu fitxers en pestanyes noves."/>
+				<Item id="90256" name="No s'ha pogut importar: %@"/>
+				<Item id="90258" name="S'han trobat %ld coincidències en %ld fitxers."/>
+				<Item id="90259" name="S'estan cercant... %ld coincidències fins ara"/>
+				<Item id="90260" name="%@ (%ld coincidència%@)"/>
+				<Item id="90261" name="Cerca difusa"/>
+				<Item id="90266" name="Recompte: %ld coincidències."/>
+				<Item id="90267" name="Substitueix-ho tot: es van substituir %ld ocurrències %@."/>
+				<Item id="90268" name="Substitueix als fitxers oberts: s'han substituït %ld ocurrències."/>
+				<Item id="90269" name="Cerca als fitxers: %ld visites a %ld fitxers."/>
+				<Item id="90270" name="Cerca a Fitxers: 0 visites."/>
+				<Item id="90271" name="Substituïu totes les ocurrències de &quot;%@&quot; per &quot;%@&quot; al directori:&#10;%@&#10;&#10;Això no es pot desfer."/>
+				<Item id="90272" name="Substitueix als fitxers: %ld substitucions a %ld fitxers."/>
+				<Item id="90273" name="Obriu primer un tauler de projecte."/>
+				<Item id="90274" name="Seleccioneu almenys un tauler de projecte per cercar."/>
+				<Item id="90275" name="No hi ha fitxers per cercar."/>
+				<Item id="90276" name="Cerca a Projectes: %ld visites a %ld fitxers."/>
+				<Item id="90277" name="Troba a Projectes: 0 visites."/>
+				<Item id="90278" name="Substitueix totes les ocurrències de"/>
+				<Item id="90279" name="amb"/>
+				<Item id="90280" name="en"/>
+				<Item id="90281" name="fitxer(s) del projecte.Això no es pot desfer."/>
+				<Item id="90282" name="Substitueix als projectes: %ld substitucions en %ld fitxers."/>
+				<Item id="90283" name="Marca: %ld coincidències marcades."/>
+				<Item id="90284" name="Filtra el nom del fitxer/carpeta..."/>
+				<Item id="90285" name="Alguns documents no s'han pogut desar"/>
+				<Item id="90286" name="⌘ Comandament"/>
+				<Item id="90287" name="⌃ Control"/>
+				<Item id="90288" name="⌥ Opció"/>
+				<Item id="90289" name="⇧ Canvi"/>
+				<Item id="90290" name="Introduïu una cadena de format NSDateFormatter:"/>
+				<Item id="90291" name="'%@' encara no s'ha implementat en aquesta versió."/>
+				<Item id="90292" name="Importa el connector"/>
+				<Item id="90293" name="Cal reiniciar"/>
+				<Item id="90294" name="No hi ha fitxers per processar"/>
+				<Item id="90295" name="Aquest node del projecte no conté cap fitxer."/>
+				<Item id="90296" name="&quot;%@&quot; té canvis no desats.&#10;Torneu a carregar i descartar els canvis?"/>
+				<Item id="90297" name="Introduïu un nom de fitxer nou:"/>
+				<Item id="90299" name="Nom nou:"/>
+				<Item id="90300" name="No s'ha pogut canviar el nom"/>
+				<Item id="90301" name="El nom no pot contenir “/” o “:”."/>
+				<Item id="90304" name="No ho deseu tot"/>
+				<Item id="90306" name="Hi ha 3 maneres de canviar al mode de selecció de columnes:&#10;&#10;1.(Teclat i ratolí) Manteniu premut Opció mentre arrossegueu fent clic amb el botó esquerre&#10;&#10;2.(Només teclat) Manteniu premuda Opció+Maj mentre feu servir les tecles de fletxa&#10;&#10;3.(Teclat o ratolí)&#10; Col·loqueu el cursor a l'inici desitjat de la posició del bloc de columnes i, a continuació,&#10; executeu l'ordre &quot;Començar/Finalitzar la selecció en mode de columna&quot;;&#10; Moure el cursor a la posició del bloc de columnes desitjada i, a continuació,&#10; executar de nou l'ordre &quot;Començar/finalitzar la selecció en mode de columna&quot;"/>
+				<Item id="90307" name="Introduïu l'URL de cerca.Utilitzeu %s com a marcador de posició de la consulta (o afegiu la consulta al final):"/>
+				<Item id="90308" name="Introduïu l'ordre o l'URL..."/>
+				<Item id="90309" name="No s'ha pogut executar:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editar contextMenu.xml us permet modificar el vostre menú contextual emergent Nextpad++ a la zona d'edició.&#10;Heu de reiniciar el vostre Nextpad++ perquè tingui efecte després de modificar contextMenu.xml."/>
+				<Item id="90312" name="Ja instal·lat"/>
+				<Item id="90313" name="Instal·leu l'eina de línia d'ordres nextpad++"/>
+				<Item id="90314" name="La instal·lació ha fallat"/>
+				<Item id="90315" name="S'ha instal·lat, però ~/.local/bin no és al vostre PATH"/>
+				<Item id="90316" name="Ja a la teva configuració"/>
+				<Item id="90317" name="S'ha afegit a PATH"/>
+				<Item id="90318" name="No s'ha pogut escriure"/>
+				<Item id="90319" name="Copiat"/>
+				<Item id="90321" name="Els vostres canvis es perdran si no els deseu."/>
+				<Item id="90322" name="Aplicar a tots els documents"/>
+				<Item id="90323" name="Executeu la macro als fitxers"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Carpeta:"/>
+				<Item id="90326" name="Tria una carpeta..."/>
+				<Item id="90327" name="Navega…"/>
+				<Item id="90328" name="Extensions:"/>
+				<Item id="90329" name="Recurs de subdirectoris"/>
+				<Item id="90330" name="Inclou fitxers ocults"/>
+				<Item id="90331" name="Mida màxima:"/>
+				<Item id="90332" name="Il·limitat"/>
+				<Item id="90333" name="Per fitxer:"/>
+				<Item id="90334" name="Desa si es modifica"/>
+				<Item id="90335" name="Tanca després"/>
+				<Item id="90336" name="Tanca fins i tot els fitxers que ja estaven oberts"/>
+				<Item id="90337" name="Per error:"/>
+				<Item id="90338" name="Omet el fitxer i continua"/>
+				<Item id="90339" name="Atureu-vos al primer error"/>
+				<Item id="90340" name="(no hi ha macros desades)"/>
+				<Item id="90341" name="%lu fitxers coincideixen"/>
+				<Item id="90342" name="No s'ha trobat la carpeta"/>
+				<Item id="90343" name="Trieu una carpeta que existeixi."/>
+				<Item id="90344" name="No coincideix cap fitxer"/>
+				<Item id="90345" name="Ajusteu l'opció de filtre d'extensions, recursivitat o fitxers ocults."/>
+				<Item id="90346" name="S'està començant…"/>
+				<Item id="90347" name="Processament:"/>
+				<Item id="90348" name="%ld / %ld D'acord: %ld Omès: %ld Error: %ld"/>
+				<Item id="90349" name="Lot cancel·lat"/>
+				<Item id="90350" name="Lot complet"/>
+				<Item id="90351" name="Total: %lu D'acord: %ld Omès: %ld Error: %ld"/>
+				<Item id="90352" name="Data de construcció"/>
+				<Item id="90353" name="Sistema operatiu"/>
+				<Item id="90354" name="més recent"/>
+				<Item id="90355" name="obsolet"/>
+				<Item id="90356" name="desconegut"/>
+				<Item id="90357" name="Reinicieu l'aplicació perquè els canvis tinguin efecte."/>
+				<Item id="90358" name="Actualitza els connectors"/>
+				<Item id="90359" name="Vols actualitzar els connectors següents?"/>
+				<Item id="90360" name="Les versions actuals es fan una còpia de seguretat a ~/Library/Application Support/Nextpad++/plugin-backups/ abans de ser substituïdes."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Canvia a l'aspecte nou de Tahoe (beta)"/>
+				<Item id="90363" name="Utilitzeu menús d'estil macOS (beta)"/>
+				<Item id="90364" name="El nou aspecte Tahoe s'aplicarà després de reiniciar Nextpad++."/>
+				<Item id="90365" name="L'aspecte clàssic es restaurarà després de reiniciar Nextpad++."/>
+				<Item id="90366" name="Surt ara"/>
+				<Item id="90367" name="Els menús es reorganitzaran a l'estil macOS després de reiniciar Nextpad++."/>
+				<Item id="90368" name="La disposició clàssica del menú es restaurarà després de reiniciar Nextpad++."/>
+				<Item id="90369" name="Color"/>
+				<Item id="90370" name="Aplicar a les icones de la barra d'eines de connectors"/>
+				<Item id="90371" name="En el mode complet, les icones del connector es converteixen en un únic color sòlid."/>
+				<Item id="90372" name="Grups de la barra d'eines"/>
+				<Item id="90373" name="Trieu on apareix cada botó a la barra d'eines Liquid Glass: a"/>
+				<Item id="90374" name="Botó"/>
+				<Item id="90375" name="Col·locació"/>
+				<Item id="90376" name="Restableix els valors per defecte"/>
+				<Item id="90377" name="Menú desbordant"/>
+				<Item id="90378" name="Ocult"/>
+				<Item id="90379" name="Embolcall de paraules amigable amb CJK"/>
+				<Item id="90380" name="La selecció de columnes canvia a l'edició múltiple"/>
+				<Item id="90381" name="Interlineat:"/>
+				<Item id="90382" name="1.0 (per defecte)"/>
+				<Item id="90383" name="Amaga la barra de pestanyes"/>
+				<Item id="90384" name="La mida de la pestanya segueix el zoom del document"/>
+				<Item id="90385" name="Tria…"/>
+				<Item id="90386" name="Restableix al valor predeterminat"/>
+				<Item id="90387" name="Utilitzant la ubicació predeterminada."/>
+				<Item id="90388" name="Ubicació personalitzada."/>
+				<Item id="90389" name="Camí no vàlid: les còpies de seguretat utilitzaran la ubicació predeterminada."/>
+				<Item id="90390" name="Tria"/>
+				<Item id="90391" name="Insereix la selecció:"/>
+				<Item id="90392" name="Utilitzeu el mode Regex Boost (multilínia; reinicieu per aplicar)"/>
+				<Item id="90395" name="Reinicieu ara"/>
+				<Item id="90397" name="(no el trieu tret que sàpigues què estàs fent)"/>
+				<Item id="90398" name="Mida de la icona de la barra d'eines"/>
+				<Item id="90399" name="100% (predeterminat)"/>
+				<Item id="90400" name="Velocitat de desplaçament de la roda del ratolí"/>
+				<Item id="90401" name="1× (desactivat)"/>
+				<Item id="90402" name="La mida de la icona de la barra d'eines ha canviat"/>
+				<Item id="90403" name="La nova mida de la icona de la barra d'eines tindrà efecte la propera vegada que s'iniciï Nextpad++."/>
+				<Item id="90404" name="Les icones de la barra d'eines han canviat"/>
+				<Item id="90405" name="Les noves icones de la barra d'eines tindran efecte la propera vegada que s'iniciï Nextpad++."/>
+				<Item id="90410" name="Troba a Projectes..."/>
+				<Item id="90411" name="Executeu la macro als fitxers..."/>
+				<Item id="90418" name="Això eliminarà el projecte i tot el seu contingut.Cap fitxer del disc es veurà afectat."/>
+				<Item id="90420" name="Carpeta"/>
+				<Item id="90423" name="Copia els camins seleccionats"/>
+				<Item id="90424" name="Obre els camins seleccionats"/>
+				<Item id="90425" name="Embolcall de paraules llargues línies"/>
+				<Item id="90426" name="Purga per a cada cerca"/>
+				<Item id="90427" name="No s'ha trobat"/>
+				<Item id="90428" name="CONFLICTE: %@"/>
+				<Item id="90429" name="Vols suprimir &quot;%@&quot;?"/>
+				<Item id="90430" name="Administrador d'idiomes definits per l'usuari"/>
+				<Item id="90431" name="Filtra els idiomes..."/>
+				<Item id="90432" name="Font"/>
+				<Item id="90433" name="Fonts de CA"/>
+				<Item id="90434" name="Estat"/>
+				<Item id="90435" name="Instal·lació/Actualització"/>
+				<Item id="90436" name="%lu idiomes · %lu instal·lats · %lu actualitzacions"/>
+				<Item id="90437" name="Autor"/>
+				<Item id="90438" name="Combinat: %ld entrades de %lu fonts (fusionades)"/>
+				<Item id="90439" name="Seleccioneu un o més idiomes per instal·lar."/>
+				<Item id="90440" name="No es pot descarregar res per a la selecció."/>
+				<Item id="90441" name="La baixada ha fallat"/>
+				<Item id="90442" name="Desajust de la suma de control"/>
+				<Item id="90443" name="Els idiomes seleccionats ja estan disponibles al menú Idioma."/>
+				<Item id="90444" name="Seleccioneu un o més idiomes instal·lats per eliminar-los."/>
+				<Item id="90445" name="Eliminat"/>
+				<Item id="90446" name="Aquest nom ja l'utilitza un altre idioma."/>
+				<Item id="90447" name="Aquest idioma no s'ha pogut eliminar."/>
+				<Item id="90448" name="Els idiomes preinstal·lats no es poden eliminar."/>
+				<Item id="90449" name="No s'ha pogut canviar el nom d'aquest idioma."/>
+				<Item id="90450" name="Aquest fitxer és %@.En obrir-lo, es desactivarà el ressaltat de sintaxi i l'historial de desfers perquè l'aplicació respongui.&#10;&#10;Vols continuar?"/>
+				<Item id="90451" name="Obre de totes maneres"/>
+				<Item id="90452" name="&quot;%@&quot; ha canviat al disc"/>
+				<Item id="90453" name="Ignorar"/>
+				<Item id="90454" name="Conserva la meva versió"/>
+				<Item id="90455" name="No s'ha pogut tornar a carregar &quot;%@&quot;"/>
+				<Item id="90456" name="No s'ha pogut llegir el fitxer."/>
+				<Item id="90457" name="Trieu on apareix cada botó a la barra d'eines Liquid Glass: a la càpsula del grup (Barra d'eines), al menú de desbordament ▾ del grup o Ocult."/>
+				<Item id="90458" name="Donar per donar suport al desenvolupament"/>
+				<Item id="90459" name="Instal·leu les eines de línia d'ordres"/>
+				<Item id="90460" name="Mostra les ombres darrere de les càpsules de la barra d'eines"/>
+				<Item id="90461" name="Donar"/>
+				<Item id="90462" name="Conjunts de caràcters"/>
+				<Item id="90463" name="Minimitzar"/>
+				<Item id="90464" name="Amaga Nextpad++"/>
+				<Item id="90465" name="Amaga els altres"/>
+				<Item id="90466" name="Mostra-ho tot"/>
+				<Item id="90467" name="Surt de Nextpad++"/>
+				<Item id="90468" name="Desa la macro gravada actual..."/>
+				<Item id="90469" name="Retalla l'espai final i desa"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

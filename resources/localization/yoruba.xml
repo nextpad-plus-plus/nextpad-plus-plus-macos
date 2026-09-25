@@ -1466,13 +1466,13 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90006" name="Iṣakoso orisun"/>
 				<Item id="90007" name="Ṣe adehun"/>
 				<Item id="90008" name="Ti kuna"/>
-				<Item id="90009" name="Ko si ibi ipamọ git\nLo Ṣawakiri lati ṣii ibi ipamọ kan."/>
+				<Item id="90009" name="Ko si ibi ipamọ git&#10;Lo Ṣawakiri lati ṣii ibi ipamọ kan."/>
 				<Item id="90010" name="Ipele"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Ipele Gbogbo"/>
 				<Item id="90013" name="Unstage Gbogbo"/>
-				<Item id="90014" name="Fi ifiranṣẹ ranṣẹ\u2026"/>
-				<Item id="90015" name="Ṣawakiri fun ibi ipamọ\u2026"/>
+				<Item id="90014" name="Fi ifiranṣẹ ranṣẹ…"/>
+				<Item id="90015" name="Ṣawakiri fun ibi ipamọ…"/>
 				<Item id="90016" name="Yan folda ibi ipamọ git"/>
 				<Item id="90017" name="(ko si ibi ipamọ)"/>
 				<Item id="90018" name="(sisọ)"/>
@@ -1486,7 +1486,7 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90026" name="Esi"/>
 				<Item id="90027" name="Duro"/>
 				<Item id="90028" name="Wiwa duro."/>
-				<Item id="90029" name="Ṣiṣawari\u2026"/>
+				<Item id="90029" name="Ṣiṣawari…"/>
 				<Item id="90030" name="Ọrọ lati wa"/>
 				<Item id="90031" name="* .txt, * .cpp, \ u2026"/>
 				<Item id="90032" name="Wiwa..."/>
@@ -1548,7 +1548,7 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90088" name="Fi sori ẹrọ Awọn afikun"/>
 				<Item id="90089" name="Yọ Awọn afikun kuro"/>
 				<Item id="90090" name="Ko si awọn aṣẹ ti a rii"/>
-				<Item id="90091" name="Tẹ lati wa\u2026"/>
+				<Item id="90091" name="Tẹ lati wa…"/>
 				<Item id="90092" name="Ede Itumọ olumulo v.2.1"/>
 				<Item id="90093" name="Ṣẹda Èdè Tuntun"/>
 				<Item id="90094" name="Tẹ orukọ sii:"/>
@@ -1557,11 +1557,9 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90097" name="Maṣe Fipamọ"/>
 				<Item id="90098" name="Ti ṣe"/>
 				<Item id="90099" name="Yipada Ipari Ọrọ"/>
-				<Item id="90100" name="Ṣe afihan Gbogbo Awọn lẹta"/>
 				<Item id="90101" name="Ṣe afihan Awọn aṣayan Awọn kikọ"/>
 				<Item id="90102" name="Yipada Itọsọna Indent"/>
 				<Item id="90103" name="Ko Si Iṣeṣe"/>
-				<Item id="90104" name="Tun gbee lati Disk"/>
 				<Item id="90105" name="Yi ẹrọ wiwa pada"/>
 				<Item id="90106" name="Ṣiṣe aṣiṣe"/>
 				<Item id="90107" name="Nextpad++ Akoko ikojọpọ"/>
@@ -1570,7 +1568,7 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Oju-iwe Tu"/>
 				<Item id="90112" name="Nigbamii"/>
-				<Item id="90113" name="Àlẹmọ awọn afikun\u2026"/>
+				<Item id="90113" name="Àlẹmọ awọn afikun…"/>
 				<Item id="90114" name="Wa"/>
 				<Item id="90115" name="Awọn imudojuiwọn"/>
 				<Item id="90116" name="Ti fi sori ẹrọ"/>
@@ -1579,7 +1577,7 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90119" name="Yọ awọn afikun wọnyi kuro?"/>
 				<Item id="90120" name="Fi sori ẹrọ awọn afikun wọnyi bi?"/>
 				<Item id="90121" name="Eyi yoo pa awọn faili itanna rẹ."/>
-				<Item id="90122" name="Awọn aṣẹ wiwa\u2026"/>
+				<Item id="90122" name="Awọn aṣẹ wiwa…"/>
 				<Item id="90123" name="Awọ iwaju"/>
 				<Item id="90124" name="Awọ abẹlẹ"/>
 				<Item id="90125" name="Orukọ Makiro"/>
@@ -1599,7 +1597,7 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90139" name="Gbogbo awọn ami ti nso."/>
 				<Item id="90140" name="Ọrọ ti o samisi daakọ si agekuru agekuru."/>
 				<Item id="90141" name="Ko si ọrọ ti o samisi lati daakọ."/>
-				<Item id="90142" name="Wiwa... %ld lu(s) \u2014 %@"/>
+				<Item id="90142" name="Wiwa... %ld lu(s) — %@"/>
 				<Item id="90143" name="Rirọpo ni awọn faili..."/>
 				<Item id="90144" name="Rọpo ni Awọn iṣẹ akanṣe: Ko ti sopọ sibẹsibẹ."/>
 				<Item id="90145" name="Wa ninu Awọn iṣẹ akanṣe: Ko tii sopọ si atokọ faili Igbimọ Project."/>
@@ -1626,14 +1624,12 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90165" name="Jẹrisi ṣaaju Fi Gbogbo Rẹ pamọ"/>
 				<Item id="90166" name="Jẹrisi Rọpo Gbogbo ni awọn iwe aṣẹ ṣiṣi"/>
 				<Item id="90167" name="Rọpo: maṣe gbe si iṣẹlẹ atẹle"/>
-				<Item id="90168" name="Lo fonti monospaced ni Wa ajọṣọ"/>
 				<Item id="90169" name="Titẹ-ọtun ntọju aṣayan"/>
 				<Item id="90170" name="Yiyipada ọjọ aiyipada / aṣẹ akoko"/>
 				<Item id="90171" name="Lo awọn itupalẹ atokọ iṣẹ orisun-XML"/>
 				<Item id="90172" name="Awọn biraketi-laifọwọyi ( ) [ ] {}"/>
 				<Item id="90173" name="Lati iwa Nth:"/>
 				<Item id="90174" name="Ni-aṣayan idojukọ-ṣayẹwo ala (baiti):"/>
-				<Item id="90175" name="Tesiwaju (\\n, \\r, \\t, \\ 0, \\ x...)"/>
 				<Item id="90176" name="Olootu"/>
 				<Item id="90177" name="Ala"/>
 				<Item id="90178" name="Dudu"/>
@@ -1647,12 +1643,10 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Iṣapeye"/>
 				<Item id="90188" name="Rọrun +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Ibi ipamọ akojọ ohun itanna"/>
 				<Item id="90192" name="Yan akori XML Nextpad++ kan lati lo"/>
-				<Item id="90193" name="Ṣẹda titun\u2026"/>
-				<Item id="90194" name="Fipamọ bi\u2026"/>
+				<Item id="90193" name="Ṣẹda titun…"/>
+				<Item id="90194" name="Fipamọ bi…"/>
 				<Item id="90195" name="Ede olumulo:"/>
 				<Item id="90196" name="Orukọ ede"/>
 				<Item id="90197" name="Ṣẹda"/>
@@ -1682,6 +1676,217 @@ O le tun mu ibaraẹnisọrọ yii ṣiṣẹ ni Awọn ayanfẹ nigbamii."/>
 				<Item id="90221" name="Titiipa abuda (macOS)"/>
 				<Item id="90222" name="Ṣayẹwo fun awọn imudojuiwọn…"/>
 				<Item id="90223" name="Ṣii Laipe"/>
+				<Item id="90226" name="Iranlọwọ"/>
+				<Item id="90227" name="Ipele kuna"/>
+				<Item id="90228" name="Aipele kuna"/>
+				<Item id="90229" name="wa"/>
+				<Item id="90230" name="O nṣiṣẹ"/>
+				<Item id="90231" name="Maṣe leti mi lẹẹkansi"/>
+				<Item id="90232" name="Awọn imudojuiwọn"/>
+				<Item id="90233" name="Ṣayẹwo laifọwọyi fun awọn imudojuiwọn"/>
+				<Item id="90234" name="Awọn sọwedowo imudojuiwọn aifọwọyi wa ni pipa."/>
+				<Item id="90235" name="Ti ṣayẹwo kẹhin:"/>
+				<Item id="90236" name="Ko si isopọ Ayelujara."/>
+				<Item id="90237" name="Idahun airotẹlẹ lati ọdọ olupin imudojuiwọn."/>
+				<Item id="90238" name="Ko si itusilẹ ti a tẹjade ti a rii."/>
+				<Item id="90239" name="Olupin imudojuiwọn ko si fun igba diẹ.Jọwọ gbiyanju lẹẹkansi nigbamii."/>
+				<Item id="90240" name="Olupin imudojuiwọn naa kọ ibeere naa.Aṣoju, ogiriina tabi VPN le dina wiwọle si GitHub."/>
+				<Item id="90241" name="Awọn sọwedowo imudojuiwọn pupọ pupọ lati nẹtiwọọki rẹ (ipin yii jẹ pinpin nipasẹ gbogbo eniyan lori rẹ).Gbiyanju lẹẹkansi lẹhin"/>
+				<Item id="90242" name="Awọn sọwedowo imudojuiwọn pupọ pupọ lati nẹtiwọọki rẹ (ipin yii jẹ pinpin nipasẹ gbogbo eniyan lori rẹ).Jọwọ gbiyanju lẹẹkansi nigbamii."/>
+				<Item id="90243" name="Olupin imudojuiwọn naa da ipo pada"/>
+				<Item id="90244" name="Gbiyanju Lẹẹkansi"/>
+				<Item id="90245" name="Titẹ ọrọ sita iwọn:"/>
+				<Item id="90246" name="Lo sun-un iboju"/>
+				<Item id="90247" name="Iwọn gangan"/>
+				<Item id="90248" name="Diẹ ninu awọn faili ko le paarọ rẹ"/>
+				<Item id="90249" name="...ati %lu siwaju sii"/>
+				<Item id="90250" name="Awọn ẹgbẹ faili jẹ iṣakoso nipasẹ ajọ-ajo rẹ."/>
+				<Item id="90251" name="Nduro fun macOS lati jẹrisi…"/>
+				<Item id="90252" name="macOS ko lo iyipada naa."/>
+				<Item id="90253" name="Iforukọsilẹ"/>
+				<Item id="90254" name="Ṣii gbogbo awọn faili ni folda bi?"/>
+				<Item id="90255" name="Eyi yoo ṣii awọn faili %lu ni awọn taabu titun."/>
+				<Item id="90256" name="Ko le gbe wọle: %@"/>
+				<Item id="90258" name="A ri %ld(e) baramu ninu %ld faili(s)."/>
+				<Item id="90259" name="Ṣiṣawari… %ld (awọn) baramu titi di isisiyi"/>
+				<Item id="90260" name="%@ (%ld baramu%@)"/>
+				<Item id="90261" name="Wiwa iruju"/>
+				<Item id="90266" name="Nọmba: %ld (awọn) baramu."/>
+				<Item id="90267" name="Rọpo Gbogbo: %ld (awọn) iṣẹlẹ ti rọpo %@."/>
+				<Item id="90268" name="Rọpo ni Awọn faili Ṣiṣii: %ld (awọn) iṣẹlẹ ti rọpo."/>
+				<Item id="90269" name="Wa ninu Awọn faili: %ld lu ninu awọn faili %ld."/>
+				<Item id="90270" name="Wa ninu Awọn faili: 0 deba."/>
+				<Item id="90271" name="Rọpo gbogbo awọn iṣẹlẹ ti &quot;%@&quot; pẹlu &quot;%@&quot; ni itọsọna:&#10;%@&#10;&#10;Eyi ko le ṣe atunṣe."/>
+				<Item id="90272" name="Rọpo ni Awọn faili: %ld rirọpo(s) ni %ld faili."/>
+				<Item id="90273" name="Ṣii Igbimọ Iṣẹ kan ni akọkọ."/>
+				<Item id="90274" name="Yan o kere ju Igbimọ Project kan lati wa."/>
+				<Item id="90275" name="Ko si awọn faili lati wa."/>
+				<Item id="90276" name="Wa ninu Awọn iṣẹ akanṣe: %ld lu ninu awọn faili %ld."/>
+				<Item id="90277" name="Wa ninu Awọn iṣẹ akanṣe: 0 deba."/>
+				<Item id="90278" name="Rọpo gbogbo awọn iṣẹlẹ ti"/>
+				<Item id="90279" name="pẹlu"/>
+				<Item id="90280" name="ninu"/>
+				<Item id="90281" name="faili ise agbese.Eyi ko le ṣe atunṣe."/>
+				<Item id="90282" name="Rọpo ni Awọn iṣẹ akanṣe: %ld rirọpo(s) ni %ld faili (awọn)."/>
+				<Item id="90283" name="Samisi: %ld (awọn) ti a samisi."/>
+				<Item id="90284" name="Ajọ faili/orukọ folda..."/>
+				<Item id="90285" name="Diẹ ninu awọn iwe aṣẹ ko le wa ni fipamọ"/>
+				<Item id="90286" name="⌘ Àṣẹ"/>
+				<Item id="90287" name="⌃ Iṣakoso"/>
+				<Item id="90288" name="⌥ Aṣayan"/>
+				<Item id="90289" name="⇧ Yiyi"/>
+				<Item id="90290" name="Tẹ ọna kika NSDateFormatter kan sii:"/>
+				<Item id="90291" name="'%@' ko tii ṣe imuse ninu ẹya yii."/>
+				<Item id="90292" name="Ohun itanna gbe wọle"/>
+				<Item id="90293" name="Atunbẹrẹ beere"/>
+				<Item id="90294" name="Ko si awọn faili lati ṣiṣẹ"/>
+				<Item id="90295" name="Yi ipade ise agbese ko ni awọn faili."/>
+				<Item id="90296" name="'%@' ni awọn ayipada ti a ko fi pamọ.&#10;Tun gbejade ki o si sọ awọn iyipada kuro bi?"/>
+				<Item id="90297" name="Tẹ orukọ faili titun sii:"/>
+				<Item id="90299" name="Orukọ titun:"/>
+				<Item id="90301" name="Orukọ naa ko le ni “/” tabi “:”."/>
+				<Item id="90304" name="Maṣe Fi Gbogbo Rẹ pamọ"/>
+				<Item id="90306" name="Awọn ọna mẹta lo wa lati yipada si ipo ọwọ-aṣayan:&#10;&#10;1.(Kọtẹọdù ati Asin) Idaduro Aṣayan lakoko ti a tẹ-osi fifa&#10;&#10;2.(Kọtini bọọtini nikan) Mu Aṣayan + Yi lọ nigba lilo awọn bọtini itọka&#10;&#10;3.(Kọtini tabi Asin)&#10; Fi abojuto si ibẹrẹ ti o fẹ ti ipo idina ọwọn, lẹhinna&#10; ṣiṣẹ “Bẹrẹ/Ipari Yan ni Ipo Ọwọn”;&#10; Gbe itọju lọ si opin ti o fẹ ti ipo idina ọwọn, lẹhinna&#10; mu aṣẹ “Bẹrẹ/Ipari Yan ni Ipo Ọwọn” lẹẹkansi"/>
+				<Item id="90307" name="Tẹ URL wiwa naa sii.Lo %s bi oludi ibeere (tabi fi ibeere naa kun ni ipari):"/>
+				<Item id="90308" name="Tẹ aṣẹ tabi URL sii..."/>
+				<Item id="90309" name="Kuna lati ṣiṣẹ:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ṣatunkọ contextMenu.xml faye gba o lati yi akojọ aṣayan ipo agbejade Nextpad++ rẹ pada lori agbegbe ti o ṣatunkọ.&#10;O ni lati tun Nextpad++ rẹ bẹrẹ lati ni ipa lẹhin iyipada contextMenu.xml."/>
+				<Item id="90312" name="Ti fi sori ẹrọ tẹlẹ"/>
+				<Item id="90313" name="Fi nextpad++ Irinṣẹ laini aṣẹ sori ẹrọ"/>
+				<Item id="90314" name="Fifi sori kuna"/>
+				<Item id="90315" name="Ti fi sori ẹrọ — ṣugbọn ~/.local/bin ko si lori PATH rẹ"/>
+				<Item id="90316" name="Tẹlẹ ninu atunto rẹ"/>
+				<Item id="90317" name="Ṣe afikun si PATH"/>
+				<Item id="90318" name="Ko le kọ"/>
+				<Item id="90319" name="Ti daakọ"/>
+				<Item id="90321" name="Awọn ayipada rẹ yoo sọnu ti o ko ba fi wọn pamọ."/>
+				<Item id="90322" name="Kan si gbogbo awọn iwe aṣẹ"/>
+				<Item id="90323" name="Ṣiṣe Makiro lori Awọn faili"/>
+				<Item id="90324" name="Makiro:"/>
+				<Item id="90325" name="Apo:"/>
+				<Item id="90326" name="Yan folda kan…"/>
+				<Item id="90327" name="Ṣawakiri…"/>
+				<Item id="90328" name="Awọn amugbooro:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Fi awọn faili pamọ"/>
+				<Item id="90331" name="Iwọn ti o pọju:"/>
+				<Item id="90332" name="Kolopin"/>
+				<Item id="90333" name="Fun faili kan:"/>
+				<Item id="90334" name="Fipamọ ti o ba yipada"/>
+				<Item id="90335" name="Pade lẹhin"/>
+				<Item id="90336" name="Pa paapaa awọn faili ti o ti ṣii tẹlẹ"/>
+				<Item id="90337" name="Lori aṣiṣe:"/>
+				<Item id="90338" name="Rekọja faili ki o tẹsiwaju"/>
+				<Item id="90339" name="Duro lori aṣiṣe akọkọ"/>
+				<Item id="90340" name="(ko si awọn Makiro ti o fipamọ)"/>
+				<Item id="90341" name="Awọn faili %lu baramu"/>
+				<Item id="90342" name="A ko ri folda"/>
+				<Item id="90343" name="Yan folda ti o wa."/>
+				<Item id="90344" name="Ko si awọn faili ti o baamu"/>
+				<Item id="90345" name="Ṣatunṣe àlẹmọ awọn amugbooro, atunwi, tabi aṣayan awọn faili pamọ."/>
+				<Item id="90346" name="Bibẹrẹ…"/>
+				<Item id="90347" name="Ṣiṣẹ:"/>
+				<Item id="90348" name="%ld / %ld O dara: %ld Ti fo: %ld kuna: %ld"/>
+				<Item id="90349" name="Ti fagilee ipele"/>
+				<Item id="90350" name="Batch ti pari"/>
+				<Item id="90351" name="Lapapọ: %lu O dara: %ld Ti fo: %ld kuna: %ld"/>
+				<Item id="90352" name="Kọ Ọjọ"/>
+				<Item id="90353" name="Awọn ọna System"/>
+				<Item id="90354" name="titun"/>
+				<Item id="90355" name="igba atijọ"/>
+				<Item id="90356" name="aimọ"/>
+				<Item id="90357" name="Tun ohun elo bẹrẹ fun awọn ayipada lati mu ipa."/>
+				<Item id="90358" name="Ṣe imudojuiwọn Awọn afikun"/>
+				<Item id="90359" name="Ṣe imudojuiwọn awọn afikun wọnyi bi?"/>
+				<Item id="90360" name="Awọn ẹya lọwọlọwọ jẹ atilẹyin to ~/Library/Application Support/Nextpad++/plugin-backups/ ṣaaju ki o to rọpo."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Yipada si iwo Tahoe Tuntun (Beta)"/>
+				<Item id="90363" name="Lo awọn akojọ aṣayan ara macOS (Beta)"/>
+				<Item id="90364" name="Iwo Tahoe tuntun yoo ṣee lo lẹhin ti o tun bẹrẹ Nextpad++."/>
+				<Item id="90365" name="Iwo Alailẹgbẹ yoo pada sipo lẹhin ti o tun bẹrẹ Nextpad++."/>
+				<Item id="90366" name="Jade Bayi"/>
+				<Item id="90367" name="Awọn akojọ aṣayan yoo jẹ atunto ni ara macOS lẹhin ti o tun bẹrẹ Nextpad++."/>
+				<Item id="90368" name="Ifilelẹ akojọ aṣayan aṣaju yoo jẹ atunṣe lẹhin ti o tun bẹrẹ Nextpad++."/>
+				<Item id="90369" name="Àwọ̀"/>
+				<Item id="90370" name="Waye si awọn aami irinṣẹ itanna"/>
+				<Item id="90371" name="Ni Awọn aami itanna ipo pipe di awọ ti o lagbara kan ṣoṣo."/>
+				<Item id="90372" name="Awọn ẹgbẹ Irinṣẹ"/>
+				<Item id="90373" name="Yan ibi ti bọtini kọọkan yoo han ninu Liquid Glass ọpa irinṣẹ: lori"/>
+				<Item id="90374" name="Bọtini"/>
+				<Item id="90375" name="Ipo"/>
+				<Item id="90376" name="Tunto si Awọn aiyipada"/>
+				<Item id="90377" name="Aponsedanu akojọ"/>
+				<Item id="90378" name="Farasin"/>
+				<Item id="90379" name="CJK-ore ọrọ ewé"/>
+				<Item id="90380" name="Aṣayan ọwọn yipada si ṣiṣatunṣe pupọ"/>
+				<Item id="90381" name="Aye ila:"/>
+				<Item id="90382" name="1.0 (Ayipada)"/>
+				<Item id="90383" name="Tọju igi taabu"/>
+				<Item id="90384" name="Iwọn taabu tẹle sisun iwe"/>
+				<Item id="90385" name="Yan…"/>
+				<Item id="90386" name="Tunto si Aiyipada"/>
+				<Item id="90387" name="Lilo ipo aiyipada."/>
+				<Item id="90388" name="Ipo aṣa."/>
+				<Item id="90389" name="Ọna ti ko tọ - awọn afẹyinti yoo lo ipo aiyipada."/>
+				<Item id="90390" name="Yan"/>
+				<Item id="90391" name="Fi Aṣayan sii:"/>
+				<Item id="90392" name="Lo ipo Regex Boost (ila pupọ; tun bẹrẹ lati lo)"/>
+				<Item id="90395" name="Tun bẹrẹ Bayi"/>
+				<Item id="90397" name="(maṣe yan ayafi ti o ba mọ ohun ti o n ṣe)"/>
+				<Item id="90398" name="Iwọn aami irinṣẹ"/>
+				<Item id="90399" name="100% (aiyipada)"/>
+				<Item id="90400" name="Mouse kẹkẹ yiyi iyara"/>
+				<Item id="90401" name="1× (pa)"/>
+				<Item id="90402" name="Iwọn aami irinṣẹ yipada"/>
+				<Item id="90403" name="Iwọn aami ọpa irinṣẹ tuntun yoo ṣiṣẹ ni igba miiran ti Nextpad++ ṣe ifilọlẹ."/>
+				<Item id="90404" name="Awọn aami irinṣẹ ti yipada"/>
+				<Item id="90405" name="Awọn aami ọpa irinṣẹ tuntun yoo ṣiṣẹ ni igba miiran ti Nextpad++ ṣe ifilọlẹ."/>
+				<Item id="90411" name="Ṣiṣe Makiro lori Awọn faili ..."/>
+				<Item id="90418" name="Eyi yoo yọ kuro ati gbogbo awọn akoonu inu rẹ lati inu iṣẹ naa.Ko si awọn faili lori disk yoo kan."/>
+				<Item id="90420" name="folda"/>
+				<Item id="90427" name="Ko ri"/>
+				<Item id="90428" name="IJA: %@"/>
+				<Item id="90429" name="Pa &quot;%@&quot; rẹ rẹ bi?"/>
+				<Item id="90430" name="Abojuto Ede Itumọ olumulo"/>
+				<Item id="90431" name="Àlẹmọ awọn ede…"/>
+				<Item id="90432" name="Orisun"/>
+				<Item id="90433" name="Awọn orisun AC"/>
+				<Item id="90434" name="Ipo"/>
+				<Item id="90435" name="Fi sori ẹrọ / imudojuiwọn"/>
+				<Item id="90436" name="%lu ede · %lu ti fi sori ẹrọ · awọn imudojuiwọn %lu"/>
+				<Item id="90437" name="Onkọwe"/>
+				<Item id="90438" name="Papọ: awọn titẹ sii %ld lati awọn orisun %lu (dapọ)"/>
+				<Item id="90439" name="Yan ọkan tabi diẹ ẹ sii ede lati fi sori ẹrọ."/>
+				<Item id="90440" name="Ko si ohun ti o ṣe igbasilẹ fun yiyan."/>
+				<Item id="90441" name="Gbigba lati ayelujara kuna"/>
+				<Item id="90442" name="Checksum ibaamu"/>
+				<Item id="90443" name="Ede ti a yan ti wa ni bayi ninu akojọ Ede."/>
+				<Item id="90444" name="Yan ọkan tabi diẹ ẹ sii awọn ede ti a fi sori ẹrọ lati yọkuro."/>
+				<Item id="90445" name="Yiyọ kuro"/>
+				<Item id="90446" name="Orukọ yi ti jẹ lilo tẹlẹ nipasẹ ede miiran."/>
+				<Item id="90447" name="Ede yii ko le yọkuro."/>
+				<Item id="90448" name="Awọn ede ti a ti fi sii tẹlẹ ko le yọkuro."/>
+				<Item id="90449" name="Ede yii ko le tunrukọ."/>
+				<Item id="90450" name="Faili yii jẹ %@.Ṣiṣii yoo mu ifọkasi sintasi kuro ati mu itan pada lati jẹ ki ohun elo naa jẹ idahun.&#10;&#10;Ṣe o fẹ tẹsiwaju bi?"/>
+				<Item id="90451" name="Ṣii Lonakona"/>
+				<Item id="90452" name="&quot;%@&quot; ti yipada lori disiki"/>
+				<Item id="90453" name="Foju"/>
+				<Item id="90454" name="Jeki Mi Version"/>
+				<Item id="90455" name="Ko le tun gbee si &quot;%@&quot;"/>
+				<Item id="90456" name="A ko le ka faili naa."/>
+				<Item id="90457" name="Yan ibi ti bọtini kọọkan yoo han ninu Liquid Glass ọpa irinṣẹ: lori capsule ẹgbẹ (Ọpa irinṣẹ), ninu akojọ aṣayan ▾ aponsedanu ẹgbẹ, tabi Farapamọ."/>
+				<Item id="90458" name="Ṣetọrẹ si Idagbasoke Atilẹyin"/>
+				<Item id="90459" name="Fi sori ẹrọ Awọn irinṣẹ Line Command"/>
+				<Item id="90460" name="Ṣe afihan awọn ojiji lẹhin awọn agunmi irinṣẹ irinṣẹ"/>
+				<Item id="90461" name="Ṣetọrẹ"/>
+				<Item id="90462" name="Awọn eto kikọ"/>
+				<Item id="90463" name="Gbe sẹgbẹ"/>
+				<Item id="90464" name="Fi Nextpad++ pamọ"/>
+				<Item id="90465" name="Tọju Awọn miiran"/>
+				<Item id="90466" name="Fihan Gbogbo"/>
+				<Item id="90467" name="Jade Nextpad++"/>
+				<Item id="90468" name="Fipamọ Makiro ti o gba silẹ lọwọlọwọ…"/>
+				<Item id="90469" name="Gee Trailing Space ati Fipamọ"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

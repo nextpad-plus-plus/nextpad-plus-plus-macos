@@ -1310,13 +1310,13 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90006" name="Kontrol Sumber"/>
 				<Item id="90007" name="Berkomitmen"/>
 				<Item id="90008" name="Komit Gagal"/>
-				<Item id="90009" name="Tidak ada repositori git\nGunakan Telusuri untuk membuka repo."/>
+				<Item id="90009" name="Tidak ada repositori git&#10;Gunakan Telusuri untuk membuka repo."/>
 				<Item id="90010" name="Panggung"/>
 				<Item id="90011" name="Batalkan panggung"/>
 				<Item id="90012" name="Tahap Semua"/>
 				<Item id="90013" name="Hapus Semua"/>
-				<Item id="90014" name="Pesan komit\u2026"/>
-				<Item id="90015" name="Telusuri repositori\u2026"/>
+				<Item id="90014" name="Pesan komit…"/>
+				<Item id="90015" name="Telusuri repositori…"/>
 				<Item id="90016" name="Pilih folder repositori git"/>
 				<Item id="90017" name="(tidak ada repositori)"/>
 				<Item id="90018" name="(terpisah)"/>
@@ -1330,9 +1330,9 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90026" name="Hasil"/>
 				<Item id="90027" name="Berhenti"/>
 				<Item id="90028" name="Pencarian terhenti."/>
-				<Item id="90029" name="Menelusuri\u2026"/>
+				<Item id="90029" name="Menelusuri…"/>
 				<Item id="90030" name="Teks yang akan dicari"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Mencari..."/>
 				<Item id="90033" name="Ganti:"/>
 				<Item id="90034" name="Seluruh Kata"/>
@@ -1392,7 +1392,7 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90088" name="Instal Plugin"/>
 				<Item id="90089" name="Hapus Plugin"/>
 				<Item id="90090" name="Tidak ada perintah yang ditemukan"/>
-				<Item id="90091" name="Ketik untuk menelusuri\u2026"/>
+				<Item id="90091" name="Ketik untuk menelusuri…"/>
 				<Item id="90092" name="Bahasa Buatan Pengguna v.2.1"/>
 				<Item id="90093" name="Buat Bahasa Baru"/>
 				<Item id="90094" name="Masukkan nama:"/>
@@ -1401,11 +1401,9 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90097" name="Jangan Simpan"/>
 				<Item id="90098" name="Selesai"/>
 				<Item id="90099" name="Alihkan Bungkus Kata"/>
-				<Item id="90100" name="Tampilkan Semua Karakter"/>
 				<Item id="90101" name="Tampilkan Opsi Karakter"/>
 				<Item id="90102" name="Alihkan Panduan Indent"/>
 				<Item id="90103" name="Belum Diimplementasikan"/>
-				<Item id="90104" name="Muat ulang dari Disk"/>
 				<Item id="90105" name="Ubah Mesin Pencari"/>
 				<Item id="90106" name="Jalankan Kesalahan"/>
 				<Item id="90107" name="Nextpad++ Waktu Pemuatan"/>
@@ -1414,16 +1412,12 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90110" name="Unduh"/>
 				<Item id="90111" name="Halaman Rilis"/>
 				<Item id="90112" name="Nanti"/>
-				<Item id="90113" name="Filter plugin\u2026"/>
-				<Item id="90114" name="Tersedia"/>
-				<Item id="90115" name="Pembaruan"/>
-				<Item id="90116" name="Dipasang"/>
-				<Item id="90117" name="Tidak kompatibel"/>
+				<Item id="90113" name="Filter plugin…"/>
 				<Item id="90118" name="Gagal Memasang"/>
 				<Item id="90119" name="Hapus plugin berikut?"/>
 				<Item id="90120" name="Instal plugin berikut?"/>
 				<Item id="90121" name="Ini akan menghapus file plugin."/>
-				<Item id="90122" name="Perintah pencarian\u2026"/>
+				<Item id="90122" name="Perintah pencarian…"/>
 				<Item id="90123" name="Warna latar depan"/>
 				<Item id="90124" name="Warna latar belakang"/>
 				<Item id="90125" name="Nama makro"/>
@@ -1443,7 +1437,7 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90139" name="Semua tanda dihapus."/>
 				<Item id="90140" name="Teks yang ditandai disalin ke papan klip."/>
 				<Item id="90141" name="Tidak ada teks yang ditandai untuk disalin."/>
-				<Item id="90142" name="Mencari... %ld klik \u2014 %@"/>
+				<Item id="90142" name="Mencari... %ld klik — %@"/>
 				<Item id="90143" name="Mengganti file..."/>
 				<Item id="90144" name="Ganti di Proyek: Belum terhubung."/>
 				<Item id="90145" name="Temukan di Proyek: Belum terhubung ke daftar file Panel Proyek."/>
@@ -1470,14 +1464,12 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90165" name="Konfirmasi sebelum Simpan Semua"/>
 				<Item id="90166" name="Konfirmasikan Ganti Semua di dokumen terbuka"/>
 				<Item id="90167" name="Ganti: jangan pindah ke kejadian berikutnya"/>
-				<Item id="90168" name="Gunakan font monospace dalam dialog Temukan"/>
 				<Item id="90169" name="Klik kanan mempertahankan pilihan"/>
 				<Item id="90170" name="Membalikkan urutan tanggal/waktu default"/>
 				<Item id="90171" name="Gunakan parser daftar fungsi berbasis XML"/>
 				<Item id="90172" name="Tanda kurung tutup otomatis ( ) [ ] { }"/>
 				<Item id="90173" name="Dari karakter ke-N:"/>
 				<Item id="90174" name="Ambang batas pemeriksaan otomatis dalam pilihan (byte):"/>
-				<Item id="90175" name="Diperluas (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Penyunting"/>
 				<Item id="90177" name="Margin"/>
 				<Item id="90178" name="Gelap"/>
@@ -1491,12 +1483,10 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90186" name="Antialias"/>
 				<Item id="90187" name="LCD Dioptimalkan"/>
 				<Item id="90188" name="Sederhana +/-"/>
-				<Item id="90189" name="Jendela (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repositori daftar plugin"/>
 				<Item id="90192" name="Pilih file XML tema Nextpad++ untuk diterapkan"/>
-				<Item id="90193" name="Buat baru\u2026"/>
-				<Item id="90194" name="Simpan sebagai\u2026"/>
+				<Item id="90193" name="Buat baru…"/>
+				<Item id="90194" name="Simpan sebagai…"/>
 				<Item id="90195" name="Bahasa pengguna:"/>
 				<Item id="90196" name="Nama bahasa"/>
 				<Item id="90197" name="Buat"/>
@@ -1526,6 +1516,218 @@ Anda dapat mengaktifkan kembali dialog ini di Preferensi nanti."/>
 				<Item id="90221" name="Atribut Terkunci (macOS)"/>
 				<Item id="90222" name="Periksa Pembaruan…"/>
 				<Item id="90223" name="Buka Terbaru"/>
+				<Item id="90226" name="Bantuan"/>
+				<Item id="90227" name="Tahap Gagal"/>
+				<Item id="90228" name="Gagal Dipanggung"/>
+				<Item id="90229" name="tersedia"/>
+				<Item id="90230" name="Anda sedang berlari"/>
+				<Item id="90231" name="Jangan pernah ingatkan aku lagi"/>
+				<Item id="90233" name="Periksa pembaruan secara otomatis"/>
+				<Item id="90234" name="Pemeriksaan pembaruan otomatis tidak aktif."/>
+				<Item id="90235" name="Terakhir diperiksa:"/>
+				<Item id="90236" name="Tidak ada koneksi internet."/>
+				<Item id="90237" name="Respons tak terduga dari server pembaruan."/>
+				<Item id="90238" name="Tidak ada rilis terbitan yang ditemukan."/>
+				<Item id="90239" name="Server pembaruan untuk sementara tidak tersedia.Silakan coba lagi nanti."/>
+				<Item id="90240" name="Server pembaruan menolak permintaan tersebut.Proksi, firewall, atau VPN mungkin memblokir akses ke GitHub."/>
+				<Item id="90241" name="Terlalu banyak pemeriksaan pembaruan dari jaringan Anda (batas ini dimiliki oleh semua orang di dalamnya).Coba lagi setelahnya"/>
+				<Item id="90242" name="Terlalu banyak pemeriksaan pembaruan dari jaringan Anda (batas ini dimiliki oleh semua orang di dalamnya).Silakan coba lagi nanti."/>
+				<Item id="90243" name="Server pembaruan mengembalikan status"/>
+				<Item id="90244" name="Coba Lagi"/>
+				<Item id="90245" name="Ukuran teks cetak:"/>
+				<Item id="90246" name="Gunakan zoom layar"/>
+				<Item id="90247" name="Ukuran sebenarnya"/>
+				<Item id="90248" name="Beberapa file tidak dapat diganti"/>
+				<Item id="90249" name="...dan %lu lainnya"/>
+				<Item id="90250" name="Asosiasi file dikelola oleh organisasi Anda."/>
+				<Item id="90251" name="Menunggu konfirmasi macOS…"/>
+				<Item id="90252" name="macOS tidak menerapkan perubahan."/>
+				<Item id="90253" name="Terdaftar"/>
+				<Item id="90254" name="Buka semua file dalam folder?"/>
+				<Item id="90255" name="Ini akan membuka %lu file di tab baru."/>
+				<Item id="90256" name="Tidak dapat mengimpor: %@"/>
+				<Item id="90258" name="Ditemukan %ld kecocokan dalam %ld file."/>
+				<Item id="90259" name="Mencari… %ld kecocokan sejauh ini"/>
+				<Item id="90260" name="%@ (%ld cocok%@)"/>
+				<Item id="90261" name="Pencarian kabur"/>
+				<Item id="90266" name="Jumlah: %ld kecocokan."/>
+				<Item id="90267" name="Ganti Semua: %ld kejadian diganti %@."/>
+				<Item id="90268" name="Ganti di File yang Dibuka: %ld kejadian telah diganti."/>
+				<Item id="90269" name="Temukan di File: %ld klik di %ld file."/>
+				<Item id="90270" name="Temukan di File: 0 hit."/>
+				<Item id="90271" name="Ganti semua kemunculan &quot;%@&quot; dengan &quot;%@&quot; di direktori:&#10;%@&#10;&#10;Ini tidak dapat diurungkan."/>
+				<Item id="90272" name="Ganti di File: %ld penggantian di %ld file."/>
+				<Item id="90273" name="Buka Panel Proyek terlebih dahulu."/>
+				<Item id="90274" name="Pilih setidaknya satu Panel Proyek untuk dicari."/>
+				<Item id="90275" name="Tidak ada file untuk dicari."/>
+				<Item id="90276" name="Temukan di Proyek: %ld hit dalam %ld file."/>
+				<Item id="90277" name="Temukan di Proyek: 0 hit."/>
+				<Item id="90278" name="Ganti semua kemunculan"/>
+				<Item id="90279" name="dengan"/>
+				<Item id="90280" name="di"/>
+				<Item id="90281" name="file proyek.Hal ini tidak dapat dibatalkan."/>
+				<Item id="90282" name="Ganti di Proyek: %ld penggantian di %ld file."/>
+				<Item id="90283" name="Tandai: %ld kecocokan ditandai."/>
+				<Item id="90284" name="Filter nama file/folder..."/>
+				<Item id="90285" name="Beberapa dokumen tidak dapat disimpan"/>
+				<Item id="90286" name="⌘ Perintah"/>
+				<Item id="90287" name="⌃ Kontrol"/>
+				<Item id="90288" name="⌥ Opsi"/>
+				<Item id="90289" name="⇧ Pergeseran"/>
+				<Item id="90290" name="Masukkan string format NSDateFormatter:"/>
+				<Item id="90291" name="'%@' belum diterapkan pada versi ini."/>
+				<Item id="90292" name="Impor Plugin"/>
+				<Item id="90293" name="Diperlukan Mulai Ulang"/>
+				<Item id="90294" name="Tidak ada file untuk diproses"/>
+				<Item id="90295" name="Node proyek ini tidak berisi file."/>
+				<Item id="90296" name="'%@' memiliki perubahan yang belum disimpan.&#10;Muat ulang dan buang perubahan?"/>
+				<Item id="90297" name="Masukkan nama file baru:"/>
+				<Item id="90299" name="Nama baru:"/>
+				<Item id="90301" name="Nama tidak boleh mengandung “/” atau “:”."/>
+				<Item id="90304" name="Jangan Simpan Semua"/>
+				<Item id="90306" name="Ada 3 cara untuk beralih ke mode pemilihan kolom:&#10;&#10;1.(Keyboard dan Mouse) Tahan Option sambil klik kiri menyeret&#10;&#10;2.(Khusus keyboard) Tahan Option+Shift saat menggunakan tombol panah&#10;&#10;3.(Keyboard atau Mouse)&#10; Letakkan tanda sisipan di awal posisi blok kolom yang diinginkan, lalu&#10; jalankan perintah “Pilihan Mulai/Akhir dalam Mode Kolom”;&#10; Pindahkan tanda sisipan ke akhir posisi blok kolom yang diinginkan, lalu&#10; jalankan kembali perintah “Pilihan Awal/Akhir dalam Mode Kolom”"/>
+				<Item id="90307" name="Masukkan URL pencarian.Gunakan %s sebagai placeholder kueri (atau tambahkan kueri di akhir):"/>
+				<Item id="90308" name="Masukkan perintah atau URL..."/>
+				<Item id="90309" name="Gagal dijalankan:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Mengedit contextMenu.xml memungkinkan Anda mengubah Nextpad++ menu konteks munculan di zona edit.&#10;Anda harus memulai ulang Nextpad++ agar dapat diterapkan setelah mengubah contextMenu.xml."/>
+				<Item id="90312" name="Sudah terpasang"/>
+				<Item id="90313" name="Instal nextpad++ Alat Baris Perintah"/>
+				<Item id="90314" name="Instalasi gagal"/>
+				<Item id="90315" name="Terpasang — namun ~/.local/bin tidak ada di PATH Anda"/>
+				<Item id="90316" name="Sudah ada di konfigurasi Anda"/>
+				<Item id="90317" name="Ditambahkan ke JALUR"/>
+				<Item id="90318" name="Tidak bisa menulis"/>
+				<Item id="90319" name="Disalin"/>
+				<Item id="90321" name="Perubahan Anda akan hilang jika Anda tidak menyimpannya."/>
+				<Item id="90322" name="Berlaku untuk semua dokumen"/>
+				<Item id="90323" name="Jalankan Makro pada File"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Map:"/>
+				<Item id="90326" name="Pilih folder…"/>
+				<Item id="90327" name="Jelajahi…"/>
+				<Item id="90328" name="Ekstensi:"/>
+				<Item id="90329" name="Subdirektori berulang"/>
+				<Item id="90330" name="Sertakan file tersembunyi"/>
+				<Item id="90331" name="Ukuran maksimal:"/>
+				<Item id="90332" name="Tidak terbatas"/>
+				<Item id="90333" name="Per berkas:"/>
+				<Item id="90334" name="Simpan jika diubah"/>
+				<Item id="90335" name="Tutup setelahnya"/>
+				<Item id="90336" name="Tutup bahkan file yang sudah terbuka"/>
+				<Item id="90337" name="Pada kesalahan:"/>
+				<Item id="90338" name="Lewati file dan lanjutkan"/>
+				<Item id="90339" name="Berhenti pada kesalahan pertama"/>
+				<Item id="90340" name="(tidak ada makro yang disimpan)"/>
+				<Item id="90341" name="%lu file cocok"/>
+				<Item id="90342" name="Foldernya tidak ditemukan"/>
+				<Item id="90343" name="Pilih folder yang ada."/>
+				<Item id="90344" name="Tidak ada file yang cocok"/>
+				<Item id="90345" name="Sesuaikan opsi filter ekstensi, rekursi, atau file tersembunyi."/>
+				<Item id="90346" name="Mulai…"/>
+				<Item id="90347" name="Pengolahan:"/>
+				<Item id="90348" name="%ld / %ld Oke: %ld Dilewati: %ld Gagal: %ld"/>
+				<Item id="90349" name="Batch dibatalkan"/>
+				<Item id="90350" name="Kumpulan selesai"/>
+				<Item id="90351" name="Total: %lu Oke: %ld Dilewati: %ld Gagal: %ld"/>
+				<Item id="90352" name="Tanggal Pembuatan"/>
+				<Item id="90353" name="Sistem Operasi"/>
+				<Item id="90354" name="terbaru"/>
+				<Item id="90355" name="ketinggalan jaman"/>
+				<Item id="90356" name="tidak diketahui"/>
+				<Item id="90357" name="Mulai ulang aplikasi agar perubahan diterapkan."/>
+				<Item id="90358" name="Perbarui Plugin"/>
+				<Item id="90359" name="Perbarui plugin berikut?"/>
+				<Item id="90360" name="Versi saat ini dicadangkan ke ~/Library/Application Support/Nextpad++/plugin-backups/ sebelum diganti."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Beralih ke tampilan Tahoe Baru (Beta)"/>
+				<Item id="90363" name="Gunakan menu bergaya macOS (Beta)"/>
+				<Item id="90364" name="Tampilan Tahoe baru akan diterapkan setelah Anda memulai ulang Nextpad++."/>
+				<Item id="90365" name="Tampilan Klasik akan dipulihkan setelah Anda memulai ulang Nextpad++."/>
+				<Item id="90366" name="Keluar Sekarang"/>
+				<Item id="90367" name="Menu akan disusun ulang dalam gaya macOS setelah Anda memulai ulang Nextpad++."/>
+				<Item id="90368" name="Tata letak menu klasik akan dipulihkan setelah Anda memulai ulang Nextpad++."/>
+				<Item id="90369" name="Warna"/>
+				<Item id="90370" name="Terapkan ke ikon toolbar plugin"/>
+				<Item id="90371" name="Dalam mode Lengkap, ikon plugin menjadi satu warna solid."/>
+				<Item id="90372" name="Grup Bilah Alat"/>
+				<Item id="90373" name="Pilih di mana setiap tombol muncul di bilah alat Liquid Glass: di"/>
+				<Item id="90374" name="Tombol"/>
+				<Item id="90375" name="Penempatan"/>
+				<Item id="90376" name="Atur Ulang ke Default"/>
+				<Item id="90377" name="Menu melimpah"/>
+				<Item id="90378" name="Tersembunyi"/>
+				<Item id="90379" name="Bungkus kata yang ramah CJK"/>
+				<Item id="90380" name="Pemilihan kolom beralih ke multi-editing"/>
+				<Item id="90381" name="Spasi baris:"/>
+				<Item id="90382" name="1.0 (Bawaan)"/>
+				<Item id="90383" name="Sembunyikan bilah tab"/>
+				<Item id="90384" name="Ukuran tab mengikuti zoom dokumen"/>
+				<Item id="90385" name="Pilih…"/>
+				<Item id="90386" name="Atur Ulang ke Default"/>
+				<Item id="90387" name="Menggunakan lokasi default."/>
+				<Item id="90388" name="Lokasi khusus."/>
+				<Item id="90389" name="Jalur tidak valid — pencadangan akan menggunakan lokasi default."/>
+				<Item id="90390" name="Pilih"/>
+				<Item id="90391" name="Sisipkan Pilihan:"/>
+				<Item id="90392" name="Gunakan Boost Mode Regex (multi-baris; mulai ulang untuk menerapkan)"/>
+				<Item id="90395" name="Mulai Ulang Sekarang"/>
+				<Item id="90397" name="(jangan memilihnya kecuali Anda tahu apa yang Anda lakukan)"/>
+				<Item id="90398" name="Ukuran ikon bilah alat"/>
+				<Item id="90399" name="100% (Bawaan)"/>
+				<Item id="90400" name="Kecepatan gulir roda mouse"/>
+				<Item id="90401" name="1× (mati)"/>
+				<Item id="90402" name="Ukuran ikon toolbar berubah"/>
+				<Item id="90403" name="Ukuran ikon bilah alat yang baru akan berlaku saat Nextpad++ diluncurkan berikutnya."/>
+				<Item id="90404" name="Ikon bilah alat berubah"/>
+				<Item id="90405" name="Ikon toolbar baru akan berlaku saat Nextpad++ diluncurkan berikutnya."/>
+				<Item id="90411" name="Jalankan Makro pada File..."/>
+				<Item id="90418" name="Ini akan menghapusnya dan seluruh isinya dari proyek.Tidak ada file di disk yang akan terpengaruh."/>
+				<Item id="90420" name="Map"/>
+				<Item id="90423" name="Salin Nama Jalur yang Dipilih"/>
+				<Item id="90424" name="Buka Nama Jalur yang Dipilih"/>
+				<Item id="90427" name="Tidak ditemukan"/>
+				<Item id="90428" name="KONFLIK: %@"/>
+				<Item id="90429" name="Hapus &quot;%@&quot;?"/>
+				<Item id="90430" name="Admin Bahasa Buatan Pengguna"/>
+				<Item id="90431" name="Filter bahasa…"/>
+				<Item id="90432" name="Sumber"/>
+				<Item id="90433" name="Sumber AC"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Instal / Perbarui"/>
+				<Item id="90436" name="%lu bahasa · %lu terpasang · %lu pembaruan"/>
+				<Item id="90437" name="Penulis"/>
+				<Item id="90438" name="Gabungan: %ld entri dari %lu sumber (digabung)"/>
+				<Item id="90439" name="Pilih satu atau lebih bahasa untuk diinstal."/>
+				<Item id="90440" name="Tidak ada yang dapat diunduh untuk seleksi."/>
+				<Item id="90441" name="Pengunduhan gagal"/>
+				<Item id="90442" name="Ketidakcocokan checksum"/>
+				<Item id="90443" name="Bahasa yang dipilih kini tersedia di menu Bahasa."/>
+				<Item id="90444" name="Pilih satu atau lebih bahasa yang diinstal untuk dihapus."/>
+				<Item id="90445" name="Dihapus"/>
+				<Item id="90446" name="Nama ini sudah digunakan dalam bahasa lain."/>
+				<Item id="90447" name="Bahasa ini tidak dapat dihapus."/>
+				<Item id="90448" name="Bahasa pra-instal tidak dapat dihapus."/>
+				<Item id="90449" name="Bahasa ini tidak dapat diganti namanya."/>
+				<Item id="90450" name="Berkas ini adalah %@.Membukanya akan menonaktifkan penyorotan sintaksis dan membatalkan riwayat agar aplikasi tetap responsif.&#10;&#10;Apakah Anda ingin melanjutkan?"/>
+				<Item id="90451" name="Buka Pokoknya"/>
+				<Item id="90452" name="&quot;%@&quot; diubah pada disk"/>
+				<Item id="90453" name="Abaikan"/>
+				<Item id="90454" name="Pertahankan Versi Saya"/>
+				<Item id="90455" name="Tidak dapat memuat ulang &quot;%@&quot;"/>
+				<Item id="90456" name="File tidak dapat dibaca."/>
+				<Item id="90457" name="Pilih di mana setiap tombol muncul di bilah alat Liquid Glass: di kapsul grup (Bilah Alat), di menu tambahan ▾ grup, atau Tersembunyi."/>
+				<Item id="90458" name="Donasi untuk Mendukung Pembangunan"/>
+				<Item id="90459" name="Instal Alat Baris Perintah"/>
+				<Item id="90460" name="Tampilkan bayangan di belakang kapsul toolbar"/>
+				<Item id="90461" name="Donasi"/>
+				<Item id="90462" name="Kumpulan karakter"/>
+				<Item id="90463" name="Minimalkan"/>
+				<Item id="90464" name="Sembunyikan Nextpad++"/>
+				<Item id="90465" name="Sembunyikan Lainnya"/>
+				<Item id="90466" name="Tampilkan Semua"/>
+				<Item id="90467" name="Keluar Nextpad++"/>
+				<Item id="90468" name="Simpan Makro yang Direkam Saat Ini…"/>
+				<Item id="90469" name="Pangkas Ruang Tambahan dan Simpan"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

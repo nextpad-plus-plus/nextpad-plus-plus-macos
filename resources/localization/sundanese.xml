@@ -1466,13 +1466,13 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90006" name="Kontrol Sumber"/>
 				<Item id="90007" name="Komitmen"/>
 				<Item id="90008" name="Komit gagal"/>
-				<Item id="90009" name="Teu aya gudang git\nPaké Kotektak pikeun muka repo."/>
+				<Item id="90009" name="Teu aya gudang git&#10;Paké Kotektak pikeun muka repo."/>
 				<Item id="90010" name="Panggung"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Panggung Sadaya"/>
 				<Item id="90013" name="Unstage Sadaya"/>
-				<Item id="90014" name="Komit pesen\u2026"/>
-				<Item id="90015" name="Kotektak gudang\u2026"/>
+				<Item id="90014" name="Komit pesen…"/>
+				<Item id="90015" name="Kotektak gudang…"/>
 				<Item id="90016" name="Pilih folder gudang git"/>
 				<Item id="90017" name="(euweuh gudang)"/>
 				<Item id="90018" name="(dipisahkeun)"/>
@@ -1486,9 +1486,9 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90026" name="Hasil"/>
 				<Item id="90027" name="Eureun"/>
 				<Item id="90028" name="Pilarian eureun."/>
-				<Item id="90029" name="Pilarian\u2026"/>
+				<Item id="90029" name="Pilarian…"/>
 				<Item id="90030" name="Téks pikeun milarian"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Pilarian..."/>
 				<Item id="90033" name="Ganti:"/>
 				<Item id="90034" name="Sakabeh Kecap"/>
@@ -1548,7 +1548,7 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90088" name="Pasang Plugins"/>
 				<Item id="90089" name="Hapus plugins"/>
 				<Item id="90090" name="Teu kapanggih paréntah"/>
-				<Item id="90091" name="Ketik pikeun milarian\u2026"/>
+				<Item id="90091" name="Ketik pikeun milarian…"/>
 				<Item id="90092" name="Basa Ditetepkeun Pamaké v.2.1"/>
 				<Item id="90093" name="Jieun Basa Anyar"/>
 				<Item id="90094" name="Tulis ngaran:"/>
@@ -1557,11 +1557,9 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90097" name="Ulah Simpen"/>
 				<Item id="90098" name="Réngsé"/>
 				<Item id="90099" name="Togol Kecap Bungkus"/>
-				<Item id="90100" name="Témbongkeun Sadaya Aksara"/>
 				<Item id="90101" name="Témbongkeun Pilihan Aksara"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Teu acan kalaksanakeun"/>
-				<Item id="90104" name="Muat deui tina Disk"/>
 				<Item id="90105" name="Robah Search Engine"/>
 				<Item id="90106" name="Jalankeun Kasalahan"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90110" name="Unduh"/>
 				<Item id="90111" name="Kaluaran Kaca"/>
 				<Item id="90112" name="Engke"/>
-				<Item id="90113" name="Filter plugins\u2026"/>
+				<Item id="90113" name="Filter plugins…"/>
 				<Item id="90114" name="Sadia"/>
 				<Item id="90115" name="Pembaruan"/>
 				<Item id="90116" name="Dipasang"/>
@@ -1579,7 +1577,7 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90119" name="Cabut plugins di handap ieu?"/>
 				<Item id="90120" name="Pasang plugins di handap ieu?"/>
 				<Item id="90121" name="Ieu bakal ngahapus file plugin."/>
-				<Item id="90122" name="Paréntah pilarian\u2026"/>
+				<Item id="90122" name="Paréntah pilarian…"/>
 				<Item id="90123" name="Warna hareup"/>
 				<Item id="90124" name="Warna latar"/>
 				<Item id="90125" name="Ngaran makro"/>
@@ -1599,7 +1597,7 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90139" name="Kabéh tanda diberesihan."/>
 				<Item id="90140" name="Téks anu dicirian disalin kana clipboard."/>
 				<Item id="90141" name="Henteu aya téks anu dicirian pikeun disalin."/>
-				<Item id="90142" name="Pilarian... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Pilarian... %ld hit(s) — %@"/>
 				<Item id="90143" name="Ngaganti dina file..."/>
 				<Item id="90144" name="Ganti dina Proyék: Teu acan nyambung."/>
 				<Item id="90145" name="Pilarian dina Proyék: Teu acan nyambung ka daptar file Panel Proyék."/>
@@ -1626,14 +1624,12 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90165" name="Konfirmasi sateuacan Simpen Sadaya"/>
 				<Item id="90166" name="Konfirmasi Ganti Sadayana dina dokumén kabuka"/>
 				<Item id="90167" name="Ganti: ulah pindah ka kajadian salajengna"/>
-				<Item id="90168" name="Anggo font monospace dina dialog Find"/>
 				<Item id="90169" name="Klik katuhu ngajaga pilihan"/>
 				<Item id="90170" name="Ngabalikeun urutan tanggal/waktu standar"/>
 				<Item id="90171" name="Anggo parser daptar fungsi basis XML"/>
 				<Item id="90172" name="Tutup otomatis kurung ( ) [ ] { }"/>
 				<Item id="90173" name="Ti karakter Nth:"/>
 				<Item id="90174" name="Ambang mariksa otomatis dina pilihan (bait):"/>
-				<Item id="90175" name="Dilegaan (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Éditor"/>
 				<Item id="90177" name="Margin"/>
 				<Item id="90178" name="Poék"/>
@@ -1647,12 +1643,10 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD dioptimalkeun"/>
 				<Item id="90188" name="Basajan +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repository daptar plugin"/>
 				<Item id="90192" name="Pilih file XML tema Nextpad++ pikeun nerapkeun"/>
-				<Item id="90193" name="Jieun anyar\u2026"/>
-				<Item id="90194" name="Simpen salaku\u2026"/>
+				<Item id="90193" name="Jieun anyar…"/>
+				<Item id="90194" name="Simpen salaku…"/>
 				<Item id="90195" name="Basa pamaké:"/>
 				<Item id="90196" name="Ngaran basa"/>
 				<Item id="90197" name="Jieun"/>
@@ -1682,6 +1676,217 @@ Anjeun tiasa ngaktipkeun deui dialog ieu dina Preferences engké."/>
 				<Item id="90221" name="Atribut Dikonci (macOS)"/>
 				<Item id="90222" name="Pariksa Apdet…"/>
 				<Item id="90223" name="Buka Anyar"/>
+				<Item id="90226" name="Tulung"/>
+				<Item id="90227" name="Panggung Gagal"/>
+				<Item id="90228" name="Unstage Gagal"/>
+				<Item id="90229" name="geus sadia"/>
+				<Item id="90230" name="Anjeun ngajalankeun"/>
+				<Item id="90231" name="Tong ngingetan deui"/>
+				<Item id="90232" name="Pembaruan"/>
+				<Item id="90233" name="Otomatis pariksa apdet"/>
+				<Item id="90234" name="Cék apdet otomatis pareum."/>
+				<Item id="90235" name="Panungtungan dipariksa:"/>
+				<Item id="90236" name="Taya sambungan internét."/>
+				<Item id="90237" name="Respon teu kaduga ti server update."/>
+				<Item id="90238" name="Taya release diterbitkeun kapanggih."/>
+				<Item id="90239" name="Pangladén apdet samentawis teu sayogi.Mangga cobian deui engké."/>
+				<Item id="90240" name="Pangladén pembaruan nampik pamundut éta.Proksi, firewall atanapi VPN tiasa ngahalangan aksés ka GitHub."/>
+				<Item id="90241" name="Seueur teuing pamariksaan apdet tina jaringan anjeun (wates ieu dibagi ku sadayana di dinya).Cobian deui saatosna"/>
+				<Item id="90242" name="Seueur teuing pamariksaan apdet tina jaringan anjeun (wates ieu dibagi ku sadayana di dinya).Mangga cobian deui engké."/>
+				<Item id="90243" name="The update server balik statusna"/>
+				<Item id="90244" name="Coba Deui"/>
+				<Item id="90245" name="Ukuran tulisan:"/>
+				<Item id="90246" name="Paké zum layar"/>
+				<Item id="90247" name="Ukuran sabenerna"/>
+				<Item id="90248" name="Sababaraha file teu bisa diganti"/>
+				<Item id="90249" name="...jeung %lu deui"/>
+				<Item id="90250" name="Asosiasi file dikelola ku organisasi anjeun."/>
+				<Item id="90251" name="Ngadagoan macOS pikeun ngonfirmasi…"/>
+				<Item id="90252" name="macOS henteu nerapkeun parobahanana."/>
+				<Item id="90253" name="Kadaptar"/>
+				<Item id="90254" name="Buka sadaya file dina folder?"/>
+				<Item id="90255" name="Ieu bakal muka %lu file dina tab anyar."/>
+				<Item id="90256" name="Teu bisa ngimpor: %@"/>
+				<Item id="90258" name="Kapanggih %ld patandingan dina %ld file."/>
+				<Item id="90259" name="Pilarian… %ld patandingan dugi ka ayeuna"/>
+				<Item id="90260" name="%@ (%ld cocog%@)"/>
+				<Item id="90261" name="Pilarian kabur"/>
+				<Item id="90266" name="Jumlah: %ld patandingan."/>
+				<Item id="90267" name="Ganti Sadayana: %ld kajadianana diganti %@."/>
+				<Item id="90268" name="Ganti dina Payil anu Dibuka: %ld kajadian (s) diganti."/>
+				<Item id="90269" name="Pilarian dina File: %ld pencét dina %ld file."/>
+				<Item id="90270" name="Pilarian dina File: 0 hits."/>
+				<Item id="90271" name="Ganti sakabéh kajadian &quot;%@&quot; ku &quot;%@&quot; dina diréktori:&#10;%@&#10;&#10;Ieu teu bisa dibolaykeun."/>
+				<Item id="90272" name="Ganti dina File: %ld ngagantian dina %ld file."/>
+				<Item id="90273" name="Buka Panel Proyék heula."/>
+				<Item id="90274" name="Pilih sahenteuna hiji Panel Proyék pikeun milarian."/>
+				<Item id="90275" name="Henteu aya file pikeun milarian."/>
+				<Item id="90276" name="Pilarian dina Proyék: %ld pencét dina %ld file."/>
+				<Item id="90277" name="Pilarian dina Proyék: 0 hits."/>
+				<Item id="90278" name="Ngaganti sagala kajadian tina"/>
+				<Item id="90279" name="kalawan"/>
+				<Item id="90280" name="di"/>
+				<Item id="90281" name="file proyék (s).Ieu teu bisa dibolaykeun."/>
+				<Item id="90282" name="Ganti dina Proyék: %ld ngagantian dina %ld file."/>
+				<Item id="90283" name="Tandaan: %ld cocog (es) ditandaan."/>
+				<Item id="90284" name="Filter file/ngaran polder..."/>
+				<Item id="90285" name="Sababaraha dokumén teu bisa disimpen"/>
+				<Item id="90286" name="⌘ Paréntah"/>
+				<Item id="90287" name="⌃ Kontrol"/>
+				<Item id="90288" name="⌥ Pilihan"/>
+				<Item id="90289" name="⇧ Pindahkeun"/>
+				<Item id="90290" name="Lebetkeun string format NSDateFormatter:"/>
+				<Item id="90291" name="'%@' teu acan dilaksanakeun dina vérsi ieu."/>
+				<Item id="90292" name="Impor Plugin"/>
+				<Item id="90293" name="Balikan deui Diperlukeun"/>
+				<Item id="90294" name="Taya file pikeun diolah"/>
+				<Item id="90295" name="Titik proyék ieu henteu ngandung file."/>
+				<Item id="90296" name="'%@' gaduh parobahan anu teu disimpen.&#10;Muat deui sareng piceun perobahan?"/>
+				<Item id="90297" name="Lebetkeun nami file énggal:"/>
+				<Item id="90299" name="Ngaran anyar:"/>
+				<Item id="90301" name="Ngaran teu bisa ngandung &quot;/&quot; atawa &quot;:&quot;."/>
+				<Item id="90304" name="Ulah Simpen Sadaya"/>
+				<Item id="90306" name="Aya 3 cara pikeun pindah ka modeu pilih kolom:&#10;&#10;1.(Keyboard jeung Beurit) Tahan Option bari klik-kénca nyéred&#10;&#10;2.(Keyboard wungkul) Tahan Option+Shift bari maké kenop panah&#10;&#10;3.(Keyboard atawa Beurit)&#10; Pasang caret di awal posisi blok kolom nu dipikahoyong, teras&#10; laksanakeun paréntah &quot;Mimitian/Tungtung Pilih dina Mode Kolom&quot;;&#10; Pindahkeun caret ka tungtung posisi blok kolom nu dipikahoyong, teras&#10; laksanakeun deui paréntah &quot;Mimitian/Tungtung Pilih dina Mode Kolom&quot;"/>
+				<Item id="90307" name="Lebetkeun URL pilarian.Anggo %s salaku pananda tempat kueri (atanapi tambahkeun pamundut di tungtung):"/>
+				<Item id="90308" name="Lebetkeun paréntah atanapi URL..."/>
+				<Item id="90309" name="Gagal ngaéksekusi:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ngédit contextMenu.xml ngamungkinkeun anjeun ngarobih Nextpad++ ménu kontéks pop-up anjeun dina zona éditan.&#10;Anjeun kedah ngabalikan deui Nextpad++ anjeun supados tiasa dianggo saatos ngarobih contextMenu.xml."/>
+				<Item id="90312" name="Geus dipasang"/>
+				<Item id="90313" name="Pasang nextpad++ Alat Garis Komando"/>
+				<Item id="90314" name="Pamasangan gagal"/>
+				<Item id="90315" name="Dipasang — tapi ~/.local/bin teu aya dina PATH anjeun"/>
+				<Item id="90316" name="Geus di config Anjeun"/>
+				<Item id="90317" name="Ditambahkeun kana PATH"/>
+				<Item id="90318" name="Teu bisa nulis"/>
+				<Item id="90319" name="Disalin"/>
+				<Item id="90321" name="Parobihan anjeun bakal leungit upami anjeun henteu nyimpenana."/>
+				<Item id="90322" name="Larapkeun ka sadaya dokumén"/>
+				<Item id="90323" name="Jalankeun Macro dina File"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="polder:"/>
+				<Item id="90326" name="Pilih folder…"/>
+				<Item id="90327" name="Kotektak…"/>
+				<Item id="90328" name="Ekstensi:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Kaasup file disumputkeun"/>
+				<Item id="90331" name="Ukuran Max:"/>
+				<Item id="90332" name="Unlimited"/>
+				<Item id="90333" name="Per file:"/>
+				<Item id="90334" name="Simpen lamun dirobah"/>
+				<Item id="90335" name="Tutup sanggeus"/>
+				<Item id="90336" name="Tutup file anu parantos dibuka"/>
+				<Item id="90337" name="Dina kasalahan:"/>
+				<Item id="90338" name="Skip file tur nuluykeun"/>
+				<Item id="90339" name="Eureun dina kasalahan kahiji"/>
+				<Item id="90340" name="(henteu aya makro anu disimpen)"/>
+				<Item id="90341" name="%lu file (s) cocog"/>
+				<Item id="90342" name="Polder teu kapanggih"/>
+				<Item id="90343" name="Pilih polder anu aya."/>
+				<Item id="90344" name="Taya file cocog"/>
+				<Item id="90345" name="Saluyukeun saringan ekstensi, rekursi, atanapi pilihan file disumputkeun."/>
+				<Item id="90346" name="Ngamimitian…"/>
+				<Item id="90347" name="Ngolah:"/>
+				<Item id="90348" name="%ld / %ld Oke: %ld Dilewatan: %ld Gagal: %ld"/>
+				<Item id="90349" name="Angkatan dibatalkeun"/>
+				<Item id="90350" name="Batch lengkep"/>
+				<Item id="90351" name="Total: %lu Ok: %ld Dilewatan: %ld Gagal: %ld"/>
+				<Item id="90352" name="Tanggal Diwangun"/>
+				<Item id="90353" name="Sistem Operasi"/>
+				<Item id="90354" name="panganyarna"/>
+				<Item id="90355" name="katinggaleun jaman"/>
+				<Item id="90356" name="kanyahoan"/>
+				<Item id="90357" name="Pareuman terus hurungkeun deui aplikasi pikeun pangaruh parobahan."/>
+				<Item id="90358" name="Apdet plugins"/>
+				<Item id="90359" name="Apdet plugins handap?"/>
+				<Item id="90360" name="Versi ayeuna dicadangkeun ka ~/Library/Application Support/Nextpad++/plugin-backups/ sateuacan diganti."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Pindah ka tampilan Tahoe Anyar (Beta)"/>
+				<Item id="90363" name="Anggo ménu gaya macOS (Beta)"/>
+				<Item id="90364" name="Penampilan Tahoe anyar bakal diterapkeun saatos anjeun ngamimitian deui Nextpad++."/>
+				<Item id="90365" name="Tampilan Klasik bakal disimpen deui saatos anjeun ngamimitian deui Nextpad++."/>
+				<Item id="90366" name="Leupas Ayeuna"/>
+				<Item id="90367" name="Menu bakal disusun deui dina gaya macOS saatos anjeun ngamimitian deui Nextpad++."/>
+				<Item id="90368" name="Tata perenah ménu klasik bakal disimpen deui saatos anjeun ngamimitian deui Nextpad++."/>
+				<Item id="90369" name="Warna"/>
+				<Item id="90370" name="Larapkeun kana ikon toolbar plugin"/>
+				<Item id="90371" name="Dina modeu lengkep ikon plugin jadi warna solid tunggal."/>
+				<Item id="90372" name="Grup Toolbar"/>
+				<Item id="90373" name="Pilih dimana unggal tombol némbongan dina tulbar Liquid Glass: dina"/>
+				<Item id="90374" name="Tombol"/>
+				<Item id="90375" name="panempatan"/>
+				<Item id="90376" name="Reset ka Defaults"/>
+				<Item id="90377" name="menu ngabahekeun"/>
+				<Item id="90378" name="Disumputkeun"/>
+				<Item id="90379" name="CJK-friendly bungkus kecap"/>
+				<Item id="90380" name="Pilihan kolom pindah ka multi-édit"/>
+				<Item id="90381" name="Spasi garis:"/>
+				<Item id="90382" name="1.0 (Standar)"/>
+				<Item id="90383" name="Sumputkeun tab bar"/>
+				<Item id="90384" name="Ukuran tab nuturkeun zum dokumén"/>
+				<Item id="90385" name="Pilih…"/>
+				<Item id="90386" name="Reset ka Default"/>
+				<Item id="90387" name="Ngagunakeun lokasi standar."/>
+				<Item id="90388" name="lokasi custom."/>
+				<Item id="90389" name="Jalur henteu sah - cadangan bakal nganggo lokasi standar."/>
+				<Item id="90390" name="Milih"/>
+				<Item id="90391" name="Pilihan Insert:"/>
+				<Item id="90392" name="Paké Boost modeu Regex (multi-garis; balikan deui pikeun nerapkeun)"/>
+				<Item id="90395" name="Balikan deui Ayeuna"/>
+				<Item id="90397" name="(Entong milih upami anjeun terang naon anu anjeun lakukeun)"/>
+				<Item id="90398" name="Ukuran ikon toolbar"/>
+				<Item id="90399" name="100% (Standar)"/>
+				<Item id="90400" name="Laju ngagulung kabayang beurit"/>
+				<Item id="90401" name="1× (pareum)"/>
+				<Item id="90402" name="Ukuran ikon toolbar robah"/>
+				<Item id="90403" name="Ukuran ikon toolbar anyar bakal dianggo dina waktos salajengna Nextpad++ diluncurkeun."/>
+				<Item id="90404" name="Ikon toolbar robah"/>
+				<Item id="90405" name="Ikon tulbar anyar bakal dianggo dina waktos Nextpad++ diluncurkeun salajengna."/>
+				<Item id="90411" name="Jalankeun Macro dina File..."/>
+				<Item id="90418" name="Ieu bakal ngahapus sareng sadaya eusina tina proyék.Henteu aya file dina disk anu bakal kapangaruhan."/>
+				<Item id="90420" name="polder"/>
+				<Item id="90427" name="Teu kapanggih"/>
+				<Item id="90428" name="Konflik: %@"/>
+				<Item id="90429" name="Pupus &quot;%@&quot;?"/>
+				<Item id="90430" name="Admin Basa Ditetepkeun Pamaké"/>
+				<Item id="90431" name="Saringan basa…"/>
+				<Item id="90432" name="Sumber"/>
+				<Item id="90433" name="Sumber AC"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Pasang / Apdet"/>
+				<Item id="90436" name="%lu basa · %lu dipasang · %lu apdet"/>
+				<Item id="90437" name="Pangarang"/>
+				<Item id="90438" name="Gabungan: %ld éntri ti %lu sumber (dihijikeun)"/>
+				<Item id="90439" name="Pilih hiji atawa leuwih basa pikeun dipasang."/>
+				<Item id="90440" name="Euweuh diundeur pikeun pilihan."/>
+				<Item id="90441" name="Ngundeur gagal"/>
+				<Item id="90442" name="Checksum mismatch"/>
+				<Item id="90443" name="Basa nu dipilih ayeuna aya dina ménu Basa."/>
+				<Item id="90444" name="Pilih hiji atanapi sababaraha basa anu dipasang pikeun dipiceun."/>
+				<Item id="90445" name="Dipiceun"/>
+				<Item id="90446" name="Ngaran ieu geus dipaké ku basa sejen."/>
+				<Item id="90447" name="Basa ieu teu bisa dihapus."/>
+				<Item id="90448" name="Basa nu tos dipasang teu tiasa dipupus."/>
+				<Item id="90449" name="Basa ieu teu bisa diganti ngaranna."/>
+				<Item id="90450" name="Berkas ieu %@.Muka éta bakal nganonaktipkeun panyorot sintaksis sareng ngabolaykeun sajarah pikeun ngajaga aplikasi tetep responsif.&#10;&#10;Naha anjeun badé neraskeun?"/>
+				<Item id="90451" name="Buka atoh"/>
+				<Item id="90452" name="&quot;%@&quot; robah dina disk"/>
+				<Item id="90453" name="Teu maliré"/>
+				<Item id="90454" name="Tetep Vérsi abdi"/>
+				<Item id="90455" name="Teu tiasa ngamuat deui &quot;%@&quot;"/>
+				<Item id="90456" name="Berkas teu bisa dibaca."/>
+				<Item id="90457" name="Pilih dimana unggal tombol némbongan dina Liquid Glass toolbar: dina kapsul grup (Toolbar), dina menu ▾ overflow grup, atawa Hidden."/>
+				<Item id="90458" name="Sumbangan pikeun Ngarojong Pangwangunan"/>
+				<Item id="90459" name="Pasang Alat Jalur Komando"/>
+				<Item id="90460" name="Témbongkeun kalangkang tukangeun kapsul toolbar"/>
+				<Item id="90461" name="Nyumbangkeun"/>
+				<Item id="90462" name="Susunan karakter"/>
+				<Item id="90463" name="Ngaleutikan"/>
+				<Item id="90464" name="Sumputkeun Nextpad++"/>
+				<Item id="90465" name="Sumputkeun Batur"/>
+				<Item id="90466" name="Témbongkeun Sadaya"/>
+				<Item id="90467" name="Kaluar Nextpad++"/>
+				<Item id="90468" name="Simpen Makro Kacatet Ayeuna…"/>
+				<Item id="90469" name="Motong Trailing Spasi jeung Simpen"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

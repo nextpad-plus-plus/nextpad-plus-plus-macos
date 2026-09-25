@@ -1466,13 +1466,13 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90006" name="Udhibiti wa Chanzo"/>
 				<Item id="90007" name="Ahadi"/>
 				<Item id="90008" name="Ahadi Imeshindwa"/>
-				<Item id="90009" name="Hakuna hazina ya git\nTumia Vinjari ili kufungua repo."/>
+				<Item id="90009" name="Hakuna hazina ya git&#10;Tumia Vinjari ili kufungua repo."/>
 				<Item id="90010" name="Jukwaa"/>
 				<Item id="90011" name="Fungua jukwaa"/>
 				<Item id="90012" name="Jukwaa Zote"/>
 				<Item id="90013" name="Onyesha Zote"/>
-				<Item id="90014" name="Ujumbe wa ahadi\u2026"/>
-				<Item id="90015" name="Vinjari hazina\u2026"/>
+				<Item id="90014" name="Ujumbe wa ahadi…"/>
+				<Item id="90015" name="Vinjari hazina…"/>
 				<Item id="90016" name="Chagua folda ya hazina ya git"/>
 				<Item id="90017" name="(hakuna hazina)"/>
 				<Item id="90018" name="(imetengwa)"/>
@@ -1486,9 +1486,9 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90026" name="Matokeo"/>
 				<Item id="90027" name="Acha"/>
 				<Item id="90028" name="Utafutaji umesimamishwa."/>
-				<Item id="90029" name="Inatafuta\u2026"/>
+				<Item id="90029" name="Inatafuta…"/>
 				<Item id="90030" name="Maandishi ya kutafuta"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Inatafuta..."/>
 				<Item id="90033" name="Badilisha:"/>
 				<Item id="90034" name="Neno zima"/>
@@ -1548,7 +1548,7 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90088" name="Sakinisha Programu-jalizi"/>
 				<Item id="90089" name="Ondoa Programu-jalizi"/>
 				<Item id="90090" name="Hakuna amri zilizopatikana"/>
-				<Item id="90091" name="Andika ili kutafuta\u2026"/>
+				<Item id="90091" name="Andika ili kutafuta…"/>
 				<Item id="90092" name="Lugha Iliyobainishwa na Mtumiaji v.2.1"/>
 				<Item id="90093" name="Unda Lugha Mpya"/>
 				<Item id="90094" name="Andika jina:"/>
@@ -1557,11 +1557,9 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90097" name="Usihifadhi"/>
 				<Item id="90098" name="Imekamilika"/>
 				<Item id="90099" name="Geuza Ufungaji wa Neno"/>
-				<Item id="90100" name="Onyesha Wahusika Wote"/>
 				<Item id="90101" name="Onyesha Chaguo za Wahusika"/>
 				<Item id="90102" name="Geuza Mwongozo wa Kujongeza"/>
 				<Item id="90103" name="Bado Haijatekelezwa"/>
-				<Item id="90104" name="Pakia upya kutoka kwa Disk"/>
 				<Item id="90105" name="Badilisha Injini ya Kutafuta"/>
 				<Item id="90106" name="Hitilafu ya Kutekeleza"/>
 				<Item id="90107" name="Muda wa Kupakia Nextpad++"/>
@@ -1570,7 +1568,7 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90110" name="Pakua"/>
 				<Item id="90111" name="Ukurasa wa Kutolewa"/>
 				<Item id="90112" name="Baadaye"/>
-				<Item id="90113" name="Chuja programu-jalizi\u2026"/>
+				<Item id="90113" name="Chuja programu-jalizi…"/>
 				<Item id="90114" name="Inapatikana"/>
 				<Item id="90115" name="Masasisho"/>
 				<Item id="90116" name="Imesakinishwa"/>
@@ -1579,7 +1577,7 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90119" name="Ungependa kuondoa programu-jalizi zifuatazo?"/>
 				<Item id="90120" name="Sakinisha programu-jalizi zifuatazo?"/>
 				<Item id="90121" name="Hii itafuta faili za programu-jalizi."/>
-				<Item id="90122" name="Tafuta amri\u2026"/>
+				<Item id="90122" name="Tafuta amri…"/>
 				<Item id="90123" name="Rangi ya mbele"/>
 				<Item id="90124" name="Rangi ya usuli"/>
 				<Item id="90125" name="Jina la jumla"/>
@@ -1599,7 +1597,7 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90139" name="Alama zote zimefutwa."/>
 				<Item id="90140" name="Maandishi yenye alama yamenakiliwa kwenye ubao wa kunakili."/>
 				<Item id="90141" name="Hakuna maandishi yaliyowekwa alama ya kunakili."/>
-				<Item id="90142" name="Inatafuta... %ld hit(vi)\u2014 %@"/>
+				<Item id="90142" name="Inatafuta... %ld hit(vi)— %@"/>
 				<Item id="90143" name="Inabadilisha katika faili..."/>
 				<Item id="90144" name="Badilisha katika Miradi: Bado haijaunganishwa."/>
 				<Item id="90145" name="Pata katika Miradi: Bado haijaunganishwa kwenye orodha ya faili za Paneli ya Mradi."/>
@@ -1626,14 +1624,12 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90165" name="Thibitisha kabla ya Hifadhi Yote"/>
 				<Item id="90166" name="Thibitisha Badilisha Vyote katika hati wazi"/>
 				<Item id="90167" name="Badilisha: usihamie tukio linalofuata"/>
-				<Item id="90168" name="Tumia fonti iliyo na nafasi moja kwenye kidirisha cha Tafuta"/>
 				<Item id="90169" name="Bofya kulia huhifadhi uteuzi"/>
 				<Item id="90170" name="Badilisha tarehe/saa chaguo-msingi"/>
 				<Item id="90171" name="Tumia vichanganuzi vya orodha ya kukokotoa vinavyotokana na XML"/>
 				<Item id="90172" name="Funga mabano kiotomatiki ( ) [ ] { }"/>
 				<Item id="90173" name="Kutoka kwa mhusika Nth:"/>
 				<Item id="90174" name="Kiwango cha kukagua kiotomatiki katika uteuzi (baiti):"/>
-				<Item id="90175" name="Iliyoongezwa (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Mhariri"/>
 				<Item id="90177" name="Pembezoni"/>
 				<Item id="90178" name="Giza"/>
@@ -1647,12 +1643,10 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Imeboreshwa"/>
 				<Item id="90188" name="Rahisi +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Hazina ya orodha ya programu-jalizi"/>
 				<Item id="90192" name="Chagua faili ya XML ya mandhari ya Nextpad++ ili kutumia"/>
-				<Item id="90193" name="Unda mpya\u2026"/>
-				<Item id="90194" name="Hifadhi kama\u2026"/>
+				<Item id="90193" name="Unda mpya…"/>
+				<Item id="90194" name="Hifadhi kama…"/>
 				<Item id="90195" name="Lugha ya mtumiaji:"/>
 				<Item id="90196" name="Jina la lugha"/>
 				<Item id="90197" name="Unda"/>
@@ -1682,6 +1676,217 @@ Unaweza kuwezesha tena kidirisha hiki katika Mapendeleo baadaye."/>
 				<Item id="90221" name="Sifa Iliyofungwa (macOS)"/>
 				<Item id="90222" name="Angalia Usasisho…"/>
 				<Item id="90223" name="Fungua Hivi Karibuni"/>
+				<Item id="90226" name="Msaada"/>
+				<Item id="90227" name="Hatua Imeshindwa"/>
+				<Item id="90228" name="Imeshindwa Kufungua Jukwaa"/>
+				<Item id="90229" name="inapatikana"/>
+				<Item id="90230" name="Unakimbia"/>
+				<Item id="90231" name="Usinikumbushe tena"/>
+				<Item id="90232" name="Sasisho"/>
+				<Item id="90233" name="Angalia sasisho kiotomatiki"/>
+				<Item id="90234" name="Ukaguzi wa sasisho otomatiki umezimwa."/>
+				<Item id="90235" name="Mara ya mwisho kuangaliwa:"/>
+				<Item id="90236" name="Hakuna muunganisho wa intaneti."/>
+				<Item id="90237" name="Jibu lisilotarajiwa kutoka kwa seva ya sasisho."/>
+				<Item id="90238" name="Hakuna toleo lililochapishwa lililopatikana."/>
+				<Item id="90239" name="Seva ya sasisho haipatikani kwa sasa.Tafadhali jaribu tena baadaye."/>
+				<Item id="90240" name="Seva ya sasisho ilikataa ombi.Proksi, ngome au VPN inaweza kuwa inazuia ufikiaji wa GitHub."/>
+				<Item id="90241" name="Ukaguzi mwingi sana wa sasisho kutoka kwa mtandao wako (kikomo hiki kinashirikiwa na kila mtu aliyemo).Jaribu tena baada ya"/>
+				<Item id="90242" name="Ukaguzi mwingi sana wa sasisho kutoka kwa mtandao wako (kikomo hiki kinashirikiwa na kila mtu aliyemo).Tafadhali jaribu tena baadaye."/>
+				<Item id="90243" name="Seva ya sasisho ilirudisha hali"/>
+				<Item id="90244" name="Jaribu Tena"/>
+				<Item id="90245" name="Ukubwa wa maandishi ya kuchapisha:"/>
+				<Item id="90246" name="Tumia kukuza skrini"/>
+				<Item id="90247" name="Ukubwa halisi"/>
+				<Item id="90248" name="Baadhi ya faili hazikuweza kubadilishwa"/>
+				<Item id="90249" name="...na %lu zaidi"/>
+				<Item id="90250" name="Uhusiano wa faili unadhibitiwa na shirika lako."/>
+				<Item id="90251" name="Inasubiri macOS kuthibitisha..."/>
+				<Item id="90252" name="macOS haikutumia mabadiliko."/>
+				<Item id="90253" name="Imesajiliwa"/>
+				<Item id="90254" name="Ungependa kufungua faili zote kwenye folda?"/>
+				<Item id="90255" name="Hii itafungua faili %lu katika vichupo vipya."/>
+				<Item id="90256" name="Haikuweza kuleta: %@"/>
+				<Item id="90258" name="Imepata %ld zinazolingana katika %ld faili."/>
+				<Item id="90259" name="Inatafuta... %ld zinazolingana hadi sasa"/>
+				<Item id="90260" name="%@ (%ld mechi%@)"/>
+				<Item id="90261" name="Utafutaji wa fuzzy"/>
+				<Item id="90266" name="Hesabu: %ld zinazolingana."/>
+				<Item id="90267" name="Badilisha Vyote: %ld matukio yalibadilishwa %@."/>
+				<Item id="90268" name="Badilisha katika Faili Zilizofunguliwa: Matukio %ld yalibadilishwa."/>
+				<Item id="90269" name="Tafuta katika Faili: %ld hit(za) katika %ld faili."/>
+				<Item id="90270" name="Pata katika Faili: Vipigo 0."/>
+				<Item id="90271" name="Badilisha matukio yote ya &quot;%@&quot; na &quot;%@&quot; katika saraka:&#10;%@&#10;&#10;Hili haliwezi kutenduliwa."/>
+				<Item id="90272" name="Badilisha katika Faili: %ld ubadilishaji (ma) katika %ld faili."/>
+				<Item id="90273" name="Fungua Paneli ya Mradi kwanza."/>
+				<Item id="90274" name="Chagua angalau Paneli moja ya Mradi ili kutafuta."/>
+				<Item id="90275" name="Hakuna faili za kutafuta."/>
+				<Item id="90276" name="Pata katika Miradi: %ld hit(s) katika %ld faili."/>
+				<Item id="90277" name="Tafuta katika Miradi: 0 hits."/>
+				<Item id="90278" name="Badilisha matukio yote ya"/>
+				<Item id="90279" name="na"/>
+				<Item id="90280" name="katika"/>
+				<Item id="90281" name="faili za mradi.Hili haliwezi kutenduliwa."/>
+				<Item id="90282" name="Badilisha katika Miradi: %ld uingizwaji katika %ld faili."/>
+				<Item id="90283" name="Alama: %ld zinazolingana zimetiwa alama."/>
+				<Item id="90284" name="Chuja jina la faili/folda..."/>
+				<Item id="90285" name="Baadhi ya hati hazikuweza kuhifadhiwa"/>
+				<Item id="90286" name="⌘ Amri"/>
+				<Item id="90287" name="⌃ Udhibiti"/>
+				<Item id="90288" name="⌥ Chaguo"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Weka mfuatano wa umbizo la NSDateFormatter:"/>
+				<Item id="90291" name="'%@' bado haijatekelezwa katika toleo hili."/>
+				<Item id="90292" name="Ingiza programu-jalizi"/>
+				<Item id="90293" name="Kuanzisha upya Inahitajika"/>
+				<Item id="90294" name="Hakuna faili za kuchakatwa"/>
+				<Item id="90295" name="Nodi hii ya mradi haina faili."/>
+				<Item id="90296" name="'%@' ina mabadiliko ambayo hayajahifadhiwa.&#10;Pakia upya na utupe mabadiliko?"/>
+				<Item id="90297" name="Ingiza jina jipya la faili:"/>
+				<Item id="90299" name="Jina jipya:"/>
+				<Item id="90301" name="Jina haliwezi kuwa na &quot;/&quot; au &quot;:&quot;."/>
+				<Item id="90304" name="Usihifadhi Zote"/>
+				<Item id="90306" name="Kuna njia 3 za kubadilisha hadi hali ya kuchagua safu wima:&#10;&#10;1.(Kibodi na Kipanya) Shikilia Chaguo huku ukiburuta kwa kubofya kushoto&#10;&#10;2.(Kibodi pekee) Shikilia Chaguo+Shift unapotumia vitufe vya vishale&#10;&#10;3.(Kibodi au Kipanya)&#10; Weka caret kwenye mwanzo unaotaka wa nafasi ya kuzuia safu wima, kisha&#10; utekeleze amri ya “Anza/Maliza Chagua katika Hali ya Safu”;&#10; Sogeza caret hadi mwisho unaotaka wa nafasi ya kuzuia safu wima, kisha&#10; utekeleze amri ya “Anza/Maliza Chagua katika Modi ya Safu wima” tena."/>
+				<Item id="90307" name="Weka URL ya utafutaji.Tumia %s kama kishikilia nafasi cha hoja (au weka hoja mwishoni):"/>
+				<Item id="90308" name="Weka amri au URL..."/>
+				<Item id="90309" name="Imeshindwa kutekeleza:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Kuhariri contextMenu.xml hukuruhusu kurekebisha Nextpad++ menyu ya muktadha ibukizi kwenye eneo la kuhariri.&#10;Lazima uanze upya Nextpad++ yako ili ianze kutumika baada ya kurekebisha contextMenu.xml."/>
+				<Item id="90312" name="Tayari imewekwa"/>
+				<Item id="90313" name="Sakinisha nextpad++ Zana ya Mstari wa Amri"/>
+				<Item id="90314" name="Usakinishaji haukufaulu"/>
+				<Item id="90315" name="Imesakinishwa - lakini ~/.local/bin haiko kwenye PATH yako"/>
+				<Item id="90316" name="Tayari iko kwenye usanidi wako"/>
+				<Item id="90317" name="Imeongezwa kwa PATH"/>
+				<Item id="90318" name="Haikuweza kuandika"/>
+				<Item id="90319" name="Imenakiliwa"/>
+				<Item id="90321" name="Mabadiliko yako yatapotea usipoyahifadhi."/>
+				<Item id="90322" name="Omba kwa hati zote"/>
+				<Item id="90323" name="Endesha Macro kwenye Faili"/>
+				<Item id="90324" name="Jumla:"/>
+				<Item id="90325" name="Folda:"/>
+				<Item id="90326" name="Chagua folda..."/>
+				<Item id="90327" name="Vinjari..."/>
+				<Item id="90328" name="Viendelezi:"/>
+				<Item id="90329" name="Recurse saraka ndogo"/>
+				<Item id="90330" name="Jumuisha faili zilizofichwa"/>
+				<Item id="90331" name="Ukubwa wa juu:"/>
+				<Item id="90332" name="Bila kikomo"/>
+				<Item id="90333" name="Kwa kila faili:"/>
+				<Item id="90334" name="Hifadhi ikiwa imebadilishwa"/>
+				<Item id="90335" name="Funga baada ya"/>
+				<Item id="90336" name="Funga faili hata ambazo tayari zilikuwa zimefunguliwa"/>
+				<Item id="90337" name="Kwenye hitilafu:"/>
+				<Item id="90338" name="Ruka faili na uendelee"/>
+				<Item id="90339" name="Acha kwenye kosa la kwanza"/>
+				<Item id="90340" name="(hakuna makro zilizohifadhiwa)"/>
+				<Item id="90341" name="%lu faili zinazolingana"/>
+				<Item id="90342" name="Folda haijapatikana"/>
+				<Item id="90343" name="Chagua folda iliyopo."/>
+				<Item id="90344" name="Hakuna faili zinazolingana"/>
+				<Item id="90345" name="Rekebisha kichujio cha viendelezi, urudiaji, au chaguo la faili zilizofichwa."/>
+				<Item id="90346" name="Inaanza..."/>
+				<Item id="90347" name="Inachakata:"/>
+				<Item id="90348" name="%ld / %ld Sawa: %ld Imeruka: %ld Imeshindwa: %ld"/>
+				<Item id="90349" name="Kundi limeghairiwa"/>
+				<Item id="90350" name="Kundi limekamilika"/>
+				<Item id="90351" name="Jumla: %lu Sawa: %ld Imeruka: %ld Imeshindwa: %ld"/>
+				<Item id="90352" name="Tarehe ya Kujengwa"/>
+				<Item id="90353" name="Mfumo wa Uendeshaji"/>
+				<Item id="90354" name="karibuni"/>
+				<Item id="90355" name="imepitwa na wakati"/>
+				<Item id="90356" name="haijulikani"/>
+				<Item id="90357" name="Anzisha tena programu ili mabadiliko yaanze kutumika."/>
+				<Item id="90358" name="Sasisha programu-jalizi"/>
+				<Item id="90359" name="Ungependa kusasisha programu-jalizi zifuatazo?"/>
+				<Item id="90360" name="Matoleo ya sasa yanachelezwa hadi ~/Library/Application Support/Nextpad++/plugin-backups/ kabla ya kubadilishwa."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Badili hadi Tahoe mwonekano Mpya (Beta)"/>
+				<Item id="90363" name="Tumia menyu za mitindo macOS (Beta)"/>
+				<Item id="90364" name="Mwonekano mpya wa Tahoe utatumika baada ya kuwasha upya Nextpad++."/>
+				<Item id="90365" name="Mwonekano wa Kawaida utarejeshwa baada ya kuwasha upya Nextpad++."/>
+				<Item id="90366" name="Acha Sasa"/>
+				<Item id="90367" name="Menyu zitapangwa upya kwa mtindo wa macOS baada ya kuwasha upya Nextpad++."/>
+				<Item id="90368" name="Mpangilio wa menyu ya kawaida utarejeshwa baada ya kuwasha upya Nextpad++."/>
+				<Item id="90369" name="Rangi"/>
+				<Item id="90370" name="Tekeleza kwenye ikoni za upau wa vidhibiti"/>
+				<Item id="90371" name="Katika hali Kamili aikoni za programu-jalizi huwa rangi moja thabiti."/>
+				<Item id="90372" name="Vikundi vya Upau wa vidhibiti"/>
+				<Item id="90373" name="Chagua mahali ambapo kila kitufe kinatokea kwenye upau wa vidhibiti wa Liquid Glass: kwenye"/>
+				<Item id="90374" name="Kitufe"/>
+				<Item id="90375" name="Uwekaji"/>
+				<Item id="90376" name="Weka upya kwa Chaguomsingi"/>
+				<Item id="90377" name="Menyu ya kufurika"/>
+				<Item id="90378" name="Imefichwa"/>
+				<Item id="90379" name="Ufungaji wa maneno unaofaa kwa CJK"/>
+				<Item id="90380" name="Uteuzi wa safu wima hubadilika hadi uhariri mwingi"/>
+				<Item id="90381" name="Nafasi ya mistari:"/>
+				<Item id="90382" name="1.0 (Chaguomsingi)"/>
+				<Item id="90383" name="Ficha upau wa kichupo"/>
+				<Item id="90384" name="Ukubwa wa kichupo hufuata ukuzaji wa hati"/>
+				<Item id="90385" name="Chagua..."/>
+				<Item id="90386" name="Weka upya kwa Chaguomsingi"/>
+				<Item id="90387" name="Kwa kutumia eneo la msingi."/>
+				<Item id="90388" name="Mahali maalum."/>
+				<Item id="90389" name="Njia batili - chelezo zitatumia eneo chaguomsingi."/>
+				<Item id="90390" name="Chagua"/>
+				<Item id="90391" name="Ingiza Uteuzi:"/>
+				<Item id="90392" name="Tumia Boost modi ya Regex (laini nyingi; anza tena ili kuomba)"/>
+				<Item id="90395" name="Anzisha tena Sasa"/>
+				<Item id="90397" name="(usiichague isipokuwa unajua unachofanya)"/>
+				<Item id="90398" name="Ukubwa wa ikoni ya upau wa vidhibiti"/>
+				<Item id="90399" name="100% (Chaguomsingi)"/>
+				<Item id="90400" name="Kasi ya kusongesha gurudumu la panya"/>
+				<Item id="90401" name="1× (zimezimwa)"/>
+				<Item id="90402" name="Ukubwa wa ikoni ya upau wa vidhibiti umebadilishwa"/>
+				<Item id="90403" name="Ukubwa mpya wa aikoni ya upau wa vidhibiti utaanza kutumika wakati Nextpad++ itakapozinduliwa."/>
+				<Item id="90404" name="Aikoni za upau wa vidhibiti zimebadilishwa"/>
+				<Item id="90405" name="Aikoni mpya za upau wa vidhibiti zitaanza kutumika wakati Nextpad++ itakapozinduliwa."/>
+				<Item id="90411" name="Tumia Macro kwenye Faili..."/>
+				<Item id="90418" name="Hii itaiondoa na maudhui yake yote kutoka kwa mradi.Hakuna faili kwenye diski zitaathirika."/>
+				<Item id="90420" name="Folda"/>
+				<Item id="90427" name="Haijapatikana"/>
+				<Item id="90428" name="MIGOGORO: %@"/>
+				<Item id="90429" name="Ungependa kufuta &quot;%@&quot;?"/>
+				<Item id="90430" name="Msimamizi wa Lugha Aliyebainishwa na Mtumiaji"/>
+				<Item id="90431" name="Chuja lugha..."/>
+				<Item id="90432" name="Chanzo"/>
+				<Item id="90433" name="Vyanzo vya AC"/>
+				<Item id="90434" name="Hali"/>
+				<Item id="90435" name="Sakinisha / Sasisha"/>
+				<Item id="90436" name="Lugha %lu · %lu imesakinishwa · %lu masasisho"/>
+				<Item id="90437" name="Mwandishi"/>
+				<Item id="90438" name="Imechanganywa: %ld maingizo kutoka %lu vyanzo (zilizounganishwa)"/>
+				<Item id="90439" name="Chagua lugha moja au zaidi ili kusakinisha."/>
+				<Item id="90440" name="Hakuna kitu kinachoweza kupakuliwa kwa uteuzi."/>
+				<Item id="90441" name="Imeshindwa kupakua"/>
+				<Item id="90442" name="Checksum kutolingana"/>
+				<Item id="90443" name="Lugha zilizochaguliwa sasa zinapatikana katika menyu ya Lugha."/>
+				<Item id="90444" name="Chagua lugha moja au zaidi zilizosakinishwa ili kuondoa."/>
+				<Item id="90445" name="Imeondolewa"/>
+				<Item id="90446" name="Jina hili tayari linatumiwa na lugha nyingine."/>
+				<Item id="90447" name="Lugha hii haikuweza kuondolewa."/>
+				<Item id="90448" name="Lugha zilizosakinishwa awali haziwezi kuondolewa."/>
+				<Item id="90449" name="Lugha hii haikuweza kubadilishwa jina."/>
+				<Item id="90450" name="Faili hii ni %@.Kukifungua kutazima uangaziaji wa kisintaksia na kutendua historia ili kufanya programu iweze kuitikia.&#10;&#10;Je, ungependa kuendelea?"/>
+				<Item id="90451" name="Fungua Hata hivyo"/>
+				<Item id="90452" name="&quot;%@&quot; ilibadilishwa kwenye diski"/>
+				<Item id="90453" name="Puuza"/>
+				<Item id="90454" name="Weka Toleo Langu"/>
+				<Item id="90455" name="Haikuweza kupakia upya &quot;%@&quot;"/>
+				<Item id="90456" name="Faili haikuweza kusomeka."/>
+				<Item id="90457" name="Chagua mahali ambapo kila kitufe kinatokea kwenye Liquid Glass upau wa vidhibiti: kwenye kapsuli ya kikundi (Upauzana), katika menyu ya ▾ ya kikundi, au Imefichwa."/>
+				<Item id="90458" name="Changia kwa Msaada wa Maendeleo"/>
+				<Item id="90459" name="Sakinisha Zana za Mstari wa Amri"/>
+				<Item id="90460" name="Onyesha vivuli nyuma ya vibonge vya upau wa vidhibiti"/>
+				<Item id="90461" name="Changia"/>
+				<Item id="90462" name="Seti za wahusika"/>
+				<Item id="90463" name="Punguza"/>
+				<Item id="90464" name="Ficha Nextpad++"/>
+				<Item id="90465" name="Ficha Wengine"/>
+				<Item id="90466" name="Onyesha Yote"/>
+				<Item id="90467" name="Acha Nextpad++"/>
+				<Item id="90468" name="Hifadhi Macro Iliyorekodiwa ya Sasa..."/>
+				<Item id="90469" name="Punguza Nafasi ya Kufuatilia na Uhifadhi"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

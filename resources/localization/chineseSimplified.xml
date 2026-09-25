@@ -1463,13 +1463,13 @@ Translation note:
 				<Item id="90006" name="源代码控制"/>
 				<Item id="90007" name="提交"/>
 				<Item id="90008" name="提交失败"/>
-				<Item id="90009" name="没有 git 存储库\n使用浏览打开存储库。"/>
+				<Item id="90009" name="没有 git 存储库&#10;使用浏览打开存储库。"/>
 				<Item id="90010" name="舞台"/>
 				<Item id="90011" name="取消暂存"/>
 				<Item id="90012" name="舞台全部"/>
 				<Item id="90013" name="取消全部"/>
-				<Item id="90014" name="提交消息\u2026"/>
-				<Item id="90015" name="浏览存储库\u2026"/>
+				<Item id="90014" name="提交消息…"/>
+				<Item id="90015" name="浏览存储库…"/>
 				<Item id="90016" name="选择 git 存储库文件夹"/>
 				<Item id="90017" name="（无存储库）"/>
 				<Item id="90018" name="（分离）"/>
@@ -1483,9 +1483,9 @@ Translation note:
 				<Item id="90026" name="结果"/>
 				<Item id="90027" name="停止"/>
 				<Item id="90028" name="搜索停止了。"/>
-				<Item id="90029" name="正在搜索\u2026"/>
+				<Item id="90029" name="正在搜索…"/>
 				<Item id="90030" name="要搜索的文本"/>
-				<Item id="90031" name="*.txt、*.cpp、\u2026"/>
+				<Item id="90031" name="*.txt、*.cpp、…"/>
 				<Item id="90032" name="正在搜索..."/>
 				<Item id="90033" name="替换："/>
 				<Item id="90034" name="整个词"/>
@@ -1545,7 +1545,7 @@ Translation note:
 				<Item id="90088" name="安装插件"/>
 				<Item id="90089" name="删除插件"/>
 				<Item id="90090" name="没有找到命令"/>
-				<Item id="90091" name="输入搜索\u2026"/>
+				<Item id="90091" name="输入搜索…"/>
 				<Item id="90092" name="用户定义语言 v.2.1"/>
 				<Item id="90093" name="创建新语言"/>
 				<Item id="90094" name="输入名称："/>
@@ -1554,11 +1554,9 @@ Translation note:
 				<Item id="90097" name="不要保存"/>
 				<Item id="90098" name="完成"/>
 				<Item id="90099" name="切换自动换行"/>
-				<Item id="90100" name="显示所有字符"/>
 				<Item id="90101" name="显示字符选项"/>
 				<Item id="90102" name="切换缩进指南"/>
 				<Item id="90103" name="尚未实施"/>
-				<Item id="90104" name="从磁盘重新加载"/>
 				<Item id="90105" name="更改搜索引擎"/>
 				<Item id="90106" name="运行错误"/>
 				<Item id="90107" name="Nextpad++ 加载时间"/>
@@ -1567,16 +1565,12 @@ Translation note:
 				<Item id="90110" name="下载"/>
 				<Item id="90111" name="发布页面"/>
 				<Item id="90112" name="稍后"/>
-				<Item id="90113" name="过滤器插件\u2026"/>
-				<Item id="90114" name="可用"/>
-				<Item id="90115" name="更新"/>
-				<Item id="90116" name="已安装"/>
-				<Item id="90117" name="不兼容"/>
+				<Item id="90113" name="过滤器插件…"/>
 				<Item id="90118" name="安装失败"/>
 				<Item id="90119" name="删除以下插件？"/>
 				<Item id="90120" name="安装以下插件？"/>
 				<Item id="90121" name="这将删除插件文件。"/>
-				<Item id="90122" name="搜索命令\u2026"/>
+				<Item id="90122" name="搜索命令…"/>
 				<Item id="90123" name="前景色"/>
 				<Item id="90124" name="背景颜色"/>
 				<Item id="90125" name="宏名称"/>
@@ -1596,7 +1590,7 @@ Translation note:
 				<Item id="90139" name="所有标记都清除了。"/>
 				<Item id="90140" name="标记的文本已复制到剪贴板。"/>
 				<Item id="90141" name="没有要复制的标记文本。"/>
-				<Item id="90142" name="正在搜索...%ld 个命中 \u2014 %@"/>
+				<Item id="90142" name="正在搜索...%ld 个命中 — %@"/>
 				<Item id="90143" name="在文件中替换..."/>
 				<Item id="90144" name="在项目中替换：尚未连接。"/>
 				<Item id="90145" name="在项目中查找：尚未连接到项目面板文件列表。"/>
@@ -1623,14 +1617,12 @@ Translation note:
 				<Item id="90165" name="全部保存前确认"/>
 				<Item id="90166" name="确认替换打开文档中的全部"/>
 				<Item id="90167" name="替换：不移至下一个出现的位置"/>
-				<Item id="90168" name="在“查找”对话框中使用等宽字体"/>
 				<Item id="90169" name="右键单击保持选择"/>
 				<Item id="90170" name="反转默认日期/时间顺序"/>
 				<Item id="90171" name="使用基于 XML 的函数列表解析器"/>
 				<Item id="90172" name="自动闭括号 ( ) [ ] { }"/>
 				<Item id="90173" name="从第 N 个字符开始："/>
 				<Item id="90174" name="选择内自动检查阈值（字节）："/>
-				<Item id="90175" name="扩展（\\n、\\r、\\t、\\0、\\x...）"/>
 				<Item id="90176" name="编辑"/>
 				<Item id="90177" name="边距"/>
 				<Item id="90178" name="黑暗"/>
@@ -1644,12 +1636,10 @@ Translation note:
 				<Item id="90186" name="抗锯齿"/>
 				<Item id="90187" name="LCD 优化"/>
 				<Item id="90188" name="简单+/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="苹果电脑 (CR)"/>
-				<Item id="90191" name="插件列表存储库"/>
 				<Item id="90192" name="选择要应用的 Nextpad++ 主题 XML 文件"/>
-				<Item id="90193" name="创建新的\u2026"/>
-				<Item id="90194" name="另存为\u2026"/>
+				<Item id="90193" name="创建新的…"/>
+				<Item id="90194" name="另存为…"/>
 				<Item id="90195" name="用户语言："/>
 				<Item id="90196" name="语言名称"/>
 				<Item id="90197" name="创建"/>
@@ -1679,6 +1669,216 @@ Translation note:
 				<Item id="90221" name="锁定属性 (macOS)"/>
 				<Item id="90222" name="检查更新..."/>
 				<Item id="90223" name="最近打开"/>
+				<Item id="90226" name="帮助"/>
+				<Item id="90227" name="阶段失败"/>
+				<Item id="90228" name="取消暂存失败"/>
+				<Item id="90229" name="可用"/>
+				<Item id="90230" name="你正在奔跑"/>
+				<Item id="90231" name="永远不要再提醒我"/>
+				<Item id="90233" name="自动检查更新"/>
+				<Item id="90234" name="自动更新检查已关闭。"/>
+				<Item id="90235" name="最后检查："/>
+				<Item id="90236" name="没有互联网连接。"/>
+				<Item id="90237" name="更新服务器的意外响应。"/>
+				<Item id="90238" name="未找到已发布的版本。"/>
+				<Item id="90239" name="更新服务器暂时不可用。请稍后重试。"/>
+				<Item id="90240" name="更新服务器拒绝了该请求。代理、防火墙或 VPN 可能会阻止对 GitHub 的访问。"/>
+				<Item id="90241" name="来自您的网络的更新检查过多（此限制由网络上的每个人共享）。之后重试"/>
+				<Item id="90242" name="来自您的网络的更新检查过多（此限制由网络上的每个人共享）。请稍后重试。"/>
+				<Item id="90243" name="更新服务器返回状态"/>
+				<Item id="90244" name="再试一次"/>
+				<Item id="90245" name="打印文字尺寸："/>
+				<Item id="90246" name="使用屏幕缩放"/>
+				<Item id="90247" name="实际尺寸"/>
+				<Item id="90248" name="部分文件无法替换"/>
+				<Item id="90249" name="...还有 %lu 个"/>
+				<Item id="90250" name="文件关联由您的组织管理。"/>
+				<Item id="90251" name="正在等待 macOS 确认…"/>
+				<Item id="90252" name="macOS 未应用此更改。"/>
+				<Item id="90253" name="已注册"/>
+				<Item id="90254" name="打开文件夹中的所有文件？"/>
+				<Item id="90255" name="这将在新选项卡中打开 %lu 个文件。"/>
+				<Item id="90256" name="无法导入：%@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="正在搜索…目前有 %ld 个匹配项"/>
+				<Item id="90260" name="%@（%ld匹配%@）"/>
+				<Item id="90261" name="模糊搜索"/>
+				<Item id="90266" name="计数：%ld 场比赛。"/>
+				<Item id="90267" name="全部替换：%ld 个事件已替换为 %@。"/>
+				<Item id="90268" name="在打开的文件中替换：已替换 %ld 个匹配项。"/>
+				<Item id="90269" name="Find in Files: %ld hit(s) in %ld file(s)."/>
+				<Item id="90270" name="在文件中查找：0 次点击。"/>
+				<Item id="90271" name="将目录中所有出现的“%@”替换为“%@”：&#10;%@&#10;&#10;此操作无法撤消。"/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="首先打开项目面板。"/>
+				<Item id="90274" name="至少选择一个项目面板进行搜索。"/>
+				<Item id="90275" name="没有可搜索的文件。"/>
+				<Item id="90276" name="Find in Projects: %ld hit(s) in %ld file(s)."/>
+				<Item id="90277" name="在项目中查找：0 次点击。"/>
+				<Item id="90278" name="替换所有出现的"/>
+				<Item id="90279" name="与"/>
+				<Item id="90280" name="在"/>
+				<Item id="90281" name="项目文件。此操作无法撤消。"/>
+				<Item id="90282" name="Replace in Projects: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90283" name="标记：已标记 %ld 个匹配项。"/>
+				<Item id="90284" name="过滤文件/文件夹名称..."/>
+				<Item id="90285" name="部分文档无法保存"/>
+				<Item id="90286" name="⌘ 命令"/>
+				<Item id="90287" name="⌃ 控制"/>
+				<Item id="90288" name="⌥ 选项"/>
+				<Item id="90289" name="⇧ 转变"/>
+				<Item id="90290" name="输入 NSDateFormatter 格式字符串："/>
+				<Item id="90291" name="此版本中尚未实现“%@”。"/>
+				<Item id="90292" name="导入插件"/>
+				<Item id="90293" name="需要重新启动"/>
+				<Item id="90294" name="没有要处理的文件"/>
+				<Item id="90295" name="该项目节点不包含任何文件。"/>
+				<Item id="90296" name="“%@”有未保存的更改。&#10;重新加载并放弃更改？"/>
+				<Item id="90297" name="输入新文件名："/>
+				<Item id="90299" name="新名称："/>
+				<Item id="90301" name="名称中不能包含“/”或“:”。"/>
+				<Item id="90304" name="不要保存全部"/>
+				<Item id="90306" name="有 3 种方法可以切换到列选择模式：&#10;&#10;1.（键盘和鼠标）按住 Option 的同时左键单击拖动&#10;&#10;2.（仅限键盘）使用箭头键时按住 Option+Shift&#10;&#10;3.（键盘或鼠标）&#10; 将插入符放在所需的列块开始位置，然后&#10; 执行“在列模式下开始/结束选择”命令；&#10; 将插入符移动到所需的列块结束位置，然后&#10; 再次执行“在列模式下开始/结束选择”命令"/>
+				<Item id="90307" name="输入搜索网址。使用 %s 作为查询占位符（或在末尾附加查询）："/>
+				<Item id="90308" name="输入命令或网址..."/>
+				<Item id="90309" name="未能执行：&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="已安装"/>
+				<Item id="90313" name="安装 nextpad++ 命令行工具"/>
+				<Item id="90314" name="安装失败"/>
+				<Item id="90315" name="已安装 — 但 ~/.local/bin 不在您的 PATH 中"/>
+				<Item id="90316" name="已经在你的配置中了"/>
+				<Item id="90317" name="添加到路径"/>
+				<Item id="90318" name="无法写入"/>
+				<Item id="90319" name="已复制"/>
+				<Item id="90321" name="如果您不保存，您的更改将会丢失。"/>
+				<Item id="90322" name="适用于所有文件"/>
+				<Item id="90323" name="对文件运行宏"/>
+				<Item id="90324" name="宏："/>
+				<Item id="90325" name="文件夹："/>
+				<Item id="90326" name="选择一个文件夹..."/>
+				<Item id="90327" name="浏览…"/>
+				<Item id="90328" name="扩展："/>
+				<Item id="90329" name="递归子目录"/>
+				<Item id="90330" name="包括隐藏文件"/>
+				<Item id="90331" name="最大尺寸："/>
+				<Item id="90332" name="无限"/>
+				<Item id="90333" name="每个文件："/>
+				<Item id="90334" name="如果修改则保存"/>
+				<Item id="90335" name="之后关闭"/>
+				<Item id="90336" name="甚至关闭已经打开的文件"/>
+				<Item id="90337" name="出错时："/>
+				<Item id="90338" name="跳过文件并继续"/>
+				<Item id="90339" name="出现第一个错误时停止"/>
+				<Item id="90340" name="（没有保存的宏）"/>
+				<Item id="90341" name="%lu 个文件匹配"/>
+				<Item id="90342" name="找不到文件夹"/>
+				<Item id="90343" name="选择一个存在的文件夹。"/>
+				<Item id="90344" name="没有匹配的文件"/>
+				<Item id="90345" name="调整扩展过滤器、递归或隐藏文件选项。"/>
+				<Item id="90346" name="开始…"/>
+				<Item id="90347" name="加工："/>
+				<Item id="90348" name="%ld / %ld 正常：%ld 已跳过：%ld 失败：%ld"/>
+				<Item id="90349" name="批量取消"/>
+				<Item id="90350" name="批次完成"/>
+				<Item id="90351" name="总计：%lu 正常：%ld 已跳过：%ld 失败：%ld"/>
+				<Item id="90352" name="建成日期"/>
+				<Item id="90353" name="操作系统"/>
+				<Item id="90354" name="最新的"/>
+				<Item id="90355" name="过时的"/>
+				<Item id="90356" name="未知"/>
+				<Item id="90357" name="重新启动应用程序以使更改生效。"/>
+				<Item id="90358" name="更新插件"/>
+				<Item id="90359" name="更新以下插件吗？"/>
+				<Item id="90360" name="当前版本在替换之前会备份到 ~/Library/Application Support/Nextpad++/plugin-backups/。"/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="切换到新的 Tahoe 外观（测试版）"/>
+				<Item id="90363" name="使用 macOS 样式菜单（测试版）"/>
+				<Item id="90364" name="The new Tahoe look will be applied after you restart Nextpad++."/>
+				<Item id="90365" name="重新启动 Nextpad++ 后将恢复经典外观。"/>
+				<Item id="90366" name="立即退出"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="重新启动 Nextpad++ 后将恢复经典菜单布局。"/>
+				<Item id="90369" name="颜色"/>
+				<Item id="90370" name="适用于插件工具栏图标"/>
+				<Item id="90371" name="在完整模式下，插件图标变为单一纯色。"/>
+				<Item id="90372" name="工具栏组"/>
+				<Item id="90373" name="选择每个按钮在 Liquid Glass 工具栏中的显示位置：在"/>
+				<Item id="90374" name="按钮"/>
+				<Item id="90375" name="安置"/>
+				<Item id="90376" name="重置为默认值"/>
+				<Item id="90377" name="溢出菜单"/>
+				<Item id="90378" name="隐藏"/>
+				<Item id="90379" name="CJK 友好自动换行"/>
+				<Item id="90380" name="列选择切换到多重编辑"/>
+				<Item id="90381" name="行间距："/>
+				<Item id="90382" name="1.0（默认）"/>
+				<Item id="90383" name="隐藏标签栏"/>
+				<Item id="90384" name="选项卡大小跟随文档缩放"/>
+				<Item id="90385" name="选择..."/>
+				<Item id="90386" name="重置为默认值"/>
+				<Item id="90387" name="使用默认位置。"/>
+				<Item id="90388" name="自定义位置。"/>
+				<Item id="90389" name="路径无效 — 备份将使用默认位置。"/>
+				<Item id="90390" name="选择"/>
+				<Item id="90391" name="插入选择："/>
+				<Item id="90392" name="使用 Boost 正则表达式模式（多行；重新启动以应用）"/>
+				<Item id="90395" name="立即重新启动"/>
+				<Item id="90397" name="（除非你知道自己在做什么，否则不要选择它）"/>
+				<Item id="90398" name="工具栏图标大小"/>
+				<Item id="90399" name="100%（默认）"/>
+				<Item id="90400" name="鼠标滚轮滚动速度"/>
+				<Item id="90401" name="1×（关）"/>
+				<Item id="90402" name="工具栏图标大小已更改"/>
+				<Item id="90403" name="新的工具栏图标大小将在下次启动 Nextpad++ 时生效。"/>
+				<Item id="90404" name="工具栏图标已更改"/>
+				<Item id="90405" name="新的工具栏图标将在下次启动 Nextpad++ 时生效。"/>
+				<Item id="90411" name="在文件上运行宏..."/>
+				<Item id="90418" name="这将从项目中删除它及其所有内容。磁盘上的任何文件都不会受到影响。"/>
+				<Item id="90420" name="文件夹"/>
+				<Item id="90427" name="未找到"/>
+				<Item id="90428" name="冲突：%@"/>
+				<Item id="90429" name="删除“%@”？"/>
+				<Item id="90430" name="用户定义语言管理"/>
+				<Item id="90431" name="过滤语言..."/>
+				<Item id="90432" name="来源"/>
+				<Item id="90433" name="交流电源"/>
+				<Item id="90434" name="状态"/>
+				<Item id="90435" name="安装/更新"/>
+				<Item id="90436" name="%lu 种语言 · 已安装 %lu 种 · %lu 种更新"/>
+				<Item id="90437" name="作者"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="选择一种或多种语言进行安装。"/>
+				<Item id="90440" name="没有可供选择的下载内容。"/>
+				<Item id="90441" name="下载失败"/>
+				<Item id="90442" name="校验和不匹配"/>
+				<Item id="90443" name="所选语言现在可在“语言”菜单中找到。"/>
+				<Item id="90444" name="选择要删除的一种或多种已安装语言。"/>
+				<Item id="90445" name="已删除"/>
+				<Item id="90446" name="该名称已被另一种语言使用。"/>
+				<Item id="90447" name="该语言无法删除。"/>
+				<Item id="90448" name="无法删除预安装的语言。"/>
+				<Item id="90449" name="该语言无法重命名。"/>
+				<Item id="90450" name="该文件是%@。打开它将禁用语法突出显示并撤消历史记录，以保持应用程序的响应能力。&#10;&#10;要继续吗？"/>
+				<Item id="90451" name="无论如何打开"/>
+				<Item id="90452" name="磁盘上的“%@”已更改"/>
+				<Item id="90453" name="忽略"/>
+				<Item id="90454" name="保留我的版本"/>
+				<Item id="90455" name="无法重新加载“%@”"/>
+				<Item id="90456" name="无法读取该文件。"/>
+				<Item id="90457" name="选择每个按钮在 Liquid Glass 工具栏中的显示位置：在组胶囊（工具栏）上、在组的 ▾ 溢出菜单中或隐藏。"/>
+				<Item id="90458" name="捐赠支持发展"/>
+				<Item id="90459" name="安装命令行工具"/>
+				<Item id="90460" name="显示工具栏胶囊后面的阴影"/>
+				<Item id="90461" name="捐赠"/>
+				<Item id="90462" name="字符集"/>
+				<Item id="90463" name="最小化"/>
+				<Item id="90464" name="隐藏 Nextpad++"/>
+				<Item id="90465" name="隐藏其他"/>
+				<Item id="90466" name="全部显示"/>
+				<Item id="90467" name="退出 Nextpad++"/>
+				<Item id="90468" name="保存当前录制的宏..."/>
+				<Item id="90469" name="修剪尾随空格并保存"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

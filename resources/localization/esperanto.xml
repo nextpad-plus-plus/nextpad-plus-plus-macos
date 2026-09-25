@@ -853,13 +853,13 @@
 				<Item id="90006" name="Fontkontrolo"/>
 				<Item id="90007" name="Faru"/>
 				<Item id="90008" name="Commit Malsukcesis"/>
-				<Item id="90009" name="Neniu git-deponejo\nUzu Foliumi por malfermi deponejon."/>
+				<Item id="90009" name="Neniu git-deponejo&#10;Uzu Foliumi por malfermi deponejon."/>
 				<Item id="90010" name="Etapo"/>
 				<Item id="90011" name="Malscenigi"/>
 				<Item id="90012" name="Scenejo Ĉiuj"/>
 				<Item id="90013" name="Malscenigi Ĉion"/>
-				<Item id="90014" name="Faru mesaĝon\u2026"/>
-				<Item id="90015" name="Serĉu deponejon\u2026"/>
+				<Item id="90014" name="Faru mesaĝon…"/>
+				<Item id="90015" name="Serĉu deponejon…"/>
 				<Item id="90016" name="Elektu git-deponejan dosierujon"/>
 				<Item id="90017" name="(neniu deponejo)"/>
 				<Item id="90018" name="(senigita)"/>
@@ -873,9 +873,9 @@
 				<Item id="90026" name="Rezultoj"/>
 				<Item id="90027" name="Haltu"/>
 				<Item id="90028" name="Serĉo ĉesis."/>
-				<Item id="90029" name="Serĉante\u2026"/>
+				<Item id="90029" name="Serĉante…"/>
 				<Item id="90030" name="Teksto por serĉi"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Serĉante..."/>
 				<Item id="90033" name="Anstataŭigi:"/>
 				<Item id="90034" name="Tuta Vorto"/>
@@ -935,7 +935,7 @@
 				<Item id="90088" name="Instalu kromaĵojn"/>
 				<Item id="90089" name="Forigi kromaĵojn"/>
 				<Item id="90090" name="Neniuj komandoj trovitaj"/>
-				<Item id="90091" name="Tajpu por serĉi\u2026"/>
+				<Item id="90091" name="Tajpu por serĉi…"/>
 				<Item id="90092" name="Uzanto Difinita Lingvo v.2.1"/>
 				<Item id="90093" name="Krei novan lingvon"/>
 				<Item id="90094" name="Enigu nomon:"/>
@@ -944,11 +944,9 @@
 				<Item id="90097" name="Ne Konservu"/>
 				<Item id="90098" name="Farita"/>
 				<Item id="90099" name="Baskuligi Vortvolvaĵon"/>
-				<Item id="90100" name="Montri Ĉiujn Signojn"/>
 				<Item id="90101" name="Montri Karakterojn Opcioj"/>
 				<Item id="90102" name="Baskuligi Indentgvidilon"/>
 				<Item id="90103" name="Ne Ankoraŭ Efektivigita"/>
-				<Item id="90104" name="Reŝargi el Disko"/>
 				<Item id="90105" name="Ŝanĝi serĉilon"/>
 				<Item id="90106" name="Run Eraro"/>
 				<Item id="90107" name="Nextpad++ Ŝarĝtempo"/>
@@ -957,7 +955,7 @@
 				<Item id="90110" name="Elŝutu"/>
 				<Item id="90111" name="Liberiga Paĝo"/>
 				<Item id="90112" name="Poste"/>
-				<Item id="90113" name="Filtrilaj aldonaĵoj\u2026"/>
+				<Item id="90113" name="Filtrilaj aldonaĵoj…"/>
 				<Item id="90114" name="Disponebla"/>
 				<Item id="90115" name="Ĝisdatigoj"/>
 				<Item id="90116" name="Instalita"/>
@@ -966,7 +964,7 @@
 				<Item id="90119" name="Ĉu forigi la jenajn kromaĵojn?"/>
 				<Item id="90120" name="Ĉu instali la jenajn kromaĵojn?"/>
 				<Item id="90121" name="Ĉi tio forigos la kromprogramojn."/>
-				<Item id="90122" name="Serĉu komandojn\u2026"/>
+				<Item id="90122" name="Serĉu komandojn…"/>
 				<Item id="90123" name="Malfonokoloro"/>
 				<Item id="90124" name="Fonkoloro"/>
 				<Item id="90125" name="Makronomo"/>
@@ -986,7 +984,7 @@
 				<Item id="90139" name="Ĉiuj markoj forigitaj."/>
 				<Item id="90140" name="Markita teksto kopiita al tondujo."/>
 				<Item id="90141" name="Neniu markita teksto por kopii."/>
-				<Item id="90142" name="Serĉante... %ld sukceso(j) \u2014 %@"/>
+				<Item id="90142" name="Serĉante... %ld sukceso(j) — %@"/>
 				<Item id="90143" name="Anstataŭigante en dosieroj..."/>
 				<Item id="90144" name="Anstataŭigi en Projektoj: Ankoraŭ ne konektita."/>
 				<Item id="90145" name="Trovu en Projektoj: Ankoraŭ ne konektita al la dosierlisto de Projekt-Panelo."/>
@@ -1007,20 +1005,20 @@
 				<Item id="90160" name="Inteligenta reliefigo: nur tuta vorto"/>
 				<Item id="90161" name="Duoble alklaku por fermi langeton"/>
 				<Item id="90162" name="Montru fermbutonon sur langetoj"/>
+				<Item id="90168" name="Uzu unuspacan tiparon en Trovi dialogon"/>
+				<Item id="90191" name="Deponejo de la listo de kromprogramoj"/>
 				<Item id="90224" name="Montri langetojn en pluraj linioj"/>
 				<Item id="90163" name="Memoru panelvideblecon trans sesioj"/>
 				<Item id="90164" name="Konservu forestantajn dosierojn en sesio"/>
 				<Item id="90165" name="Konfirmu antaŭ Konservi ĉion"/>
 				<Item id="90166" name="Konfirmu Anstataŭigi Ĉion en malfermitaj dokumentoj"/>
 				<Item id="90167" name="Anstataŭigi: ne movu al la sekva okazo"/>
-				<Item id="90168" name="Uzu unuspacan tiparon en Trovi dialogon"/>
 				<Item id="90169" name="Dekstre alklako konservas elekton"/>
 				<Item id="90170" name="Inversa defaŭlta dato/hora ordo"/>
 				<Item id="90171" name="Uzu XML-bazitajn funkciolistajn analizilojn"/>
 				<Item id="90172" name="Aŭtomate fermu krampojn ( ) [ ] { }"/>
 				<Item id="90173" name="El N-a signo:"/>
 				<Item id="90174" name="Enelekta aŭtokontrola sojlo (bajtoj):"/>
-				<Item id="90175" name="Etendita (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktoro"/>
 				<Item id="90177" name="Marĝenoj"/>
 				<Item id="90178" name="Malhela"/>
@@ -1034,12 +1032,10 @@
 				<Item id="90186" name="Kontraŭaliasita"/>
 				<Item id="90187" name="LCD Optimumigita"/>
 				<Item id="90188" name="Simpla +/-"/>
-				<Item id="90189" name="Vindozo (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Deponejo de la listo de kromprogramoj"/>
 				<Item id="90192" name="Elektu Nextpad++-teman XML-dosieron por apliki"/>
-				<Item id="90193" name="Kreu novan\u2026"/>
-				<Item id="90194" name="Konservu kiel\u2026"/>
+				<Item id="90193" name="Kreu novan…"/>
+				<Item id="90194" name="Konservu kiel…"/>
 				<Item id="90195" name="Uzantlingvo:"/>
 				<Item id="90196" name="Lingvonomo"/>
 				<Item id="90197" name="Krei"/>
@@ -1069,6 +1065,235 @@
 				<Item id="90221" name="Ŝlosita Atributo (macOS)"/>
 				<Item id="90222" name="Kontrolu ĝisdatigojn…"/>
 				<Item id="90223" name="Malfermu Lastatempaj"/>
+				<Item id="90226" name="Helpo"/>
+				<Item id="90227" name="Etapo Malsukcesis"/>
+				<Item id="90228" name="Malscenigo Malsukcesis"/>
+				<Item id="90229" name="estas disponebla"/>
+				<Item id="90230" name="Vi kuras"/>
+				<Item id="90231" name="Neniam plu rememorigu min"/>
+				<Item id="90232" name="Ĝisdatigoj"/>
+				<Item id="90233" name="Aŭtomate kontrolu ĝisdatigojn"/>
+				<Item id="90234" name="Aŭtomataj ĝisdatigaj kontroloj estas malŝaltitaj."/>
+				<Item id="90235" name="Laste kontrolita:"/>
+				<Item id="90236" name="Neniu interreta konekto."/>
+				<Item id="90237" name="Neatendita respondo de la ĝisdatiga servilo."/>
+				<Item id="90238" name="Neniu publikigita eldono estis trovita."/>
+				<Item id="90239" name="La ĝisdatiga servilo estas provizore nedisponebla.Bonvolu provi denove poste."/>
+				<Item id="90240" name="La ĝisdatiga servilo rifuzis la peton.Prokurilo, fajroŝirmilo aŭ VPN eble blokas aliron al GitHub."/>
+				<Item id="90241" name="Tro da ĝisdatigaj kontroloj de via reto (ĉi tiu limo estas dividita de ĉiuj en ĝi).Provu denove poste"/>
+				<Item id="90242" name="Tro da ĝisdatigaj kontroloj de via reto (ĉi tiu limo estas dividita de ĉiuj en ĝi).Bonvolu provi denove poste."/>
+				<Item id="90243" name="La ĝisdatiga servilo resendis statuson"/>
+				<Item id="90244" name="Provu Denove"/>
+				<Item id="90245" name="Presi tekstograndecon:"/>
+				<Item id="90246" name="Uzu ekranan zomon"/>
+				<Item id="90247" name="Reala grandeco"/>
+				<Item id="90248" name="Kelkaj dosieroj ne povus esti anstataŭigitaj"/>
+				<Item id="90249" name="...kaj %lu pli"/>
+				<Item id="90250" name="Dosieraj asocioj estas administrataj de via organizo."/>
+				<Item id="90251" name="Atendante ke macOS konfirmu..."/>
+				<Item id="90252" name="macOS ne aplikis la ŝanĝon."/>
+				<Item id="90253" name="Registrita"/>
+				<Item id="90254" name="Ĉu malfermi ĉiujn dosierojn en dosierujo?"/>
+				<Item id="90255" name="Ĉi tio malfermos %lu dosierojn en novaj langetoj."/>
+				<Item id="90256" name="Ne eblis importi: %@"/>
+				<Item id="90257" name="Ekst."/>
+				<Item id="90258" name="Trovis %ld kongruon(j)n en %ld dosiero(j)."/>
+				<Item id="90259" name="Serĉante... %ld kongruo(j) ĝis nun"/>
+				<Item id="90260" name="%@ (%ld kongruas%@)"/>
+				<Item id="90261" name="Neklara serĉo"/>
+				<Item id="90265" name="Trovu: ne povas trovi la tekston &quot;%@&quot;"/>
+				<Item id="90266" name="Nombro: %ld matĉo(j)."/>
+				<Item id="90267" name="Anstataŭigi Ĉion: %ld okazo(j) estis anstataŭigita(j) %@."/>
+				<Item id="90268" name="Anstataŭigi en Malfermitaj Dosieroj: %ld okazo(j) estis anstataŭigitaj."/>
+				<Item id="90269" name="Trovu en Dosieroj: %ld sukceso(j) en %ld dosiero(j)."/>
+				<Item id="90270" name="Trovu en Dosieroj: 0 trafoj."/>
+				<Item id="90271" name="Anstataŭigu ĉiujn aperon de &quot;%@&quot; per &quot;%@&quot; en dosierujo:&#10;%@&#10;&#10;Ĉi tio ne povas esti malfarita."/>
+				<Item id="90272" name="Anstataŭigi en Dosieroj: %ld anstataŭaĵo(j) en %ld dosiero(j)."/>
+				<Item id="90273" name="Malfermu Projektan Panelon unue."/>
+				<Item id="90274" name="Elektu almenaŭ unu Projektan Panelon por serĉi."/>
+				<Item id="90275" name="Neniuj dosieroj por serĉi."/>
+				<Item id="90276" name="Trovu en Projektoj: %ld sukceso(j) en %ld dosiero(j)."/>
+				<Item id="90277" name="Trovu en Projektoj: 0 trafoj."/>
+				<Item id="90278" name="Anstataŭigi ĉiujn aperon de"/>
+				<Item id="90279" name="kun"/>
+				<Item id="90280" name="en"/>
+				<Item id="90281" name="projektdosiero(j).Ĉi tio ne povas esti malfarita."/>
+				<Item id="90282" name="Anstataŭigi en Projektoj: %ld anstataŭaĵo(j) en %ld dosiero(j)."/>
+				<Item id="90283" name="Mark: %ld kongruo(j) markita(j)."/>
+				<Item id="90284" name="Filtrila nomo de dosiero/dosierujo..."/>
+				<Item id="90285" name="Kelkaj dokumentoj ne povis esti konservitaj"/>
+				<Item id="90286" name="⌘ Komando"/>
+				<Item id="90287" name="⌃ Kontrolo"/>
+				<Item id="90288" name="⌥ Opcio"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Enigu NSDateFormatter-formatan ĉenon:"/>
+				<Item id="90291" name="'%@' ankoraŭ ne estas efektivigita en ĉi tiu versio."/>
+				<Item id="90292" name="Importi kromprogramon"/>
+				<Item id="90293" name="Rekomenco Bezonata"/>
+				<Item id="90294" name="Neniuj dosieroj por prilabori"/>
+				<Item id="90295" name="Ĉi tiu projekta nodo enhavas neniujn dosierojn."/>
+				<Item id="90296" name="'%@' havas nekonservitajn ŝanĝojn.&#10;Reŝargi kaj forĵeti ŝanĝojn?"/>
+				<Item id="90297" name="Enigu novan dosiernomon:"/>
+				<Item id="90298" name="Alinomi Nunan Tablon"/>
+				<Item id="90299" name="Nova nomo:"/>
+				<Item id="90300" name="Renomi malsukcesis"/>
+				<Item id="90301" name="La nomo ne povas enhavi “/” aŭ “:”."/>
+				<Item id="90302" name="Ĉu movi '%@' al la Rubujo?"/>
+				<Item id="90303" name="Ĉu konservi '%@' antaŭ fermi?"/>
+				<Item id="90304" name="Ne Konservu Ĉion"/>
+				<Item id="90305" name="Konsileto de Kolumna Reĝimo"/>
+				<Item id="90306" name="Estas 3 manieroj ŝanĝi al kolon-elekta reĝimo:&#10;&#10;1.(Klavaro kaj Muso) Tenu Opcion dum maldekstre alklaku trenante&#10;&#10;2.(Nur Klavaro) Tenu Opcion+Majsklon dum uzado de sagoklavoj&#10;&#10;3.(Klavaro aŭ Muso)&#10; Metu signon ĉe la dezirata komenco de kolumbloka pozicio, tiam&#10; ekzekuti komandon &quot;Komencu/Finu Elektu en Kolumna Reĝimo&quot;;&#10; Movu signon al la dezirata fino de kolumbloka pozicio, tiam&#10; denove ekzekutu komandon &quot;Komenu/Finu Elektu en Kolumna Reĝimo&quot;."/>
+				<Item id="90307" name="Enigu la serĉan URL.Uzu %s kiel la serĉan anstataŭilon (aŭ aldonu la demandon ĉe la fino):"/>
+				<Item id="90308" name="Enigu komandon aŭ URL..."/>
+				<Item id="90309" name="Malsukcesis ekzekuti:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Redakti contextMenu.xml ebligas al vi modifi vian Nextpad++ ŝprucfendan kuntekstan menuon en redakta zono.&#10;Vi devas rekomenci vian Nextpad++ por efiki post modifo de contextMenu.xml."/>
+				<Item id="90312" name="Jam instalita"/>
+				<Item id="90313" name="Instalu nextpad++ Komandlinian Ilon"/>
+				<Item id="90314" name="Instalado malsukcesis"/>
+				<Item id="90315" name="Instalita — sed ~/.local/bin ne estas sur via PATH"/>
+				<Item id="90316" name="Jam en via agordo"/>
+				<Item id="90317" name="Aldonita al PATH"/>
+				<Item id="90318" name="Ne povis skribi"/>
+				<Item id="90319" name="Kopiita"/>
+				<Item id="90320" name="Ĉu konservi ŝanĝojn al '%@'?"/>
+				<Item id="90321" name="Viaj ŝanĝoj estos perditaj se vi ne konservos ilin."/>
+				<Item id="90322" name="Apliki al ĉiuj dokumentoj"/>
+				<Item id="90323" name="Rulu Makroon sur Dosieroj"/>
+				<Item id="90324" name="Makroo:"/>
+				<Item id="90325" name="Dosierujo:"/>
+				<Item id="90326" name="Elektu dosierujon..."/>
+				<Item id="90327" name="Foliumi…"/>
+				<Item id="90328" name="Etendaĵoj:"/>
+				<Item id="90329" name="Rekursi subdosierujojn"/>
+				<Item id="90330" name="Inkluzivi kaŝitajn dosierojn"/>
+				<Item id="90331" name="Maksimuma grandeco:"/>
+				<Item id="90332" name="Senlima"/>
+				<Item id="90333" name="Per dosiero:"/>
+				<Item id="90334" name="Konservu se modifite"/>
+				<Item id="90335" name="Fermu poste"/>
+				<Item id="90336" name="Fermu eĉ dosierojn kiuj jam estis malfermitaj"/>
+				<Item id="90337" name="Pro eraro:"/>
+				<Item id="90338" name="Preterpasu dosieron kaj daŭrigu"/>
+				<Item id="90339" name="Ĉesu ĉe unua eraro"/>
+				<Item id="90340" name="(neniuj konservitaj makrooj)"/>
+				<Item id="90341" name="%lu dosiero(j) kongruas"/>
+				<Item id="90342" name="Dosierujo ne trovita"/>
+				<Item id="90343" name="Elektu dosierujon kiu ekzistas."/>
+				<Item id="90344" name="Neniuj dosieroj kongruas"/>
+				<Item id="90345" name="Alĝustigu la opcion de etendoj filtrilo, rekurso aŭ kaŝaj dosieroj."/>
+				<Item id="90346" name="Komencante…"/>
+				<Item id="90347" name="Prilaborado:"/>
+				<Item id="90348" name="%ld / %ld Bone: %ld Preterpasita: %ld Malsukcesa: %ld"/>
+				<Item id="90349" name="Aro nuligita"/>
+				<Item id="90350" name="Aro kompleta"/>
+				<Item id="90351" name="Totalo: %lu Bone: %ld Preterpasita: %ld Malsukcesa: %ld"/>
+				<Item id="90352" name="Konstruita dato"/>
+				<Item id="90353" name="Operaciumo"/>
+				<Item id="90354" name="lasta"/>
+				<Item id="90355" name="malmoderna"/>
+				<Item id="90356" name="nekonata"/>
+				<Item id="90357" name="Rekomencu la aplikaĵon por ke ŝanĝoj efektiviĝu."/>
+				<Item id="90358" name="Ĝisdatigu Kromaĵojn"/>
+				<Item id="90359" name="Ĉu ĝisdatigi la sekvajn kromaĵojn?"/>
+				<Item id="90360" name="Nunaj versioj estas konservitaj al ~/Library/Application Support/Nextpad++/plugin-backups/ antaŭ ol esti anstataŭigitaj."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Ŝanĝu al la Nova aspekto de Tahoe (Beta)"/>
+				<Item id="90363" name="Uzu macOS-stilaj menuoj (Betao)"/>
+				<Item id="90364" name="La nova aspekto de Tahoe estos aplikata post kiam vi rekomencos Nextpad++."/>
+				<Item id="90365" name="La Klasika aspekto estos restarigita post kiam vi rekomencos Nextpad++."/>
+				<Item id="90366" name="Forlasu Nun"/>
+				<Item id="90367" name="Menuoj estos rearanĝitaj en la stilo macOS post kiam vi rekomencos Nextpad++."/>
+				<Item id="90368" name="La klasika menuaranĝo estos restarigita post kiam vi rekomencos Nextpad++."/>
+				<Item id="90369" name="Koloro"/>
+				<Item id="90370" name="Apliki al kromaĵo ilobreto ikonoj"/>
+				<Item id="90371" name="En Kompleta reĝimo aldonaĵikonoj fariĝas ununura solida koloro."/>
+				<Item id="90372" name="Ilobretaj Grupoj"/>
+				<Item id="90373" name="Elektu kie ĉiu butono aperas en la Liquid Glass ilobreto: sur la"/>
+				<Item id="90374" name="Butono"/>
+				<Item id="90375" name="Lokigo"/>
+				<Item id="90376" name="Restarigi al defaŭltoj"/>
+				<Item id="90377" name="Superflua menuo"/>
+				<Item id="90378" name="Kaŝita"/>
+				<Item id="90379" name="CJK-amika vortvolvaĵo"/>
+				<Item id="90380" name="Kolona elekto ŝanĝas al plurredaktado"/>
+				<Item id="90381" name="Linia interspaco:"/>
+				<Item id="90382" name="1.0 (Defaŭlte)"/>
+				<Item id="90383" name="Kaŝi langetan trinkejon"/>
+				<Item id="90384" name="Klapeta grandeco sekvas dokumentzomon"/>
+				<Item id="90385" name="Elektu…"/>
+				<Item id="90386" name="Restarigi al Defaŭlta"/>
+				<Item id="90387" name="Uzante la defaŭltan lokon."/>
+				<Item id="90388" name="Propra loko."/>
+				<Item id="90389" name="Nevalida vojo — sekurkopioj uzos la defaŭltan lokon."/>
+				<Item id="90390" name="Elektu"/>
+				<Item id="90391" name="Enmetu Elekton:"/>
+				<Item id="90392" name="Uzu Boost Regex-reĝimon (multlinia; rekomencu por apliki)"/>
+				<Item id="90393" name="Bonvolu rekomenci Nextpad++ por efiki."/>
+				<Item id="90394" name="Nevalida vojo."/>
+				<Item id="90395" name="Rekomencu Nun"/>
+				<Item id="90396" name="Elektu dosierujon de/al kie Nextpad++ legas/skribas ĝiajn agordojn"/>
+				<Item id="90397" name="(Ne elektu ĝin krom se vi scias, kion vi faras)"/>
+				<Item id="90398" name="Grandeco de ikono de ilobreto"/>
+				<Item id="90399" name="100% (Defaŭlte)"/>
+				<Item id="90400" name="Rapido de ruliĝo de la musrado"/>
+				<Item id="90401" name="1× (malŝaltita)"/>
+				<Item id="90402" name="Grando de ikono de ilobreto ŝanĝiĝis"/>
+				<Item id="90403" name="La nova ilobreta ikonograndeco efektiviĝos la venontan fojon kiam Nextpad++ lanĉos."/>
+				<Item id="90404" name="Ilobreto-ikonoj ŝanĝiĝis"/>
+				<Item id="90405" name="La novaj ilobretaj piktogramoj efektiviĝos la venontan lanĉon de Nextpad++."/>
+				<Item id="90410" name="Trovu en Projektoj..."/>
+				<Item id="90411" name="Rulu makroon sur dosieroj..."/>
+				<Item id="90418" name="Ĉi tio forigos ĝin kaj ĝian tutan enhavon de la projekto.Neniuj dosieroj sur disko estos tuŝitaj."/>
+				<Item id="90420" name="Dosierujo"/>
+				<Item id="90421" name="Trovu en ĉi tiuj serĉrezultoj..."/>
+				<Item id="90422" name="Kopiu Elektita(j)n Linio(j)n"/>
+				<Item id="90423" name="Kopiu Elektitan Vojnomojn"/>
+				<Item id="90424" name="Malfermu Elektitan Vojnomojn"/>
+				<Item id="90425" name="Vortvolvaĵo longaj linioj"/>
+				<Item id="90426" name="Purigu por ĉiu serĉo"/>
+				<Item id="90427" name="Ne trovita"/>
+				<Item id="90428" name="KONFLIKTO: %@"/>
+				<Item id="90429" name="Ĉu forigi &quot;%@&quot;?"/>
+				<Item id="90430" name="Uzanto Difinita Lingvo Admin"/>
+				<Item id="90431" name="Filtri lingvoj..."/>
+				<Item id="90432" name="Fonto"/>
+				<Item id="90433" name="AK Fontoj"/>
+				<Item id="90434" name="Statuso"/>
+				<Item id="90435" name="Instali / Ĝisdatigi"/>
+				<Item id="90436" name="%lu lingvoj · %lu instalitaj · %lu ĝisdatigoj"/>
+				<Item id="90437" name="Aŭtoro"/>
+				<Item id="90438" name="Kombinitaj: %ld enskriboj de %lu fontoj (kunfanditaj)"/>
+				<Item id="90439" name="Elektu unu aŭ plurajn lingvojn por instali."/>
+				<Item id="90440" name="Nenio elŝutebla por la elekto."/>
+				<Item id="90441" name="Elŝuto malsukcesis"/>
+				<Item id="90442" name="Nekongruo de ĉeksumo"/>
+				<Item id="90443" name="La elektita(j) lingvo(j) nun haveblas en la Lingvo-menuo."/>
+				<Item id="90444" name="Elektu unu aŭ plurajn instalitajn lingvojn por forigi."/>
+				<Item id="90445" name="Forigita"/>
+				<Item id="90446" name="Tiu ĉi nomo jam estas uzata de alia lingvo."/>
+				<Item id="90447" name="Ĉi tiu lingvo ne povus esti forigita."/>
+				<Item id="90448" name="Antaŭinstalitaj lingvoj ne povas esti forigitaj."/>
+				<Item id="90449" name="Ĉi tiu lingvo ne povus esti renomita."/>
+				<Item id="90450" name="Ĉi tiu dosiero estas %@.Malfermi ĝin malŝaltos sintaksan reliefigon kaj malfari historion por konservi la apon respondema.&#10;&#10;Ĉu vi volas daŭrigi?"/>
+				<Item id="90451" name="Malfermu Ĉiuokaze"/>
+				<Item id="90452" name="&quot;%@&quot; ŝanĝiĝis sur disko"/>
+				<Item id="90453" name="Ignoru"/>
+				<Item id="90454" name="Konservu Mian Version"/>
+				<Item id="90455" name="Ne eblis reŝargi &quot;%@&quot;"/>
+				<Item id="90456" name="La dosiero ne estis legita."/>
+				<Item id="90457" name="Elektu kie ĉiu butono aperas en la ilbreto Liquid Glass: sur la grupkapsulo (Ilbreto), en la ▾ superflua menuo de la grupo, aŭ Kaŝita."/>
+				<Item id="90458" name="Donacu por Subteni Evoluon"/>
+				<Item id="90459" name="Instalu Komandliniajn Ilojn"/>
+				<Item id="90460" name="Montru ombrojn malantaŭ ilobretaj kapsuloj"/>
+				<Item id="90461" name="Donacu"/>
+				<Item id="90462" name="Signaroj"/>
+				<Item id="90463" name="Minimumigi"/>
+				<Item id="90464" name="Kaŝi Nextpad++"/>
+				<Item id="90465" name="Kaŝi Aliajn"/>
+				<Item id="90466" name="Montri Ĉion"/>
+				<Item id="90467" name="Forlasu Nextpad++"/>
+				<Item id="90468" name="Konservi Nunan Registritan Makroon..."/>
+				<Item id="90469" name="Eltondu la Postan Spacon kaj Konservu"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

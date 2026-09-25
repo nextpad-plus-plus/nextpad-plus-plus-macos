@@ -530,13 +530,13 @@
 				<Item id="90006" name="Kontrol ng Pinagmulan"/>
 				<Item id="90007" name="Mag-commit"/>
 				<Item id="90008" name="Nabigo ang Commit"/>
-				<Item id="90009" name="Walang git repository\nGamitin ang Browse para magbukas ng repo."/>
+				<Item id="90009" name="Walang git repository&#10;Gamitin ang Browse para magbukas ng repo."/>
 				<Item id="90010" name="Yugto"/>
 				<Item id="90011" name="Alisin ang entablado"/>
 				<Item id="90012" name="Stage Lahat"/>
 				<Item id="90013" name="Alisin ang entablado Lahat"/>
-				<Item id="90014" name="Mag-commit ng mensahe\u2026"/>
-				<Item id="90015" name="Mag-browse para sa repository\u2026"/>
+				<Item id="90014" name="Mag-commit ng mensahe…"/>
+				<Item id="90015" name="Mag-browse para sa repository…"/>
 				<Item id="90016" name="Pumili ng git repository folder"/>
 				<Item id="90017" name="(walang repository)"/>
 				<Item id="90018" name="(hiwalay)"/>
@@ -550,9 +550,9 @@
 				<Item id="90026" name="Mga resulta"/>
 				<Item id="90027" name="Huminto"/>
 				<Item id="90028" name="Huminto ang paghahanap."/>
-				<Item id="90029" name="Naghahanap\u2026"/>
+				<Item id="90029" name="Naghahanap…"/>
 				<Item id="90030" name="Text para hanapin ang"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Naghahanap..."/>
 				<Item id="90033" name="Palitan:"/>
 				<Item id="90034" name="Buong Salita"/>
@@ -612,7 +612,7 @@
 				<Item id="90088" name="Mag-install ng Mga Plugin"/>
 				<Item id="90089" name="Alisin ang Mga Plugin"/>
 				<Item id="90090" name="Walang nahanap na command"/>
-				<Item id="90091" name="Mag-type para maghanap\u2026"/>
+				<Item id="90091" name="Mag-type para maghanap…"/>
 				<Item id="90092" name="Wikang Tinukoy ng User v.2.1"/>
 				<Item id="90093" name="Lumikha ng Bagong Wika"/>
 				<Item id="90094" name="Maglagay ng pangalan:"/>
@@ -621,11 +621,9 @@
 				<Item id="90097" name="Huwag I-save"/>
 				<Item id="90098" name="Tapos na"/>
 				<Item id="90099" name="I-toggle ang Word Wrap"/>
-				<Item id="90100" name="Ipakita ang Lahat ng Character"/>
 				<Item id="90101" name="Ipakita ang Mga Opsyon sa Mga Character"/>
 				<Item id="90102" name="I-toggle ang Gabay sa Indent"/>
 				<Item id="90103" name="Hindi Pa Napapatupad"/>
-				<Item id="90104" name="I-reload mula sa Disk"/>
 				<Item id="90105" name="Baguhin ang Search Engine"/>
 				<Item id="90106" name="Error sa Pagtakbo"/>
 				<Item id="90107" name="Nextpad++ Oras ng Paglo-load"/>
@@ -634,8 +632,7 @@
 				<Item id="90110" name="I-download"/>
 				<Item id="90111" name="Pahina ng Paglabas"/>
 				<Item id="90112" name="Mamaya"/>
-				<Item id="90113" name="I-filter ang mga plugin\u2026"/>
-				<Item id="90114" name="Available"/>
+				<Item id="90113" name="I-filter ang mga plugin…"/>
 				<Item id="90115" name="Mga Update"/>
 				<Item id="90116" name="Naka-install"/>
 				<Item id="90117" name="Hindi tugma"/>
@@ -643,7 +640,7 @@
 				<Item id="90119" name="Alisin ang mga sumusunod na plugin?"/>
 				<Item id="90120" name="I-install ang mga sumusunod na plugin?"/>
 				<Item id="90121" name="Tatanggalin nito ang mga file ng plugin."/>
-				<Item id="90122" name="Mga command sa paghahanap\u2026"/>
+				<Item id="90122" name="Mga command sa paghahanap…"/>
 				<Item id="90123" name="Kulay ng harapan"/>
 				<Item id="90124" name="Kulay ng background"/>
 				<Item id="90125" name="Macro name"/>
@@ -663,7 +660,7 @@
 				<Item id="90139" name="Nabura ang lahat ng marka."/>
 				<Item id="90140" name="Ang minarkahang teksto ay kinopya sa clipboard."/>
 				<Item id="90141" name="Walang minarkahang teksto na kokopyahin."/>
-				<Item id="90142" name="Naghahanap... %ld (mga) hit \u2014 %@"/>
+				<Item id="90142" name="Naghahanap... %ld (mga) hit — %@"/>
 				<Item id="90143" name="Pinapalitan sa mga file..."/>
 				<Item id="90144" name="Palitan sa Mga Proyekto: Hindi pa konektado."/>
 				<Item id="90145" name="Hanapin sa Mga Proyekto: Hindi pa nakakonekta sa listahan ng file ng Project Panel."/>
@@ -684,20 +681,21 @@
 				<Item id="90160" name="Smart highlighting: buong salita lang"/>
 				<Item id="90161" name="I-double-click upang isara ang tab"/>
 				<Item id="90162" name="Ipakita ang close button sa mga tab"/>
+				<Item id="90168" name="Gumamit ng monospaced na font sa Find dialog"/>
+				<Item id="90175" name="Pinalawak (\n, \r, \t, \0, \x...)"/>
+				<Item id="90191" name="Repository ng listahan ng plugin"/>
 				<Item id="90224" name="Ipakita ang mga tab sa maraming linya"/>
 				<Item id="90163" name="Tandaan ang visibility ng panel sa mga session"/>
 				<Item id="90164" name="Panatilihing wala ang mga entry ng file sa session"/>
 				<Item id="90165" name="Kumpirmahin bago I-save Lahat"/>
 				<Item id="90166" name="Kumpirmahin ang Palitan ang Lahat sa mga bukas na dokumento"/>
 				<Item id="90167" name="Palitan: huwag lumipat sa susunod na pangyayari"/>
-				<Item id="90168" name="Gumamit ng monospaced na font sa Find dialog"/>
 				<Item id="90169" name="Ang pag-right click ay nagpapanatili ng pagpili"/>
 				<Item id="90170" name="Baliktarin ang default na pagkakasunud-sunod ng petsa/oras"/>
 				<Item id="90171" name="Gumamit ng XML-based na function list parser"/>
 				<Item id="90172" name="Awtomatikong isara ang mga bracket ( ) [ ] { }"/>
 				<Item id="90173" name="Mula sa Nth character:"/>
 				<Item id="90174" name="In-selection na auto-check threshold (bytes):"/>
-				<Item id="90175" name="Pinalawak (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Mga margin"/>
 				<Item id="90178" name="Madilim"/>
@@ -711,12 +709,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="Na-optimize ang LCD"/>
 				<Item id="90188" name="Simple +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repository ng listahan ng plugin"/>
 				<Item id="90192" name="Pumili ng Nextpad++ theme XML file na ilalapat"/>
-				<Item id="90193" name="Lumikha ng bago\u2026"/>
-				<Item id="90194" name="I-save bilang\u2026"/>
+				<Item id="90193" name="Lumikha ng bago…"/>
+				<Item id="90194" name="I-save bilang…"/>
 				<Item id="90195" name="Wika ng gumagamit:"/>
 				<Item id="90196" name="Pangalan ng wika"/>
 				<Item id="90197" name="Lumikha ng"/>
@@ -746,6 +742,245 @@
 				<Item id="90221" name="Naka-lock na Attribute (macOS)"/>
 				<Item id="90222" name="Tingnan ang Mga Update…"/>
 				<Item id="90223" name="Buksan ang Kamakailan"/>
+				<Item id="90225" name="Tandaan ang kasalukuyang session para sa susunod na paglulunsad"/>
+				<Item id="90226" name="Tulong"/>
+				<Item id="90227" name="Nabigo ang Yugto"/>
+				<Item id="90228" name="Nabigo ang Unstage"/>
+				<Item id="90229" name="ay magagamit"/>
+				<Item id="90230" name="Tumatakbo ka"/>
+				<Item id="90231" name="Huwag mo nang ipaalala sa akin"/>
+				<Item id="90232" name="Mga update"/>
+				<Item id="90233" name="Awtomatikong suriin para sa mga update"/>
+				<Item id="90234" name="Naka-off ang mga awtomatikong pagsusuri sa pag-update."/>
+				<Item id="90235" name="Huling nasuri:"/>
+				<Item id="90236" name="Walang koneksyon sa internet."/>
+				<Item id="90237" name="Hindi inaasahang tugon mula sa server ng pag-update."/>
+				<Item id="90238" name="Walang nakitang nai-publish na release."/>
+				<Item id="90239" name="Pansamantalang hindi available ang update server.Pakisubukang muli mamaya."/>
+				<Item id="90240" name="Tinanggihan ng server ng pag-update ang kahilingan.Maaaring hinaharangan ng proxy, firewall o VPN ang access sa GitHub."/>
+				<Item id="90241" name="Masyadong maraming mga pagsusuri sa pag-update mula sa iyong network (ang limitasyong ito ay ibinabahagi ng lahat dito).Subukan muli pagkatapos"/>
+				<Item id="90242" name="Masyadong maraming mga pagsusuri sa pag-update mula sa iyong network (ang limitasyong ito ay ibinabahagi ng lahat dito).Pakisubukang muli mamaya."/>
+				<Item id="90243" name="Ibinalik ng update server ang status"/>
+				<Item id="90244" name="Subukan Muli"/>
+				<Item id="90245" name="Laki ng teksto ng pag-print:"/>
+				<Item id="90246" name="Gamitin ang screen zoom"/>
+				<Item id="90247" name="Aktwal na laki"/>
+				<Item id="90248" name="Hindi mapalitan ang ilang file"/>
+				<Item id="90249" name="...at %lu pa"/>
+				<Item id="90250" name="Pinamamahalaan ng iyong organisasyon ang mga file association."/>
+				<Item id="90251" name="Hinihintay ang kumpirmasyon ng macOS…"/>
+				<Item id="90252" name="Hindi inilapat ng macOS ang pagbabago."/>
+				<Item id="90253" name="Nakarehistro"/>
+				<Item id="90254" name="Buksan ang lahat ng mga file sa folder?"/>
+				<Item id="90255" name="Ito ay magbubukas ng %lu mga file sa mga bagong tab."/>
+				<Item id="90256" name="Hindi ma-import: %@"/>
+				<Item id="90258" name="Nakakita ng %ld (mga) tugma sa %ld (mga) file."/>
+				<Item id="90259" name="Naghahanap… %ld (na) tugma sa ngayon"/>
+				<Item id="90260" name="%@ (%ld tugma%@)"/>
+				<Item id="90261" name="Malabo na paghahanap"/>
+				<Item id="90265" name="Hanapin: Hindi mahanap ang tekstong &quot;%@&quot;"/>
+				<Item id="90266" name="Bilang: %ld (mga) tugma."/>
+				<Item id="90267" name="Palitan Lahat: %ld (mga) paglitaw ay pinalitan %@."/>
+				<Item id="90268" name="Palitan sa Mga Nabuksang File: %ld (mga) pangyayari ang pinalitan."/>
+				<Item id="90269" name="Hanapin sa Mga File: %ld (mga) hit sa %ld (mga) file."/>
+				<Item id="90270" name="Hanapin sa Files: 0 hit."/>
+				<Item id="90271" name="Palitan ang lahat ng paglitaw ng &quot;%@&quot; ng &quot;%@&quot; sa direktoryo:&#10;%@&#10;&#10;Hindi na ito maa-undo."/>
+				<Item id="90272" name="Palitan sa Mga File: %ld (mga) kapalit sa %ld (mga) file."/>
+				<Item id="90273" name="Magbukas muna ng Project Panel."/>
+				<Item id="90274" name="Pumili ng hindi bababa sa isang Project Panel na hahanapin."/>
+				<Item id="90275" name="Walang mga file na hahanapin."/>
+				<Item id="90276" name="Hanapin sa Mga Proyekto: %ld (mga) hit sa %ld (mga) file."/>
+				<Item id="90277" name="Hanapin sa Mga Proyekto: 0 hit."/>
+				<Item id="90278" name="Palitan ang lahat ng paglitaw ng"/>
+				<Item id="90279" name="kasama"/>
+				<Item id="90280" name="sa"/>
+				<Item id="90281" name="(mga) file ng proyekto.Hindi na ito maaaring bawiin."/>
+				<Item id="90282" name="Palitan sa Mga Proyekto: %ld (mga) kapalit sa %ld (mga) file."/>
+				<Item id="90283" name="Markahan: %ld (mga) tugma ang minarkahan."/>
+				<Item id="90284" name="I-filter ang pangalan ng file/folder..."/>
+				<Item id="90285" name="Ang ilang mga dokumento ay hindi ma-save"/>
+				<Item id="90286" name="⌘ Utos"/>
+				<Item id="90287" name="⌃ Kontrol"/>
+				<Item id="90288" name="⌥ Pagpipilian"/>
+				<Item id="90289" name="⇧ Paglipat"/>
+				<Item id="90290" name="Magpasok ng NSDateFormatter string ng format:"/>
+				<Item id="90291" name="Ang '%@' ay hindi pa ipinapatupad sa bersyong ito."/>
+				<Item id="90292" name="Mag-import ng Plugin"/>
+				<Item id="90293" name="I-restart ang Kinakailangan"/>
+				<Item id="90294" name="Walang mga file na ipoproseso"/>
+				<Item id="90295" name="Walang mga file ang node ng proyektong ito."/>
+				<Item id="90296" name="Ang '%@' ay may mga hindi na-save na pagbabago.&#10;I-reload at itapon ang mga pagbabago?"/>
+				<Item id="90297" name="Maglagay ng bagong filename:"/>
+				<Item id="90298" name="Palitan ang pangalan ng Kasalukuyang Tab"/>
+				<Item id="90299" name="Bagong pangalan:"/>
+				<Item id="90300" name="Nabigo ang pagpapalit ng pangalan"/>
+				<Item id="90301" name="Ang pangalan ay hindi maaaring maglaman ng &quot;/&quot; o &quot;:&quot;."/>
+				<Item id="90302" name="Ilipat ang '%@' sa Basurahan?"/>
+				<Item id="90303" name="I-save ang '%@' bago isara?"/>
+				<Item id="90304" name="Huwag I-save ang Lahat"/>
+				<Item id="90305" name="Tip sa Column Mode"/>
+				<Item id="90306" name="May 3 paraan upang lumipat sa column-select mode:&#10;&#10;1.(Keyboard at Mouse) Pindutin ang Opsyon habang nag-left-click sa pag-drag&#10;&#10;2.(Keyboard lang) Pindutin ang Option+Shift habang gumagamit ng mga arrow key&#10;&#10;3.(Keyboard o Mouse)&#10; Ilagay ang caret sa gustong pagsisimula ng posisyon ng column block, pagkatapos&#10; isagawa ang command na &quot;Simulan/Tapusin ang Pagpili sa Column Mode&quot;;&#10; Ilipat ang caret sa nais na dulo ng posisyon ng column block, pagkatapos ay&#10; isagawa muli ang command na &quot;Simulan/Tapusin ang Piliin sa Column Mode&quot;"/>
+				<Item id="90307" name="Ipasok ang URL ng paghahanap.Gamitin ang %s bilang placeholder ng query (o idagdag ang query sa dulo):"/>
+				<Item id="90308" name="Maglagay ng command o URL..."/>
+				<Item id="90309" name="Nabigong isagawa ang:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Pag-edit ng contextMenu"/>
+				<Item id="90311" name="Binibigyang-daan ka ng pag-edit ng contextMenu.xml na baguhin ang iyong Nextpad++ popup context menu sa edit zone.&#10;Kailangan mong i-restart ang iyong Nextpad++ upang magkabisa pagkatapos baguhin ang contextMenu.xml."/>
+				<Item id="90312" name="Naka-install na"/>
+				<Item id="90313" name="I-install ang nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Nabigo ang pag-install"/>
+				<Item id="90315" name="Naka-install — ngunit wala ang ~/.local/bin sa iyong PATH"/>
+				<Item id="90316" name="Nasa config mo na"/>
+				<Item id="90317" name="Idinagdag sa PATH"/>
+				<Item id="90318" name="Hindi magsulat"/>
+				<Item id="90319" name="Kinopya"/>
+				<Item id="90320" name="I-save ang mga pagbabago sa '%@'?"/>
+				<Item id="90321" name="Mawawala ang iyong mga pagbabago kung hindi mo ise-save ang mga ito."/>
+				<Item id="90322" name="Mag-apply sa lahat ng mga dokumento"/>
+				<Item id="90323" name="Patakbuhin ang Macro sa Mga File"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Pumili ng folder..."/>
+				<Item id="90327" name="Mag-browse…"/>
+				<Item id="90328" name="Mga Extension:"/>
+				<Item id="90329" name="Ulitin ang mga subdirectory"/>
+				<Item id="90330" name="Isama ang mga nakatagong file"/>
+				<Item id="90331" name="Max na laki:"/>
+				<Item id="90332" name="Walang limitasyon"/>
+				<Item id="90333" name="Bawat file:"/>
+				<Item id="90334" name="I-save kung binago"/>
+				<Item id="90335" name="Isara pagkatapos"/>
+				<Item id="90336" name="Isara kahit na ang mga file na nakabukas na"/>
+				<Item id="90337" name="Nasa error:"/>
+				<Item id="90338" name="Laktawan ang file at magpatuloy"/>
+				<Item id="90339" name="Huminto sa unang pagkakamali"/>
+				<Item id="90340" name="(walang naka-save na macro)"/>
+				<Item id="90341" name="%lu (mga) file na tugma"/>
+				<Item id="90342" name="Hindi nahanap ang folder"/>
+				<Item id="90343" name="Pumili ng folder na umiiral."/>
+				<Item id="90344" name="Walang tugmang file"/>
+				<Item id="90345" name="Isaayos ang opsyong filter ng mga extension, recursion, o hidden-file."/>
+				<Item id="90346" name="Nagsisimula…"/>
+				<Item id="90347" name="Pinoproseso:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Nilaktawan: %ld Nabigo: %ld"/>
+				<Item id="90349" name="Kinansela ang batch"/>
+				<Item id="90350" name="Kumpleto ang batch"/>
+				<Item id="90351" name="Kabuuan: %lu Ok: %ld Nilaktawan: %ld Nabigo: %ld"/>
+				<Item id="90352" name="Petsa ng Paggawa"/>
+				<Item id="90353" name="Operating System"/>
+				<Item id="90354" name="pinakabago"/>
+				<Item id="90355" name="lipas na sa panahon"/>
+				<Item id="90356" name="hindi kilala"/>
+				<Item id="90357" name="I-restart ang application para magkabisa ang mga pagbabago."/>
+				<Item id="90358" name="I-update ang Mga Plugin"/>
+				<Item id="90359" name="I-update ang mga sumusunod na plugin?"/>
+				<Item id="90360" name="Ang mga kasalukuyang bersyon ay naka-back up sa ~/Library/Application Support/Nextpad++/plugin-backups/ bago palitan."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Lumipat sa Bagong Tahoe hitsura (Beta)"/>
+				<Item id="90363" name="Gumamit ng macOS-style na mga menu (Beta)"/>
+				<Item id="90364" name="Ang bagong Tahoe hitsura ay ilalapat pagkatapos mong i-restart ang Nextpad++."/>
+				<Item id="90365" name="Ipapanumbalik ang Klasikong hitsura pagkatapos mong i-restart ang Nextpad++."/>
+				<Item id="90366" name="Tumigil na"/>
+				<Item id="90367" name="Ang mga menu ay muling ayusin sa istilong macOS pagkatapos mong i-restart ang Nextpad++."/>
+				<Item id="90368" name="Ipapanumbalik ang layout ng classic na menu pagkatapos mong i-restart ang Nextpad++."/>
+				<Item id="90369" name="Kulay"/>
+				<Item id="90370" name="Ilapat sa mga icon ng toolbar ng plugin"/>
+				<Item id="90371" name="Sa Complete mode na mga icon ng plugin ay nagiging isang solidong kulay."/>
+				<Item id="90372" name="Mga Pangkat ng Toolbar"/>
+				<Item id="90373" name="Piliin kung saan lilitaw ang bawat button sa Liquid Glass toolbar: sa"/>
+				<Item id="90374" name="Pindutan"/>
+				<Item id="90375" name="Paglalagay"/>
+				<Item id="90376" name="I-reset sa Mga Default"/>
+				<Item id="90377" name="Overflow menu"/>
+				<Item id="90378" name="Nakatago"/>
+				<Item id="90379" name="CJK-friendly na pambalot ng salita"/>
+				<Item id="90380" name="Lumipat sa multi-editing ang pagpili ng column"/>
+				<Item id="90381" name="Line spacing:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Itago ang tab bar"/>
+				<Item id="90384" name="Ang laki ng tab ay sumusunod sa pag-zoom ng dokumento"/>
+				<Item id="90385" name="Pumili…"/>
+				<Item id="90386" name="I-reset sa Default"/>
+				<Item id="90387" name="Gamit ang default na lokasyon."/>
+				<Item id="90388" name="Custom na lokasyon."/>
+				<Item id="90389" name="Di-wastong landas — gagamitin ng mga backup ang default na lokasyon."/>
+				<Item id="90390" name="Pumili"/>
+				<Item id="90391" name="Ipasok ang Pinili:"/>
+				<Item id="90392" name="Gamitin ang Boost Regex mode (multi-line; i-restart para mag-apply)"/>
+				<Item id="90393" name="Mangyaring i-restart ang Nextpad++ upang magkabisa."/>
+				<Item id="90394" name="Di-wastong landas."/>
+				<Item id="90395" name="I-restart Ngayon"/>
+				<Item id="90396" name="Pumili ng folder mula/patungo kung saan binabasa/isinulat ni Nextpad++ ang mga setting nito"/>
+				<Item id="90397" name="(huwag mong piliin ito maliban kung alam mo kung ano ang iyong ginagawa)"/>
+				<Item id="90398" name="Laki ng icon ng toolbar"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Bilis ng pag-scroll ng gulong ng mouse"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Nabago ang laki ng icon ng toolbar"/>
+				<Item id="90403" name="Magkakabisa ang bagong laki ng icon ng toolbar sa susunod na paglulunsad ng Nextpad++."/>
+				<Item id="90404" name="Nagbago ang mga icon ng toolbar"/>
+				<Item id="90405" name="Magkakabisa ang mga bagong icon ng toolbar sa susunod na paglulunsad ng Nextpad++."/>
+				<Item id="90406" name="Bagong Workspace"/>
+				<Item id="90407" name="Buksan ang Workspace"/>
+				<Item id="90408" name="I-reload ang Workspace"/>
+				<Item id="90409" name="Magdagdag ng Bagong Proyekto"/>
+				<Item id="90410" name="Hanapin sa Mga Proyekto..."/>
+				<Item id="90411" name="Patakbuhin ang Macro sa Mga File..."/>
+				<Item id="90413" name="Ilipat Pababa"/>
+				<Item id="90414" name="Magdagdag ng Folder"/>
+				<Item id="90415" name="Magdagdag ng mga File..."/>
+				<Item id="90416" name="Magdagdag ng mga File mula sa Direktoryo..."/>
+				<Item id="90417" name="Baguhin ang File Path"/>
+				<Item id="90418" name="Aalisin nito at lahat ng nilalaman nito sa proyekto.Walang mga file sa disk ang maaapektuhan."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90421" name="Hanapin sa mga resulta ng paghahanap na ito..."/>
+				<Item id="90422" name="Kopyahin ang (mga) Napiling Linya"/>
+				<Item id="90423" name="Kopyahin ang (mga) Napiling Pathname"/>
+				<Item id="90424" name="Buksan ang (mga) Napiling Pathname"/>
+				<Item id="90425" name="Word wrap mahahabang linya"/>
+				<Item id="90426" name="Purge para sa bawat paghahanap"/>
+				<Item id="90427" name="Hindi nahanap"/>
+				<Item id="90428" name="SAMAHAN: %@"/>
+				<Item id="90429" name="Tanggalin ang &quot;%@&quot;?"/>
+				<Item id="90430" name="Admin ng Wikang Tinukoy ng User"/>
+				<Item id="90431" name="I-filter ang mga wika..."/>
+				<Item id="90432" name="Pinagmulan"/>
+				<Item id="90433" name="Mga Pinagmumulan ng AC"/>
+				<Item id="90434" name="Katayuan"/>
+				<Item id="90435" name="I-install / I-update"/>
+				<Item id="90436" name="%lu mga wika · %lu naka-install · %lu mga update"/>
+				<Item id="90437" name="May-akda"/>
+				<Item id="90438" name="Pinagsama: %ld (na) mga entry mula sa %lu (na) pinagmulan (pinagsama)"/>
+				<Item id="90439" name="Pumili ng isa o higit pang wikang ii-install."/>
+				<Item id="90440" name="Walang mada-download para sa pagpili."/>
+				<Item id="90441" name="Nabigo ang pag-download"/>
+				<Item id="90442" name="Hindi tugma ang checksum"/>
+				<Item id="90443" name="Ang (mga) napiling wika ay magagamit na ngayon sa menu ng Wika."/>
+				<Item id="90444" name="Pumili ng isa o higit pang naka-install na wika na aalisin."/>
+				<Item id="90445" name="Inalis"/>
+				<Item id="90446" name="Ang pangalang ito ay ginagamit na ng ibang wika."/>
+				<Item id="90447" name="Hindi maalis ang wikang ito."/>
+				<Item id="90448" name="Hindi maalis ang mga paunang naka-install na wika."/>
+				<Item id="90449" name="Hindi mapalitan ang pangalan ng wikang ito."/>
+				<Item id="90450" name="Ang file na ito ay %@.Ang pagbubukas nito ay hindi papaganahin ang pag-highlight ng syntax at i-undo ang kasaysayan upang panatilihing tumutugon ang app.&#10;&#10;Gusto mo bang magpatuloy?"/>
+				<Item id="90451" name="Open Anyway"/>
+				<Item id="90452" name="Binago ang &quot;%@&quot; sa disk"/>
+				<Item id="90453" name="Huwag pansinin"/>
+				<Item id="90454" name="Panatilihin ang Aking Bersyon"/>
+				<Item id="90455" name="Hindi ma-reload ang &quot;%@&quot;"/>
+				<Item id="90456" name="Hindi mabasa ang file."/>
+				<Item id="90457" name="Piliin kung saan lalabas ang bawat button sa toolbar ng Liquid Glass: sa capsule ng grupo (Toolbar), sa ▾ overflow menu ng grupo, o Nakatago."/>
+				<Item id="90458" name="Mag-donate para Suportahan ang Pag-unlad"/>
+				<Item id="90459" name="I-install ang Command Line Tools"/>
+				<Item id="90460" name="Magpakita ng mga anino sa likod ng mga kapsula ng toolbar"/>
+				<Item id="90461" name="Mag-donate"/>
+				<Item id="90462" name="Mga set ng character"/>
+				<Item id="90463" name="I-minimize"/>
+				<Item id="90464" name="Itago ang Nextpad++"/>
+				<Item id="90465" name="Itago ang Iba"/>
+				<Item id="90466" name="Ipakita ang Lahat"/>
+				<Item id="90467" name="Umalis sa Nextpad++"/>
+				<Item id="90468" name="I-save ang Kasalukuyang Naka-record na Macro..."/>
+				<Item id="90469" name="I-trim ang Trailing Space at I-save"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

@@ -1466,13 +1466,13 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90006" name="Forrásvezérlés"/>
 				<Item id="90007" name="Kötelezettségvállalás"/>
 				<Item id="90008" name="A véglegesítés sikertelen"/>
-				<Item id="90009" name="Nincs git-tárház\nHasználja a Tallózást a tár megnyitásához."/>
+				<Item id="90009" name="Nincs git-tárház&#10;Használja a Tallózást a tár megnyitásához."/>
 				<Item id="90010" name="Stage"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stage All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Üzenet véglegesítése\u2026"/>
-				<Item id="90015" name="Tallózás a tárhely között\u2026"/>
+				<Item id="90014" name="Üzenet véglegesítése…"/>
+				<Item id="90015" name="Tallózás a tárhely között…"/>
 				<Item id="90016" name="Válasszon ki egy git tároló mappát"/>
 				<Item id="90017" name="(nincs adattár)"/>
 				<Item id="90018" name="(leválasztott)"/>
@@ -1486,9 +1486,9 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90026" name="Eredmények"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="A keresés leállt."/>
-				<Item id="90029" name="Keresés\u2026"/>
+				<Item id="90029" name="Keresés…"/>
 				<Item id="90030" name="Keresendő szöveg"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Keresés..."/>
 				<Item id="90033" name="Csere:"/>
 				<Item id="90034" name="Egész szó"/>
@@ -1548,7 +1548,7 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90088" name="Plugins telepítése"/>
 				<Item id="90089" name="Bővítmények eltávolítása"/>
 				<Item id="90090" name="Nem találhatók parancsok"/>
-				<Item id="90091" name="Gépeljen a kereséshez\u2026"/>
+				<Item id="90091" name="Gépeljen a kereséshez…"/>
 				<Item id="90092" name="Felhasználó által meghatározott nyelv v.2.1"/>
 				<Item id="90093" name="Új nyelv létrehozása"/>
 				<Item id="90094" name="Írjon be egy nevet:"/>
@@ -1557,11 +1557,9 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90097" name="Ne mentse"/>
 				<Item id="90098" name="Kész"/>
 				<Item id="90099" name="Szótördelés"/>
-				<Item id="90100" name="Összes karakter megjelenítése"/>
 				<Item id="90101" name="Karakterbeállítások megjelenítése"/>
 				<Item id="90102" name="Behúzás útmutató"/>
 				<Item id="90103" name="Még nem hajtották végre"/>
-				<Item id="90104" name="Újratöltés lemezről"/>
 				<Item id="90105" name="Keresőmotor módosítása"/>
 				<Item id="90106" name="Futtatási hiba"/>
 				<Item id="90107" name="Jegyzettömb++ Betöltési idő"/>
@@ -1570,16 +1568,12 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90110" name="Letöltés"/>
 				<Item id="90111" name="Kiadási oldal"/>
 				<Item id="90112" name="Később"/>
-				<Item id="90113" name="Beépülő modulok szűrése\u2026"/>
-				<Item id="90114" name="Elérhető"/>
-				<Item id="90115" name="Frissítések"/>
-				<Item id="90116" name="Telepítve"/>
-				<Item id="90117" name="Nem kompatibilis"/>
+				<Item id="90113" name="Beépülő modulok szűrése…"/>
 				<Item id="90118" name="Nem sikerült telepíteni"/>
 				<Item id="90119" name="Eltávolítja a következő bővítményeket?"/>
 				<Item id="90120" name="Telepíti a következő bővítményeket?"/>
 				<Item id="90121" name="Ez törli a plugin fájlokat."/>
-				<Item id="90122" name="Parancsok keresése\u2026"/>
+				<Item id="90122" name="Parancsok keresése…"/>
 				<Item id="90123" name="Előtér színe"/>
 				<Item id="90124" name="Háttérszín"/>
 				<Item id="90125" name="Makró neve"/>
@@ -1599,7 +1593,7 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90139" name="Minden jel törölve."/>
 				<Item id="90140" name="A megjelölt szöveg a vágólapra másolva."/>
 				<Item id="90141" name="Nincs másolandó megjelölt szöveg."/>
-				<Item id="90142" name="Keresés... %ld találat \u2014 %@"/>
+				<Item id="90142" name="Keresés... %ld találat — %@"/>
 				<Item id="90143" name="Csere fájlokban..."/>
 				<Item id="90144" name="Csere a projektekben: Még nincs csatlakoztatva."/>
 				<Item id="90145" name="Keresés a Projektekben: Még nem csatlakozik a Project Panel fájllistához."/>
@@ -1626,14 +1620,12 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90165" name="Erősítse meg az összes mentése előtt"/>
 				<Item id="90166" name="Az összes cseréje megerősítése a megnyitott dokumentumokban"/>
 				<Item id="90167" name="Csere: ne ugorjon a következő előfordulásra"/>
-				<Item id="90168" name="Egyszóközű betűtípus használata a Keresés párbeszédpanelen"/>
 				<Item id="90169" name="A jobb gombbal kattintva megtartja a kijelölést"/>
 				<Item id="90170" name="Az alapértelmezett dátum/idő sorrend megfordítása"/>
 				<Item id="90171" name="XML-alapú függvénylista-elemzők használata"/>
 				<Item id="90172" name="A zárójelek automatikus bezárása ( ) [ ] { }"/>
 				<Item id="90173" name="N-edik karaktertől:"/>
 				<Item id="90174" name="Kiválasztás közbeni automatikus ellenőrzési küszöb (byte):"/>
-				<Item id="90175" name="Kiterjesztett (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Szerkesztő"/>
 				<Item id="90177" name="Margók"/>
 				<Item id="90178" name="Sötét"/>
@@ -1647,12 +1639,10 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90186" name="Élsimítás"/>
 				<Item id="90187" name="LCD optimalizált"/>
 				<Item id="90188" name="Egyszerű +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Beépülő modulok listája"/>
 				<Item id="90192" name="Válasszon ki egy Nextpad++ téma XML-fájlt az alkalmazáshoz"/>
-				<Item id="90193" name="Új létrehozása\u2026"/>
-				<Item id="90194" name="Mentés másként\u2026"/>
+				<Item id="90193" name="Új létrehozása…"/>
+				<Item id="90194" name="Mentés másként…"/>
 				<Item id="90195" name="Felhasználói nyelv:"/>
 				<Item id="90196" name="Nyelv neve"/>
 				<Item id="90197" name="Létrehozása"/>
@@ -1682,6 +1672,216 @@ Ebben az esetben a „Gépház” párbeszédpanel „Egyéb” szakasza alatt k
 				<Item id="90221" name="Zárolt attribútum (macOS)"/>
 				<Item id="90222" name="Frissítések keresése…"/>
 				<Item id="90223" name="Nyissa meg a Legutóbbi lehetőséget"/>
+				<Item id="90226" name="Súgó"/>
+				<Item id="90227" name="A szakasz sikertelen"/>
+				<Item id="90228" name="Unstage sikertelen"/>
+				<Item id="90229" name="elérhető"/>
+				<Item id="90230" name="Te futsz"/>
+				<Item id="90231" name="Soha többé ne emlékeztessen"/>
+				<Item id="90233" name="Frissítések automatikus keresése"/>
+				<Item id="90234" name="Az automatikus frissítési ellenőrzések ki vannak kapcsolva."/>
+				<Item id="90235" name="Utoljára ellenőrizve:"/>
+				<Item id="90236" name="Nincs internet kapcsolat."/>
+				<Item id="90237" name="Váratlan válasz a frissítési kiszolgálótól."/>
+				<Item id="90238" name="Nem található közzétett kiadás."/>
+				<Item id="90239" name="A frissítési szerver átmenetileg nem érhető el.Kérjük, próbálja újra később."/>
+				<Item id="90240" name="A frissítési szerver elutasította a kérést.Előfordulhat, hogy egy proxy, tűzfal vagy VPN blokkolja a hozzáférést a GitHubhoz."/>
+				<Item id="90241" name="Túl sok frissítési ellenőrzés a hálózatról (ezt a korlátot mindenki megosztja).Próbálja újra utána"/>
+				<Item id="90242" name="Túl sok frissítési ellenőrzés a hálózatról (ezt a korlátot mindenki megosztja).Kérjük, próbálja újra később."/>
+				<Item id="90243" name="A frissítési kiszolgáló állapotot adott vissza"/>
+				<Item id="90244" name="Próbáld újra"/>
+				<Item id="90245" name="Nyomtatási szöveg mérete:"/>
+				<Item id="90246" name="Használja a képernyő nagyítását"/>
+				<Item id="90247" name="Valós méret"/>
+				<Item id="90248" name="Egyes fájlokat nem lehetett lecserélni"/>
+				<Item id="90249" name="...és további %lu"/>
+				<Item id="90250" name="A fájltársításokat a szervezete kezeli."/>
+				<Item id="90251" name="Várakozás a macOS megerősítésére…"/>
+				<Item id="90252" name="A macOS nem alkalmazta a módosítást."/>
+				<Item id="90253" name="Regisztrált"/>
+				<Item id="90254" name="Megnyitja az összes fájlt a mappában?"/>
+				<Item id="90255" name="Ezzel %lu fájlt nyit meg új lapokon."/>
+				<Item id="90256" name="Nem sikerült importálni: %@"/>
+				<Item id="90258" name="%ld egyezést találtunk %ld fájlban."/>
+				<Item id="90259" name="Keresés… Eddig %ld egyezés"/>
+				<Item id="90260" name="%@ (%ld egyezés%@)"/>
+				<Item id="90261" name="Fuzzy keresés"/>
+				<Item id="90266" name="Szám: %ld egyezés."/>
+				<Item id="90267" name="Az összes cseréje: %ld előfordulás lecserélve %@."/>
+				<Item id="90268" name="Csere a megnyitott fájlokban: %ld előfordulás lecserélve."/>
+				<Item id="90269" name="Keresés a Fájlokban: %ld találat %ld fájlban."/>
+				<Item id="90270" name="Keresés a Fájlokban: 0 találat."/>
+				<Item id="90271" name="Cserélje le a(z) &quot;%@&quot; összes előfordulását a következőre: &quot;%@&quot; a könyvtárban:&#10;%@&#10;&#10;Ez nem vonható vissza."/>
+				<Item id="90272" name="Csere a Fájlokban: %ld csere %ld fájlban."/>
+				<Item id="90273" name="Először nyisson meg egy projektpanelt."/>
+				<Item id="90274" name="Válasszon ki legalább egy projektpanelt a kereséshez."/>
+				<Item id="90275" name="Nincsenek keresendő fájlok."/>
+				<Item id="90276" name="Keresés a projektekben: %ld találat %ld fájlban."/>
+				<Item id="90277" name="Keresés a projektekben: 0 találat."/>
+				<Item id="90278" name="Cserélje ki az összes előfordulását"/>
+				<Item id="90279" name="-val"/>
+				<Item id="90280" name="be"/>
+				<Item id="90281" name="projekt fájl(ok).Ezt nem lehet visszavonni."/>
+				<Item id="90282" name="Csere a projektekben: %ld csere %ld fájlban."/>
+				<Item id="90283" name="Megjelölés: %ld egyezés megjelölve."/>
+				<Item id="90284" name="Fájl/mappanév szűrése..."/>
+				<Item id="90285" name="Néhány dokumentumot nem sikerült menteni"/>
+				<Item id="90286" name="⌘ Parancs"/>
+				<Item id="90287" name="⌃ Vezérlés"/>
+				<Item id="90288" name="⌥ Opció"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Adjon meg egy NSDateFormatter formátumú karakterláncot:"/>
+				<Item id="90291" name="A „%@” még nincs implementálva ebben a verzióban."/>
+				<Item id="90292" name="Beépülő modul importálása"/>
+				<Item id="90293" name="Újraindítás szükséges"/>
+				<Item id="90294" name="Nincsenek feldolgozandó fájlok"/>
+				<Item id="90295" name="Ez a projektcsomópont nem tartalmaz fájlokat."/>
+				<Item id="90296" name="A(z) &quot;%@&quot; nem mentett módosításokat tartalmaz.&#10;Újra betölti és elveti a módosításokat?"/>
+				<Item id="90297" name="Adjon meg egy új fájlnevet:"/>
+				<Item id="90299" name="Új név:"/>
+				<Item id="90301" name="A név nem tartalmazhat „/” vagy „:” jelet."/>
+				<Item id="90304" name="Ne mentse el az összeset"/>
+				<Item id="90306" name="Háromféleképpen válthat át oszlopkiválasztó módra:&#10;&#10;1.(Billentyűzet és egér) Tartsa lenyomva az opciót a bal egérgombbal történő húzás közben&#10;&#10;2.(Csak billentyűzet) Tartsa lenyomva az Option+Shift billentyűt a nyílbillentyűk használata közben&#10;&#10;3.(Billentyűzet vagy egér)&#10; Helyezze a jelet az oszlopblokk kívánt kezdeti pozíciójába, majd&#10; hajtsa végre a „Kijelölés eleje/vége oszlop módban” parancsot;&#10; mozgassa a mutatót az oszlopblokk kívánt végpontjára, majd&#10; hajtsa végre ismét a „Kijelölés eleje/vége oszlopmódban” parancsot."/>
+				<Item id="90307" name="Írja be a keresési URL-t.Használja a %s kifejezést lekérdezés helyőrzőjeként (vagy fűzze hozzá a lekérdezést a végéhez):"/>
+				<Item id="90308" name="Írja be a parancsot vagy az URL-t..."/>
+				<Item id="90309" name="Nem sikerült végrehajtani:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="A(z) contextMenu.xml szerkesztése lehetővé teszi a(z) Nextpad++ előugró helyi menü módosítását a szerkesztési zónában.&#10;Újra kell indítania a(z) Nextpad++ eszközt, hogy a(z) contextMenu.xml módosítása után érvénybe lépjen."/>
+				<Item id="90312" name="Már telepítve"/>
+				<Item id="90313" name="Telepítse a nextpad++ parancssori eszközt"/>
+				<Item id="90314" name="A telepítés nem sikerült"/>
+				<Item id="90315" name="Telepítve – de a(z) ~/.local/bin nincs az Ön PATH-ján"/>
+				<Item id="90316" name="Már a konfigurációdban van"/>
+				<Item id="90317" name="Hozzáadva a PATH-hoz"/>
+				<Item id="90318" name="Nem sikerült írni"/>
+				<Item id="90319" name="Másolva"/>
+				<Item id="90321" name="A módosítások elvesznek, ha nem menti őket."/>
+				<Item id="90322" name="Alkalmazni minden dokumentumra"/>
+				<Item id="90323" name="Futtassa a Makrót a Fájlokon"/>
+				<Item id="90324" name="Makró:"/>
+				<Item id="90325" name="Mappa:"/>
+				<Item id="90326" name="Válasszon egy mappát…"/>
+				<Item id="90327" name="Tallózás…"/>
+				<Item id="90328" name="Kiterjesztések:"/>
+				<Item id="90329" name="Alkönyvtárak ismétlése"/>
+				<Item id="90330" name="Tartalmazzon rejtett fájlokat"/>
+				<Item id="90331" name="Max méret:"/>
+				<Item id="90332" name="Korlátlan"/>
+				<Item id="90333" name="Fájlonként:"/>
+				<Item id="90334" name="Mentse el, ha módosította"/>
+				<Item id="90335" name="Bezárás után"/>
+				<Item id="90336" name="Zárja be azokat a fájlokat is, amelyek már nyitva voltak"/>
+				<Item id="90337" name="Hiba esetén:"/>
+				<Item id="90338" name="Fájl kihagyása és folytatás"/>
+				<Item id="90339" name="Állj meg az első hibánál"/>
+				<Item id="90340" name="(nincs mentett makrók)"/>
+				<Item id="90341" name="%lu fájl egyezik"/>
+				<Item id="90342" name="A mappa nem található"/>
+				<Item id="90343" name="Válasszon ki egy meglévő mappát."/>
+				<Item id="90344" name="Egy fájl sem egyezik"/>
+				<Item id="90345" name="Állítsa be a kiterjesztések szűrőjét, a rekurziót vagy a rejtett fájlok beállítást."/>
+				<Item id="90346" name="Indítás…"/>
+				<Item id="90347" name="Feldolgozás:"/>
+				<Item id="90348" name="%ld / %ld Rendben: %ld Kihagyva: %ld Sikertelen: %ld"/>
+				<Item id="90349" name="A köteg törölve"/>
+				<Item id="90350" name="A köteg kész"/>
+				<Item id="90351" name="Összesen: %lu Rendben: %ld Kihagyva: %ld Sikertelen: %ld"/>
+				<Item id="90352" name="Építési dátum"/>
+				<Item id="90353" name="Operációs rendszer"/>
+				<Item id="90354" name="legújabb"/>
+				<Item id="90355" name="elavult"/>
+				<Item id="90356" name="ismeretlen"/>
+				<Item id="90357" name="Indítsa újra az alkalmazást a módosítások életbe lépéséhez."/>
+				<Item id="90358" name="Beépülő modulok frissítése"/>
+				<Item id="90359" name="Frissíti a következő bővítményeket?"/>
+				<Item id="90360" name="A jelenlegi verziókról a rendszer biztonsági másolatot készít a következőre: ~/Library/Application Support/Nextpad++/plugin-backups/, mielőtt lecserélnék őket."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Váltás az új Tahoe megjelenésre (béta)"/>
+				<Item id="90363" name="macOS-stílusú menük használata (béta)"/>
+				<Item id="90364" name="Az új Tahoe megjelenés a Nextpad++ újraindítása után kerül alkalmazásra."/>
+				<Item id="90365" name="A(z) Nextpad++ újraindítása után visszaáll a klasszikus megjelenés."/>
+				<Item id="90366" name="Lépjen ki most"/>
+				<Item id="90367" name="A menük macOS stílusban lesznek átrendezve a(z) Nextpad++ újraindítása után."/>
+				<Item id="90368" name="A klasszikus menüelrendezés visszaáll a(z) Nextpad++ újraindítása után."/>
+				<Item id="90369" name="Szín"/>
+				<Item id="90370" name="Alkalmazás a plugin eszköztár ikonjaira"/>
+				<Item id="90371" name="Teljes módban a beépülő modulok ikonjai egyszínűvé válnak."/>
+				<Item id="90372" name="Eszköztár csoportok"/>
+				<Item id="90373" name="Válassza ki, hogy az egyes gombok hol jelenjenek meg az Liquid Glass eszköztáron: a"/>
+				<Item id="90374" name="Gomb"/>
+				<Item id="90375" name="Elhelyezés"/>
+				<Item id="90376" name="Állítsa vissza az alapértelmezett értékeket"/>
+				<Item id="90377" name="Túlcsordulás menü"/>
+				<Item id="90378" name="Rejtett"/>
+				<Item id="90379" name="CJK-barát szótördel"/>
+				<Item id="90380" name="Az oszlopkiválasztás többszörös szerkesztésre vált"/>
+				<Item id="90381" name="Sorköz:"/>
+				<Item id="90382" name="1.0 (alapértelmezett)"/>
+				<Item id="90383" name="Tabulátor elrejtése"/>
+				<Item id="90384" name="A lap mérete követi a dokumentum nagyítását"/>
+				<Item id="90385" name="Válassz…"/>
+				<Item id="90386" name="Visszaállítás alapértelmezettre"/>
+				<Item id="90387" name="Az alapértelmezett hely használata."/>
+				<Item id="90388" name="Egyedi hely."/>
+				<Item id="90389" name="Érvénytelen elérési út – a biztonsági mentések az alapértelmezett helyet fogják használni."/>
+				<Item id="90390" name="Válasszon"/>
+				<Item id="90391" name="Kijelölés beszúrása:"/>
+				<Item id="90392" name="Használja a Boost Regex módot (többsoros; az alkalmazáshoz indítsa újra)"/>
+				<Item id="90395" name="Indítsa újra most"/>
+				<Item id="90397" name="(ne válassza, hacsak nem tudja, mit csinál)"/>
+				<Item id="90398" name="Eszköztár ikon mérete"/>
+				<Item id="90399" name="100% (alapértelmezett)"/>
+				<Item id="90400" name="Az egér görgőjének görgetési sebessége"/>
+				<Item id="90401" name="1× (ki)"/>
+				<Item id="90402" name="Az eszköztár ikon mérete megváltozott"/>
+				<Item id="90403" name="Az eszköztár új ikonmérete a(z) Nextpad++ következő indításakor lép életbe."/>
+				<Item id="90404" name="Az eszköztár ikonjai megváltoztak"/>
+				<Item id="90405" name="Az új eszköztárikonok a(z) Nextpad++ következő indításakor lépnek életbe."/>
+				<Item id="90411" name="Makró futtatása a Fájlokon..."/>
+				<Item id="90418" name="Ezzel eltávolítja azt és annak teljes tartalmát a projektből.A lemezen lévő fájlokat ez nem érinti."/>
+				<Item id="90420" name="Mappa"/>
+				<Item id="90427" name="Nem található"/>
+				<Item id="90428" name="KONFLIKTUS: %@"/>
+				<Item id="90429" name="Törli a következőt: &quot;%@&quot;?"/>
+				<Item id="90430" name="Felhasználó által meghatározott nyelv Admin"/>
+				<Item id="90431" name="Nyelvek szűrése…"/>
+				<Item id="90432" name="Forrás"/>
+				<Item id="90433" name="AC források"/>
+				<Item id="90434" name="Állapot"/>
+				<Item id="90435" name="Telepítés / Frissítés"/>
+				<Item id="90436" name="%lu nyelv · %lu telepítve · %lu frissítés"/>
+				<Item id="90437" name="Szerző"/>
+				<Item id="90438" name="Kombinált: %ld bejegyzés %lu forrásból (egyesített)"/>
+				<Item id="90439" name="Válasszon ki egy vagy több nyelvet a telepítéshez."/>
+				<Item id="90440" name="Semmi sem letölthető a kiválasztáshoz."/>
+				<Item id="90441" name="Letöltés sikertelen"/>
+				<Item id="90442" name="Ellenőrzőösszeg eltérés"/>
+				<Item id="90443" name="A kiválasztott nyelv(ek) most elérhető(ek) a Nyelv menüben."/>
+				<Item id="90444" name="Válasszon ki egy vagy több telepített nyelvet az eltávolításhoz."/>
+				<Item id="90445" name="Eltávolítva"/>
+				<Item id="90446" name="Ezt a nevet már használja egy másik nyelv."/>
+				<Item id="90447" name="Ezt a nyelvet nem sikerült eltávolítani."/>
+				<Item id="90448" name="Az előre telepített nyelvek nem távolíthatók el."/>
+				<Item id="90449" name="Ezt a nyelvet nem lehetett átnevezni."/>
+				<Item id="90450" name="Ez a fájl %@.Megnyitása letiltja a szintaktikai kiemelést, és visszavonja az előzményeket, hogy az alkalmazás érzékeny maradjon.&#10;&#10;Folytatja?"/>
+				<Item id="90451" name="Nyissa meg"/>
+				<Item id="90452" name="„%@” megváltozott a lemezen"/>
+				<Item id="90453" name="Figyelmen kívül hagyni"/>
+				<Item id="90454" name="Tartsa meg a Saját verziómat"/>
+				<Item id="90455" name="Nem sikerült újratölteni a következőt: &quot;%@&quot;"/>
+				<Item id="90456" name="A fájl nem olvasható."/>
+				<Item id="90457" name="Válassza ki, hogy az egyes gombok hol jelenjenek meg az Liquid Glass eszköztáron: a csoportkapszulában (Eszköztár), a csoport ▾ túlcsordulás menüjében vagy Rejtettben."/>
+				<Item id="90458" name="Adományozzon a fejlesztés támogatására"/>
+				<Item id="90459" name="Telepítse a Parancssori eszközöket"/>
+				<Item id="90460" name="Árnyékok megjelenítése az eszköztár kapszulák mögött"/>
+				<Item id="90461" name="Adományozni"/>
+				<Item id="90462" name="Karakterkészletek"/>
+				<Item id="90463" name="Minimalizálás"/>
+				<Item id="90464" name="Nextpad++ elrejtése"/>
+				<Item id="90465" name="Mások elrejtése"/>
+				<Item id="90466" name="Összes megjelenítése"/>
+				<Item id="90467" name="Kilépés a következőből: Nextpad++"/>
+				<Item id="90468" name="Aktuális rögzített makró mentése…"/>
+				<Item id="90469" name="Vágja le a követő helyet, és takarítson meg"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

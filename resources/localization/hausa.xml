@@ -1466,13 +1466,13 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90006" name="Sarrafa tushen"/>
 				<Item id="90007" name="Kasawa"/>
 				<Item id="90008" name="An Kasa Kasawa"/>
-				<Item id="90009" name="Babu ma'ajiyar git\nYi amfani da Binciko don buɗe wurin ajiya."/>
+				<Item id="90009" name="Babu ma'ajiyar git&#10;Yi amfani da Binciko don buɗe wurin ajiya."/>
 				<Item id="90010" name="Mataki"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Mataki Duk"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Aiwatar da sako\u2026"/>
-				<Item id="90015" name="Nemo wurin ajiya\u2026"/>
+				<Item id="90014" name="Aiwatar da sako…"/>
+				<Item id="90015" name="Nemo wurin ajiya…"/>
 				<Item id="90016" name="Zaɓi babban fayil ɗin ajiya na git"/>
 				<Item id="90017" name="(babu ajiya)"/>
 				<Item id="90018" name="(a ware)"/>
@@ -1486,9 +1486,9 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90026" name="Sakamako"/>
 				<Item id="90027" name="Tsaya"/>
 				<Item id="90028" name="Bincike ya tsaya."/>
-				<Item id="90029" name="Neman\u2026"/>
+				<Item id="90029" name="Neman…"/>
 				<Item id="90030" name="Rubutun don neman"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Neman..."/>
 				<Item id="90033" name="Sauya:"/>
 				<Item id="90034" name="Gabaɗaya Kalma"/>
@@ -1548,7 +1548,7 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90088" name="Shigar Plugins"/>
 				<Item id="90089" name="Cire Plugins"/>
 				<Item id="90090" name="Babu umarni da aka samu"/>
-				<Item id="90091" name="Buga don bincika\u2026"/>
+				<Item id="90091" name="Buga don bincika…"/>
 				<Item id="90092" name="Siffar Harshen Mai Amfani v.2.1"/>
 				<Item id="90093" name="Ƙirƙiri Sabon Harshe"/>
 				<Item id="90094" name="Shigar da suna:"/>
@@ -1557,11 +1557,9 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90097" name="Kar a Ajiye"/>
 				<Item id="90098" name="Anyi"/>
 				<Item id="90099" name="Juya Rubutun Kalma"/>
-				<Item id="90100" name="Nuna Duk Haruffa"/>
 				<Item id="90101" name="Nuna Zaɓuɓɓukan Haruffa"/>
 				<Item id="90102" name="Juya Jagorar Indent"/>
 				<Item id="90103" name="Har Yanzu Ba a Aiwatar da"/>
-				<Item id="90104" name="Sake saukewa daga Disk"/>
 				<Item id="90105" name="Canza Injin Bincike"/>
 				<Item id="90106" name="Kuskuren Gudu"/>
 				<Item id="90107" name="Nextpad++ Load Time"/>
@@ -1570,7 +1568,7 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Shafin Saki"/>
 				<Item id="90112" name="Daga baya"/>
-				<Item id="90113" name="Tace plugins\u2026"/>
+				<Item id="90113" name="Tace plugins…"/>
 				<Item id="90114" name="Akwai"/>
 				<Item id="90115" name="Sabuntawa"/>
 				<Item id="90116" name="Shigar"/>
@@ -1579,7 +1577,7 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90119" name="Cire plugins masu zuwa?"/>
 				<Item id="90120" name="Shigar da plugins masu zuwa?"/>
 				<Item id="90121" name="Wannan zai share fayilolin plugin ɗin."/>
-				<Item id="90122" name="Neman umarni\u2026"/>
+				<Item id="90122" name="Neman umarni…"/>
 				<Item id="90123" name="Launin gaba"/>
 				<Item id="90124" name="Kalar bango"/>
 				<Item id="90125" name="Sunan Macro"/>
@@ -1599,7 +1597,7 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90139" name="An share duk alamun."/>
 				<Item id="90140" name="Alama rubutu an kwafi zuwa allo."/>
 				<Item id="90141" name="Babu rubutu mai alama don kwafa."/>
-				<Item id="90142" name="Neman... %ld buga(s) \u2014 %@"/>
+				<Item id="90142" name="Neman... %ld buga(s) — %@"/>
 				<Item id="90143" name="Sauyawa cikin fayiloli..."/>
 				<Item id="90144" name="Sauya a cikin Ayyuka: Har yanzu ba a haɗa ba."/>
 				<Item id="90145" name="Nemo a cikin Ayyuka: Har yanzu ba a haɗa shi zuwa jerin fayil ɗin Panel Panel ba."/>
@@ -1626,14 +1624,12 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90165" name="Tabbatar kafin Ajiye Duk"/>
 				<Item id="90166" name="Tabbatar da Sauya Duk a buɗaɗɗen takaddun"/>
 				<Item id="90167" name="Sauya: kar a matsa zuwa abin da ya faru na gaba"/>
-				<Item id="90168" name="Yi amfani da rubutu guda ɗaya a Nemo maganganu"/>
 				<Item id="90169" name="Danna dama yana kiyaye zaɓi"/>
 				<Item id="90170" name="Juya tsarin kwanan wata/lokaci na tsoho"/>
 				<Item id="90171" name="Yi amfani da masu fassarori na tushen aikin XML"/>
 				<Item id="90172" name="Maɓallan rufewa ta atomatik ( ) [ ] {}"/>
 				<Item id="90173" name="Daga Nth hali:"/>
 				<Item id="90174" name="A-zaɓi madaidaicin bincika ta atomatik (bytes):"/>
-				<Item id="90175" name="Yawaita (\\n, \\r, \\t, \\0, \\ x...)"/>
 				<Item id="90176" name="Edita"/>
 				<Item id="90177" name="Margin"/>
 				<Item id="90178" name="Duhu"/>
@@ -1647,12 +1643,10 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="An Inganta LCD"/>
 				<Item id="90188" name="Sauƙaƙe +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Ma'ajiyar lissafin plugin"/>
 				<Item id="90192" name="Zaɓi fayil ɗin XML na Nextpad++ don amfani"/>
-				<Item id="90193" name="Ƙirƙiri sabuwa\u2026"/>
-				<Item id="90194" name="Ajiye azaman\u2026"/>
+				<Item id="90193" name="Ƙirƙiri sabuwa…"/>
+				<Item id="90194" name="Ajiye azaman…"/>
 				<Item id="90195" name="Harshen mai amfani:"/>
 				<Item id="90196" name="Sunan Harshe"/>
 				<Item id="90197" name="Ƙirƙiri"/>
@@ -1682,6 +1676,217 @@ Kuna iya sake kunna wannan maganganun a cikin Zaɓuɓɓuka daga baya."/>
 				<Item id="90221" name="Siffar Kulle (macOS)"/>
 				<Item id="90222" name="Duba Sabuntawa…"/>
 				<Item id="90223" name="Bude Kwanan nan"/>
+				<Item id="90226" name="Taimako"/>
+				<Item id="90227" name="Matakin ya gaza"/>
+				<Item id="90228" name="An kasa rashin mataki"/>
+				<Item id="90229" name="yana samuwa"/>
+				<Item id="90230" name="Kuna gudu"/>
+				<Item id="90231" name="Kar ka sake tunatar da ni"/>
+				<Item id="90232" name="Sabuntawa"/>
+				<Item id="90233" name="Bincika sabuntawa ta atomatik"/>
+				<Item id="90234" name="Ana kashe cak na sabuntawa ta atomatik."/>
+				<Item id="90235" name="An duba ƙarshe:"/>
+				<Item id="90236" name="Babu haɗin intanet."/>
+				<Item id="90237" name="Amsa mara tsammani daga sabar sabuntawa."/>
+				<Item id="90238" name="Ba a sami sakin da aka buga ba."/>
+				<Item id="90239" name="Ba shi da sabar sabuntawa na ɗan lokaci.Da fatan za a sake gwadawa daga baya."/>
+				<Item id="90240" name="Sabar sabuntawa ta ƙi buƙatar.Wakili, Tacewar zaɓi ko VPN na iya toshe damar zuwa GitHub."/>
+				<Item id="90241" name="Sabuntawa da yawa daga hanyar sadarwar ku (duk wanda ke kan sa yana raba wannan iyaka).A sake gwadawa bayan"/>
+				<Item id="90242" name="Sabuntawa da yawa daga hanyar sadarwar ku (duk wanda ke kan sa yana raba wannan iyaka).Da fatan za a sake gwadawa daga baya."/>
+				<Item id="90243" name="Sabbin sabuntawa sun dawo da matsayi"/>
+				<Item id="90244" name="Sake gwadawa"/>
+				<Item id="90245" name="Buga girman rubutu:"/>
+				<Item id="90246" name="Yi amfani da zuƙowa allo"/>
+				<Item id="90247" name="Girman gaske"/>
+				<Item id="90248" name="Wasu fayiloli ba za a iya maye gurbinsu ba"/>
+				<Item id="90249" name="...da kuma %lu ƙari"/>
+				<Item id="90250" name="Ƙungiyarku ce ke sarrafa ƙungiyoyin fayil."/>
+				<Item id="90251" name="Ana jira macOS don tabbatarwa…"/>
+				<Item id="90252" name="macOS bai yi amfani da canjin ba."/>
+				<Item id="90253" name="Rajista"/>
+				<Item id="90254" name="Bude duk fayiloli a babban fayil?"/>
+				<Item id="90255" name="Wannan zai buɗe fayiloli %lu a cikin sababbin shafuka."/>
+				<Item id="90256" name="An kasa shigo da shi: %@"/>
+				<Item id="90258" name="An samo %ld matches a cikin fayil(s) %ld"/>
+				<Item id="90259" name="Neman… %ld (wasu) wasa zuwa yanzu"/>
+				<Item id="90260" name="%@ (%ld wasa%@)"/>
+				<Item id="90261" name="Bincike mai ban tsoro"/>
+				<Item id="90266" name="Ƙididdigewa: %ld (wasu matches)."/>
+				<Item id="90267" name="Sauya Duk: An maye gurbin abubuwan da suka faru (s) %ld %@."/>
+				<Item id="90268" name="Sauya a Buɗe Fayilolin: %ld an maye gurbin abubuwan da suka faru."/>
+				<Item id="90269" name="Nemo a cikin Fayiloli: %ld buga(s) a cikin %ld fayil(s)."/>
+				<Item id="90270" name="Nemo a cikin Fayiloli: 0 hits."/>
+				<Item id="90271" name="Sauya duk abubuwan da suka faru na &quot;%@&quot; da &quot;%@&quot; a cikin kundin adireshi:&#10;%@&#10;&#10;Wannan ba za a iya soke shi ba."/>
+				<Item id="90272" name="Sauya a cikin Fayiloli: %ld musanya (s) a cikin %ld fayil(s)."/>
+				<Item id="90273" name="Bude Project Panel da farko."/>
+				<Item id="90274" name="Zaɓi aƙalla Panel guda ɗaya don bincika."/>
+				<Item id="90275" name="Babu fayilolin da za a bincika."/>
+				<Item id="90276" name="Nemo a cikin Ayyuka: %ld buga(s) a cikin %ld fayil(s)."/>
+				<Item id="90277" name="Nemo a cikin Ayyuka: 0 hits."/>
+				<Item id="90278" name="Sauya duk abubuwan da suka faru na"/>
+				<Item id="90279" name="tare da"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="fayil (s).Ba za a iya soke wannan ba."/>
+				<Item id="90282" name="Sauya a cikin Ayyuka: %ld sauyawa (s) a cikin fayil(s) %ld"/>
+				<Item id="90283" name="Alama: %ld an yiwa alama alama."/>
+				<Item id="90284" name="Tace fayil/ sunan babban fayil..."/>
+				<Item id="90285" name="An kasa adana wasu takardu"/>
+				<Item id="90286" name="⌘ Umurni"/>
+				<Item id="90287" name="⌃ Sarrafa"/>
+				<Item id="90288" name="Zaɓi zaɓi"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Shigar da tsarin tsarin NSDateFormatter:"/>
+				<Item id="90291" name="Har yanzu ba a aiwatar da '%@' a cikin wannan sigar ba."/>
+				<Item id="90292" name="Shigo da Plugin"/>
+				<Item id="90293" name="Ana buƙatar sake farawa"/>
+				<Item id="90294" name="Babu fayilolin da za a sarrafa"/>
+				<Item id="90295" name="Wannan kumburin aikin bai ƙunshi fayiloli ba."/>
+				<Item id="90296" name="'%@' yana da canje-canjen da ba a adana ba.&#10;Sake saukewa kuma ku watsar da canje-canje?"/>
+				<Item id="90297" name="Shigar da sabon sunan fayil:"/>
+				<Item id="90299" name="Sabon suna:"/>
+				<Item id="90301" name="Sunan ba zai iya ƙunsar &quot;/&quot; ko &quot;:&quot;."/>
+				<Item id="90304" name="Kar a Ajiye Duka"/>
+				<Item id="90306" name="Akwai hanyoyi 3 don canzawa zuwa yanayin zaɓin shafi:&#10;&#10;1.(Allon madannai da linzamin kwamfuta) Rike Zabin yayin da ake jan-hagu&#10;&#10;2.(Allon madannai kaɗai) Riƙe Option+Shift yayin amfani da maɓallan kibiya&#10;&#10;3.(Keyboard ko Mouse)&#10; Sanya kulawa a farkon farkon toshewar shafi, sannan&#10; aiwatar da umarnin &quot;Fara/Ƙarshen Zaɓi a Yanayin Rukunin&quot;;&#10; Matsar da kulawa zuwa ƙarshen matsayin toshe shafi, sannan&#10; sake aiwatar da umarnin &quot;Fara/Ƙarshen Zaɓi a Yanayin Rukunin&quot;"/>
+				<Item id="90307" name="Shigar da URL ɗin bincike.Yi amfani da %s azaman mai riƙe tambaya (ko ƙara tambayar a ƙarshe):"/>
+				<Item id="90308" name="Shigar da umarni ko URL..."/>
+				<Item id="90309" name="An kasa aiwatarwa:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Gyara contextMenu.xml yana ba ku damar canza menu na mahallin Nextpad++ na ku a yankin gyarawa.&#10;Dole ne ku sake kunna Nextpad++ ɗinku don fara aiki bayan gyara contextMenu.xml."/>
+				<Item id="90312" name="An riga an shigar dashi"/>
+				<Item id="90313" name="Shigar nextpad++ Kayan aikin Layin Umurni"/>
+				<Item id="90314" name="An kasa shigarwa"/>
+				<Item id="90315" name="An shigar - amma ~/.local/bin baya kan PATH ɗin ku"/>
+				<Item id="90316" name="Tuni a cikin tsarin ku"/>
+				<Item id="90317" name="Ƙara zuwa PATH"/>
+				<Item id="90318" name="An kasa rubutawa"/>
+				<Item id="90319" name="Kwafi"/>
+				<Item id="90321" name="Canje-canjenku za su ɓace idan ba ku ajiye su ba."/>
+				<Item id="90322" name="Aiwatar da duk takaddun"/>
+				<Item id="90323" name="Gudun Macro akan Fayiloli"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Jaka:"/>
+				<Item id="90326" name="Zaɓi babban fayil…"/>
+				<Item id="90327" name="Bincika…"/>
+				<Item id="90328" name="kari:"/>
+				<Item id="90329" name="Maimaita kundin adireshi"/>
+				<Item id="90330" name="Haɗa fayilolin ɓoye"/>
+				<Item id="90331" name="Mafi girman girman:"/>
+				<Item id="90332" name="Unlimited"/>
+				<Item id="90333" name="Kowane fayil:"/>
+				<Item id="90334" name="Ajiye idan an gyara"/>
+				<Item id="90335" name="Rufe bayan"/>
+				<Item id="90336" name="Rufe ma fayilolin da aka riga aka buɗe"/>
+				<Item id="90337" name="Kan kuskure:"/>
+				<Item id="90338" name="Tsallake fayil kuma ci gaba"/>
+				<Item id="90339" name="Dakatar da kuskuren farko"/>
+				<Item id="90340" name="(babu ajiyar macros)"/>
+				<Item id="90341" name="%lu fayil (s) daidai"/>
+				<Item id="90342" name="Ba a sami babban fayil ba"/>
+				<Item id="90343" name="Zaɓi babban fayil da yake akwai."/>
+				<Item id="90344" name="Babu fayilolin da suka dace"/>
+				<Item id="90345" name="Daidaita tsawaita tacewa, maimaitawa, ko zaɓin ɓoyayyun fayiloli."/>
+				<Item id="90346" name="Ana farawa…"/>
+				<Item id="90347" name="Sarrafa:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld An Tsallake: %ld An kasa: %ld"/>
+				<Item id="90349" name="An soke tsari"/>
+				<Item id="90350" name="Batch ya cika"/>
+				<Item id="90351" name="Jimlar: %lu Ok: %ld An tsallake: %ld Ba a yi nasara ba: %ld"/>
+				<Item id="90352" name="Kwanan Gina"/>
+				<Item id="90353" name="Tsarin Aiki"/>
+				<Item id="90354" name="na baya-bayan nan"/>
+				<Item id="90355" name="m"/>
+				<Item id="90356" name="wanda ba a sani ba"/>
+				<Item id="90357" name="Sake kunna aikace-aikacen don canje-canje suyi tasiri."/>
+				<Item id="90358" name="Sabunta plugins"/>
+				<Item id="90359" name="Sabunta abubuwan plugins masu zuwa?"/>
+				<Item id="90360" name="Ana tallafawa nau'ikan na yanzu har zuwa ~/Library/Application Support/Nextpad++/plugin-backups/ kafin a musanya su."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Canja zuwa Sabon Tahoe (Beta)"/>
+				<Item id="90363" name="Yi amfani da menu na salo na macOS (Beta)"/>
+				<Item id="90364" name="Sabuwar kallon Tahoe za a yi amfani da ita bayan kun sake farawa Nextpad++."/>
+				<Item id="90365" name="Za a dawo da yanayin Classic bayan kun sake farawa Nextpad++."/>
+				<Item id="90366" name="Bar Yanzu"/>
+				<Item id="90367" name="Za a sake tsara menus a cikin salon macOS bayan kun sake farawa Nextpad++."/>
+				<Item id="90368" name="Za a dawo da shimfidar menu na gargajiya bayan kun sake farawa Nextpad++."/>
+				<Item id="90369" name="Launi"/>
+				<Item id="90370" name="Aiwatar zuwa gumakan kayan aikin plugin"/>
+				<Item id="90371" name="A cikin cikakken yanayin plugin gumakan sun zama m launi guda ɗaya."/>
+				<Item id="90372" name="Rukunin Toolbar"/>
+				<Item id="90373" name="Zaɓi inda kowane maɓalli ya bayyana a cikin Liquid Glass Toolbar: a kan"/>
+				<Item id="90374" name="Maɓalli"/>
+				<Item id="90375" name="Wuri"/>
+				<Item id="90376" name="Sake saitin zuwa Defaults"/>
+				<Item id="90377" name="Menu mai yawa"/>
+				<Item id="90378" name="Boye"/>
+				<Item id="90379" name="CJK-friendly word wrap"/>
+				<Item id="90380" name="Zaɓin ginshiƙi yana canzawa zuwa gyare-gyare da yawa"/>
+				<Item id="90381" name="Tazarar layi:"/>
+				<Item id="90382" name="1.0 (Tsoffin)"/>
+				<Item id="90383" name="Ɓoye mashaya tab"/>
+				<Item id="90384" name="Girman shafin yana bin zuƙowa daftarin aiki"/>
+				<Item id="90385" name="Zaɓi…"/>
+				<Item id="90386" name="Sake saita zuwa Tsoffin"/>
+				<Item id="90387" name="Amfani da tsoho wuri."/>
+				<Item id="90388" name="Wuri na al'ada."/>
+				<Item id="90389" name="Hanyar da ba ta da inganci - madogarawa za su yi amfani da tsoffin wurin."/>
+				<Item id="90390" name="Zabi"/>
+				<Item id="90391" name="Saka Zaɓi:"/>
+				<Item id="90392" name="Yi amfani da Boost Yanayin Regex (layi da yawa; sake farawa don nema)"/>
+				<Item id="90395" name="Sake farawa Yanzu"/>
+				<Item id="90397" name="(kada ku zabe shi sai kun san abin da kuke yi)"/>
+				<Item id="90398" name="Girman gunkin Toolbar"/>
+				<Item id="90399" name="100% (Tsoffin)"/>
+				<Item id="90400" name="Gudun gungurawa dabaran linzamin kwamfuta"/>
+				<Item id="90401" name="1 × (kashe)"/>
+				<Item id="90402" name="An canza girman gunkin Toolbar"/>
+				<Item id="90403" name="Sabon girman gunkin kayan aiki zai fara aiki a gaba lokacin ƙaddamar da Nextpad++."/>
+				<Item id="90404" name="Gumakan Toolbar sun canza"/>
+				<Item id="90405" name="Sabbin gumakan kayan aiki za su fara aiki nan gaba lokacin ƙaddamar da Nextpad++."/>
+				<Item id="90411" name="Gudun Macro akan Fayiloli..."/>
+				<Item id="90418" name="Wannan zai cire shi da duk abin da ke cikin aikin.Babu fayiloli akan faifai da za a shafa."/>
+				<Item id="90420" name="Jaka"/>
+				<Item id="90427" name="Ba a samu ba"/>
+				<Item id="90428" name="RIKICI: %@"/>
+				<Item id="90429" name="A goge &quot;%@&quot;?"/>
+				<Item id="90430" name="Mai Gudanarwar Harshen Mai Amfani"/>
+				<Item id="90431" name="Tace harsuna…"/>
+				<Item id="90432" name="Source"/>
+				<Item id="90433" name="Tushen AC"/>
+				<Item id="90434" name="Matsayi"/>
+				<Item id="90435" name="Shigar / Sabuntawa"/>
+				<Item id="90436" name="%lu harsuna · %lu shigar · %lu sabuntawa"/>
+				<Item id="90437" name="Marubuci"/>
+				<Item id="90438" name="Haɗe: shigarwar %ld daga tushe %lu (haɗe)"/>
+				<Item id="90439" name="Zaɓi harshe ɗaya ko fiye don shigarwa."/>
+				<Item id="90440" name="Babu wani abu da za a sauke don zaɓin."/>
+				<Item id="90441" name="An kasa saukewa"/>
+				<Item id="90442" name="Checksum rashin daidaituwa"/>
+				<Item id="90443" name="Harshen da aka zaɓa yanzu suna cikin menu na Harshe."/>
+				<Item id="90444" name="Zaɓi ɗaya ko fiye da shigar harsuna don cirewa."/>
+				<Item id="90445" name="An cire"/>
+				<Item id="90446" name="An riga an yi amfani da wannan sunan ta wani harshe."/>
+				<Item id="90447" name="Ba za a iya cire wannan harshe ba."/>
+				<Item id="90448" name="Harsunan da aka riga aka shigar ba za a iya cire su ba."/>
+				<Item id="90449" name="Ba za a iya canza sunan wannan harshe ba."/>
+				<Item id="90450" name="Wannan fayil ɗin shine %@.Bude shi zai hana hasashe syntax da kuma warware tarihi don ci gaba da jin daɗin app.&#10;&#10;Shin kuna son ci gaba?"/>
+				<Item id="90451" name="Bude Ko ta yaya"/>
+				<Item id="90452" name="&quot;%@&quot; ya canza akan faifai"/>
+				<Item id="90453" name="Yi watsi da shi"/>
+				<Item id="90454" name="Rike My Version"/>
+				<Item id="90455" name="An kasa sake loda &quot;%@&quot;"/>
+				<Item id="90456" name="Ba a iya karanta fayil ɗin ba."/>
+				<Item id="90457" name="Zaɓi inda kowane maɓalli ya bayyana a cikin Liquid Glass Toolbar: a kan capsule na rukuni (Toolbar), a cikin menu na ▾ na rukuni, ko Hidden."/>
+				<Item id="90458" name="Ba da gudummawa don Tallafawa Ci gaba"/>
+				<Item id="90459" name="Sanya Kayan Aikin Layin Umurni"/>
+				<Item id="90460" name="Nuna inuwa a bayan kayan aikin kayan aiki"/>
+				<Item id="90461" name="Ba da gudummawa"/>
+				<Item id="90462" name="Saitin halaye"/>
+				<Item id="90463" name="Rage girman"/>
+				<Item id="90464" name="Boye Nextpad++"/>
+				<Item id="90465" name="Boye Wasu"/>
+				<Item id="90466" name="Nuna Duka"/>
+				<Item id="90467" name="Bar Nextpad++"/>
+				<Item id="90468" name="Ajiye Macro Rikodi na Yanzu…"/>
+				<Item id="90469" name="Gyara Sararin Biyu da Ajiye"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

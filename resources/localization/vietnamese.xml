@@ -1465,13 +1465,13 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90006" name="Kiểm soát nguồn"/>
 				<Item id="90007" name="Cam kết"/>
 				<Item id="90008" name="Cam kết không thành công"/>
-				<Item id="90009" name="Không có kho git\nSử dụng Duyệt để mở kho lưu trữ."/>
+				<Item id="90009" name="Không có kho git&#10;Sử dụng Duyệt để mở kho lưu trữ."/>
 				<Item id="90010" name="Sân khấu"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Giai đoạn Tất cả"/>
 				<Item id="90013" name="Bỏ sân khấu Tất cả"/>
-				<Item id="90014" name="Thông báo cam kết\u2026"/>
-				<Item id="90015" name="Duyệt tìm kho lưu trữ\u2026"/>
+				<Item id="90014" name="Thông báo cam kết…"/>
+				<Item id="90015" name="Duyệt tìm kho lưu trữ…"/>
 				<Item id="90016" name="Chọn thư mục kho git"/>
 				<Item id="90017" name="(không có kho lưu trữ)"/>
 				<Item id="90018" name="(tách rời)"/>
@@ -1485,9 +1485,9 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90026" name="Kết quả"/>
 				<Item id="90027" name="Dừng lại"/>
 				<Item id="90028" name="Tìm kiếm đã dừng lại."/>
-				<Item id="90029" name="Đang tìm kiếm\u2026"/>
+				<Item id="90029" name="Đang tìm kiếm…"/>
 				<Item id="90030" name="Văn bản cần tìm kiếm"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Đang tìm kiếm..."/>
 				<Item id="90033" name="Thay thế:"/>
 				<Item id="90034" name="Toàn bộ từ"/>
@@ -1547,7 +1547,7 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90088" name="Cài đặt Plugin"/>
 				<Item id="90089" name="Xóa plugin"/>
 				<Item id="90090" name="Không tìm thấy lệnh"/>
-				<Item id="90091" name="Nhập để tìm kiếm\u2026"/>
+				<Item id="90091" name="Nhập để tìm kiếm…"/>
 				<Item id="90092" name="Ngôn ngữ do người dùng xác định v.2.1"/>
 				<Item id="90093" name="Tạo ngôn ngữ mới"/>
 				<Item id="90094" name="Nhập tên:"/>
@@ -1556,11 +1556,9 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90097" name="Đừng Lưu"/>
 				<Item id="90098" name="Xong"/>
 				<Item id="90099" name="Chuyển đổi gói từ"/>
-				<Item id="90100" name="Hiển thị tất cả nhân vật"/>
 				<Item id="90101" name="Hiển thị tùy chọn nhân vật"/>
 				<Item id="90102" name="Chuyển đổi hướng dẫn thụt lề"/>
 				<Item id="90103" name="Chưa được thực hiện"/>
-				<Item id="90104" name="Tải lại từ đĩa"/>
 				<Item id="90105" name="Thay đổi công cụ tìm kiếm"/>
 				<Item id="90106" name="Chạy Lỗi"/>
 				<Item id="90107" name="Thời gian tải Nextpad++"/>
@@ -1569,16 +1567,12 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90110" name="Tải xuống"/>
 				<Item id="90111" name="Trang phát hành"/>
 				<Item id="90112" name="Sau"/>
-				<Item id="90113" name="Lọc plugin\u2026"/>
-				<Item id="90114" name="Có sẵn"/>
-				<Item id="90115" name="Cập nhật"/>
-				<Item id="90116" name="Đã cài đặt"/>
-				<Item id="90117" name="Không tương thích"/>
+				<Item id="90113" name="Lọc plugin…"/>
 				<Item id="90118" name="Không cài đặt được"/>
 				<Item id="90119" name="Loại bỏ các plugin sau?"/>
 				<Item id="90120" name="Cài đặt các plugin sau?"/>
 				<Item id="90121" name="Điều này sẽ xóa các tập tin plugin."/>
-				<Item id="90122" name="Lệnh tìm kiếm\u2026"/>
+				<Item id="90122" name="Lệnh tìm kiếm…"/>
 				<Item id="90123" name="Màu nền trước"/>
 				<Item id="90124" name="Màu nền"/>
 				<Item id="90125" name="Tên vĩ mô"/>
@@ -1598,7 +1592,7 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90139" name="Tất cả các dấu hiệu được xóa."/>
 				<Item id="90140" name="Đã sao chép văn bản đã đánh dấu vào clipboard."/>
 				<Item id="90141" name="Không có văn bản được đánh dấu để sao chép."/>
-				<Item id="90142" name="Đang tìm kiếm... %ld lượt truy cập \u2014 %@"/>
+				<Item id="90142" name="Đang tìm kiếm... %ld lượt truy cập — %@"/>
 				<Item id="90143" name="Thay thế trong tập tin..."/>
 				<Item id="90144" name="Thay thế trong Dự án: Chưa được kết nối."/>
 				<Item id="90145" name="Tìm trong Dự án: Chưa được kết nối với danh sách tệp Bảng điều khiển dự án."/>
@@ -1625,14 +1619,12 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90165" name="Xác nhận trước khi Lưu tất cả"/>
 				<Item id="90166" name="Xác nhận Thay thế Tất cả trong tài liệu đang mở"/>
 				<Item id="90167" name="Thay thế: không chuyển sang lần xuất hiện tiếp theo"/>
-				<Item id="90168" name="Sử dụng phông chữ đơn cách trong hộp thoại Tìm"/>
 				<Item id="90169" name="Nhấp chuột phải giữ lựa chọn"/>
 				<Item id="90170" name="Đảo ngược thứ tự ngày/giờ mặc định"/>
 				<Item id="90171" name="Sử dụng trình phân tích cú pháp danh sách hàm dựa trên XML"/>
 				<Item id="90172" name="Tự động đóng ngoặc ( ) [ ] { }"/>
 				<Item id="90173" name="Từ ký tự thứ N:"/>
 				<Item id="90174" name="Ngưỡng tự động kiểm tra trong lựa chọn (byte):"/>
-				<Item id="90175" name="Đã mở rộng (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Biên tập viên"/>
 				<Item id="90177" name="Lề"/>
 				<Item id="90178" name="Tối"/>
@@ -1646,12 +1638,10 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90186" name="Khử răng cưa"/>
 				<Item id="90187" name="Tối ưu hóa LCD"/>
 				<Item id="90188" name="Đơn giản +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Kho danh sách plugin"/>
 				<Item id="90192" name="Chọn tệp XML chủ đề Nextpad++ để áp dụng"/>
-				<Item id="90193" name="Tạo mới\u2026"/>
-				<Item id="90194" name="Lưu dưới dạng\u2026"/>
+				<Item id="90193" name="Tạo mới…"/>
+				<Item id="90194" name="Lưu dưới dạng…"/>
 				<Item id="90195" name="Ngôn ngữ người dùng:"/>
 				<Item id="90196" name="Tên ngôn ngữ"/>
 				<Item id="90197" name="Tạo"/>
@@ -1681,6 +1671,216 @@ Bạn có thể mở lại hộp thoại này ở phần Thiết đặt về sau
 				<Item id="90221" name="Thuộc tính bị khóa (macOS)"/>
 				<Item id="90222" name="Kiểm tra cập nhật…"/>
 				<Item id="90223" name="Mở Gần đây"/>
+				<Item id="90226" name="Trợ giúp"/>
+				<Item id="90227" name="Giai đoạn thất bại"/>
+				<Item id="90228" name="Unstage thất bại"/>
+				<Item id="90229" name="có sẵn"/>
+				<Item id="90230" name="Bạn đang chạy"/>
+				<Item id="90231" name="Đừng bao giờ nhắc nhở tôi nữa"/>
+				<Item id="90233" name="Tự động kiểm tra cập nhật"/>
+				<Item id="90234" name="Kiểm tra cập nhật tự động bị tắt."/>
+				<Item id="90235" name="Kiểm tra lần cuối:"/>
+				<Item id="90236" name="Không có kết nối internet."/>
+				<Item id="90237" name="Phản hồi không mong đợi từ máy chủ cập nhật."/>
+				<Item id="90238" name="Không có bản phát hành được công bố đã được tìm thấy."/>
+				<Item id="90239" name="Máy chủ cập nhật tạm thời không khả dụng.Vui lòng thử lại sau."/>
+				<Item id="90240" name="Máy chủ cập nhật từ chối yêu cầu.Proxy, tường lửa hoặc VPN có thể đang chặn quyền truy cập vào GitHub."/>
+				<Item id="90241" name="Quá nhiều lượt kiểm tra cập nhật từ mạng của bạn (giới hạn này được chia sẻ bởi mọi người trên mạng).Hãy thử lại sau"/>
+				<Item id="90242" name="Quá nhiều lượt kiểm tra cập nhật từ mạng của bạn (giới hạn này được chia sẻ bởi mọi người trên mạng).Vui lòng thử lại sau."/>
+				<Item id="90243" name="Máy chủ cập nhật trả về trạng thái"/>
+				<Item id="90244" name="Thử lại"/>
+				<Item id="90245" name="Kích thước văn bản in:"/>
+				<Item id="90246" name="Sử dụng thu phóng màn hình"/>
+				<Item id="90247" name="Kích thước thực tế"/>
+				<Item id="90248" name="Không thể thay thế một số tệp"/>
+				<Item id="90249" name="...và %lu hơn thế nữa"/>
+				<Item id="90250" name="Liên kết tệp do tổ chức của bạn quản lý."/>
+				<Item id="90251" name="Đang chờ macOS xác nhận…"/>
+				<Item id="90252" name="macOS đã không áp dụng thay đổi."/>
+				<Item id="90253" name="Đã đăng ký"/>
+				<Item id="90254" name="Mở tất cả các tập tin trong thư mục?"/>
+				<Item id="90255" name="Thao tác này sẽ mở tệp %lu trong tab mới."/>
+				<Item id="90256" name="Không thể nhập: %@"/>
+				<Item id="90258" name="Đã tìm thấy %ld kết quả phù hợp trong %ld tệp."/>
+				<Item id="90259" name="Đang tìm kiếm… %ld kết quả phù hợp cho đến nay"/>
+				<Item id="90260" name="%@ (%ld khớp%@)"/>
+				<Item id="90261" name="Tìm kiếm mờ"/>
+				<Item id="90266" name="Đếm: %ld trận đấu."/>
+				<Item id="90267" name="Thay thế Tất cả: %ld lần xuất hiện đã được thay thế %@."/>
+				<Item id="90268" name="Thay thế trong các tệp đã mở: %ld lần xuất hiện đã được thay thế."/>
+				<Item id="90269" name="Tìm trong Tệp: %ld lần truy cập trong %ld tệp."/>
+				<Item id="90270" name="Tìm trong Tệp: 0 lượt truy cập."/>
+				<Item id="90271" name="Thay thế tất cả các lần xuất hiện của &quot;%@&quot; bằng &quot;%@&quot; trong thư mục:&#10;%@&#10;&#10;Việc này không thể hoàn tác được."/>
+				<Item id="90272" name="Thay thế trong Tệp: %ld (các) thay thế trong %ld tệp."/>
+				<Item id="90273" name="Trước tiên hãy mở Bảng điều khiển dự án."/>
+				<Item id="90274" name="Chọn ít nhất một Bảng dự án để tìm kiếm."/>
+				<Item id="90275" name="Không có tập tin để tìm kiếm."/>
+				<Item id="90276" name="Tìm trong Dự án: %ld lượt truy cập trong %ld tệp."/>
+				<Item id="90277" name="Tìm trong Dự án: 0 lượt truy cập."/>
+				<Item id="90278" name="Thay thế tất cả các lần xuất hiện của"/>
+				<Item id="90279" name="với"/>
+				<Item id="90280" name="trong"/>
+				<Item id="90281" name="(các) tệp dự án.Điều này không thể hoàn tác được."/>
+				<Item id="90282" name="Thay thế trong Dự án: %ld (các) thay thế trong (các) tệp %ld."/>
+				<Item id="90283" name="Đánh dấu: %ld kết quả được đánh dấu."/>
+				<Item id="90284" name="Lọc tên tập tin/thư mục..."/>
+				<Item id="90285" name="Không thể lưu một số tài liệu"/>
+				<Item id="90286" name="⌘ Lệnh"/>
+				<Item id="90287" name="⌃ Kiểm soát"/>
+				<Item id="90288" name="⌥ Tùy chọn"/>
+				<Item id="90289" name="⇧ Dịch chuyển"/>
+				<Item id="90290" name="Nhập chuỗi định dạng NSDateFormatter:"/>
+				<Item id="90291" name="'%@' chưa được triển khai trong phiên bản này."/>
+				<Item id="90292" name="Nhập plugin"/>
+				<Item id="90293" name="Yêu cầu khởi động lại"/>
+				<Item id="90294" name="Không có tập tin để xử lý"/>
+				<Item id="90295" name="Nút dự án này không chứa tập tin."/>
+				<Item id="90296" name="'%@' có những thay đổi chưa được lưu.&#10;Tải lại và hủy các thay đổi?"/>
+				<Item id="90297" name="Nhập tên tệp mới:"/>
+				<Item id="90299" name="Tên mới:"/>
+				<Item id="90301" name="Tên không được chứa “/” hoặc “:”."/>
+				<Item id="90304" name="Đừng lưu tất cả"/>
+				<Item id="90306" name="Có 3 cách để chuyển sang chế độ chọn cột:&#10;&#10;1.(Bàn phím và chuột) Giữ Tùy chọn trong khi nhấp chuột trái và kéo&#10;&#10;2.(Chỉ bàn phím) Giữ Option+Shift trong khi sử dụng các phím mũi tên&#10;&#10;3.(Bàn phím hoặc Chuột)&#10; Đặt dấu mũ ở vị trí bắt đầu khối cột mong muốn, sau đó&#10; thực hiện lệnh “Bắt đầu/Kết thúc Chọn ở Chế độ Cột”;&#10; Di chuyển dấu mũ đến vị trí cuối khối cột mong muốn, sau đó&#10; thực hiện lại lệnh “Bắt đầu/Kết thúc Chọn ở Chế độ Cột”"/>
+				<Item id="90307" name="Nhập URL tìm kiếm.Sử dụng %s làm trình giữ chỗ truy vấn (hoặc thêm truy vấn vào cuối):"/>
+				<Item id="90308" name="Nhập lệnh hoặc URL..."/>
+				<Item id="90309" name="Không thực thi được:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Chỉnh sửa contextMenu.xml cho phép bạn sửa đổi trình đơn ngữ cảnh bật lên Nextpad++ của mình trên vùng chỉnh sửa.&#10;Bạn phải khởi động lại Nextpad++ để có hiệu lực sau khi sửa đổi contextMenu.xml."/>
+				<Item id="90312" name="Đã được cài đặt"/>
+				<Item id="90313" name="Cài đặt công cụ dòng lệnh nextpad++"/>
+				<Item id="90314" name="Cài đặt không thành công"/>
+				<Item id="90315" name="Đã cài đặt — nhưng ~/.local/bin không có trên PATH của bạn"/>
+				<Item id="90316" name="Đã có trong cấu hình của bạn"/>
+				<Item id="90317" name="Đã thêm vào ĐƯỜNG"/>
+				<Item id="90318" name="không thể viết"/>
+				<Item id="90319" name="Đã sao chép"/>
+				<Item id="90321" name="Những thay đổi của bạn sẽ bị mất nếu bạn không lưu chúng."/>
+				<Item id="90322" name="Áp dụng cho tất cả các tài liệu"/>
+				<Item id="90323" name="Chạy Macro trên tập tin"/>
+				<Item id="90324" name="Vĩ mô:"/>
+				<Item id="90325" name="Thư mục:"/>
+				<Item id="90326" name="Chọn một thư mục…"/>
+				<Item id="90327" name="Duyệt…"/>
+				<Item id="90328" name="Tiện ích mở rộng:"/>
+				<Item id="90329" name="Thư mục con lặp lại"/>
+				<Item id="90330" name="Bao gồm các tập tin ẩn"/>
+				<Item id="90331" name="Kích thước tối đa:"/>
+				<Item id="90332" name="Không giới hạn"/>
+				<Item id="90333" name="Mỗi tập tin:"/>
+				<Item id="90334" name="Lưu nếu sửa đổi"/>
+				<Item id="90335" name="Đóng sau"/>
+				<Item id="90336" name="Đóng ngay cả các tập tin đã mở"/>
+				<Item id="90337" name="Về lỗi:"/>
+				<Item id="90338" name="Bỏ qua tập tin và tiếp tục"/>
+				<Item id="90339" name="Dừng ở lỗi đầu tiên"/>
+				<Item id="90340" name="(không có macro nào được lưu)"/>
+				<Item id="90341" name="%lu tệp trùng khớp"/>
+				<Item id="90342" name="Không tìm thấy thư mục"/>
+				<Item id="90343" name="Chọn một thư mục tồn tại."/>
+				<Item id="90344" name="Không có tập tin nào phù hợp"/>
+				<Item id="90345" name="Điều chỉnh tùy chọn bộ lọc tiện ích mở rộng, đệ quy hoặc tệp ẩn."/>
+				<Item id="90346" name="Bắt đầu…"/>
+				<Item id="90347" name="Xử lý:"/>
+				<Item id="90348" name="%ld / %ld Được: %ld Đã bỏ qua: %ld Không thành công: %ld"/>
+				<Item id="90349" name="Lô bị hủy"/>
+				<Item id="90350" name="Hàng loạt hoàn thành"/>
+				<Item id="90351" name="Tổng cộng: %lu Được: %ld Đã bỏ qua: %ld Không thành công: %ld"/>
+				<Item id="90352" name="Ngày xây dựng"/>
+				<Item id="90353" name="Hệ điều hành"/>
+				<Item id="90354" name="mới nhất"/>
+				<Item id="90355" name="lỗi thời"/>
+				<Item id="90356" name="không rõ"/>
+				<Item id="90357" name="Khởi động lại ứng dụng để các thay đổi có hiệu lực."/>
+				<Item id="90358" name="Cập nhật plugin"/>
+				<Item id="90359" name="Cập nhật các plugin sau?"/>
+				<Item id="90360" name="Phiên bản hiện tại được sao lưu vào ~/Library/Application Support/Nextpad++/plugin-backups/ trước khi được thay thế."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Chuyển sang giao diện Tahoe mới (Beta)"/>
+				<Item id="90363" name="Sử dụng menu kiểu macOS (Beta)"/>
+				<Item id="90364" name="Giao diện Tahoe mới sẽ được áp dụng sau khi bạn khởi động lại Nextpad++."/>
+				<Item id="90365" name="Giao diện Cổ điển sẽ được khôi phục sau khi bạn khởi động lại Nextpad++."/>
+				<Item id="90366" name="Thoát ngay"/>
+				<Item id="90367" name="Các menu sẽ được sắp xếp lại theo kiểu macOS sau khi bạn khởi động lại Nextpad++."/>
+				<Item id="90368" name="Bố cục menu cổ điển sẽ được khôi phục sau khi bạn khởi động lại Nextpad++."/>
+				<Item id="90369" name="Màu sắc"/>
+				<Item id="90370" name="Áp dụng cho các biểu tượng thanh công cụ plugin"/>
+				<Item id="90371" name="Ở chế độ Hoàn chỉnh, các biểu tượng plugin sẽ trở thành một màu đơn sắc."/>
+				<Item id="90372" name="Nhóm thanh công cụ"/>
+				<Item id="90373" name="Chọn vị trí mỗi nút xuất hiện trên thanh công cụ Liquid Glass: trên"/>
+				<Item id="90374" name="Nút"/>
+				<Item id="90375" name="Vị trí"/>
+				<Item id="90376" name="Đặt lại về mặc định"/>
+				<Item id="90377" name="Menu tràn"/>
+				<Item id="90378" name="Ẩn"/>
+				<Item id="90379" name="Gói từ thân thiện với CJK"/>
+				<Item id="90380" name="Lựa chọn cột chuyển sang chỉnh sửa nhiều cột"/>
+				<Item id="90381" name="Khoảng cách dòng:"/>
+				<Item id="90382" name="1.0 (Mặc định)"/>
+				<Item id="90383" name="Ẩn thanh tab"/>
+				<Item id="90384" name="Kích thước tab tuân theo thu phóng tài liệu"/>
+				<Item id="90385" name="Chọn…"/>
+				<Item id="90386" name="Đặt lại về mặc định"/>
+				<Item id="90387" name="Sử dụng vị trí mặc định."/>
+				<Item id="90388" name="Vị trí tùy chỉnh."/>
+				<Item id="90389" name="Đường dẫn không hợp lệ - bản sao lưu sẽ sử dụng vị trí mặc định."/>
+				<Item id="90390" name="chọn"/>
+				<Item id="90391" name="Chèn lựa chọn:"/>
+				<Item id="90392" name="Sử dụng chế độ Regex Boost (nhiều dòng; khởi động lại để áp dụng)"/>
+				<Item id="90395" name="Khởi động lại ngay bây giờ"/>
+				<Item id="90397" name="(đừng chọn nó trừ khi bạn biết mình đang làm gì)"/>
+				<Item id="90398" name="Kích thước biểu tượng thanh công cụ"/>
+				<Item id="90399" name="100% (Mặc định)"/>
+				<Item id="90400" name="Tốc độ cuộn bánh xe chuột"/>
+				<Item id="90401" name="1× (tắt)"/>
+				<Item id="90402" name="Kích thước biểu tượng thanh công cụ đã thay đổi"/>
+				<Item id="90403" name="Kích thước biểu tượng thanh công cụ mới sẽ có hiệu lực vào lần khởi chạy Nextpad++ tiếp theo."/>
+				<Item id="90404" name="Biểu tượng thanh công cụ đã thay đổi"/>
+				<Item id="90405" name="Các biểu tượng thanh công cụ mới sẽ có hiệu lực vào lần khởi chạy Nextpad++ tiếp theo."/>
+				<Item id="90411" name="Chạy Macro trên tệp..."/>
+				<Item id="90418" name="Điều này sẽ loại bỏ nó và tất cả nội dung của nó khỏi dự án.Không có tập tin nào trên đĩa sẽ bị ảnh hưởng."/>
+				<Item id="90420" name="Thư mục"/>
+				<Item id="90427" name="Không tìm thấy"/>
+				<Item id="90428" name="XUNG ĐỘT: %@"/>
+				<Item id="90429" name="Xóa &quot;%@&quot;?"/>
+				<Item id="90430" name="Quản trị viên ngôn ngữ do người dùng xác định"/>
+				<Item id="90431" name="Lọc ngôn ngữ…"/>
+				<Item id="90432" name="Nguồn"/>
+				<Item id="90433" name="Nguồn AC"/>
+				<Item id="90434" name="Trạng thái"/>
+				<Item id="90435" name="Cài đặt/Cập nhật"/>
+				<Item id="90436" name="%lu ngôn ngữ · %lu đã cài đặt · %lu bản cập nhật"/>
+				<Item id="90437" name="tác giả"/>
+				<Item id="90438" name="Đã kết hợp: %ld mục từ %lu nguồn (đã hợp nhất)"/>
+				<Item id="90439" name="Chọn một hoặc nhiều ngôn ngữ để cài đặt."/>
+				<Item id="90440" name="Không có gì có thể tải xuống cho việc lựa chọn."/>
+				<Item id="90441" name="Tải xuống không thành công"/>
+				<Item id="90442" name="Tổng kiểm tra không khớp"/>
+				<Item id="90443" name="(Các) ngôn ngữ đã chọn hiện có sẵn trong menu Ngôn ngữ."/>
+				<Item id="90444" name="Chọn một hoặc nhiều ngôn ngữ đã cài đặt để xóa."/>
+				<Item id="90445" name="Đã xóa"/>
+				<Item id="90446" name="Tên này đã được sử dụng bởi một ngôn ngữ khác."/>
+				<Item id="90447" name="Không thể xóa ngôn ngữ này."/>
+				<Item id="90448" name="Không thể xóa các ngôn ngữ được cài đặt sẵn."/>
+				<Item id="90449" name="Không thể đổi tên ngôn ngữ này."/>
+				<Item id="90450" name="Tệp này là %@.Việc mở nó sẽ tắt tính năng đánh dấu cú pháp và hoàn tác lịch sử để ứng dụng luôn phản hồi.&#10;&#10;Bạn có muốn tiếp tục không?"/>
+				<Item id="90451" name="Vẫn mở"/>
+				<Item id="90452" name="&quot;%@&quot; đã thay đổi trên đĩa"/>
+				<Item id="90453" name="Bỏ qua"/>
+				<Item id="90454" name="Giữ phiên bản của tôi"/>
+				<Item id="90455" name="Không thể tải lại &quot;%@&quot;"/>
+				<Item id="90456" name="Không thể đọc được tập tin."/>
+				<Item id="90457" name="Chọn vị trí mỗi nút xuất hiện trên thanh công cụ Liquid Glass: trên nhóm (Thanh công cụ), trong menu mục bổ sung ▾ của nhóm hoặc Ẩn."/>
+				<Item id="90458" name="Đóng góp để hỗ trợ phát triển"/>
+				<Item id="90459" name="Cài đặt công cụ dòng lệnh"/>
+				<Item id="90460" name="Hiển thị bóng phía sau viên nang thanh công cụ"/>
+				<Item id="90461" name="Đóng góp"/>
+				<Item id="90462" name="Bộ ký tự"/>
+				<Item id="90463" name="Giảm thiểu"/>
+				<Item id="90464" name="Ẩn Nextpad++"/>
+				<Item id="90465" name="Ẩn người khác"/>
+				<Item id="90466" name="Hiển thị tất cả"/>
+				<Item id="90467" name="Thoát khỏi Nextpad++"/>
+				<Item id="90468" name="Lưu Macro đã ghi hiện tại…"/>
+				<Item id="90469" name="Cắt bớt khoảng trống ở cuối và lưu"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

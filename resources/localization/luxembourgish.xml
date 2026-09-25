@@ -479,13 +479,13 @@
 				<Item id="90006" name="Quell Kontroll"/>
 				<Item id="90007" name="Engagéieren"/>
 				<Item id="90008" name="Verpflichtung ausgefall"/>
-				<Item id="90009" name="Kee Git Repository\nBenotzt Browse fir e Repo opzemaachen."/>
+				<Item id="90009" name="Kee Git Repository&#10;Benotzt Browse fir e Repo opzemaachen."/>
 				<Item id="90010" name="Etapp"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Etapp All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Engagéieren Message\u2026"/>
-				<Item id="90015" name="Sich no Repository\u2026"/>
+				<Item id="90014" name="Engagéieren Message…"/>
+				<Item id="90015" name="Sich no Repository…"/>
 				<Item id="90016" name="Wielt e Git Repository Dossier"/>
 				<Item id="90017" name="(kee Repository)"/>
 				<Item id="90018" name="(ofgebaut)"/>
@@ -499,9 +499,9 @@
 				<Item id="90026" name="Resultater"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Sich gestoppt."/>
-				<Item id="90029" name="Sichen \u2026"/>
+				<Item id="90029" name="Sichen …"/>
 				<Item id="90030" name="Text fir ze sichen"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Sichen ..."/>
 				<Item id="90033" name="Ersetzen:"/>
 				<Item id="90034" name="Ganzt Wuert"/>
@@ -561,7 +561,7 @@
 				<Item id="90088" name="Installéiere Plugins"/>
 				<Item id="90089" name="Plugins erofhuelen"/>
 				<Item id="90090" name="Keng Kommandoen fonnt"/>
-				<Item id="90091" name="Typ fir ze sichen\u2026"/>
+				<Item id="90091" name="Typ fir ze sichen…"/>
 				<Item id="90092" name="Benotzerdefinéiert Sprooch v.2.1"/>
 				<Item id="90093" name="Nei Sprooch erstellen"/>
 				<Item id="90094" name="Gitt en Numm an:"/>
@@ -570,11 +570,9 @@
 				<Item id="90097" name="Net späicheren"/>
 				<Item id="90098" name="Gemaach"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Show All Charaktere"/>
 				<Item id="90101" name="Zeechen Optiounen weisen"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Nach net ëmgesat"/>
-				<Item id="90104" name="Reload vun Disk"/>
 				<Item id="90105" name="Änneren Sichmotor"/>
 				<Item id="90106" name="Run Feeler"/>
 				<Item id="90107" name="Notizblock++ Luedzäit"/>
@@ -583,7 +581,7 @@
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Fräisetzung Säit"/>
 				<Item id="90112" name="Méi spéit"/>
-				<Item id="90113" name="Filter Plugins\u2026"/>
+				<Item id="90113" name="Filter Plugins…"/>
 				<Item id="90114" name="Verfügbar"/>
 				<Item id="90115" name="Aktualiséierungen"/>
 				<Item id="90116" name="Installéiert"/>
@@ -592,7 +590,7 @@
 				<Item id="90119" name="Ewechzehuelen déi folgend Plugins?"/>
 				<Item id="90120" name="Installéiert déi folgend Plugins?"/>
 				<Item id="90121" name="Dëst wäert d'Plugindateien läschen."/>
-				<Item id="90122" name="Sichbefehl\u2026"/>
+				<Item id="90122" name="Sichbefehl…"/>
 				<Item id="90123" name="Virdergrond Faarf"/>
 				<Item id="90124" name="Hannergrondfaarf"/>
 				<Item id="90125" name="Macro Numm"/>
@@ -612,7 +610,7 @@
 				<Item id="90139" name="All Mark geläscht."/>
 				<Item id="90140" name="Markéierten Text op Clipboard kopéiert."/>
 				<Item id="90141" name="Kee markéierten Text fir ze kopéieren."/>
-				<Item id="90142" name="Sichen ... %ld Hit(en) \u2014 %@"/>
+				<Item id="90142" name="Sichen ... %ld Hit(en) — %@"/>
 				<Item id="90143" name="Ersetzen an Dateien ..."/>
 				<Item id="90144" name="Ersetzen a Projeten: nach net verbonne."/>
 				<Item id="90145" name="Fannt a Projeten: Nach net verbonne mat Project Panel Dateilëscht."/>
@@ -633,20 +631,20 @@
 				<Item id="90160" name="Smart Highlight: nëmme ganz Wuert"/>
 				<Item id="90161" name="Duebelklickt fir de Tab zouzemaachen"/>
 				<Item id="90162" name="Show Zoumaache Knäppchen op Tabs"/>
+				<Item id="90168" name="Benotzt monospaced Schrëft am Find Dialog"/>
+				<Item id="90191" name="Plugin Lëscht Repository"/>
 				<Item id="90224" name="Wrap tabs to multiple lines"/>
 				<Item id="90163" name="Erënneren Panel Visibilitéit iwwer Sessiounen"/>
 				<Item id="90164" name="Haalt fehlend Dateientréeën an der Sessioun"/>
 				<Item id="90165" name="Confirméieren ier Alles späicheren"/>
 				<Item id="90166" name="Confirméieren Ersetzen Alles an oppenen Dokumenter"/>
 				<Item id="90167" name="Ersetzen: réckelt net op déi nächst Optriede"/>
-				<Item id="90168" name="Benotzt monospaced Schrëft am Find Dialog"/>
 				<Item id="90169" name="Riets-klickt hält Auswiel"/>
 				<Item id="90170" name="Ëmgedréint Standard Datum / Zäit Uerdnung"/>
 				<Item id="90171" name="Benotzt XML-baséiert Funktiounslëscht Parser"/>
 				<Item id="90172" name="Klammeren automatesch zoumaachen ( ) [ ] { }"/>
 				<Item id="90173" name="Vun N. Charakter:"/>
 				<Item id="90174" name="In-Selektioun Auto-Check Schwell (Bytes):"/>
-				<Item id="90175" name="Verlängert (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margen"/>
 				<Item id="90178" name="Däischter"/>
@@ -660,12 +658,10 @@
 				<Item id="90186" name="Antialiaséiert"/>
 				<Item id="90187" name="LCD optimiséiert"/>
 				<Item id="90188" name="Einfach +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plugin Lëscht Repository"/>
 				<Item id="90192" name="Wielt eng Notepad ++ Thema XML Datei fir ze bewerben"/>
-				<Item id="90193" name="Nei erstellen\u2026"/>
-				<Item id="90194" name="Späicheren als\u2026"/>
+				<Item id="90193" name="Nei erstellen…"/>
+				<Item id="90194" name="Späicheren als…"/>
 				<Item id="90195" name="Benotzersprooch:"/>
 				<Item id="90196" name="Sprooch Numm"/>
 				<Item id="90197" name="Erstellen"/>
@@ -695,6 +691,245 @@
 				<Item id="90221" name="gespaarten Attribut (macOS)"/>
 				<Item id="90222" name="Iwwerpréift no Updates…"/>
 				<Item id="90223" name="Open Rezent"/>
+				<Item id="90225" name="Erënneren aktuell Sëtzung fir nächste Start"/>
+				<Item id="90226" name="Hëllef"/>
+				<Item id="90227" name="Etapp Ausgefall"/>
+				<Item id="90228" name="Unstage Ausgefall"/>
+				<Item id="90229" name="verfügbar ass"/>
+				<Item id="90230" name="Dir leeft"/>
+				<Item id="90231" name="Erënnere mech ni erëm"/>
+				<Item id="90232" name="Aktualiséierungen"/>
+				<Item id="90233" name="Kontrolléiert automatesch no Updates"/>
+				<Item id="90234" name="Automatesch Update Kontrollen sinn aus."/>
+				<Item id="90235" name="Lescht gepréift:"/>
+				<Item id="90236" name="Keng Internetverbindung."/>
+				<Item id="90237" name="Onerwaart Äntwert vum Update Server."/>
+				<Item id="90238" name="Keng publizéiert Verëffentlechung gouf fonnt."/>
+				<Item id="90239" name="Den Update-Server ass temporär net verfügbar.Probéiert w.e.g. méi spéit nach eng Kéier."/>
+				<Item id="90240" name="Den Update-Server huet d'Ufro refuséiert.E Proxy, Firewall oder VPN kann den Zougang zu GitHub blockéieren."/>
+				<Item id="90241" name="Ze vill Updatechecken aus Ärem Netz (dës Limit gëtt vu jidderengem gedeelt).Probéieren nach eng Kéier no"/>
+				<Item id="90242" name="Ze vill Updatechecken aus Ärem Netz (dës Limit gëtt vu jidderengem gedeelt).Probéiert w.e.g. méi spéit nach eng Kéier."/>
+				<Item id="90243" name="Den Update-Server huet de Status zréckginn"/>
+				<Item id="90244" name="Probéiert nach eng Kéier"/>
+				<Item id="90245" name="Drécken Textgréisst:"/>
+				<Item id="90246" name="Benotzt Écran Zoom"/>
+				<Item id="90247" name="Tatsächlech Gréisst"/>
+				<Item id="90248" name="Verschidde Fichiere konnten net ersat ginn"/>
+				<Item id="90249" name="...an %lu méi"/>
+				<Item id="90250" name="Dateiassociatiounen gi vun Ärer Organisatioun geréiert."/>
+				<Item id="90251" name="Waart op macOS fir ze bestätegen…"/>
+				<Item id="90252" name="macOS huet d'Ännerung net ugewannt."/>
+				<Item id="90253" name="Registréiert"/>
+				<Item id="90254" name="All Dateien am Dossier opmaachen?"/>
+				<Item id="90255" name="Dëst wäert %lu Dateien an neie Tabs opmaachen."/>
+				<Item id="90256" name="Konnt net importéieren: %@"/>
+				<Item id="90258" name="%ld Match(en) an %ld Datei(e) fonnt."/>
+				<Item id="90259" name="Sichen ... %ld Match(en) bis elo"/>
+				<Item id="90260" name="%@ (%ld Match%@)"/>
+				<Item id="90261" name="Fuzzy Sich"/>
+				<Item id="90262" name="Fannt am aktuellen Dokument"/>
+				<Item id="90265" name="Fannen: Kann den Text &quot;%@&quot; net fannen"/>
+				<Item id="90266" name="Zuel: %ld Match(en)."/>
+				<Item id="90267" name="Alles ersetzen: %ld Optriede(n) goufen %@ ersat."/>
+				<Item id="90268" name="Ersetzen an opgemaachte Dateien: %ld Optriede goufen ersat."/>
+				<Item id="90269" name="Fannt an Dateien: %ld Hit(en) an %ld Datei(en)."/>
+				<Item id="90270" name="Fannt an Dateien: 0 Treffer."/>
+				<Item id="90271" name="Ersetzen all Optriede vun &quot;%@&quot; duerch &quot;%@&quot; am Verzeichnis:&#10;%@&#10;&#10;Dëst kann net réckgängeg gemaach ginn."/>
+				<Item id="90272" name="Ersetzen an Dateien: %ld Ersatz(en) an %ld Datei(en)."/>
+				<Item id="90273" name="Öffnen d'éischt e Project Panel."/>
+				<Item id="90274" name="Wielt op d'mannst ee Project Panel fir ze sichen."/>
+				<Item id="90275" name="Keng Dateien fir ze sichen."/>
+				<Item id="90276" name="Fannt a Projeten: %ld Hit(en) an %ld Datei(en)."/>
+				<Item id="90277" name="Fannt a Projeten: 0 Hits."/>
+				<Item id="90278" name="Ersetzen all Optriede vun"/>
+				<Item id="90279" name="mat"/>
+				<Item id="90280" name="an"/>
+				<Item id="90281" name="Projet Datei(en).Dëst kann net réckgängeg gemaach ginn."/>
+				<Item id="90282" name="Ersetzen a Projeten: %ld Ersatz(en) an %ld Datei(en)."/>
+				<Item id="90283" name="Mark: %ld Match(en) markéiert."/>
+				<Item id="90284" name="Filter Datei / Dossier Numm ..."/>
+				<Item id="90285" name="E puer Dokumenter konnten net gespäichert ginn"/>
+				<Item id="90286" name="⌘ Kommando"/>
+				<Item id="90287" name="⌃ Kontroll"/>
+				<Item id="90288" name="⌥ Optioun"/>
+				<Item id="90289" name="⇧ Verréckelung"/>
+				<Item id="90290" name="Gitt eng NSDateFormatter Format String an:"/>
+				<Item id="90291" name="'%@' ass nach net an dëser Versioun implementéiert."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Restart néideg"/>
+				<Item id="90294" name="Keng Dateie fir ze veraarbecht"/>
+				<Item id="90295" name="Dëse Projet Node enthält keng Fichieren."/>
+				<Item id="90296" name="'%@' huet net gespäichert Ännerungen.&#10;Ännerungen nei lueden an ofginn?"/>
+				<Item id="90297" name="Gitt en neien Dateinumm an:"/>
+				<Item id="90298" name="Umbenennen aktuellen Tab"/>
+				<Item id="90299" name="Neien Numm:"/>
+				<Item id="90300" name="Umbenennung gescheitert"/>
+				<Item id="90301" name="Den Numm kann net &quot;/&quot; oder &quot;:&quot; enthalen."/>
+				<Item id="90302" name="'%@' an den Dreck réckelen?"/>
+				<Item id="90303" name="'%@' späicheren ier Dir zoumaacht?"/>
+				<Item id="90304" name="Späichert net alles"/>
+				<Item id="90305" name="Kolonne Modus Tipp"/>
+				<Item id="90306" name="Et ginn 3 Weeër fir op de Spaltauswielmodus ze wiesselen:&#10;&#10;1.(Tastatur a Maus) Halt d'Optioun beim Lénks-klickt zéien&#10;&#10;2.(Nëmmen Tastatur) Halt Option+Shift wärend Dir Pfeiltasten benotzt&#10;&#10;3.(Tastatur oder Maus)&#10; Setzt d'Caret um gewënschte Start vun der Kolonnblockpositioun, dann&#10; fuert de Kommando &quot;Start/End Select in Column Mode&quot; aus;&#10; Beweegt de Caret op de gewënschten Enn vun der Kolonnblockpositioun, dann&#10; fuert nach eng Kéier de Kommando &quot;Start/End Select in Column Mode&quot; aus."/>
+				<Item id="90307" name="Gitt d'Sich URL.Benotzt %s als Ufro Plazhalter (oder fügt d'Ufro um Enn un):"/>
+				<Item id="90308" name="Gitt Kommando oder URL ..."/>
+				<Item id="90309" name="Ausféierbar:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Kontext änneren Menu"/>
+				<Item id="90311" name="Änneren contextMenu.xml erlaabt Iech Äre Nextpad++ Popup-Kontextmenü an der Ännerungszone z'änneren.&#10;Dir musst Ären Nextpad++ nei starten fir a Kraaft ze trieden nodeems Dir contextMenu.xml geännert hutt."/>
+				<Item id="90312" name="Scho installéiert"/>
+				<Item id="90313" name="Installéiert nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Installatioun gescheitert"/>
+				<Item id="90315" name="Installéiert - awer ~/.local/bin ass net op Ärem PATH"/>
+				<Item id="90316" name="Schon an Ärer Configuratioun"/>
+				<Item id="90317" name="Zu PATH bäigefüügt"/>
+				<Item id="90318" name="Konnt net schreiwen"/>
+				<Item id="90319" name="Kopéiert"/>
+				<Item id="90320" name="Ännerungen op '%@' späicheren?"/>
+				<Item id="90321" name="Är Ännerungen ginn verluer wann Dir se net späichert."/>
+				<Item id="90322" name="Gëlle fir all Dokumenter"/>
+				<Item id="90323" name="Run Macro op Dateien"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Dossier:"/>
+				<Item id="90326" name="Wielt en Dossier ..."/>
+				<Item id="90327" name="Browst…"/>
+				<Item id="90328" name="Erweiderung:"/>
+				<Item id="90329" name="Recurse Ënnerverzeechnes"/>
+				<Item id="90330" name="Verstoppt Dateien enthalen"/>
+				<Item id="90331" name="Max Gréisst:"/>
+				<Item id="90332" name="Onlimitéiert"/>
+				<Item id="90333" name="Per Datei:"/>
+				<Item id="90334" name="Späichert wann geännert"/>
+				<Item id="90335" name="Zoumaachen no"/>
+				<Item id="90336" name="Zoumaachen souguer Dateien déi scho opgemaach waren"/>
+				<Item id="90337" name="Op Feeler:"/>
+				<Item id="90338" name="Iwwersprangen Datei a fuert weider"/>
+				<Item id="90339" name="Stop op éischte Feeler"/>
+				<Item id="90340" name="(keng gespäichert Makroen)"/>
+				<Item id="90341" name="%lu Datei(en) passen"/>
+				<Item id="90342" name="Dossier net fonnt"/>
+				<Item id="90343" name="Wielt en Dossier deen existéiert."/>
+				<Item id="90344" name="Keng Dateie passen"/>
+				<Item id="90345" name="Passt d'Extensiounsfilter, Rekursioun oder Hidden-Dateien Optioun un."/>
+				<Item id="90346" name="Start…"/>
+				<Item id="90347" name="Veraarbechtung:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Iwwersprangen: %ld Ausgefall: %ld"/>
+				<Item id="90349" name="Batch annuléiert"/>
+				<Item id="90350" name="Batch fäerdeg"/>
+				<Item id="90351" name="Total: %lu Ok: %ld Iwwersprangen: %ld Ausgefall: %ld"/>
+				<Item id="90352" name="Gebaut Datum"/>
+				<Item id="90353" name="Betribssystem"/>
+				<Item id="90354" name="lescht"/>
+				<Item id="90355" name="veroudert"/>
+				<Item id="90356" name="onbekannt"/>
+				<Item id="90357" name="Restart der Applikatioun fir Ännerungen a Kraaft trieden."/>
+				<Item id="90358" name="Update Plugins"/>
+				<Item id="90359" name="Update déi folgend Plugins?"/>
+				<Item id="90360" name="Aktuell Versioune ginn op ~/Library/Application Support/Nextpad++/plugin-backups/ gebackupt ier se ersat ginn."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Wiesselt op den Neie Tahoe Look (Beta)"/>
+				<Item id="90363" name="Benotzt macOS-Stil Menüen (Beta)"/>
+				<Item id="90364" name="Den neie Tahoe Look gëtt applizéiert nodeems Dir Nextpad++ nei gestart hutt."/>
+				<Item id="90365" name="De klassesche Look gëtt restauréiert nodeems Dir Nextpad++ nei gestart hutt."/>
+				<Item id="90366" name="Gitt elo op"/>
+				<Item id="90367" name="Menue ginn am macOS Stil nei arrangéiert nodeems Dir Nextpad++ nei gestart hutt."/>
+				<Item id="90368" name="De klassesche Menü Layout gëtt restauréiert nodeems Dir Nextpad++ nei starten."/>
+				<Item id="90369" name="Faarf"/>
+				<Item id="90370" name="Gëlle fir Plugin Toolbar Symboler"/>
+				<Item id="90371" name="Am Komplett Modus ginn Plugin Symboler eng eenzeg zolidd Faarf."/>
+				<Item id="90372" name="Toolbar Gruppen"/>
+				<Item id="90373" name="Wielt wou all Knäppchen an der Liquid Glass Toolbar erschéngt: op der"/>
+				<Item id="90374" name="Knäppchen"/>
+				<Item id="90375" name="Placement"/>
+				<Item id="90376" name="Zerécksetzen op Default"/>
+				<Item id="90377" name="Iwwerschwemmungsmenü"/>
+				<Item id="90378" name="Verstoppt"/>
+				<Item id="90379" name="CJK-frëndlech Wuert Wrap"/>
+				<Item id="90380" name="Kolonne Selektioun wiesselt op Multi-Editioun"/>
+				<Item id="90381" name="Linn Abstand:"/>
+				<Item id="90382" name="1.0 (Standard)"/>
+				<Item id="90383" name="Tabbar verstoppen"/>
+				<Item id="90384" name="Tab Gréisst follegt Dokument Zoom"/>
+				<Item id="90385" name="Wielt…"/>
+				<Item id="90386" name="Zerécksetzen op Default"/>
+				<Item id="90387" name="Benotzt d'Standardplaz."/>
+				<Item id="90388" name="Benotzerdefinéiert Standuert."/>
+				<Item id="90389" name="Invalid Wee - Backups benotzen d'Standardplaz."/>
+				<Item id="90390" name="Wielt"/>
+				<Item id="90391" name="Insert Auswiel:"/>
+				<Item id="90392" name="Benotzt Boost Regex Modus (Multi-Linn; Restart fir ze gëllen)"/>
+				<Item id="90393" name="Start Nextpad++ w.e.g. nei fir a Kraaft ze trieden."/>
+				<Item id="90394" name="Invalid Wee."/>
+				<Item id="90395" name="Elo nei starten"/>
+				<Item id="90396" name="Wielt en Dossier vun/zu wou Nextpad++ seng Astellunge liest/schreift"/>
+				<Item id="90397" name="(wielt et net ausser Dir wësst wat Dir maacht)"/>
+				<Item id="90398" name="Toolbar Ikon Gréisst"/>
+				<Item id="90399" name="100% (Standard)"/>
+				<Item id="90400" name="Maus Rad Scroll Vitesse"/>
+				<Item id="90401" name="1 × (aus)"/>
+				<Item id="90402" name="Toolbar Ikon Gréisst geännert"/>
+				<Item id="90403" name="Déi nei Toolbar Ikongréisst trëtt a Kraaft wann Nextpad++ lancéiert."/>
+				<Item id="90404" name="Toolbar Symboler geännert"/>
+				<Item id="90405" name="Déi nei Toolbar Ikonen ginn a Kraaft wann Nextpad++ lancéiert."/>
+				<Item id="90406" name="Neien Aarbechtsberäich"/>
+				<Item id="90410" name="Fannt an Projeten ..."/>
+				<Item id="90411" name="Macro op Dateien lafen ..."/>
+				<Item id="90412" name="Beweegt erop"/>
+				<Item id="90413" name="Beweegt erof"/>
+				<Item id="90414" name="Dossier derbäi"/>
+				<Item id="90415" name="Füügt Dateien ..."/>
+				<Item id="90416" name="Füügt Dateien aus dem Verzeechnes ..."/>
+				<Item id="90417" name="Änneren Fichier Wee"/>
+				<Item id="90418" name="Dëst wäert et an all seng Inhalter aus dem Projet ewechhuelen.Keng Dateien op der Disk wäerte betraff sinn."/>
+				<Item id="90419" name="Aarbechtsberäich"/>
+				<Item id="90420" name="Dossier"/>
+				<Item id="90421" name="Fannt an dëse Sichresultater ..."/>
+				<Item id="90422" name="Kopie gewielt Linn(en)"/>
+				<Item id="90423" name="Kopéiert gewielte Weenumm(en)"/>
+				<Item id="90424" name="Ausgewielten Pathnumm opmaachen"/>
+				<Item id="90425" name="Wuert wéckelt laang Zeilen"/>
+				<Item id="90426" name="Purge fir all Sich"/>
+				<Item id="90427" name="Net fonnt"/>
+				<Item id="90428" name="KONFLIKT: %@"/>
+				<Item id="90429" name="&quot;%@&quot; läschen?"/>
+				<Item id="90430" name="Benotzerdefinéiert Sprooch Admin"/>
+				<Item id="90431" name="Filter Sproochen…"/>
+				<Item id="90432" name="Quell"/>
+				<Item id="90433" name="AC Quellen"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Installéieren / Update"/>
+				<Item id="90436" name="%lu Sproochen · %lu installéiert · %lu Aktualiséierungen"/>
+				<Item id="90437" name="Auteur"/>
+				<Item id="90438" name="Kombinéiert: %ld Entréen aus %lu Quellen (fusionéiert)"/>
+				<Item id="90439" name="Wielt eng oder méi Sprooche fir ze installéieren."/>
+				<Item id="90440" name="Näischt eroflueden fir d'Auswiel."/>
+				<Item id="90441" name="Download gescheitert"/>
+				<Item id="90442" name="Checksum Mëssverständnis"/>
+				<Item id="90443" name="Déi gewielte Sprooch(en) sinn elo am Sproochmenü verfügbar."/>
+				<Item id="90444" name="Wielt eng oder méi installéiert Sprooche fir ze läschen."/>
+				<Item id="90445" name="Geläscht"/>
+				<Item id="90446" name="Dësen Numm gëtt scho vun enger anerer Sprooch benotzt."/>
+				<Item id="90447" name="Dës Sprooch konnt net ewechgeholl ginn."/>
+				<Item id="90448" name="Pre-installéiert Sprooche kënnen net geläscht ginn."/>
+				<Item id="90449" name="Dës Sprooch konnt net ëmbenannt ginn."/>
+				<Item id="90450" name="Dëse Fichier ass %@.Wann Dir se opmaacht, deaktivéiert d'Syntax-Highlighting an d'Geschicht réckgängeg fir d'App reaktiounsfäeger ze halen.&#10;&#10;Wëllt Dir weiderfueren?"/>
+				<Item id="90451" name="Op jiddefalls"/>
+				<Item id="90452" name="&quot;%@&quot; op der Disk geännert"/>
+				<Item id="90453" name="Ignoréieren"/>
+				<Item id="90454" name="Halt meng Versioun"/>
+				<Item id="90455" name="Konnt &quot;%@&quot; net nei lueden"/>
+				<Item id="90456" name="De Fichier konnt net gelies ginn."/>
+				<Item id="90457" name="Wielt wou all Knäppchen an der Liquid Glass Toolbar erschéngt: op der Gruppekapsel (Toolbar), am Grupp ▾ Iwwerschwemmungsmenü oder Hidden."/>
+				<Item id="90458" name="Spende fir Entwécklung z'ënnerstëtzen"/>
+				<Item id="90459" name="Installéiert Command Line Tools"/>
+				<Item id="90460" name="Show Shadows hannert Toolbar Kapselen"/>
+				<Item id="90461" name="Spenden"/>
+				<Item id="90462" name="Charakter Sets"/>
+				<Item id="90463" name="Minimiséieren"/>
+				<Item id="90464" name="Verstoppen Nextpad++"/>
+				<Item id="90465" name="Aner verstoppen"/>
+				<Item id="90466" name="Alles weisen"/>
+				<Item id="90467" name="Gitt op Nextpad++"/>
+				<Item id="90468" name="Aktuell opgeholl Macro späicheren ..."/>
+				<Item id="90469" name="Trim Trailing Space a späicheren"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

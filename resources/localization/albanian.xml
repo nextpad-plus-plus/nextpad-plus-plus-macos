@@ -852,13 +852,13 @@
 				<Item id="90006" name="Kontrolli i burimit"/>
 				<Item id="90007" name="Kryeni"/>
 				<Item id="90008" name="Kryerja dështoi"/>
-				<Item id="90009" name="Nuk ka depo git\nPërdor Shfleto për të hapur një depo."/>
+				<Item id="90009" name="Nuk ka depo git&#10;Përdor Shfleto për të hapur një depo."/>
 				<Item id="90010" name="Faza"/>
 				<Item id="90011" name="Pa skenë"/>
 				<Item id="90012" name="Skena Të gjitha"/>
 				<Item id="90013" name="Unstage të gjitha"/>
-				<Item id="90014" name="Kryeni mesazhin\u2026"/>
-				<Item id="90015" name="Shfletoni për depon\u2026"/>
+				<Item id="90014" name="Kryeni mesazhin…"/>
+				<Item id="90015" name="Shfletoni për depon…"/>
 				<Item id="90016" name="Zgjidhni një dosje të depove git"/>
 				<Item id="90017" name="(pa depo)"/>
 				<Item id="90018" name="(i shkëputur)"/>
@@ -872,9 +872,9 @@
 				<Item id="90026" name="Rezultatet"/>
 				<Item id="90027" name="Ndalo"/>
 				<Item id="90028" name="Kërkimi u ndal."/>
-				<Item id="90029" name="Po kërkon\u2026"/>
+				<Item id="90029" name="Po kërkon…"/>
 				<Item id="90030" name="Teksti për të kërkuar"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Duke kërkuar..."/>
 				<Item id="90033" name="Zëvendëso:"/>
 				<Item id="90034" name="Fjalë e plotë"/>
@@ -934,7 +934,7 @@
 				<Item id="90088" name="Instalo Plugins"/>
 				<Item id="90089" name="Hiq shtojcat"/>
 				<Item id="90090" name="Nuk u gjetën komanda"/>
-				<Item id="90091" name="Shkruani për të kërkuar\u2026"/>
+				<Item id="90091" name="Shkruani për të kërkuar…"/>
 				<Item id="90092" name="Gjuha e përcaktuar nga përdoruesi v.2.1"/>
 				<Item id="90093" name="Krijo gjuhë të re"/>
 				<Item id="90094" name="Futni një emër:"/>
@@ -943,11 +943,9 @@
 				<Item id="90097" name="Mos Ruaj"/>
 				<Item id="90098" name="U krye"/>
 				<Item id="90099" name="Aktivizo Mbështjelljen e Fjalës"/>
-				<Item id="90100" name="Shfaq të gjithë personazhet"/>
 				<Item id="90101" name="Shfaq opsionet e karaktereve"/>
 				<Item id="90102" name="Aktivizo udhëzuesin e hyrjes"/>
 				<Item id="90103" name="Nuk është zbatuar ende"/>
-				<Item id="90104" name="Rifreskoni nga disku"/>
 				<Item id="90105" name="Ndrysho motorin e kërkimit"/>
 				<Item id="90106" name="Gabim ekzekutimi"/>
 				<Item id="90107" name="Nextpad++ Koha e ngarkimit"/>
@@ -956,7 +954,7 @@
 				<Item id="90110" name="Shkarko"/>
 				<Item id="90111" name="Faqja e publikimit"/>
 				<Item id="90112" name="Më vonë"/>
-				<Item id="90113" name="Filtro shtojcat\u2026"/>
+				<Item id="90113" name="Filtro shtojcat…"/>
 				<Item id="90114" name="Në dispozicion"/>
 				<Item id="90115" name="Përditësimet"/>
 				<Item id="90116" name="Instaluar"/>
@@ -965,7 +963,7 @@
 				<Item id="90119" name="Të hiqen shtojcat e mëposhtme?"/>
 				<Item id="90120" name="Të instaloni shtojcat e mëposhtme?"/>
 				<Item id="90121" name="Kjo do të fshijë skedarët e shtojcave."/>
-				<Item id="90122" name="Komandat e kërkimit\u2026"/>
+				<Item id="90122" name="Komandat e kërkimit…"/>
 				<Item id="90123" name="Ngjyra e planit të parë"/>
 				<Item id="90124" name="Ngjyra e sfondit"/>
 				<Item id="90125" name="Emri makro"/>
@@ -985,7 +983,7 @@
 				<Item id="90139" name="Të gjitha shenjat janë pastruar."/>
 				<Item id="90140" name="Teksti i shënuar i kopjuar në kujtesën e fragmenteve."/>
 				<Item id="90141" name="Nuk ka tekst të shënuar për të kopjuar."/>
-				<Item id="90142" name="Po kërkon... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Po kërkon... %ld hit(s) — %@"/>
 				<Item id="90143" name="Zëvendësimi në skedarë..."/>
 				<Item id="90144" name="Zëvendësimi në Projekte: Nuk është ende i lidhur."/>
 				<Item id="90145" name="Gjeni në Projektet: Nuk është ende i lidhur me listën e skedarëve të Panelit të Projektit."/>
@@ -1006,20 +1004,20 @@
 				<Item id="90160" name="Theksim i zgjuar: vetëm fjalë e tërë"/>
 				<Item id="90161" name="Klikoni dy herë për të mbyllur skedën"/>
 				<Item id="90162" name="Shfaq butonin e mbylljes në skedat"/>
+				<Item id="90168" name="Përdorni fontin monospace në dialogun Find"/>
+				<Item id="90191" name="Depoja e listës së shtojcave"/>
 				<Item id="90224" name="Shfaq skedat në shumë rreshta"/>
 				<Item id="90163" name="Mbani mend dukshmërinë e panelit nëpër sesione"/>
 				<Item id="90164" name="Mbani hyrjet e skedarëve që mungojnë në sesion"/>
 				<Item id="90165" name="Konfirmo përpara Ruaj të gjitha"/>
 				<Item id="90166" name="Konfirmo Zëvendëso të gjitha në dokumentet e hapura"/>
 				<Item id="90167" name="Zëvendëso: mos lëviz në ndodhinë tjetër"/>
-				<Item id="90168" name="Përdorni fontin monospace në dialogun Find"/>
 				<Item id="90169" name="Djathtas-klikimi mban zgjedhjen"/>
 				<Item id="90170" name="Anuloni rendin e paracaktuar të datës/kohës"/>
 				<Item id="90171" name="Përdorni analizues të listës së funksioneve të bazuara në XML"/>
 				<Item id="90172" name="Mbyllni automatikisht kllapat ( ) [ ] { }"/>
 				<Item id="90173" name="Nga karakteri i N-të:"/>
 				<Item id="90174" name="Pragu i kontrollit automatik në përzgjedhje (bajt):"/>
-				<Item id="90175" name="Zgjeruar (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktori"/>
 				<Item id="90177" name="Margjinat"/>
 				<Item id="90178" name="E errët"/>
@@ -1033,12 +1031,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD i optimizuar"/>
 				<Item id="90188" name="E thjeshtë +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Depoja e listës së shtojcave"/>
 				<Item id="90192" name="Zgjidhni një skedar XML me temë Nextpad++ për të aplikuar"/>
-				<Item id="90193" name="Krijo të re\u2026"/>
-				<Item id="90194" name="Ruaj si\u2026"/>
+				<Item id="90193" name="Krijo të re…"/>
+				<Item id="90194" name="Ruaj si…"/>
 				<Item id="90195" name="Gjuha e përdoruesit:"/>
 				<Item id="90196" name="Emri i gjuhës"/>
 				<Item id="90197" name="Krijo"/>
@@ -1068,6 +1064,234 @@
 				<Item id="90221" name="Atribut i kyçur (macOS)"/>
 				<Item id="90222" name="Kontrollo për përditësime…"/>
 				<Item id="90223" name="Hape Së fundmi"/>
+				<Item id="90226" name="Ndihmë"/>
+				<Item id="90227" name="Faza dështoi"/>
+				<Item id="90228" name="Zhdukja dështoi"/>
+				<Item id="90229" name="është në dispozicion"/>
+				<Item id="90230" name="Ju jeni duke vrapuar"/>
+				<Item id="90231" name="Mos më kujto më kurrë"/>
+				<Item id="90232" name="Përditësimet"/>
+				<Item id="90233" name="Kontrollo automatikisht për përditësime"/>
+				<Item id="90234" name="Kontrollet automatike të përditësimit janë joaktiv."/>
+				<Item id="90235" name="Kontrolli i fundit:"/>
+				<Item id="90236" name="Nuk ka lidhje interneti."/>
+				<Item id="90237" name="Përgjigje e papritur nga serveri i përditësimit."/>
+				<Item id="90238" name="Nuk u gjet asnjë publikim i publikuar."/>
+				<Item id="90239" name="Serveri i përditësimit është përkohësisht i padisponueshëm.Ju lutemi provoni përsëri më vonë."/>
+				<Item id="90240" name="Serveri i përditësimit e refuzoi kërkesën.Një përfaqësues, muri i zjarrit ose VPN mund të bllokojnë qasjen në GitHub."/>
+				<Item id="90241" name="Shumë kontrolle të përditësimit nga rrjeti juaj (ky kufi ndahet nga të gjithë në të).Provo sërish pas"/>
+				<Item id="90242" name="Shumë kontrolle të përditësimit nga rrjeti juaj (ky kufi ndahet nga të gjithë në të).Ju lutemi provoni përsëri më vonë."/>
+				<Item id="90243" name="Serveri i përditësimit e ktheu statusin"/>
+				<Item id="90244" name="Provo sërish"/>
+				<Item id="90245" name="Madhësia e tekstit të printimit:"/>
+				<Item id="90246" name="Përdorni zmadhimin e ekranit"/>
+				<Item id="90247" name="Madhësia aktuale"/>
+				<Item id="90248" name="Disa skedarë nuk mund të zëvendësoheshin"/>
+				<Item id="90249" name="...dhe %lu të tjera"/>
+				<Item id="90250" name="Shoqatat e skedarëve menaxhohen nga organizata juaj."/>
+				<Item id="90251" name="Në pritje që macOS të konfirmojë…"/>
+				<Item id="90252" name="macOS nuk e zbatoi ndryshimin."/>
+				<Item id="90253" name="I regjistruar"/>
+				<Item id="90254" name="Të hapen të gjithë skedarët në dosje?"/>
+				<Item id="90255" name="Kjo do të hapë %lu skedarë në skeda të reja."/>
+				<Item id="90256" name="Nuk mund të importohej: %@"/>
+				<Item id="90258" name="U gjetën %ld përputhje(a) në %ld skedar(a)."/>
+				<Item id="90259" name="Po kërkon… %ld përputhje(të) deri tani"/>
+				<Item id="90260" name="%@ (%ld ndeshje%@)"/>
+				<Item id="90261" name="Kërkim i paqartë"/>
+				<Item id="90265" name="Gjeni: Nuk mund të gjendet teksti &quot;%@&quot;"/>
+				<Item id="90266" name="Numri: %ld ndeshje."/>
+				<Item id="90267" name="Zëvendëso të gjitha: %ld ndodhi(at) u zëvendësuan %@."/>
+				<Item id="90268" name="Zëvendëso në Skedarët e Hapur: %ld ndodhi(a) u zëvendësuan."/>
+				<Item id="90269" name="Gjeni në skedarë: %ld goditje në %ld skedarë."/>
+				<Item id="90270" name="Gjeni në skedarë: 0 vizita."/>
+				<Item id="90271" name="Zëvendësoni të gjitha dukuritë e &quot;%@&quot; me &quot;%@&quot; në drejtori:&#10;%@&#10;&#10;Kjo nuk mund të zhbëhet."/>
+				<Item id="90272" name="Zëvendësimi në skedarë: %ld zëvendësime në %ld skedarë."/>
+				<Item id="90273" name="Hapni fillimisht një panel projekti."/>
+				<Item id="90274" name="Zgjidhni të paktën një panel projekti për të kërkuar."/>
+				<Item id="90275" name="Nuk ka skedarë për të kërkuar."/>
+				<Item id="90276" name="Gjeni në Projektet: %ld hit(a) në %ld skedar(a)."/>
+				<Item id="90277" name="Gjeni në Projektet: 0 goditje."/>
+				<Item id="90278" name="Zëvendësoni të gjitha dukuritë e"/>
+				<Item id="90279" name="me"/>
+				<Item id="90280" name="në"/>
+				<Item id="90281" name="skedar(et) e projektit.Kjo nuk mund të zhbëhet."/>
+				<Item id="90282" name="Zëvendëso në Projekte: %ld zëvendësim(a) në %ld skedar(a)."/>
+				<Item id="90283" name="Shënoni: %ld ndeshje të shënuara."/>
+				<Item id="90284" name="Filtro emrin e skedarit/dosjes..."/>
+				<Item id="90285" name="Disa dokumente nuk mund të ruheshin"/>
+				<Item id="90286" name="⌘ Komanda"/>
+				<Item id="90287" name="⌃ Kontrolli"/>
+				<Item id="90288" name="⌥ Opsioni"/>
+				<Item id="90289" name="⇧ Ndërrimi"/>
+				<Item id="90290" name="Fut një varg formati NSDateFormatter:"/>
+				<Item id="90291" name="'%@' nuk është zbatuar ende në këtë version."/>
+				<Item id="90292" name="Shtojca e importit"/>
+				<Item id="90293" name="Kërkohet rinisja"/>
+				<Item id="90294" name="Nuk ka skedarë për t'u përpunuar"/>
+				<Item id="90295" name="Kjo nyje projekti nuk përmban skedarë."/>
+				<Item id="90296" name="'%@' ka ndryshime të paruajtura.&#10;Ringarkoni dhe të hidhni poshtë ndryshimet?"/>
+				<Item id="90297" name="Futni një emër të ri skedari:"/>
+				<Item id="90298" name="Riemërto skedën aktuale"/>
+				<Item id="90299" name="Emri i ri:"/>
+				<Item id="90300" name="Riemërtimi dështoi"/>
+				<Item id="90301" name="Emri nuk mund të përmbajë &quot;/&quot; ose &quot;:&quot;."/>
+				<Item id="90302" name="Të zhvendoset '%@' te koshi?"/>
+				<Item id="90303" name="Të ruhet '%@' përpara mbylljes?"/>
+				<Item id="90304" name="Mos i ruaj të gjitha"/>
+				<Item id="90305" name="Këshillë për modalitetin e kolonës"/>
+				<Item id="90306" name="Ka 3 mënyra për të kaluar në modalitetin e përzgjedhjes së kolonës:&#10;&#10;1.(Tastiera dhe miu) Mbajeni opsionin ndërsa kliko me të majtën zvarrë&#10;&#10;2.(Vetëm tastierë) Mbani Option+Shift ndërsa përdorni tastet me shigjeta&#10;&#10;3.(Tastiera ose miu)&#10; Vendosni kartën në fillimin e dëshiruar të pozicionit të bllokut të kolonës, më pas&#10; ekzekutoni komandën &quot;Fillimi/Zgjidhja e përfundimit në modalitetin e kolonës&quot;;&#10; Zhvendosni kartën në fundin e dëshiruar të pozicionit të bllokut të kolonës, më pas&#10; ekzekutoni përsëri komandën &quot;Fillimi/Zgjidhja e përfundimit në modalitetin e kolonës&quot;"/>
+				<Item id="90307" name="Futni URL-në e kërkimit.Përdorni %s si mbajtëse të pyetjes (ose shtojini pyetjen në fund):"/>
+				<Item id="90308" name="Fut komandën ose URL-në..."/>
+				<Item id="90309" name="Dështoi në ekzekutimin:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Redaktimi i contextMenu.xml ju lejon të modifikoni menynë e kontekstit kërcyes Nextpad++ në zonën e redaktimit.&#10;Duhet të rinisni Nextpad++ tuaj për të hyrë në fuqi pas modifikimit të contextMenu.xml."/>
+				<Item id="90312" name="I instaluar tashmë"/>
+				<Item id="90313" name="Instaloni mjetin e linjës së komandës nextpad++"/>
+				<Item id="90314" name="Instalimi dështoi"/>
+				<Item id="90315" name="Instaluar — por ~/.local/bin nuk është në PATH-in tuaj"/>
+				<Item id="90316" name="Tashmë në konfigurimin tuaj"/>
+				<Item id="90317" name="Shtuar te PATH"/>
+				<Item id="90318" name="Nuk mund të shkruante"/>
+				<Item id="90319" name="E kopjuar"/>
+				<Item id="90320" name="Të ruhen ndryshimet në &quot;%@&quot;?"/>
+				<Item id="90321" name="Ndryshimet tuaja do të humbasin nëse nuk i ruani ato."/>
+				<Item id="90322" name="Aplikoni për të gjitha dokumentet"/>
+				<Item id="90323" name="Ekzekutoni makro në skedarë"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Dosja:"/>
+				<Item id="90326" name="Zgjidh një dosje…"/>
+				<Item id="90327" name="Shfleto…"/>
+				<Item id="90328" name="Shtesat:"/>
+				<Item id="90329" name="Recurse nëndirektoritë"/>
+				<Item id="90330" name="Përfshi skedarët e fshehur"/>
+				<Item id="90331" name="Madhësia maksimale:"/>
+				<Item id="90332" name="E pakufizuar"/>
+				<Item id="90333" name="Për skedar:"/>
+				<Item id="90334" name="Ruaj nëse modifikohet"/>
+				<Item id="90335" name="Mbylle pas"/>
+				<Item id="90336" name="Mbyllni edhe skedarët që ishin tashmë të hapur"/>
+				<Item id="90337" name="Në gabim:"/>
+				<Item id="90338" name="Kalo skedarin dhe vazhdo"/>
+				<Item id="90339" name="Ndaloni në gabimin e parë"/>
+				<Item id="90340" name="(nuk ka makro të ruajtura)"/>
+				<Item id="90341" name="%lu skedarë përputhen"/>
+				<Item id="90342" name="Dosja nuk u gjet"/>
+				<Item id="90343" name="Zgjidh një dosje që ekziston."/>
+				<Item id="90344" name="Asnjë skedar nuk përputhet"/>
+				<Item id="90345" name="Rregulloni opsionin e filtrit të shtesave, rekursionit ose skedarëve të fshehur."/>
+				<Item id="90346" name="Duke filluar…"/>
+				<Item id="90347" name="Përpunimi:"/>
+				<Item id="90348" name="%ld / %ld Në rregull: %ld U anashkalua: %ld Dështoi: %ld"/>
+				<Item id="90349" name="Grupi u anulua"/>
+				<Item id="90350" name="Grupi i plotë"/>
+				<Item id="90351" name="Gjithsej: %lu Në rregull: %ld Kapërceu: %ld Dështoi: %ld"/>
+				<Item id="90352" name="Data e ndertimit"/>
+				<Item id="90353" name="Sistemi Operativ"/>
+				<Item id="90354" name="e fundit"/>
+				<Item id="90355" name="i vjetëruar"/>
+				<Item id="90356" name="i panjohur"/>
+				<Item id="90357" name="Rinisni aplikacionin që ndryshimet të hyjnë në fuqi."/>
+				<Item id="90358" name="Përditëso shtojcat"/>
+				<Item id="90359" name="Të përditësohen shtojcat e mëposhtme?"/>
+				<Item id="90360" name="Versionet aktuale janë rezervuar në ~/Library/Application Support/Nextpad++/plugin-backups/ përpara se të zëvendësohen."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Kalo në pamjen e re të Tahoe (Beta)"/>
+				<Item id="90363" name="Përdor menytë e stilit macOS (Beta)"/>
+				<Item id="90364" name="Pamja e re Tahoe do të zbatohet pasi të rinisni Nextpad++."/>
+				<Item id="90365" name="Pamja klasike do të rikthehet pasi të rinisni Nextpad++."/>
+				<Item id="90366" name="Hiqni dorë tani"/>
+				<Item id="90367" name="Menytë do të riorganizohen në stilin macOS pasi të rinisni Nextpad++."/>
+				<Item id="90368" name="Paraqitja klasike e menysë do të rikthehet pasi të rinisni Nextpad++."/>
+				<Item id="90369" name="Ngjyra"/>
+				<Item id="90370" name="Aplikoni në ikonat e shiritit të veglave të shtojcave"/>
+				<Item id="90371" name="Në modalitetin e plotë, ikonat e shtojcave bëhen një ngjyrë e vetme."/>
+				<Item id="90372" name="Grupet e shiritit të veglave"/>
+				<Item id="90373" name="Zgjidhni ku të shfaqet secili buton në shiritin e veglave Liquid Glass: në"/>
+				<Item id="90374" name="Butoni"/>
+				<Item id="90375" name="Vendosja"/>
+				<Item id="90376" name="Rivendosni në Parazgjedhje"/>
+				<Item id="90377" name="Menyja e tejmbushjes"/>
+				<Item id="90378" name="I fshehur"/>
+				<Item id="90379" name="Përfundim fjalësh miqësor ndaj CJK-së"/>
+				<Item id="90380" name="Zgjedhja e kolonës kalon në modifikim të shumëfishtë"/>
+				<Item id="90381" name="Hapësira e rreshtave:"/>
+				<Item id="90382" name="1.0 (e parazgjedhur)"/>
+				<Item id="90383" name="Fshih shiritin e skedave"/>
+				<Item id="90384" name="Madhësia e skedës ndjek zmadhimin e dokumentit"/>
+				<Item id="90385" name="Zgjidh…"/>
+				<Item id="90386" name="Rivendos në Parazgjedhje"/>
+				<Item id="90387" name="Duke përdorur vendndodhjen e paracaktuar."/>
+				<Item id="90388" name="Vendndodhja e personalizuar."/>
+				<Item id="90389" name="Shteg i pavlefshëm — kopjet rezervë do të përdorin vendndodhjen e paracaktuar."/>
+				<Item id="90390" name="Zgjidhni"/>
+				<Item id="90391" name="Fut përzgjedhjen:"/>
+				<Item id="90392" name="Përdor modalitetin Boost Regex (me shumë rreshta; rinis për të aplikuar)"/>
+				<Item id="90393" name="Ju lutemi rinisni Nextpad++ për të hyrë në fuqi."/>
+				<Item id="90394" name="Rrugë e pavlefshme."/>
+				<Item id="90395" name="Rinis tani"/>
+				<Item id="90396" name="Zgjidh një dosje nga/deri ku Nextpad++ lexon/shkruan cilësimet e saj"/>
+				<Item id="90397" name="(mos e zgjidhni nëse nuk e dini se çfarë po bëni)"/>
+				<Item id="90398" name="Madhësia e ikonës së shiritit të veglave"/>
+				<Item id="90399" name="100% (e parazgjedhur)"/>
+				<Item id="90400" name="Shpejtësia e lëvizjes së rrotës së miut"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Madhësia e ikonës së shiritit të veglave ndryshoi"/>
+				<Item id="90403" name="Madhësia e re e ikonës së shiritit të veglave do të hyjë në fuqi herën tjetër që të nisë Nextpad++."/>
+				<Item id="90404" name="Ikonat e shiritit të veglave ndryshuan"/>
+				<Item id="90405" name="Ikonat e reja të shiritit të veglave do të hyjnë në fuqi herën tjetër që të nisë Nextpad++."/>
+				<Item id="90410" name="Gjeni në Projektet..."/>
+				<Item id="90411" name="Ekzekutoni makro në skedarë..."/>
+				<Item id="90418" name="Kjo do ta heqë atë dhe të gjithë përmbajtjen e tij nga projekti.Asnjë skedar në disk nuk do të ndikohet."/>
+				<Item id="90420" name="Dosja"/>
+				<Item id="90421" name="Gjeni në këto rezultate kërkimi..."/>
+				<Item id="90422" name="Kopjo linjat e zgjedhura"/>
+				<Item id="90423" name="Kopjo emrat e zgjedhur të rrugës"/>
+				<Item id="90424" name="Hap emrat e zgjedhur të rrugës"/>
+				<Item id="90425" name="Rrjedha të gjata mbështjellin fjalë"/>
+				<Item id="90426" name="Pastrim për çdo kërkim"/>
+				<Item id="90427" name="Nuk u gjet"/>
+				<Item id="90428" name="KONFLIKTI: %@"/>
+				<Item id="90429" name="Të fshihet &quot;%@&quot;?"/>
+				<Item id="90430" name="Administratori i gjuhës së përcaktuar nga përdoruesi"/>
+				<Item id="90431" name="Filtro gjuhët…"/>
+				<Item id="90432" name="Burimi"/>
+				<Item id="90433" name="Burimet AC"/>
+				<Item id="90434" name="Statusi"/>
+				<Item id="90435" name="Instaloni / Përditësoni"/>
+				<Item id="90436" name="%lu gjuhë · %lu të instaluara · %lu përditësime"/>
+				<Item id="90437" name="Autori"/>
+				<Item id="90438" name="Të kombinuara: %ld hyrje nga %lu burime (të bashkuara)"/>
+				<Item id="90439" name="Zgjidhni një ose më shumë gjuhë për të instaluar."/>
+				<Item id="90440" name="Asgjë e shkarkueshme për përzgjedhjen."/>
+				<Item id="90441" name="Shkarkimi dështoi"/>
+				<Item id="90442" name="Mospërputhja e shumës së kontrollit"/>
+				<Item id="90443" name="Gjuhët e zgjedhura janë tani të disponueshme në menynë Gjuha."/>
+				<Item id="90444" name="Zgjidhni një ose më shumë gjuhë të instaluara për të hequr."/>
+				<Item id="90445" name="U hoq"/>
+				<Item id="90446" name="Ky emër përdoret tashmë nga një gjuhë tjetër."/>
+				<Item id="90447" name="Kjo gjuhë nuk mund të hiqej."/>
+				<Item id="90448" name="Gjuhët e parainstaluara nuk mund të hiqen."/>
+				<Item id="90449" name="Kjo gjuhë nuk mund të riemërohej."/>
+				<Item id="90450" name="Ky skedar është %@.Hapja e tij do të çaktivizojë theksimin e sintaksës dhe do të zhbëjë historikun për ta mbajtur aplikacionin të përgjegjshëm.&#10;&#10;Dëshiron të vazhdosh?"/>
+				<Item id="90451" name="Hape Gjithsesi"/>
+				<Item id="90452" name="&quot;%@&quot; ndryshoi në disk"/>
+				<Item id="90453" name="Injoro"/>
+				<Item id="90454" name="Mbaj versionin tim"/>
+				<Item id="90455" name="&quot;%@&quot; nuk mund të ringarkohej"/>
+				<Item id="90456" name="Skedari nuk mund të lexohej."/>
+				<Item id="90457" name="Zgjidhni ku të shfaqet secili buton në shiritin e veglave Liquid Glass: në kapsulën e grupit (Toolbar), në menynë ▾ të tejmbushjes së grupit ose Fshehur."/>
+				<Item id="90458" name="Dhuroni për të mbështetur zhvillimin"/>
+				<Item id="90459" name="Instaloni mjetet e linjës së komandës"/>
+				<Item id="90460" name="Shfaq hijet pas kapsulave të shiritit të veglave"/>
+				<Item id="90461" name="Dhuroni"/>
+				<Item id="90462" name="Komplete karakteresh"/>
+				<Item id="90463" name="Minimizoje"/>
+				<Item id="90464" name="Fshih Nextpad++"/>
+				<Item id="90465" name="Fshih të tjerët"/>
+				<Item id="90466" name="Shfaq të gjitha"/>
+				<Item id="90467" name="Dil nga Nextpad++"/>
+				<Item id="90468" name="Ruaj makro aktuale të regjistruar…"/>
+				<Item id="90469" name="Shkurtoni hapësirën pasuese dhe ruajeni"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>
