@@ -4389,6 +4389,19 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         if (edIdx != NSNotFound) {
             NSInteger cid = [ownerMgr.tabBar tabColorAtIndex:edIdx];
             if (cid >= 0) info[@"tabColorId"] = @(cid);
+
+            // Persist custom tab color (colorId == 5) as an sRGB #RRGGBB hex string
+            if (cid == 5) {
+                NSColor *cc = [ownerMgr.tabBar tabCustomColorAtIndex:edIdx];
+                cc = [cc colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] ?: cc;
+                if (cc) {
+                    NSString *hex = [NSString stringWithFormat:@"#%02X%02X%02X",
+                        (int)(cc.redComponent   * 255 + 0.5),
+                        (int)(cc.greenComponent * 255 + 0.5),
+                        (int)(cc.blueComponent  * 255 + 0.5)];
+                    info[@"tabCustomColor"] = hex;
+                }
+            }
             if ([ownerMgr.tabBar isTabPinnedAtIndex:edIdx])
                 info[@"pinned"] = @YES;
         }
@@ -4563,10 +4576,30 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         // ── Restore per-tab color and pin state ──
         NSInteger tabIdx = (NSInteger)_tabManager.allEditors.count - 1;
         NSNumber *colorNum = info[@"tabColorId"];
-        if (colorNum)
-            [_tabManager.tabBar setTabColorAtIndex:tabIdx colorId:colorNum.integerValue];
+        if (colorNum) {
+            NSInteger cid = colorNum.integerValue;
+            [_tabManager.tabBar setTabColorAtIndex:tabIdx colorId:cid];
+
+            // Restore custom tab color (colorId == 5) from #RRGGBB hex string
+            if (cid == 5) {
+                NSString *hex = info[@"tabCustomColor"];
+                if (hex.length == 7 && [hex hasPrefix:@"#"]) {
+                    unsigned int r = 0, g = 0, b = 0;
+                    NSScanner *sc = [NSScanner scannerWithString:[hex substringFromIndex:1]];
+                    unsigned int rgb = 0;
+                    [sc scanHexInt:&rgb];
+                    r = (rgb >> 16) & 0xFF;
+                    g = (rgb >>  8) & 0xFF;
+                    b =  rgb        & 0xFF;
+                    NSColor *cc = [NSColor colorWithRed:r/255.0 green:g/255.0
+                                                  blue:b/255.0 alpha:1.0];
+                    [_tabManager.tabBar setTabCustomColor:cc atIndex:tabIdx];
+                }
+            }
+        }
         if ([info[@"pinned"] boolValue])
             [_tabManager.tabBar pinTabAtIndex:tabIdx toggle:YES];
+
 
         // ── Restore bookmarks ──
         NSArray *bookmarks = info[@"bookmarks"];
@@ -5932,12 +5965,17 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 // The tab color for a document (matching the colored tab), found in whichever
 // view owns the editor. nil when the tab has no custom color.
+// Added cid == 5 for custom colors (Refine: tab color display in document list)
+// and 1-4 holds the predefined colors (Refine: color tabs)
 - (NSColor *)documentListPanel:(DocumentListPanel *)panel backgroundColorForEditor:(EditorView *)editor {
     for (TabManager *mgr in @[_tabManager, _subTabManagerH, _subTabManagerV]) {
         if (!mgr) continue;
         NSUInteger idx = [mgr.allEditors indexOfObject:editor];
-        if (idx != NSNotFound)
-            return [NppTabBar tabFillColorForId:[mgr.tabBar tabColorAtIndex:(NSInteger)idx]];
+        if (idx != NSNotFound) {
+            NSInteger cid = [mgr.tabBar tabColorAtIndex:(NSInteger)idx];
+            if (cid == 5) return [mgr.tabBar tabCustomColorAtIndex:(NSInteger)idx];
+            return [NppTabBar tabFillColorForId:cid];
+        }
     }
     return nil;
 }
@@ -8102,11 +8140,11 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 #pragma mark - Tab coloring
 
+/// Applies a preset color ID (-1 to 4) to the selected tab and synchronizes the Document List panel.
 - (void)_applyTabColor:(NSInteger)colorId {
     NSInteger idx = _activeTabManager.tabBar.selectedIndex;
     if (idx < 0) return;
     [_activeTabManager.tabBar setTabColorAtIndex:idx colorId:colorId];
-    // Re-tint the Document List row to match the colored tab right away.
     if (_docListPanel) [_docListPanel reloadData];
 }
 
@@ -8116,6 +8154,41 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 - (void)applyTabColor4:(id)sender { [self _applyTabColor:3]; }
 - (void)applyTabColor5:(id)sender { [self _applyTabColor:4]; }
 - (void)removeTabColor:(id)sender  { [self _applyTabColor:-1]; }
+
+/// Displays macOS NSColorPanel to select and apply an arbitrary custom color to the selected tab.
+- (void)applyTabCustomColor:(id)sender {
+    NSInteger idx = _activeTabManager.tabBar.selectedIndex;
+    if (idx < 0) return;
+
+    NSColor *current = [_activeTabManager.tabBar tabCustomColorAtIndex:idx];
+    NSColorPanel *panel = [NSColorPanel sharedColorPanel];
+    NSColor *initialColor = current ?: [NSColor colorWithRed:0.35 green:0.65 blue:1.0 alpha:1.0];
+    panel.color = initialColor;
+    panel.showsAlpha = NO;
+    panel.continuous = YES;
+    panel.target = self;
+    panel.action = @selector(changeColor:);
+
+    // Apply default color immediately if the tab was uncolored, giving instant visual feedback.
+    if (!current) {
+        [_activeTabManager.tabBar setTabCustomColor:initialColor atIndex:idx];
+        if (_docListPanel) [_docListPanel reloadData];
+    }
+    [panel orderFront:sender];
+}
+
+/// Continuous callback from NSColorPanel for live tab color adjustments.
+- (void)changeColor:(id)sender {
+    NSColorPanel *panel = [NSColorPanel sharedColorPanel];
+    NSInteger idx = _activeTabManager.tabBar.selectedIndex;
+    if (idx < 0) return;
+
+    // Convert to device-independent sRGB color space for consistent rendering and serialization.
+    NSColor *color = [panel.color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]] ?: panel.color;
+
+    [_activeTabManager.tabBar setTabCustomColor:color atIndex:idx];
+    if (_docListPanel) [_docListPanel reloadData];
+}
 
 #pragma mark - Find panel animation
 
