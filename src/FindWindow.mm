@@ -30,6 +30,11 @@ static const CGFloat kLeftM     = 30;    // left margin for checkboxes
 static const CGFloat kLabelR    = 140;   // right edge of "Find what:" label
 static const CGFloat kFieldL    = 145;   // left edge of combo boxes
 static const CGFloat kFieldR    = 410;   // right edge of combo boxes (from left)
+// Directory row (Find in Files): the "..." and "<<" buttons sit inside the
+// combo column, so the row's right edge lines up with the combos above it.
+static const CGFloat kDirBtnW   = 30;    // width of "..." / "<<"
+static const CGFloat kDirBtnGap = 4;     // gap before each of them
+static const CGFloat kDirFieldR = kFieldR - 2 * (kDirBtnW + kDirBtnGap); // directory combo right edge
 // Button width: computed in +initialize so "Find All in All Opened" fits on one line
 // and "Documents" wraps to the next line.
 static CGFloat kBtnW = 200;
@@ -626,14 +631,19 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Find what:"]),    _findCombo,      H - 30, kLabelR, kFieldL, kFieldR);
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Replace with:"]), _replaceCombo,   H - 62, kLabelR, kFieldL, kFieldR);
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Filters:"]),      _filtersCombo,   H - 94, kLabelR, kFieldL, kFieldR);
-    _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Directory:"]),    _directoryCombo, H -126, kLabelR, kFieldL, kFieldR - 70);
+    _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Directory:"]),    _directoryCombo, H -126, kLabelR, kFieldL, kDirFieldR);
 
-    // Browse & fill buttons next to directory
+    // Browse & fill buttons next to directory: same frame height and Y as the
+    // combo so they are vertically centred on it, and the "<<" button ends at
+    // kFieldR like the combos above. (They used to sit 5 pt lower and the
+    // "..." button overlapped the combo's right end.)
     NSButton *browseBtn = _mkBtn(@"...", @selector(_browseDir:), self);
-    browseBtn.frame = NSMakeRect(kFieldR - 78, H - 131, 30, 24);
+    browseBtn.translatesAutoresizingMaskIntoConstraints = YES;
+    browseBtn.frame = NSMakeRect(kDirFieldR + kDirBtnGap, H - 126, kDirBtnW, 24);
     [v addSubview:browseBtn];
     NSButton *fillBtn = _mkBtn(@"<<", @selector(_fillDirFromDoc:), self);
-    fillBtn.frame = NSMakeRect(kFieldR - 45, H - 131, 30, 24);
+    fillBtn.translatesAutoresizingMaskIntoConstraints = YES;
+    fillBtn.frame = NSMakeRect(kFieldR - kDirBtnW, H - 126, kDirBtnW, 24);
     [v addSubview:fillBtn];
 
     // Buttons
@@ -795,7 +805,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     }
     if (tab == FindWindowTabFindInFiles) {
         [tv addSubview:_directoryCombo];
-        _directoryCombo.frame = NSMakeRect(kFieldL, H - 126, kFieldR - kFieldL - 70, 24);
+        _directoryCombo.frame = NSMakeRect(kFieldL, H - 126, kDirFieldR - kFieldL, 24);
     }
 
     // Point _fr* to the correct tab's checkboxes for Find/Replace
@@ -814,11 +824,12 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 
 #pragma mark - Status
 
+// Blue = found / informational, red = not found / error (Windows NPP's
+// meaning). System colours, so both stay legible in Dark Mode; the old fixed
+// dark blue was unreadable on the dark window background.
 - (void)_showStatus:(NSString *)msg found:(BOOL)found {
     _statusLabel.stringValue = msg;
-    _statusLabel.textColor = found
-        ? [NSColor colorWithRed:0 green:0 blue:0.7 alpha:1]
-        : [NSColor colorWithRed:0.8 green:0 blue:0 alpha:1];
+    _statusLabel.textColor = found ? [NSColor systemBlueColor] : [NSColor systemRedColor];
 }
 
 - (void)_showReplaceWriteFailures:(NSArray<NSString *> *)failures {
