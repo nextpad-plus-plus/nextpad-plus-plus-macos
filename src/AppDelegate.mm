@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "NppApplication.h"
 #import "MainWindowController.h"
 #import "MenuBuilder.h"
@@ -52,6 +53,10 @@ static const NSUInteger kFolderOpenConfirmThreshold = 20;
 
     // Apply saved shortcut overrides from shortcuts.xml <InternalCommands>
     [self _loadShortcutOverrides];
+
+    // Create langs.xml / stylers.xml, or merge new model entries into them,
+    // before anything reads them.
+    NppInstallUserLangsAndStylers();
 
     // Load built-in language definitions from langs.xml (keywords, extensions, comments).
     [[NppLangsManager shared] loadLangs];

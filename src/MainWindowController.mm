@@ -39,6 +39,7 @@
 #import "UserDefineLangManager.h"
 #import "UserDefineDialog.h"
 #import "NppThemeManager.h"
+#import "NppModelXmlMerge.h"
 #import "NppLocalizer.h"
 #import <objc/runtime.h>
 #include <sys/sysctl.h>
@@ -793,27 +794,9 @@ static void ensureNppDirs(void) {
         }
     }
 
-    // Copy langs.model.xml from bundle as langs.xml if user copy doesn't exist.
-    // User edits ~/Library/Application Support/Nextpad++/langs.xml to customize extensions, keywords, comment delimiters.
-    NSString *langsPath = [nppConfigDir() stringByAppendingPathComponent:@"langs.xml"];
-    if (![fm fileExistsAtPath:langsPath]) {
-        NSString *bundleCopy = [[NSBundle mainBundle] pathForResource:@"langs.model" ofType:@"xml"];
-        if (bundleCopy) {
-            [fm copyItemAtPath:bundleCopy toPath:langsPath error:nil];
-            NSLog(@"[Langs] Copied langs.model.xml as langs.xml to %@", nppConfigDir());
-        }
-    }
-
-    // Copy stylers.model.xml from bundle as stylers.xml if user copy doesn't exist.
-    // User edits ~/Library/Application Support/Nextpad++/stylers.xml to customize the Default theme styles.
-    NSString *stylersPath = [nppConfigDir() stringByAppendingPathComponent:@"stylers.xml"];
-    if (![fm fileExistsAtPath:stylersPath]) {
-        NSString *bundleCopy = [[NSBundle mainBundle] pathForResource:@"stylers.model" ofType:@"xml"];
-        if (bundleCopy) {
-            [fm copyItemAtPath:bundleCopy toPath:stylersPath error:nil];
-            NSLog(@"[Stylers] Copied stylers.model.xml as stylers.xml to %@", nppConfigDir());
-        }
-    }
+    // Copy langs.model.xml / stylers.model.xml from the bundle as langs.xml /
+    // stylers.xml if missing; merge newer model entries into existing copies.
+    NppInstallUserLangsAndStylers();
 
     // Create ~/Library/Application Support/Nextpad++/themes/ for user-installed themes (empty on first run).
     NSString *userThemesDir = [nppConfigDir() stringByAppendingPathComponent:@"themes"];
