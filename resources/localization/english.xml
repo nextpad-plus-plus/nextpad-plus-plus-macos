@@ -1929,6 +1929,15 @@ You can re-activate this dialog in Preferences later."/>
 				<Item id="90469" name="Trim Trailing Space and Save"/>
 				<Item id="90470" name="All plugin buttons are hidden, so the Plugins capsule is not shown in the toolbar."/>
 				<Item id="90471" name="not loaded"/>
+				<Item id="90472" name="Find in Files cancelled: %ld hit(s) in %ld file(s)."/>
+				<Item id="90473" name="Find in Projects cancelled: %ld hit(s) in %ld file(s)."/>
+				<Item id="90474" name="Replace in Files cancelled: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90475" name="Replace in Projects cancelled: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90476" name="Cancelling..."/>
+				<Item id="90477" name="skipped, the result cannot be saved in the file's encoding (%@) without data loss"/>
+				<Item id="90478" name="Unknown write error"/>
+				<Item id="90479" name="skipped, the file did not decode cleanly, so rewriting it could change other bytes"/>
+				<Item id="90493" name="skipped, the file has unsaved changes in an open tab"/>
 				<Item id="90500" name="%@ (recovered)"/>
 			</MacStrings>
 		</Dialog>
