@@ -348,6 +348,20 @@ static NSUInteger nppLargeFileThreshold(void) {
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_preferencesChanged:)
                name:@"NPPPreferencesChanged" object:nil];
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_userDefineLangsChanged:)
+               name:UserDefineLangsDidChangeNotification object:nil];
+}
+
+/// The UDL dialog saved (or renamed / removed) a UDL: re-apply it if this
+/// buffer uses it, following a rename to the new name. If the UDL is gone
+/// (removed), fall back to plain text like Windows (L_TEXT).
+- (void)_userDefineLangsChanged:(NSNotification *)n {
+    NSString *name = n.userInfo[@"name"], *oldName = n.userInfo[@"oldName"];
+    if (!_currentLanguage.length || !name.length) return;
+    if (![_currentLanguage isEqualToString:(oldName ?: name)]) return;
+    BOOL exists = [[UserDefineLangManager shared] languageNamed:name] != nil;
+    [self setLanguage:exists ? name : @""];
 }
 
 - (void)dealloc {

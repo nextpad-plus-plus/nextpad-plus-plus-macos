@@ -8,6 +8,8 @@
 namespace Scintilla { struct ILexer5; }
 extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 
+NSNotificationName const UserDefineLangsDidChangeNotification = @"UserDefineLangsDidChangeNotification";
+
 // ── UserDefinedLang ──────────────────────────────────────────────────────────
 
 @implementation UserDefinedLang
@@ -123,10 +125,14 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
     if (!data) { NSLog(@"UDL: cannot read %@", path.lastPathComponent); return; }
 
     NSError *error;
-    // Preserve original structure (comments, entities, whitespace) to avoid
-    // decoding &#x000D;&#x000A; entities and XML entity references on load.
+    // Preserve original structure (comments, entities, whitespace), but not
+    // character references: with NSXMLNodePreserveCharacterReferences,
+    // stringValue drops the whitespace between adjacent references
+    // ("&#x4E2D; &#x6587;" reads back as two joined words) and leaves
+    // non-BMP ones (&#x1F600;) undecoded. The UDL dialog writes such
+    // references for characters a file's declared encoding cannot hold.
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data
-                                                     options:NSXMLNodePreserveAll
+                                                     options:NSXMLNodePreserveAll & ~NSXMLNodePreserveCharacterReferences
                                                        error:&error];
     if (!doc) {
         // Fall back to tidy XML for files with encoding issues

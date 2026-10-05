@@ -2,6 +2,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Posted after the UDL dialog saves, renames, creates or removes a UDL (the
+/// manager has already reloaded). userInfo: @"name" (the affected UDL) and,
+/// for a rename, @"oldName". Editors using the UDL re-apply it.
+extern NSNotificationName const UserDefineLangsDidChangeNotification;
+
 /// Represents one User Defined Language loaded from XML.
 @interface UserDefinedLang : NSObject
 @property (nonatomic, copy)   NSString *name;          // display name
