@@ -34,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// owner then hides it). When NO or not implemented, a fresh untitled tab
 /// replaces the closed one.
 - (BOOL)tabManagerMayBecomeEmpty:(TabManager *)tabManager;
+/// The pane's last tab was closed and the pane was left empty (see above).
+/// Only a close sends this; -evictEditor: never does.
+- (void)tabManagerDidBecomeEmpty:(TabManager *)tabManager;
 /// `editor`'s tab was dropped on `target`'s tab bar (another split pane or
 /// another window) at insertion slot `index`; cloned there when `copy`.
 - (void)tabManager:(TabManager *)tabManager moveEditor:(EditorView *)editor
