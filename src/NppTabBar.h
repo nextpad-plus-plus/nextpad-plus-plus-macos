@@ -14,6 +14,24 @@ NS_ASSUME_NONNULL_BEGIN
 /// a new untitled tab in the tab manager that owns `bar`. Optional — bars
 /// with no implementer simply don't react to the gesture.
 - (void)tabBarDidRequestNewTab:(NppTabBar *)bar;
+
+// ── Tab tear-off ──
+// A drag that leaves the bar (vertically past a small band, or out of its
+// window) detaches the tab. Released over another visible NppTabBar, the tab
+// is offered to that bar; released anywhere else, it is torn off. A delegate
+// that implements neither of the did… methods keeps every drag inside the bar.
+
+/// Whether the tab may be torn off into a new window. Not consulted for a
+/// drop onto another bar. Defaults to YES when not implemented.
+- (BOOL)tabBar:(NppTabBar *)bar canDetachTabAtIndex:(NSInteger)index;
+/// The tab was released outside every tab bar. `screenPoint` is the pointer
+/// position in screen coordinates.
+- (void)tabBar:(NppTabBar *)bar didDetachTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint;
+/// The tab was released over `target` (another bar, possibly in another
+/// window) at insertion slot `targetIndex` (0…target.tabCount).
+- (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex;
 @end
 
 /// Left-aligned tab bar styled after Nextpad++.
@@ -24,6 +42,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSInteger tabCount;
 
 - (void)addTabWithTitle:(NSString *)title modified:(BOOL)modified;
+/// Insert a tab at `index` (clamped to 0…tabCount). The selection stays on
+/// the tab that was selected.
+- (void)insertTabWithTitle:(NSString *)title modified:(BOOL)modified atIndex:(NSInteger)index;
 - (void)removeTabAtIndex:(NSInteger)index;
 - (void)setTitle:(NSString *)title modified:(BOOL)modified atIndex:(NSInteger)index;
 - (void)selectTabAtIndex:(NSInteger)index;
