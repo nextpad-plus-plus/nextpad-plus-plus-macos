@@ -3,15 +3,40 @@
 #import "Scintilla.h"
 #import "ScintillaMessages.h"
 #import "NppThemeManager.h"
+#import "StyleConfiguratorWindowController.h"
+#import "TabManager.h"
 
-namespace Scintilla { struct ILexer5; }
-extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
+// The map shares the tracked editor's Scintilla document (SCI_SETDOCPOINTER),
+// so it must never take keyboard focus: SCI_SETREADONLY is a document
+// property, so the map cannot protect itself without making the editor
+// read-only too. The viewport overlay already swallows mouse input; this
+// content view keeps the map out of the key-view loop and menu targeting,
+// and refuses drops: Scintilla's drop path ignores read-only, so a text drag
+// from the editor onto the map would otherwise move text in the document.
+// _configureMapSci also unregisters its drag types; these overrides are the
+// backstop if anything registers them again.
+@interface _DMMapContentView : SCIContentView
+@end
+@implementation _DMMapContentView
+- (BOOL)acceptsFirstResponder { return NO; }
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender { return NSDragOperationNone; }
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender { return NSDragOperationNone; }
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender { return NO; }
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender { return NO; }
+@end
+
+@interface _DMMapScintillaView : ScintillaView
+@end
+@implementation _DMMapScintillaView
++ (Class)contentViewClass { return [_DMMapContentView class]; }
+@end
 
 // ─────────────────────────────────────────────────────────────────────────────
 @class _DMViewportOverlay;
 
 @interface DocumentMapPanel ()
 - (NSRect)_viewportRectForOverlay:(_DMViewportOverlay *)overlay;
+- (NSColor *)_viewportColor;
 - (void)_overlayMouseDown:(NSPoint)pt;
 - (void)_overlayMouseDragged:(NSPoint)pt;
 - (void)_overlayScrollWheel:(NSEvent *)event;
@@ -31,7 +56,7 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 - (void)drawRect:(NSRect)dirty {
     NSRect vr = [self.panel _viewportRectForOverlay:self];
     if (NSIsEmptyRect(vr)) return;
-    [[NSColor colorWithRed:1.0 green:0.72 blue:0.57 alpha:0.45] setFill];
+    [[self.panel _viewportColor] setFill];
     [NSBezierPath fillRect:vr];
 }
 
@@ -54,9 +79,11 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 
 @implementation DocumentMapPanel {
     ScintillaView      *_mapSci;
+    sptr_t              _mapDoc;       // document shared with _trackedEditor (0 = own empty doc)
     _DMViewportOverlay *_overlay;
     __weak EditorView  *_trackedEditor;
     NSTimer            *_contentDebounce;
+    NSColor            *_viewportColor; // theme-derived; see -_applyChromeForBackground:
     CGFloat             _grabOffset;   // fromTop offset from mouse to rect center at mouseDown
 }
 
@@ -72,6 +99,11 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
         [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_prefsChanged:)
                    name:@"NPPPreferencesChanged" object:nil];
+        // In Auto mode the dark-mode switch commits a new editor theme; in
+        // forced Light/Dark it only changes the chrome. Either way re-derive.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_prefsChanged:)
+                   name:NPPDarkModeChangedNotification object:nil];
     }
     return self;
 }
@@ -85,7 +117,7 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 // ── Layout ────────────────────────────────────────────────────────────────────
 
 - (void)_buildLayout {
-    _mapSci = [[ScintillaView alloc] initWithFrame:NSZeroRect];
+    _mapSci = [[_DMMapScintillaView alloc] initWithFrame:NSZeroRect];
     _mapSci.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_mapSci];
     [NSLayoutConstraint activateConstraints:@[
@@ -95,6 +127,9 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
         [_mapSci.bottomAnchor   constraintEqualToAnchor:self.bottomAnchor],
     ]];
     [self _configureMapSci];
+
+    // Files dropped on the map open like files dropped on the editor.
+    [self registerForDraggedTypes:@[NSPasteboardTypeFileURL]];
 
     _overlay = [[_DMViewportOverlay alloc] initWithFrame:NSZeroRect];
     _overlay.translatesAutoresizingMaskIntoConstraints = NO;
@@ -109,7 +144,11 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 }
 
 - (void)_configureMapSci {
-    [_mapSci message:SCI_SETREADONLY         wParam:1];
+    // Not a drop target for text (see _DMMapContentView). File drops are
+    // taken by the panel itself and handed to the editor area.
+    [_mapSci.content unregisterDraggedTypes];
+    // No SCI_SETREADONLY: it would mark the shared document read-only.
+    [_mapSci message:SCI_SETMODEVENTMASK     wParam:0];
     for (int m = 0; m < 5; m++)
         [_mapSci message:SCI_SETMARGINWIDTHN wParam:(uptr_t)m lParam:0];
     [_mapSci message:SCI_SETCARETLINEVISIBLE wParam:0];
@@ -119,6 +158,11 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
     [_mapSci message:SCI_SETWRAPMODE         wParam:SC_WRAP_NONE];
     [_mapSci message:SCI_STYLESETSIZEFRACTIONAL wParam:STYLE_DEFAULT lParam:400]; // 4pt
     [_mapSci message:SCI_STYLECLEARALL];
+    // Indicators live in the shared document; hide them so the editor's
+    // find marks, smart highlights and spell-check squiggles do not render
+    // with Scintilla's default indicator styles in the map.
+    for (int i = 0; i <= INDICATOR_MAX; i++)
+        [_mapSci message:SCI_INDICSETSTYLE wParam:(uptr_t)i lParam:INDIC_HIDDEN];
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -126,6 +170,38 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 - (void)setTrackedEditor:(EditorView *)editor {
     _trackedEditor = editor;
     [self _updateMapContent];
+}
+
+// Informal hook called by MainWindowController on every hide path (title-bar
+// close, toolbar/menu toggle, plugin hide). A hidden map is not re-targeted
+// on tab switches, so drop the shared document now rather than keep a closed
+// tab's document alive. Reopening calls -setTrackedEditor: again.
+- (void)panelWillClose {
+    [self setTrackedEditor:nil];
+}
+
+// ── File drops ────────────────────────────────────────────────────────────────
+//
+// The editor area's NppDropView opens dropped files; it is not an ancestor of
+// the side panel, so forward to the one that hosts the tracked editor.
+
+- (nullable NppDropView *)_editorDropView {
+    for (NSView *v = _trackedEditor.superview; v; v = v.superview)
+        if ([v isKindOfClass:[NppDropView class]]) return (NppDropView *)v;
+    return nil;
+}
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    NppDropView *dv = [self _editorDropView];
+    return dv ? [dv draggingEntered:sender] : NSDragOperationNone;
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender {
+    return [self draggingEntered:sender];
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    return [[self _editorDropView] performDragOperation:sender];
 }
 
 // ── Content update (debounced) ────────────────────────────────────────────────
@@ -139,56 +215,88 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
                                                        repeats:NO];
 }
 
+// The map views the editor's own document, so text, lexer state, keyword
+// lists and style bytes all come from the editor's lexing; nothing is copied.
+// This only re-attaches when the editor swapped documents (file load/reload
+// creates a fresh document) and refreshes the per-view style colours.
 - (void)_updateMapContent {
-    EditorView *ed = _trackedEditor;
-    if (!ed) {
-        [_mapSci message:SCI_SETREADONLY wParam:0];
-        [_mapSci message:SCI_CLEARALL];
-        [_mapSci message:SCI_SETREADONLY wParam:1];
-        [_overlay setNeedsDisplay:YES];
-        return;
-    }
-
-    intptr_t len = [ed.scintillaView message:SCI_GETLENGTH];
-    char *buf = (char *)malloc((size_t)len + 1);
-    if (!buf) return;
-    [ed.scintillaView message:SCI_GETTEXT wParam:(uptr_t)(len + 1) lParam:(sptr_t)buf];
-    [_mapSci message:SCI_SETREADONLY wParam:0];
-    [_mapSci message:SCI_SETTEXT     wParam:0 lParam:(sptr_t)buf];
-    [_mapSci message:SCI_SETREADONLY wParam:1];
-    free(buf);
-
-    NSString *lang = ed.currentLanguage;
-    if (lang.length) {
-        NSDictionary *lexerMap = @{
-            @"c": @"cpp", @"cpp": @"cpp", @"objc": @"cpp", @"swift": @"cpp",
-            @"python": @"python", @"javascript": @"cpp", @"typescript": @"cpp",
-            @"html": @"hypertext", @"xml": @"xml", @"css": @"css",
-            @"bash": @"bash", @"ruby": @"ruby", @"json": @"json",
-            @"sql": @"sql", @"lua": @"lua", @"perl": @"perl",
-        };
-        NSString *lexerName = lexerMap[lang.lowercaseString] ?: lang;
-        Scintilla::ILexer5 *lexer = CreateLexer(lexerName.UTF8String);
-        if (lexer) [_mapSci message:SCI_SETILEXER wParam:0 lParam:(sptr_t)lexer];
-    }
-
-    [self _applyThemeFromEditor:ed];
+    [self _syncDocument];
+    [self _applyThemeFromEditor:_trackedEditor];
     [self _syncScroll];
+    [_overlay setNeedsDisplay:YES];
+}
+
+- (void)_syncDocument {
+    EditorView *ed = _trackedEditor;
+    sptr_t doc = ed ? [ed.scintillaView message:SCI_GETDOCPOINTER] : 0;
+    if (doc == _mapDoc) return;
+    // SCI_SETDOCPOINTER adds a reference to the new document and releases
+    // the old one; 0 gives the map a fresh empty document of its own.
+    [_mapSci message:SCI_SETDOCPOINTER wParam:0 lParam:doc];
+    _mapDoc = doc;
 }
 
 // ── Theme mirroring ───────────────────────────────────────────────────────────
 
-- (void)_applyThemeFromEditor:(EditorView *)ed {
+// Scintilla colours are 0xBBGGRR.
+static NSColor *_dmColorFromBGR(sptr_t bgr) {
+    return [NSColor colorWithSRGBRed:(bgr & 0xFF) / 255.0
+                               green:((bgr >> 8) & 0xFF) / 255.0
+                                blue:((bgr >> 16) & 0xFF) / 255.0
+                               alpha:1.0];
+}
+
+static sptr_t _dmBGRFromColor(NSColor *c) {
+    NSColor *rgb = [c colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    if (!rgb) return 0;
+    return (sptr_t)lround(rgb.redComponent * 255)
+         | ((sptr_t)lround(rgb.greenComponent * 255) << 8)
+         | ((sptr_t)lround(rgb.blueComponent * 255) << 16);
+}
+
+- (void)_applyThemeFromEditor:(nullable EditorView *)ed {
     ScintillaView *src = ed.scintillaView;
+    if (!src) {
+        // No editor to mirror: paint the empty map with the theme instead of
+        // Scintilla's built-in white, which glares under a dark theme.
+        NPPStyleStore *store = [NPPStyleStore sharedStore];
+        sptr_t bg = _dmBGRFromColor(store.globalBg);
+        [_mapSci message:SCI_STYLESETFORE wParam:STYLE_DEFAULT lParam:_dmBGRFromColor(store.globalFg)];
+        [_mapSci message:SCI_STYLESETBACK wParam:STYLE_DEFAULT lParam:bg];
+        [self _applyChromeForBackground:_dmColorFromBGR(bg)];
+        return;
+    }
     sptr_t defaultFg = [src message:SCI_STYLEGETFORE wParam:STYLE_DEFAULT];
     sptr_t defaultBg = [src message:SCI_STYLEGETBACK wParam:STYLE_DEFAULT];
     [_mapSci message:SCI_STYLESETFORE wParam:STYLE_DEFAULT lParam:defaultFg];
     [_mapSci message:SCI_STYLESETBACK wParam:STYLE_DEFAULT lParam:defaultBg];
-    for (int s = 0; s < 128; s++) {
+    [self _applyChromeForBackground:_dmColorFromBGR(defaultBg)];
+    // 0-255 so lexer substyles (e.g. LexCPP 128+, LexHTML 192+) are mirrored too.
+    for (int s = 0; s < 256; s++) {
         sptr_t fg = [src message:SCI_STYLEGETFORE wParam:(uptr_t)s];
         [_mapSci message:SCI_STYLESETFORE wParam:(uptr_t)s lParam:fg];
         [_mapSci message:SCI_STYLESETBACK wParam:(uptr_t)s lParam:defaultBg];
+        [_mapSci message:SCI_STYLESETBOLD wParam:(uptr_t)s
+                  lParam:[src message:SCI_STYLEGETBOLD wParam:(uptr_t)s]];
+        [_mapSci message:SCI_STYLESETITALIC wParam:(uptr_t)s
+                  lParam:[src message:SCI_STYLEGETITALIC wParam:(uptr_t)s]];
     }
+}
+
+// The map body is painted with the editor theme, which need not match the
+// chrome (dark title bar over a light theme, or the reverse). Key the native
+// appearance and the viewport highlight off that background, not -isDark.
+- (void)_applyChromeForBackground:(NSColor *)bg {
+    _mapSci.appearance = [NppThemeManager appearanceForBackground:bg];
+    NSColor *focus = [[NPPStyleStore sharedStore] globalStyleNamed:@"Document map"].fgColor;
+    _viewportColor = [[NppThemeManager shared] documentMapViewportColorOnBackground:bg
+                                                                         themeColor:focus];
+    [_overlay setNeedsDisplay:YES];
+}
+
+- (NSColor *)_viewportColor {
+    if (!_viewportColor) [self _applyThemeFromEditor:_trackedEditor];
+    return _viewportColor;
 }
 
 // ── Scroll sync (proportional — immediate on every cursor/scroll event) ───────
@@ -343,14 +451,23 @@ extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 
 - (void)_cursorMoved:(NSNotification *)note {
     if (note.object != _trackedEditor) return;
+    [self _syncDocument];
     [self _syncScroll];
     [self _scheduleContentUpdate];
 }
 
 - (void)_prefsChanged:(NSNotification *)note {
-    EditorView *ed = _trackedEditor;
-    if (ed) [self _applyThemeFromEditor:ed];
-    [_overlay setNeedsDisplay:YES];
+    // Both notifications are posted synchronously and every EditorView
+    // re-applies its theme from its own observer. Observers run in
+    // registration order, so an editor opened after the map would still hold
+    // the old theme here and the map would copy stale colours. Read the
+    // editor once the current notification has been delivered to everyone.
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) return;
+        [self _applyThemeFromEditor:self->_trackedEditor];
+    });
 }
 
 

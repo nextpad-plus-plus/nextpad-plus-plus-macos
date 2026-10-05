@@ -329,6 +329,34 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
                          : [NSColor colorWithRed:0xEC/255.0 green:0xEC/255.0 blue:0xEC/255.0 alpha:1];
 }
 
+// ── Surfaces painted with the editor theme ───────────────────────────────────
+
+// Theme colours may be in any colour space (calibrated, generic, catalog);
+// brightnessComponent raises on a non-RGB colour, so convert first.
+static BOOL _nppColorIsDark(NSColor *color) {
+    NSColor *rgb = [color colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    return rgb ? rgb.brightnessComponent < 0.5 : NO;
+}
+
++ (NSAppearance *)appearanceForBackground:(NSColor *)background {
+    return [NSAppearance appearanceNamed:_nppColorIsDark(background)
+                                         ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
+}
+
+- (NSColor *)documentMapViewportColorOnBackground:(NSColor *)background
+                                       themeColor:(nullable NSColor *)themeColor {
+    BOOL darkBg = _nppColorIsDark(background);
+    NSColor *focus = [themeColor colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    // DarkModeDefault ships a black focus colour, which vanishes on its own
+    // dark background; the same happens to a light focus colour on a light
+    // theme. Only keep the theme colour when it stands apart from the map.
+    if (!focus || _nppColorIsDark(focus) == darkBg) {
+        focus = darkBg ? [NSColor whiteColor]
+                       : [NSColor colorWithSRGBRed:1.0 green:0x80/255.0 blue:0.0 alpha:1];
+    }
+    return [focus colorWithAlphaComponent:50.0 / 255.0];
+}
+
 // ── Icon Paths ───────────────────────────────────────────────────────────────
 
 - (NSString *)toolbarIconDir {
