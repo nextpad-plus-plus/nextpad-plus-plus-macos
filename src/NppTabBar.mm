@@ -895,15 +895,18 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
     BOOL aborted = NO;  // Issue #84 hardening #2 — flag for abort-on-removal path
 
-    // Tab tear-off. The tab may leave the bar only when the delegate can take
-    // it somewhere: into a new window, or onto another bar (another split
-    // pane, or another window's tab bar).
+    // Dragging off the bar. The tab may leave the bar only when the delegate
+    // can take it somewhere: onto another bar (another split pane, or another
+    // window's tab bar), or anywhere else, where the delegate decides (a split
+    // pane's text area, or a new window).
     id<NppTabBarDelegate> dlg = self.delegate;
-    BOOL canTearOff = [dlg respondsToSelector:@selector(tabBar:didDetachTabAtIndex:atScreenPoint:)] &&
-        (![dlg respondsToSelector:@selector(tabBar:canDetachTabAtIndex:)] ||
-         [dlg tabBar:self canDetachTabAtIndex:fromIndex]);
-    BOOL canDropElsewhere = [dlg respondsToSelector:@selector(tabBar:didDropTabAtIndex:onTabBar:atIndex:)];
-    BOOL detachable = canTearOff || canDropElsewhere;
+    BOOL canRelease = [dlg respondsToSelector:@selector(tabBar:didReleaseTabAtIndex:atScreenPoint:copy:)];
+    BOOL canAskRelease = canRelease &&
+        [dlg respondsToSelector:@selector(tabBar:canReleaseTabAtIndex:atScreenPoint:copy:)];
+    BOOL canDropElsewhere = [dlg respondsToSelector:@selector(tabBar:didDropTabAtIndex:onTabBar:atIndex:copy:)];
+    BOOL detachable = canRelease || canDropElsewhere;
+    BOOL copy = NO;                  // Option held: clone instead of move
+    BOOL setCursor = NO;             // the copy cursor was shown
     BOOL detached = NO;              // pointer is outside this bar's drag band
     NppTabBar *dropBar = nil;        // another bar under the pointer while detached
     NSInteger dropBarIndex = -1;
@@ -912,13 +915,30 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     BOOL cancelled = NO;             // Escape pressed mid-drag
     NSMutableArray<NSEvent *> *heldKeys = nil;  // non-Escape keys seen mid-drag
 
+    // Option: the copy cursor, as Finder shows for a copy. Pushed, not set,
+    // so popping it restores whatever cursor was showing before.
+    auto showCopyCursor = [&](BOOL on) {
+        if (on && !setCursor)      { [[NSCursor dragCopyCursor] push]; setCursor = YES; }
+        else if (!on && setCursor) { [NSCursor pop];                   setCursor = NO;  }
+    };
+    // While detached: fade the ghost when releasing here would do nothing
+    // (over a toolbar or side panel, say, or the window's only tab over the
+    // desktop), and show the copy cursor while Option is held.
+    auto updateDetachedFeedback = [&]() {
+        BOOL willDrop = dropBar || (canRelease &&
+            (!canAskRelease || [dlg tabBar:self canReleaseTabAtIndex:fromIndex
+                             atScreenPoint:screenPoint copy:copy]));
+        floatingGhost.alphaValue = willDrop ? 0.85 : 0.4;
+        showCopyCursor(copy && willDrop);
+    };
+
     while (YES) {
         // Keys are only looked at once a drag is under way (a plain click
         // leaves them alone), and then only Escape is used: it cancels the
         // drag. Any other key is held and re-posted after the drag, so it
         // still reaches the editor, in order.
         NSEventMask mask = NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp;
-        if (dragging) mask |= NSEventMaskKeyDown;
+        if (dragging) mask |= NSEventMaskKeyDown | NSEventMaskFlagsChanged;
         NSEvent *nextEvent = [self.window nextEventMatchingMask:mask];
         if (!nextEvent) break;
 
@@ -926,6 +946,12 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
             if (nextEvent.keyCode == 53 /* kVK_Escape */) { cancelled = YES; break; }
             if (!heldKeys) heldKeys = [NSMutableArray array];
             [heldKeys addObject:nextEvent];
+            continue;
+        }
+        if (nextEvent.type == NSEventTypeFlagsChanged) {
+            // Option pressed or released without moving the pointer.
+            copy = (nextEvent.modifierFlags & NSEventModifierFlagOption) != 0;
+            if (detached) updateDetachedFeedback();
             continue;
         }
 
@@ -941,6 +967,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
         NSPoint currentPoint = [_containerView convertPoint:nextEvent.locationInWindow fromView:nil];
         screenPoint = [self.window convertPointToScreen:nextEvent.locationInWindow];
+        copy = (nextEvent.modifierFlags & NSEventModifierFlagOption) != 0;
         if (nextEvent.type == NSEventTypeLeftMouseDragged) {
             CGFloat dx = currentPoint.x - downPoint.x;
             CGFloat dy = currentPoint.y - downPoint.y;
@@ -996,6 +1023,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
                         [dropBar _setExternalDropIndex:-1];
                         dropBar = nil;
                         dropBarIndex = -1;
+                        showCopyCursor(NO);   // reordering ignores Option
                     }
                 }
                 if (detached) {
@@ -1007,9 +1035,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
                     dropBarIndex = bar ? [bar _insertionIndexForScreenPoint:screenPoint
                                                                      pinned:item.isPinned] : -1;
                     [dropBar _setExternalDropIndex:dropBarIndex];
-                    // Faded when releasing here would do nothing (the tab is
-                    // the window's only one and no bar is under the pointer).
-                    floatingGhost.alphaValue = (dropBar || canTearOff) ? 0.85 : 0.4;
+                    updateDetachedFeedback();
                     continue;
                 }
 
@@ -1056,6 +1082,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     // nil-event, identity-abort, Escape).
     [dropBar _setExternalDropIndex:-1];
     [floatingGhost orderOut:nil];
+    showCopyCursor(NO);
     [self _endDragCleanup:item ghost:dragGhost];
     for (NSEvent *key in heldKeys) [NSApp postEvent:key atStart:NO];
 
@@ -1067,13 +1094,12 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         // can close this bar's window (it may have been the window's last tab),
         // so nothing after it may touch self.
         if (dropBar && dropBarIndex >= 0) {
-            [dlg tabBar:self didDropTabAtIndex:fromIndex onTabBar:dropBar atIndex:dropBarIndex];
+            [dlg tabBar:self didDropTabAtIndex:fromIndex onTabBar:dropBar atIndex:dropBarIndex copy:copy];
             return;
         }
-        if (canTearOff) {
-            [dlg tabBar:self didDetachTabAtIndex:fromIndex atScreenPoint:screenPoint];
+        if (canRelease &&
+            [dlg tabBar:self didReleaseTabAtIndex:fromIndex atScreenPoint:screenPoint copy:copy])
             return;
-        }
         // Released where the tab cannot go: it stays put.
         [self tabItemSelected:item];
         return;

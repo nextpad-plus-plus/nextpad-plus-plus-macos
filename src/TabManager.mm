@@ -216,13 +216,12 @@
 }
 
 - (void)tabBar:(NppTabBar *)bar didCloseTabAtIndex:(NSInteger)index {
-    // NPP behavior: can't close the last tab when it's already clean and untitled
-    // unless "Exit on close the last tab" is enabled, in which case we allow
-    // the close so the app can quit.
-    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) {
-        if (![[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab])
-            return;
-    }
+    // NPP behavior: can't close the last tab when it's already clean and untitled,
+    // unless the pane can be hidden (another pane of the window has tabs) or
+    // "Exit on close the last tab" is enabled, so the app can quit.
+    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath &&
+        ![self _mayBecomeEmpty] &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab]) return;
     [self closeEditor:_editors[index]];
 }
 
@@ -255,28 +254,35 @@
 
 #pragma mark - Tab tear-off
 
-- (BOOL)tabBar:(NppTabBar *)bar canDetachTabAtIndex:(NSInteger)index {
+- (BOOL)tabBar:(NppTabBar *)bar canReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
     if (index < 0 || index >= (NSInteger)_editors.count) return NO;
-    if (![_delegate respondsToSelector:@selector(tabManager:detachEditor:toScreenPoint:)]) return NO;
-    if (![_delegate respondsToSelector:@selector(tabManager:canDetachEditor:)]) return YES;
-    return [_delegate tabManager:self canDetachEditor:_editors[index]];
+    if (![_delegate respondsToSelector:@selector(tabManager:releaseEditor:atScreenPoint:copy:)]) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:canReleaseEditor:atScreenPoint:copy:)]) return YES;
+    return [_delegate tabManager:self canReleaseEditor:_editors[index] atScreenPoint:screenPoint copy:copy];
 }
 
-- (void)tabBar:(NppTabBar *)bar didDetachTabAtIndex:(NSInteger)index atScreenPoint:(NSPoint)screenPoint {
-    if (index < 0 || index >= (NSInteger)_editors.count) return;
-    if (![_delegate respondsToSelector:@selector(tabManager:detachEditor:toScreenPoint:)]) return;
-    [_delegate tabManager:self detachEditor:_editors[index] toScreenPoint:screenPoint];
+- (BOOL)tabBar:(NppTabBar *)bar didReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
+    if (index < 0 || index >= (NSInteger)_editors.count) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:releaseEditor:atScreenPoint:copy:)]) return NO;
+    return [_delegate tabManager:self releaseEditor:_editors[index] atScreenPoint:screenPoint copy:copy];
+}
+
+- (BOOL)_mayBecomeEmpty {
+    return [_delegate respondsToSelector:@selector(tabManagerMayBecomeEmpty:)] &&
+           [_delegate tabManagerMayBecomeEmpty:self];
 }
 
 - (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
-      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex {
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex copy:(BOOL)copy {
     if (index < 0 || index >= (NSInteger)_editors.count) return;
     // Every editor tab bar is owned (as its delegate) by a TabManager.
     id owner = target.delegate;
     if (![owner isKindOfClass:[TabManager class]] || owner == self) return;
-    if (![_delegate respondsToSelector:@selector(tabManager:moveEditor:toTabManager:atIndex:)]) return;
+    if (![_delegate respondsToSelector:@selector(tabManager:moveEditor:toTabManager:atIndex:copy:)]) return;
     [_delegate tabManager:self moveEditor:_editors[index]
-             toTabManager:(TabManager *)owner atIndex:targetIndex];
+             toTabManager:(TabManager *)owner atIndex:targetIndex copy:copy];
 }
 
 #pragma mark - Accessors
@@ -346,9 +352,16 @@
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
 
-    // Always keep at least one tab — unless "Exit on close the last tab" is
-    // enabled and the delegate handles the exit (e.g. by closing the window).
+    // Keep at least one tab, unless the owner hides this pane instead (Windows
+    // Notepad++ hides a view whose last tab closes while the other has tabs),
+    // or "Exit on close the last tab" is enabled and the delegate handles the
+    // exit (e.g. by closing the window).
     if (_editors.count == 0) {
+        if ([self _mayBecomeEmpty]) {
+            _selectedIndex = -1;
+            [_delegate tabManager:self didCloseEditor:editor];
+            return;
+        }
         BOOL exitOnLast = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab];
         if (exitOnLast &&
             [_delegate respondsToSelector:@selector(tabManagerShouldExitOnLastTabClose:)] &&
