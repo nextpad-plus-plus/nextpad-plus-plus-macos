@@ -1939,6 +1939,7 @@ You can re-activate this dialog in Preferences later."/>
 				<Item id="90479" name="skipped, the file did not decode cleanly, so rewriting it could change other bytes"/>
 				<Item id="90493" name="skipped, the file has unsaved changes in an open tab"/>
 				<Item id="90500" name="%@ (recovered)"/>
+				<Item id="90580" name="Find: Invalid regular expression"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

@@ -34,31 +34,45 @@ set(SCI_COCOA_SRCS
 # lookbehind, \K), over the header-only Boost subset vendored under
 # regex/boost/ (BOOST_REGEX_STANDALONE). With SCI_OWNREGEX defined, Scintilla's
 # built-in CreateRegexSearch() compiles out and the linker picks up Boost's.
+# NppBufferSearch.cxx runs the same engine over a headless Document for
+# Find/Replace in Files (see regex/NppBufferSearch.h).
 set(NPP_REGEX_ROOT "${CMAKE_SOURCE_DIR}/regex")
 set(NPP_REGEX_SRCS
     "${NPP_REGEX_ROOT}/BoostRegExSearch.cxx"
     "${NPP_REGEX_ROOT}/UTF8DocumentIterator.cxx"
+    "${NPP_REGEX_ROOT}/NppBufferSearch.cxx"
 )
-
-add_library(scintilla STATIC ${SCI_CORE_SRCS} ${SCI_COCOA_SRCS} ${NPP_REGEX_SRCS})
-
-target_include_directories(scintilla PUBLIC
-    "${SCI_ROOT}/include"
-    "${SCI_ROOT}/src"
-    "${SCI_ROOT}/cocoa"
-)
-target_include_directories(scintilla PRIVATE
-    # contains boost/ — boost headers self-include as <boost/...>, so the root
-    # (not boost/ itself) goes on the include path
-    "${NPP_REGEX_ROOT}"
-)
-
-target_compile_definitions(scintilla PRIVATE
+set(SCI_DEFINITIONS
     SCI_NAMESPACE
     SCI_OWNREGEX
     SCINTILLA_QT=0
     BOOST_REGEX_STANDALONE
 )
+
+# Platform-agnostic core + regex engine: no Cocoa, so the headless tests link it.
+# Platform::DebugPrintf/Assert come from PlatCocoa.mm in the app and from
+# tests/PlatformStubs.cxx in the tests.
+add_library(scintilla_core STATIC ${SCI_CORE_SRCS} ${NPP_REGEX_SRCS})
+target_include_directories(scintilla_core PUBLIC
+    "${SCI_ROOT}/include"
+    "${SCI_ROOT}/src"
+)
+target_include_directories(scintilla_core PRIVATE
+    # contains boost/ — boost headers self-include as <boost/...>, so the root
+    # (not boost/ itself) goes on the include path
+    "${NPP_REGEX_ROOT}"
+)
+target_compile_definitions(scintilla_core PRIVATE ${SCI_DEFINITIONS})
+
+# Cocoa platform layer + ScintillaView.
+add_library(scintilla STATIC ${SCI_COCOA_SRCS})
+target_include_directories(scintilla PUBLIC
+    "${SCI_ROOT}/include"
+    "${SCI_ROOT}/src"
+    "${SCI_ROOT}/cocoa"
+)
+target_compile_definitions(scintilla PRIVATE ${SCI_DEFINITIONS})
+target_link_libraries(scintilla PUBLIC scintilla_core)
 
 set_source_files_properties(${SCI_COCOA_SRCS} PROPERTIES
     COMPILE_FLAGS "-fobjc-arc"
@@ -119,6 +133,7 @@ set(APP_SRCS
     src/FunctionListPanel.mm
     src/DocumentMapPanel.mm
     src/ProjectPanel.mm
+    src/SearchCore.mm
     src/SearchEngine.mm
     src/NppTextEncoding.mm
     src/NPPBatchRunner.mm
@@ -162,6 +177,7 @@ set(APP_HEADERS
     src/FunctionListPanel.h
     src/DocumentMapPanel.h
     src/ProjectPanel.h
+    src/SearchCore.h
     src/SearchEngine.h
     src/NppTextEncoding.h
     src/SearchResultsPanel.h
