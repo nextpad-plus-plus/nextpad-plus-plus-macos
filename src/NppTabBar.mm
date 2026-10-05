@@ -1030,7 +1030,24 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
             continue;
         }
 
-        if (nextEvent.type == NSEventTypeLeftMouseUp) break;
+        if (nextEvent.type == NSEventTypeLeftMouseUp) {
+            // Commit to where the button was RELEASED, not to the target of
+            // the last drag event: the pointer can move between the two.
+            if (dragging) {
+                NppTabBar *overBar = canDropElsewhere
+                    ? [NppTabBar _tabBarAtScreenPoint:screenPoint excluding:self aboveGhost:floatingGhost]
+                    : nil;
+                detached = detachable &&
+                    (overBar || ![self _screenPointIsInDragBand:screenPoint aboveGhost:floatingGhost]);
+                if (overBar != dropBar) [dropBar _setExternalDropIndex:-1];
+                dropBar = detached ? overBar : nil;
+                dropBarIndex = dropBar ? [dropBar _insertionIndexForScreenPoint:screenPoint
+                                                                         pinned:item.isPinned] : -1;
+                toIndex = detached ? fromIndex
+                                   : [self _dropTargetIndexForContainerPoint:currentPoint fromIndex:fromIndex];
+            }
+            break;
+        }
     }
 
     // Issue #84 hardening #3 — single cleanup point. Restores the source tab,
