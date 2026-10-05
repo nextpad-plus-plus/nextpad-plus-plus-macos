@@ -94,6 +94,7 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
     NPPReplaceFileDecodeNotClean,    // file did not decode cleanly; a rewrite would change other bytes
     NPPReplaceFileChangedOnDisk,     // file changed between read and write (e.g. saved in a tab)
     NPPReplaceFileOpenModified,      // file is open in a tab with unsaved changes
+    NPPReplaceFileRegexFailed,       // the regex failed while matching (e.g. Boost's complexity limit); nothing written
     NPPReplaceFileWriteFailed,       // write error (see *error)
 };
 
@@ -131,18 +132,25 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
                     hitEnd:(NSUInteger)hitEnd;
 
 /// Find every match in a string with the editor's semantics. One
-/// NPPSearchResult per line with hits. cancelToken may be nil.
+/// NPPSearchResult per line with hits. cancelToken may be nil. If the regex
+/// does not compile or fails while matching (e.g. Boost's complexity limit),
+/// returns no results and sets *regexError to the engine's message.
 + (NSArray<NPPSearchResult *> *)findAllInString:(NSString *)content
                                        filePath:(NSString *)path
                                         options:(NPPFindOptions *)opts
-                                    cancelToken:(nullable NPPCancelToken *)cancelToken;
+                                    cancelToken:(nullable NPPCancelToken *)cancelToken
+                                     regexError:(NSString * _Nullable * _Nullable)regexError;
 
 /// Replace all occurrences in an external file's decoded text with the same
 /// engine and semantics as Replace All in the editor. Returns the transformed
-/// text and writes the actual replacement count.
+/// text and writes the actual replacement count. If the regex does not
+/// compile or fails part way (e.g. Boost's complexity limit), returns the
+/// text unchanged with a count of 0 and sets *regexError: a partly replaced
+/// result is never returned.
 + (NSString *)stringByReplacingAllInString:(NSString *)content
                                    options:(NPPFindOptions *)opts
-                          replacementCount:(NSInteger *)replacementCount;
+                          replacementCount:(NSInteger *)replacementCount
+                                regexError:(NSString * _Nullable * _Nullable)regexError;
 
 /// Recursive directory search. Calls progressBlock on main thread with current file and running count.
 /// Call -cancel on cancelToken (from any thread) to abort between files (and
@@ -150,20 +158,26 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
 /// returned. Returns array of NPPFileResults.
 /// totalFilesScanned (optional out): total number of files examined.
 /// Files are decoded with the editor's encoding detection (NppTextEncoding);
-/// binary files are skipped.
+/// binary files are skipped (empty files are searched).
+/// As on Windows, a regex that does not compile or fails while matching in
+/// any file (e.g. Boost's complexity limit) stops the run: no results are
+/// returned and *regexError is set to the engine's message.
 + (NSArray<NPPFileResults *> *)findInDirectory:(NSString *)directory
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
                                    cancelToken:(nullable NPPCancelToken *)cancelToken
-                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned;
+                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned
+                                   regexError:(NSString * _Nullable * _Nullable)regexError;
 
 /// Search within a specific list of file paths (for Find in Projects).
 /// Applies file filters from opts.filters. Returns array of NPPFileResults.
+/// regexError as for findInDirectory.
 + (NSArray<NPPFileResults *> *)findInFilePaths:(NSArray<NSString *> *)filePaths
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
                                    cancelToken:(nullable NPPCancelToken *)cancelToken
-                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned;
+                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned
+                                   regexError:(NSString * _Nullable * _Nullable)regexError;
 
 /// Replace All in a file on disk (Replace in Files / Replace in Projects).
 /// The file is decoded with the same rules as Find in Files and written back
@@ -173,7 +187,8 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
 /// *encodingOut set to that encoding. A file whose decoded text does not
 /// re-encode to its original bytes (NPPReplaceFileDecodeNotClean) or that
 /// changed on disk since it was read (NPPReplaceFileChangedOnDisk) is also
-/// left untouched. The new contents are staged in a temp file and committed
+/// left untouched, and so is one where the regex fails part way
+/// (NPPReplaceFileRegexFailed). The new contents are staged in a temp file and committed
 /// by a rename on the main thread, where editor saves also run, so a save
 /// can't slip in between the final check and the write. isOpenAndModified
 /// (optional, called on the main thread just before the commit) returns YES

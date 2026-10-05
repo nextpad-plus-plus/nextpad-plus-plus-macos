@@ -73,7 +73,7 @@ static NPPFileResults *resultsFor(NSArray<NPPFileResults *> *all, NSString *rel)
 
 static NSArray<NPPFileResults *> *findInTree(NPPFindOptions *o, NSInteger *scanned = NULL) {
     return [NPPSearchCore findInDirectory:g_root options:o progressBlock:nil
-                              cancelToken:nil totalFilesScanned:scanned];
+                              cancelToken:nil totalFilesScanned:scanned regexError:NULL];
 }
 
 static NSString *describe(NPPFileResults *fr) {
@@ -253,7 +253,7 @@ int main() {
             NSInteger scanned = 0;
             NSArray<NPPFileResults *> *all = [NPPSearchCore findInFilePaths:paths options:options(@"foo", NPPSearchNormal)
                                                              progressBlock:nil cancelToken:nil
-                                                         totalFilesScanned:&scanned];
+                                                         totalFilesScanned:&scanned regexError:NULL];
             check(@"find in projects: listed files only, missing skipped",
                   all.count == 2 && scanned == 3, [NSString stringWithFormat:@"files=%lu scanned=%ld",
                                                     (unsigned long)all.count, (long)scanned]);
@@ -265,15 +265,15 @@ int main() {
             [token cancel];
             NSInteger scanned = -1;
             NSArray *all = [NPPSearchCore findInDirectory:g_root options:options(@"foo", NPPSearchNormal)
-                                            progressBlock:nil cancelToken:token totalFilesScanned:&scanned];
+                                            progressBlock:nil cancelToken:token totalFilesScanned:&scanned regexError:NULL];
             check(@"cancelled before start: nothing scanned", all.count == 0 && scanned == 0);
 
             NSMutableString *big = [NSMutableString string];
             for (int i = 0; i < 5000; i++) [big appendString:@"hit\n"];
             NSArray *partial = [NPPSearchCore findAllInString:big filePath:@"big" options:options(@"hit", NPPSearchNormal)
-                                                  cancelToken:token];
+                                                  cancelToken:token regexError:NULL];
             NSArray *full = [NPPSearchCore findAllInString:big filePath:@"big" options:options(@"hit", NPPSearchNormal)
-                                               cancelToken:nil];
+                                               cancelToken:nil regexError:NULL];
             check(@"cancel is polled inside a large file", full.count == 5000 && partial.count < full.count,
                   [NSString stringWithFormat:@"partial=%lu full=%lu", (unsigned long)partial.count,
                                               (unsigned long)full.count]);
@@ -372,29 +372,29 @@ int main() {
             // $ -> ; terminates and matches the editor (#151).
             o = options(@"$", NPPSearchRegex);
             o.replaceText = @";";
-            NSString *r = [NPPSearchCore stringByReplacingAllInString:@"a\r\nb\r\n" options:o replacementCount:&count];
+            NSString *r = [NPPSearchCore stringByReplacingAllInString:@"a\r\nb\r\n" options:o replacementCount:&count regexError:NULL];
             check(@"$ replace on CRLF text", [r isEqualToString:@"a;\r\nb;\r\n;"] && count == 3, r);
 
             // Extended mode replacement escapes.
             o = options(@",", NPPSearchExtended);
             o.replaceText = @"\\t";
-            r = [NPPSearchCore stringByReplacingAllInString:@"a,b" options:o replacementCount:&count];
+            r = [NPPSearchCore stringByReplacingAllInString:@"a,b" options:o replacementCount:&count regexError:NULL];
             check(@"extended replacement \\t", [r isEqualToString:@"a\tb"], r);
 
             // Normal mode: replacement is literal.
             o = options(@"a.b", NPPSearchNormal);
             o.replaceText = @"$1\\n";
-            r = [NPPSearchCore stringByReplacingAllInString:@"a.b axb" options:o replacementCount:&count];
+            r = [NPPSearchCore stringByReplacingAllInString:@"a.b axb" options:o replacementCount:&count regexError:NULL];
             check(@"normal replacement is literal", [r isEqualToString:@"$1\\n axb"] && count == 1, r);
 
             // Whole word with the editor's word characters.
             o = options(@"foo", NPPSearchNormal);
             o.wholeWord = YES;
             o.replaceText = @"X";
-            r = [NPPSearchCore stringByReplacingAllInString:@"foo-bar foo" options:o replacementCount:&count];
+            r = [NPPSearchCore stringByReplacingAllInString:@"foo-bar foo" options:o replacementCount:&count regexError:NULL];
             check(@"whole word, default word chars", [r isEqualToString:@"X-bar X"], r);
             o.wordChars = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-";
-            r = [NPPSearchCore stringByReplacingAllInString:@"foo-bar foo" options:o replacementCount:&count];
+            r = [NPPSearchCore stringByReplacingAllInString:@"foo-bar foo" options:o replacementCount:&count regexError:NULL];
             check(@"whole word, '-' as a word char", [r isEqualToString:@"foo-bar X"], r);
         }
 
@@ -470,6 +470,66 @@ int main() {
             for (NSString *rel in [fm enumeratorAtPath:g_root])
                 if ([rel.lastPathComponent containsString:@".npp-replace-"]) leftover = YES;
             check(@"no staged temp file left behind", !leftover);
+        }
+
+        // ---- Regex failing while matching; empty files ---------------------------
+        {
+            NSFileManager *fm = [NSFileManager defaultManager];
+            // Boost gives up on (?:a+)+$ over 200 a's followed by "!" (complexity
+            // limit) after "ok" has already matched once. Nothing may be
+            // written, and Find in Files must not return a truncated list.
+            NSString *text = [NSString stringWithFormat:@" ok  %@!",
+                              [@"" stringByPaddingToLength:200 withString:@"a" startingAtIndex:0]];
+            NPPFindOptions *o = options(@"ok|(?:a+)+$", NPPSearchRegex);
+            o.replaceText = @"DONE";
+            NSInteger count = -1;
+            NSString *err = nil;
+            NSString *r = [NPPSearchCore stringByReplacingAllInString:text options:o replacementCount:&count
+                                                           regexError:&err];
+            check(@"replace: regex failing mid-text returns the text unchanged with an error",
+                  [r isEqualToString:text] && count == 0 && err.length > 0, err ?: @"<no error>");
+
+            writeData(@"edge/fail.txt", [text dataUsingEncoding:NSUTF8StringEncoding]);
+            NSData *before = readFile(@"edge/fail.txt");
+            NSStringEncoding enc = 0;
+            NPPReplaceFileStatus st = [NPPSearchCore replaceAllInFile:pathFor(@"edge/fail.txt") options:o
+                replacementCount:&count encoding:&enc isOpenAndModified:nil error:nil];
+            check(@"replace in files: regex failure leaves the file untouched",
+                  st == NPPReplaceFileRegexFailed && [readFile(@"edge/fail.txt") isEqualToData:before],
+                  [NSString stringWithFormat:@"status=%ld", (long)st]);
+
+            err = nil;
+            NSArray *found = [NPPSearchCore findInDirectory:pathFor(@"edge") options:o progressBlock:nil
+                                                cancelToken:nil totalFilesScanned:NULL regexError:&err];
+            check(@"find in files: regex failure stops the run with an error, no partial hits",
+                  found.count == 0 && err.length > 0, err ?: @"<no error>");
+            err = nil;
+            NSArray *hits = [NPPSearchCore findAllInString:text filePath:@"t" options:o cancelToken:nil
+                                                regexError:&err];
+            check(@"find all: regex failure returns no partial hits", hits.count == 0 && err.length > 0);
+            [fm removeItemAtPath:pathFor(@"edge/fail.txt") error:nil];
+
+            // A zero-byte file is text, not a read failure: ^$ matches it once.
+            writeData(@"edge/empty.txt", [NSData data]);
+            NSInteger scanned = 0;
+            err = nil;
+            found = [NPPSearchCore findInDirectory:pathFor(@"edge") options:options(@"^$", NPPSearchRegex)
+                                     progressBlock:nil cancelToken:nil totalFilesScanned:&scanned regexError:&err];
+            NPPFileResults *fr = found.firstObject;
+            check(@"empty file: ^$ finds one hit on line 1",
+                  found.count == 1 && fr.hitCount == 1 && fr.results.firstObject.lineNumber == 1
+                  && scanned == 1 && !err, describe(fr));
+            found = [NPPSearchCore findInDirectory:pathFor(@"edge") options:options(@"x", NPPSearchNormal)
+                                     progressBlock:nil cancelToken:nil totalFilesScanned:NULL regexError:NULL];
+            check(@"empty file: normal search finds nothing", found.count == 0);
+            o = options(@"^$", NPPSearchRegex);
+            o.replaceText = @"filled";
+            st = [NPPSearchCore replaceAllInFile:pathFor(@"edge/empty.txt") options:o replacementCount:&count
+                                        encoding:&enc isOpenAndModified:nil error:nil];
+            check(@"empty file: ^$ replace fills it",
+                  st == NPPReplaceFileReplaced && count == 1
+                  && [readFile(@"edge/empty.txt") isEqualToData:[@"filled" dataUsingEncoding:NSUTF8StringEncoding]],
+                  [NSString stringWithFormat:@"status=%ld", (long)st]);
         }
 
         // ---- Results model --------------------------------------------------------

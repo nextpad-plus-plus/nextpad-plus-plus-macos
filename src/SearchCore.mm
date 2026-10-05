@@ -204,11 +204,21 @@ static NPPSearchSetup setupForOptions(NPPFindOptions *opts) {
     return s;
 }
 
+/// The engine's message when the last search failed (bad pattern, or
+/// Boost's complexity limit while matching), else nil.
+static NSString *regexErrorOf(const NppSearch::BufferSearch &search) {
+    if (search.LastStatus() == NppSearch::Status::Ok) return nil;
+    NSString *message = [NSString stringWithUTF8String:search.ErrorMessage().c_str()];
+    return message.length ? message : @"Invalid regular expression";
+}
+
+enum class CollectResult { Done, Cancelled, RegexFailed };
+
 /// Find every match in `utf8` (already loaded into `search`) and append one
-/// NPPSearchResult per line to `results`. Returns NO if cancelled.
-static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8,
-                        NSString *path, NPPCancelToken *cancelToken,
-                        NSMutableArray<NPPSearchResult *> *results) {
+/// NPPSearchResult per line to `results`.
+static CollectResult collectHits(NppSearch::BufferSearch &search, const std::string &utf8,
+                                 NSString *path, NPPCancelToken *cancelToken,
+                                 NSMutableArray<NPPSearchResult *> *results) {
     BOOL cancelled = NO;
     NSInteger hits = 0;
     NppSearch::ForEachMatch(search, 0, search.Length(), [&](NppSearch::Pos start, NppSearch::Pos end) {
@@ -228,7 +238,10 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
         }
         return true;
     });
-    return !cancelled;
+    // A failed search ends the loop like "no more matches"; the hits so far
+    // would be a silently truncated list.
+    if (search.LastStatus() != NppSearch::Status::Ok) return CollectResult::RegexFailed;
+    return cancelled ? CollectResult::Cancelled : CollectResult::Done;
 }
 
 // ── NPPSearchCore ────────────────────────────────────────────────────────────
@@ -320,9 +333,7 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
     search.SetSearch(s.needle, s.flags, s.replacement, s.regexReplace);
     NppSearch::Pos end = 0;
     search.Find(0, 0, &end);
-    if (search.LastStatus() == NppSearch::Status::Ok) return nil;
-    NSString *message = [NSString stringWithUTF8String:search.ErrorMessage().c_str()];
-    return message.length ? message : @"Invalid regular expression";
+    return regexErrorOf(search);
 }
 
 + (void)prepareForBackgroundSearch {
@@ -389,9 +400,11 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
 + (NSArray<NPPSearchResult *> *)findAllInString:(NSString *)content
                                        filePath:(NSString *)path
                                         options:(NPPFindOptions *)opts
-                                    cancelToken:(nullable NPPCancelToken *)cancelToken {
+                                    cancelToken:(nullable NPPCancelToken *)cancelToken
+                                     regexError:(NSString * _Nullable * _Nullable)regexError {
+    if (regexError) *regexError = nil;
     NSMutableArray<NPPSearchResult *> *results = [NSMutableArray array];
-    if (!opts.searchText.length || !content.length) return results;
+    if (!opts.searchText.length) return results;
     NPPSearchSetup s = setupForOptions(opts);
     if (s.needle.empty()) return results;
     NppSearch::BufferSearch search(s.hasWordChars ? s.wordChars.c_str() : nullptr);
@@ -399,15 +412,20 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
     std::string utf8;
     utf8BytesOf(content, utf8);
     search.SetText(utf8.data(), utf8.size());
-    collectHits(search, utf8, path, cancelToken, results);
+    if (collectHits(search, utf8, path, cancelToken, results) == CollectResult::RegexFailed) {
+        if (regexError) *regexError = regexErrorOf(search);
+        return @[];
+    }
     return results;
 }
 
 + (NSString *)stringByReplacingAllInString:(NSString *)content
                                    options:(NPPFindOptions *)opts
-                          replacementCount:(NSInteger *)replacementCount {
+                          replacementCount:(NSInteger *)replacementCount
+                                regexError:(NSString * _Nullable * _Nullable)regexError {
     if (replacementCount) *replacementCount = 0;
-    if (!opts.searchText.length || !content.length) return content;
+    if (regexError) *regexError = nil;
+    if (!opts.searchText.length) return content;
 
     NPPSearchSetup s = setupForOptions(opts);
     if (s.needle.empty()) return content;
@@ -422,6 +440,13 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
     search.SetSearch(s.needle, s.flags, s.replacement, s.regexReplace);
     search.SetText(utf8.data(), utf8.size());
     const NppSearch::Pos count = NppSearch::ReplaceAll(search, 0, search.Length());
+    // A search that fails part way (Boost's complexity limit) ends the loop
+    // like "no more matches". Return nothing rather than a partly replaced
+    // text, as Windows stops a Replace All on the error.
+    if (search.LastStatus() != NppSearch::Status::Ok) {
+        if (regexError) *regexError = regexErrorOf(search);
+        return content;
+    }
     if (count <= 0) return content;
 
     const std::string out = search.Text();
@@ -474,9 +499,12 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
     if (!content) return NPPReplaceFileUnreadable;
 
     NSInteger count = 0;
+    NSString *regexError = nil;
     NSString *replaced = [self stringByReplacingAllInString:content
                                                     options:opts
-                                           replacementCount:&count];
+                                           replacementCount:&count
+                                                 regexError:&regexError];
+    if (regexError) return NPPReplaceFileRegexFailed;
     // A replacement can be a no-op ("foo" -> "foo", regex (foo) -> \1).
     // Comparing the text as well as the count keeps those files from being
     // rewritten, which would bump their mtime for no reason.
@@ -606,13 +634,15 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
 }
 
 /// Search one file. Returns its results, or nil when it has no hits or can't
-/// be read (binary, undecodable).
+/// be read (binary, undecodable). Sets *regexError if the regex failed.
 + (nullable NPPFileResults *)_searchFile:(NSString *)full
                                  search:(NppSearch::BufferSearch &)search
-                            cancelToken:(nullable NPPCancelToken *)cancelToken {
-    // Read file with the editor's encoding detection (skips binaries)
+                            cancelToken:(nullable NPPCancelToken *)cancelToken
+                             regexError:(NSString * _Nullable * _Nonnull)regexError {
+    // Read file with the editor's encoding detection (skips binaries). An
+    // empty file decodes to "" and is searched: ^$ matches it once.
     NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
-    if (!content.length) return nil;
+    if (!content) return nil;
 
     std::string utf8;
     utf8BytesOf(content, utf8);
@@ -620,10 +650,12 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
     search.SetText(utf8.data(), utf8.size());
 
     NSMutableArray<NPPSearchResult *> *lines = [NSMutableArray array];
-    collectHits(search, utf8, full, cancelToken, lines);
+    const CollectResult collected = collectHits(search, utf8, full, cancelToken, lines);
+    if (collected == CollectResult::RegexFailed)
+        *regexError = regexErrorOf(search);
     // Free the file's text now rather than when the next file replaces it.
     search.SetText("", 0);
-    if (!lines.count) return nil;
+    if (collected == CollectResult::RegexFailed || !lines.count) return nil;
 
     NPPFileResults *fileRes = [[NPPFileResults alloc] init];
     fileRes.filePath = full;
@@ -637,12 +669,19 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
                                     options:(NPPFindOptions *)opts
                               progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
                                 cancelToken:(nullable NPPCancelToken *)cancelToken
-                          totalFilesScanned:(nullable NSInteger *)totalFilesScanned {
+                          totalFilesScanned:(nullable NSInteger *)totalFilesScanned
+                                 regexError:(NSString * _Nullable * _Nullable)regexErrorOut {
     NSMutableArray<NPPFileResults *> *allResults = [NSMutableArray array];
     if (totalFilesScanned) *totalFilesScanned = 0;
+    if (regexErrorOut) *regexErrorOut = nil;
     NPPSearchSetup s = setupForOptions(opts);
+    if (s.needle.empty()) return allResults;
     // An invalid regex matches nothing anywhere; don't walk the tree for it.
-    if (s.needle.empty() || [self patternErrorForOptions:opts]) return allResults;
+    NSString *patternError = [self patternErrorForOptions:opts];
+    if (patternError) {
+        if (regexErrorOut) *regexErrorOut = patternError;
+        return allResults;
+    }
 
     // One Document for the whole run, so the regex is compiled once.
     NppSearch::BufferSearch search(s.hasWordChars ? s.wordChars.c_str() : nullptr);
@@ -650,7 +689,8 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
 
     NSInteger totalHits = 0;
     NSInteger filesScanned = 0;
-    while (!cancelToken.isCancelled) {
+    NSString *regexError = nil;
+    while (!cancelToken.isCancelled && !regexError) {
         // Per-file pool: decoding a non-UTF-8 file (charset detector, NSString
         // conversions) leaves autoreleased temporaries several times the file
         // size. Without a pool they pile up for the whole run.
@@ -658,7 +698,8 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
             NSString *full = nextPath();
             if (!full) break;
             filesScanned++;
-            NPPFileResults *fileRes = [self _searchFile:full search:search cancelToken:cancelToken];
+            NPPFileResults *fileRes = [self _searchFile:full search:search cancelToken:cancelToken
+                                             regexError:&regexError];
             if (!fileRes) continue;
             totalHits += fileRes.hitCount;
             [allResults addObject:fileRes];
@@ -671,6 +712,11 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
         }
     }
     if (totalFilesScanned) *totalFilesScanned = filesScanned;
+    if (regexError) {
+        // As on Windows: the run stops on the error, with no partial results.
+        if (regexErrorOut) *regexErrorOut = regexError;
+        return @[];
+    }
     return allResults;
 }
 
@@ -678,7 +724,8 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
                                    cancelToken:(nullable NPPCancelToken *)cancelToken
-                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned {
+                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned
+                                   regexError:(NSString * _Nullable * _Nullable)regexError {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDirectoryEnumerator *en = [fm enumeratorAtPath:directory];
     NSArray<NSPredicate *> *preds = [self _filterPredicatesForOptions:opts];
@@ -706,14 +753,16 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
         return nil;
     };
     return [self _findInFiles:nextPath options:opts progressBlock:progressBlock
-                  cancelToken:cancelToken totalFilesScanned:totalFilesScanned];
+                  cancelToken:cancelToken totalFilesScanned:totalFilesScanned
+                   regexError:regexError];
 }
 
 + (NSArray<NPPFileResults *> *)findInFilePaths:(NSArray<NSString *> *)filePaths
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
                                    cancelToken:(nullable NPPCancelToken *)cancelToken
-                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned {
+                            totalFilesScanned:(nullable NSInteger *)totalFilesScanned
+                                   regexError:(NSString * _Nullable * _Nullable)regexError {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray<NSPredicate *> *preds = [self _filterPredicatesForOptions:opts];
     __block NSUInteger index = 0;
@@ -728,7 +777,8 @@ static BOOL collectHits(NppSearch::BufferSearch &search, const std::string &utf8
         return nil;
     };
     return [self _findInFiles:nextPath options:opts progressBlock:progressBlock
-                  cancelToken:cancelToken totalFilesScanned:totalFilesScanned];
+                  cancelToken:cancelToken totalFilesScanned:totalFilesScanned
+                   regexError:regexError];
 }
 
 @end
