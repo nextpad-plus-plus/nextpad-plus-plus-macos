@@ -377,9 +377,15 @@ static void NppRecoveryDone(void) {
     MainWindowController *mwc = [[MainWindowController alloc] init];
     [_windowControllers addObject:mwc];
 
-    [mwc.window setFrame:newFrame display:NO];
-
+    // Show first, THEN place. Until a window is first ordered in, its content
+    // size is computed against an estimated title bar plus toolbar height that
+    // is taller than the real one. Moving the still-hidden window here (on top
+    // of the saved frame -init already applied) made AppKit, on showing it,
+    // shrink the frame by that difference AND the content view by it again,
+    // leaving an empty band between the toolbar and the tab bar. The primary
+    // window is shown without this extra move, so it never had the band.
     [mwc showWindow:nil];
+    [mwc.window setFrame:newFrame display:YES];
 
     // Observe close to remove from our array. Keep the returned token and
     // remove the observer when it fires — otherwise the notification center
