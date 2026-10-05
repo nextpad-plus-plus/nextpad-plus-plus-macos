@@ -62,9 +62,16 @@ static const NppKeywordSlot kTypeScriptSlots[] = {
     { "cpp", "type2",   2 },
 };
 // setObjCLexer(): LexObjC reads instrs, types, doxygen, directives, qualifiers.
+// Port-only deviation: slots 0 and 1 also get cpp's instre1/type1. The macOS
+// port maps .mm (Objective-C++) to objc, and objc's own lists are C-only, so
+// without cpp's lists class, namespace, template, nullptr, bool, constexpr,
+// size_t and the like lose highlighting. Windows setObjCLexer feeds only
+// objc's lists. Entries sharing a slot are merged by applyKeywords:.
 static const NppKeywordSlot kObjCSlots[] = {
     { NULL,  "instre1", 0 },
+    { "cpp", "instre1", 0 },
     { NULL,  "type1",   1 },
+    { "cpp", "type1",   1 },
     { "cpp", "type2",   2 },
     { NULL,  "instre2", 3 },
     { NULL,  "type2",   4 },

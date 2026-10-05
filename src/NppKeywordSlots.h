@@ -2,7 +2,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// One langs.xml keyword group fed to one Lexilla word list slot.
+/// One langs.xml keyword group fed to one Lexilla word list slot. Entries
+/// that share a slot are merged into one list.
 typedef struct {
     const char * _Nullable sourceLang; // langs.xml <Language name>; NULL = the language being applied
     const char *group;                 // langs.xml <Keywords name>, e.g. "instre1", "type2"

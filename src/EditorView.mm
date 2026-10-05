@@ -2757,6 +2757,9 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
+    // Legacy "javascript" tabs (L_JS_EMBEDDED) read the javascript.js lists, so
+    // treat them as javascript.js for the own-list check below.
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";
 
     NppLangsManager *lm = [NppLangsManager shared];
     BOOL fed = NO;
@@ -2767,14 +2770,25 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
     // NppKeywordSlots.mm. Some slots read another language's list: doxygen
     // tags come from cpp's type2, and HTML/PHP/ASP/JSP all load the HTML,
     // embedded JavaScript, VBScript and PHP lists into LexHTML's slots.
+    // Several entries may target one slot; their words are merged (deduped).
+    // Only the language's own lists count as "fed": a lone cross-language
+    // list such as cpp's doxygen tags must not suppress the fallback below.
     NppKeywordSlot slots[kNppKeywordSlotsMax];
     NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
     for (NSUInteger i = 0; i < slotCount; i++) {
         NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
         NSString *kw = [lm keywordsForLanguage:src keywordClass:@(slots[i].group)];
         if (!kw.length) continue;
-        [sci message:SCI_SETKEYWORDS wParam:(uptr_t)slots[i].slot lParam:(sptr_t)kw.UTF8String];
-        fed = YES;
+        NSMutableOrderedSet *set = words[@(slots[i].slot)];
+        if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
+        for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
+            if (w.length) [set addObject:w];
+        if ([src isEqualToString:lang]) fed = YES;
+    }
+    for (NSNumber *slot in words) {
+        NSString *kw = [words[slot].array componentsJoinedByString:@" "];
+        [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
     }
 
     if (fed) return;
