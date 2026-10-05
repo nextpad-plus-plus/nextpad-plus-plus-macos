@@ -4268,8 +4268,12 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     ((NppDropView *)_tabManager.contentView).dropHandler = ^(NSArray<NSString *> *paths) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (!strongSelf) return;
-        for (NSString *path in paths)
-            [strongSelf openFileAtPath:path];   // focuses it if open in any window
+        EditorView *last = nil;
+        for (NSString *path in paths) {
+            EditorView *ed = [strongSelf openFileAtPath:path];   // focuses it if open in any window
+            if (ed) last = ed;
+        }
+        [strongSelf _surfaceWindowOfEditor:last];
     };
 }
 
@@ -5061,6 +5065,17 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     return ed;
 }
 
+/// After opening several files (some may already have been open in other
+/// windows, which each brought their window forward), bring forward the window
+/// that shows the LAST of them, so the batch ends where it finished.
+- (void)_surfaceWindowOfEditor:(nullable EditorView *)ed {
+    id owner = ed.window.windowController;
+    if ([owner isKindOfClass:[MainWindowController class]]) {
+        MainWindowController *mwc = (MainWindowController *)owner;
+        if (!mwc.window.isKeyWindow) [mwc bringWindowForward];
+    }
+}
+
 /// If `path` is already open in this window (any pane) or another window,
 /// select that tab, bring its window forward when it is not this one, and
 /// return its editor. With tabs movable between windows a file must not end
@@ -5178,9 +5193,14 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = NO;
     [panel beginWithCompletionHandler:^(NSModalResponse r) {
-        if (r == NSModalResponseOK)
-            for (NSURL *u in panel.URLs)
-                [self openFileAtPath:u.path];
+        if (r == NSModalResponseOK) {
+            EditorView *last = nil;
+            for (NSURL *u in panel.URLs) {
+                EditorView *ed = [self openFileAtPath:u.path];
+                if (ed) last = ed;
+            }
+            [self _surfaceWindowOfEditor:last];
+        }
         [self updateTitle];
     }];
 }
