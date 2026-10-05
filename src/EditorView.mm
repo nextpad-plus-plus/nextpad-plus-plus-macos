@@ -2847,11 +2847,13 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     if (!lang.length) return;
     ScintillaView *sci = _scintillaView;
 
-    // Map EditorView language names to NPP style-store lexer IDs
+    // C, Objective-C and TypeScript have their own style sections (as on
+    // Windows). Only the legacy "javascript" tab language (a file opened as
+    // JavaScript before the javascript.js rename) needs mapping: its lexer is
+    // cpp, so it takes the JavaScript file styles, not the embedded-JS ones.
     NSString *lid = lang.lowercaseString;
-    if ([lid isEqualToString:@"c"] || [lid isEqualToString:@"objc"]) lid = @"cpp";
-    else if ([lid isEqualToString:@"javascript"] || [lid isEqualToString:@"typescript"])
-                                                                      lid = @"cpp";
+    if ([lid isEqualToString:@"javascript"]) lid = @"javascript.js";
+    BOOL objc = [lid isEqualToString:@"objc"];
 
     NPPStyleStore *store = [NPPStyleStore sharedStore];
     NSArray<NPPStyleEntry *> *styles = [store stylesForLexer:lid];
@@ -2878,6 +2880,14 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
 
     for (NPPStyleEntry *e in styles) {
         int sid = e.styleID;
+        // stylers.model.xml and every theme (upstream too) list the ObjC
+        // DIRECTIVE/QUALIFIER styles as 19/20, but LexObjC emits
+        // SCE_OBJC_DIRECTIVE (20) and SCE_OBJC_QUALIFIER (21). Apply them by
+        // name so QUALIFIER no longer paints @-directives.
+        if (objc) {
+            if ([e.name isEqualToString:@"DIRECTIVE"])      sid = SCE_OBJC_DIRECTIVE;
+            else if ([e.name isEqualToString:@"QUALIFIER"]) sid = SCE_OBJC_QUALIFIER;
+        }
 
         // fg
         if (ovFg && gov) {
