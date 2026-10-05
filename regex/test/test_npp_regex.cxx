@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 //
-// Standalone unit harness for NppRegexSearch::FindText against a real Scintilla
-// Document. Reproduces macOS issue #167 (regex can't find "\r\n") and guards
-// the ^/$ anchoring + empty-match machinery against regression.
+// Standalone unit harness for the editor's regex search (CreateRegexSearch(),
+// i.e. the Boost.Regex backend in regex/BoostRegExSearch.cxx) against a real
+// Scintilla Document. Reproduces macOS issue #167 (regex can't find "\r\n") and
+// guards the ^/$ anchoring + empty-match machinery (#151) against regression.
+// These cases were written for the old per-line std::regex backend and kept
+// when Boost became the only engine; the few places where Boost (like Windows
+// Notepad++) differs are noted inline.
 //
-// Build & run:  regex/test/run.sh   (no CMake target — it links the handful of
-// Scintilla core .cxx files Document needs, plus regex/NppRegexSearch.cxx, into
-// a small self-contained executable). Exits non-zero if any case fails.
+// Build & run:  ctest (target test_npp_regex) or regex/test/run.sh. Exits
+// non-zero if any case fails.
 
 // STL first — Scintilla's Document.h/PerLine.h use std::map/forward_list/etc.
 // without including them, expecting the TU to have done so (see NppRegexSearch.cxx).
@@ -21,7 +24,6 @@
 #include <map>
 #include <memory>
 #include <optional>
-#include <regex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -44,7 +46,7 @@
 #include "CaseFolder.h"
 #include "Decoration.h"
 #include "Document.h"
-#include "NppRegexSearch.h"
+#include "BoostRegexSearch.h"
 
 using namespace Scintilla;
 using namespace Scintilla::Internal;
@@ -184,14 +186,10 @@ int main() {
         len = 0; p = e.find(".$", 0, (Sci::Position)t.size(), FINDN, &len);
         check(".$ matches at 2 len 1", p == 2 && len == 1,
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));
-        // Conservative tie rule: when the content pass already matches at a
-        // position, that match wins unchanged — so `foo\r?` stays "foo" (len 3),
-        // exactly as before the fix. The optional \r is NOT greedily pulled in
-        // (would require knowing the pattern's alternation order; see the long
-        // comment in FirstMatchOnLines). This is not a regression: the old
-        // content-only engine returned "foo" here too.
+        // Greedy `\r?` takes the CR, as Perl and Windows Notepad++ do. (The old
+        // per-line std::regex backend could only return "foo" here.)
         len = 0; p = e.find("foo\\r?", 0, (Sci::Position)t.size(), FINDN, &len);
-        check("foo\\r? stays 'foo' (len 3) — content match preserved", p == 0 && len == 3,
+        check("foo\\r? is greedy: 'foo\\r' (len 4)", p == 0 && len == 4,
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));
     }
 
@@ -336,15 +334,13 @@ int main() {
         Sci::Position p = e.find("\\r\\n", 0, 8, FINDN, &len);
         check("clamped fwd \\r\\n in [0,8) finds 3", p == 3 && len == 2,
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));
-        // A maxPos that falls BETWEEN \r and \n (here 4) is snapped outward to 5
-        // by Scintilla's RESearchRange (MovePositionOutsideChar with checkLineEnd
-        // — it never splits a CRLF pair). So the effective range is [0,5) and
-        // \r\n legitimately matches at 3. This is pre-existing Scintilla behavior
-        // shared with upstream BuiltinRegex, documented here so it isn't mistaken
-        // for an out-of-bounds overshoot.
+        // A maxPos that falls BETWEEN \r and \n (here 4) is not widened: the
+        // Boost backend (as on Windows) only moves range ends out of multi-byte
+        // characters, so the CRLF is not inside [0,4) and cannot match. The UI
+        // never produces such a range (the caret can't sit inside a CRLF).
         len = 0; p = e.find("\\r\\n", 0, 4, FINDN, &len);
-        check("fwd \\r\\n with maxPos splitting CRLF snaps to [0,5), matches 3",
-              p == 3 && len == 2, "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+        check("fwd \\r\\n with maxPos splitting CRLF finds nothing (range not widened)",
+              p < 0, "pos=" + std::to_string(p) + " len=" + std::to_string(len));
         len = 0; p = e.find("\\r\\n", 6, (Sci::Position)t.size(), FINDN, &len);
         check("clamped fwd \\r\\n from mid-line 6 finds 8", p == 8 && len == 2,
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));

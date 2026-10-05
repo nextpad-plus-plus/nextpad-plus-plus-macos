@@ -17,6 +17,8 @@
 #include <optional>
 #include <map>
 #include <algorithm>
+#include <locale>
+#include <type_traits>
 
 #include "Scintilla.h"
 #include "ScintillaTypes.h"
@@ -262,16 +264,26 @@ private:
 
 namespace Scintilla::Internal
 {
-// Named factory for the optional Boost.Regex backend. The single SCI_OWNREGEX
-// CreateRegexSearch() lives in RegexBackendSelect.cxx and dispatches here when
-// the "Use Boost Regex mode" preference is on.
+// Boost.Regex is the only regex engine (as on Windows Notepad++). The named
+// factory is kept for the headless test harnesses.
 RegexSearchBase *CreateBoostRegexSearch(CharClassify* /* charClassTable */)
 {
 	return new BoostRegexSearch();
 }
+
+#ifdef SCI_OWNREGEX
+// With SCI_OWNREGEX defined, Scintilla's built-in CreateRegexSearch() compiles
+// out and every Document gets this backend.
+RegexSearchBase *CreateRegexSearch(CharClassify *charClassTable)
+{
+	return CreateBoostRegexSearch(charClassTable);
+}
+#endif
 }
 
-std::string g_exceptionMessage;
+// Per thread: Find in Files searches its own Documents on a background queue
+// while the editor may search on the main thread.
+thread_local std::string g_exceptionMessage;
 
 /**
  * Find text in document, supporting both forward and backward
@@ -311,8 +323,13 @@ Sci::Position BoostRegexSearch::FindText(Document* doc, Sci::Position startPosit
 			regex_constants::ECMAScript
 			| (caseSensitive ? 0 : regex_constants::icase);
 		search._regexString = regexString;
+		// As on Windows: ^ and $ only match at the range ends when those are real
+		// line boundaries, so "foo$" does not match "foo" in "foobar" when the
+		// search range (e.g. a selection) stops after "foo".
 		search._boostRegexFlags =
-			((static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_DOTMATCHESNL) ? regex_constants::match_default : regex_constants::match_not_dot_newline);
+			  (search.isLineStart(search._startPosition) ? regex_constants::match_default : regex_constants::match_not_bol)
+			| (search.isLineEnd(search._endPosition)     ? regex_constants::match_default : regex_constants::match_not_eol)
+			| ((static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_DOTMATCHESNL) ? regex_constants::match_default : regex_constants::match_not_dot_newline);
 
 		const int empty_match_style = static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_EMPTYMATCH_MASK;
 		const int allow_empty_at_start = static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART;
@@ -430,12 +447,34 @@ BoostRegexSearch::Match BoostRegexSearch::EncodingDependent<CharT, CharacterIter
 		return Match();
 }
 
+// The locale for the wchar_t (UTF-32) regexes. Windows' wchar_t ctype is
+// Unicode-aware; macOS's "C" locale only classifies ASCII, so without this \w,
+// \b and [[:alpha:]] would not see "é" or CJK as word characters and Match case
+// off would not fold "É" to "é". A UTF-8 locale gives the Unicode tables.
+static const std::locale &UnicodeRegexLocale()
+{
+	static const std::locale locale = [] {
+		for (const char *name : {"en_US.UTF-8", "C.UTF-8", "UTF-8"}) {
+			try {
+				return std::locale(name);
+			} catch (...) {
+			}
+		}
+		return std::locale::classic();
+	}();
+	return locale;
+}
+
 template <class CharT, class CharacterIterator>
 void BoostRegexSearch::EncodingDependent<CharT, CharacterIterator>::compileRegex(const char *regex, const int compileFlags)
 {
 	if (_lastCompileFlags != compileFlags || _lastRegexString != regex)
 	{
-		_regex = Regex(CharTPtr(regex), static_cast<regex_constants::syntax_option_type>(compileFlags));
+		Regex compiled;
+		if constexpr (std::is_same_v<CharT, wchar_t>)
+			compiled.imbue(UnicodeRegexLocale());
+		compiled.assign(static_cast<const CharT *>(CharTPtr(regex)), static_cast<regex_constants::syntax_option_type>(compileFlags));
+		_regex = compiled;
 		_lastRegexString = regex;
 		_lastCompileFlags = compileFlags;
 	}
@@ -460,7 +499,7 @@ bool BoostRegexSearch::SearchParameters::isLineEnd(Sci::Position position) const
 {
 	return (position == _document->Length())
 		|| _document->CharAt(position) == '\r'
-		|| (_document->CharAt(position) == '\n' && (position == 0 || _document->CharAt(position-1) != '\n'));
+		|| (_document->CharAt(position) == '\n' && (position == 0 || _document->CharAt(position-1) != '\r'));
 }
 
 const char *BoostRegexSearch::SubstituteByPosition(Document* doc, const char *text, Sci::Position *length) {
