@@ -124,9 +124,34 @@ typedef struct {
 /// dark icon name if in dark mode. Returns nil if not found.
 - (nullable NSImage *)toolbarIconNamed:(NSString *)standardName;
 
+/// Same as -toolbarIconNamed:, but picks the light/dark icon set from the
+/// background the icon is drawn on instead of the chrome dark-mode state.
+/// For panel bodies painted with the editor theme (NPPStyleStore globalBg),
+/// which can be light while the chrome is dark and vice versa.
+- (nullable NSImage *)toolbarIconNamed:(NSString *)standardName
+                     forDarkBackground:(BOOL)darkBackground;
+
+/// YES when `color` is dark enough that content drawn on it should use the
+/// dark (light-on-dark) variants: DarkAqua appearance, dark icon set.
++ (BOOL)isDarkColor:(NSColor *)color;
+
+/// Aqua or DarkAqua to match content drawn on `color` (via +isDarkColor:).
+/// For views painted with the editor theme background rather than the chrome.
++ (NSAppearance *)appearanceForBackground:(NSColor *)color;
+
 /// Load a tabbar icon by name (e.g. "closeTabButton"). Uses current theme directory.
 - (nullable NSImage *)tabbarIconNamed:(NSString *)name;
 
+@end
+
+/// Label for side-panel table/outline rows painted with the editor theme.
+/// Draws in `themeTextColor` (normally NPPStyleStore globalFg), but switches to
+/// the selected-text color while its row shows the emphasized (accent-filled)
+/// selection, where the theme foreground can be unreadable (black on blue).
+/// Works as a bare row view or as the textField of an NSTableCellView: the row
+/// view forwards its background style to the label's cell either way.
+@interface NppThemedLabel : NSTextField
+@property (nonatomic, strong, nullable) NSColor *themeTextColor;
 @end
 
 NS_ASSUME_NONNULL_END
