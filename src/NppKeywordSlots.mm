@@ -1,4 +1,5 @@
 #import "NppKeywordSlots.h"
+#include "SciLexer.h"
 
 // Keyword group → Lexilla word list slot mapping, copied from Windows Notepad++
 // (PowerEditor/src/ScintillaComponent/ScintillaEditView.cpp/.h,
@@ -10,10 +11,9 @@
 // slot n for every bit set in the mask. Lexers whose slot layout differs have
 // bespoke setters; those are spelled out as explicit slot lists below.
 //
-// Substyle keyword groups (substyle1..8, LANG_INDEX_SUBSTYLE1..8) are not fed
-// here. When they are, add a substyle descriptor to NppKeywordLangSpec (base
-// style ID, count, first substyle group), matching Windows'
-// populateSubStyleKeywords() calls in the same setters.
+// Substyle keyword groups (substyle1..8, LANG_INDEX_SUBSTYLE1..8) are fed by
+// NppSubstyleBasesForLanguage() below, from the populateSubStyleKeywords()
+// calls in the same setters.
 
 // Group names in LANG_INDEX order (index == natural slot).
 static const char *const kGroupByIndex[] = {
@@ -35,10 +35,11 @@ enum : uint16_t {
 
 // setCppLexer(): C, C++, Java, C#, ActionScript, Swift, Go. Doxygen tags are
 // always C++'s type2 list, in slot 2. Global classes (instre2) go to slot 3.
+// Doxygen is read straight from langs.xml (getWordList), so no styler words.
 static const NppKeywordSlot kCppSlots[] = {
     { NULL,  "instre1", 0 },
     { NULL,  "type1",   1 },
-    { "cpp", "type2",   2 },
+    { "cpp", "type2",   2, "" },
     { NULL,  "instre2", 3 },
 };
 // setCppLexer() for L_RC skips the doxygen list.
@@ -52,14 +53,14 @@ static const NppKeywordSlot kRcSlots[] = {
 static const NppKeywordSlot kJsSlots[] = {
     { "javascript.js", "instre1", 0 },
     { "javascript.js", "type1",   1 },
-    { "cpp",           "type2",   2 },
+    { "cpp",           "type2",   2, "" },
     { "javascript.js", "instre2", 3 },
 };
 // setTypeScriptLexer()
 static const NppKeywordSlot kTypeScriptSlots[] = {
     { NULL,  "instre1", 0 },
     { NULL,  "type1",   1 },
-    { "cpp", "type2",   2 },
+    { "cpp", "type2",   2, "" },
 };
 // setObjCLexer(): LexObjC reads instrs, types, doxygen, directives, qualifiers.
 // Port-only deviation: slots 0 and 1 also get cpp's instre1/type1. The macOS
@@ -72,7 +73,7 @@ static const NppKeywordSlot kObjCSlots[] = {
     { "cpp", "instre1", 0 },
     { NULL,  "type1",   1 },
     { "cpp", "type1",   1 },
-    { "cpp", "type2",   2 },
+    { "cpp", "type2",   2, "" },
     { NULL,  "instre2", 3 },
     { NULL,  "type2",   4 },
 };
@@ -99,11 +100,12 @@ static const NppKeywordSlot kXmlSlots[] = {
 };
 // setXmlLexer() for HTML, PHP, ASP, JSP: setHTMLLexer() + setEmbeddedJSLexer()
 // + setEmbeddedPhpLexer() + setEmbeddedAspLexer(), each into LexHTML's slot for
-// that sublanguage. The ASP setter reads the VB list, not asp's own.
+// that sublanguage. The ASP setter reads the VB list, not asp's own, but
+// takes user-defined keywords from the asp styler (makeStyle(L_ASP)).
 static const NppKeywordSlot kHtmlFamilySlots[] = {
-    { "html",       "instre1", 0 },  // HTML elements and attributes
-    { "javascript", "instre1", 1 },  // JavaScript keywords
-    { "vb",         "instre1", 2 },  // VBScript keywords
+    { "html",       "instre1", 0 },         // HTML elements and attributes
+    { "javascript", "instre1", 1 },         // JavaScript keywords
+    { "vb",         "instre1", 2, "asp" },  // VBScript keywords
     { "php",        "instre1", 4 },  // PHP keywords
     { "html",       "instre2", 5 },  // SGML and DTD keywords
 };
@@ -249,4 +251,97 @@ NSUInteger NppKeywordSlotsForLanguage(NSString *lang, NppKeywordSlot out[], NSUI
             out[n++] = (NppKeywordSlot){ NULL, kGroupByIndex[i], i };
     }
     return n;
+}
+
+// ── Substyles ───────────────────────────────────────────────────────────────
+//
+// populateSubStyleKeywords(lang, baseStyleID, n, firstLangIndex) allocates n
+// substyles of baseStyleID and feeds langs.xml groups substyle<k>.. into them
+// with SCI_SETIDENTIFIERS. Lexilla allocates sequentially from the lexer's
+// first substyle ID (0x80 for most lexers, 0xC0 for LexHTML), which is why
+// stylers.xml can give the substyle rows fixed style IDs.
+
+// setCppLexer(), setTypeScriptLexer(): user keywords 1-8.
+static const NppSubstyleBase kCppSubstyles[] = {
+    { NULL, SCE_C_IDENTIFIER, 8, 1 },
+};
+// setJsLexer() reads the javascript.js lists and styler.
+static const NppSubstyleBase kJsSubstyles[] = {
+    { "javascript.js", SCE_C_IDENTIFIER, 8, 1 },
+};
+// setLexer(L_PYTHON, ..., SCE_P_IDENTIFIER)
+static const NppSubstyleBase kPythonSubstyles[] = {
+    { NULL, SCE_P_IDENTIFIER, 8, 1 },
+};
+// setLexer(L_GDSCRIPT, ..., SCE_GD_IDENTIFIER)
+static const NppSubstyleBase kGDScriptSubstyles[] = {
+    { NULL, SCE_GD_IDENTIFIER, 8, 1 },
+};
+// setLexer(L_LUA, ..., SCE_LUA_IDENTIFIER, 4)
+static const NppSubstyleBase kLuaSubstyles[] = {
+    { NULL, SCE_LUA_IDENTIFIER, 4, 1 },
+};
+// setBashLexer(): user keywords 1-4 on identifiers, user scalars 1-4 on $vars.
+static const NppSubstyleBase kBashSubstyles[] = {
+    { NULL, SCE_SH_IDENTIFIER, 4, 1 },
+    { NULL, SCE_SH_SCALAR,     4, 5 },
+};
+// setXmlLexer(L_XML): all eight on attributes (LexHTML does not classify XML tags).
+static const NppSubstyleBase kXmlSubstyles[] = {
+    { NULL, SCE_H_ATTRIBUTE, 8, 1 },
+};
+// setXmlLexer() for HTML, PHP, ASP, JSP: setHTMLLexer() (4 tags + 4
+// attributes), setEmbeddedJSLexer(), setEmbeddedPhpLexer() and
+// setEmbeddedAspLexer(), in that order: html 192-199, javascript 200-207,
+// php 208-215, asp 216-223. Every member allocates all of them (PHP too,
+// under phpscript, which shares LexHTML's substyle bases) so the IDs match
+// stylers.xml.
+static const NppSubstyleBase kHtmlFamilySubstyles[] = {
+    { "html",       SCE_H_TAG,       4, 1 },
+    { "html",       SCE_H_ATTRIBUTE, 4, 5 },
+    { "javascript", SCE_HJ_WORD,     8, 1 },
+    { "php",        SCE_HPHP_WORD,   8, 1 },
+    { "asp",        SCE_HB_WORD,     8, 1 },
+};
+
+typedef struct {
+    const char            *lang;
+    const NppSubstyleBase *bases;
+    NSUInteger             count;
+} NppSubstyleLangSpec;
+
+static const NppSubstyleLangSpec kSubstyleSpecs[] = {
+    { "c",             SLOTS(kCppSubstyles) },
+    { "cpp",           SLOTS(kCppSubstyles) },
+    { "java",          SLOTS(kCppSubstyles) },
+    { "cs",            SLOTS(kCppSubstyles) },
+    { "rc",            SLOTS(kCppSubstyles) },
+    { "actionscript",  SLOTS(kCppSubstyles) },
+    { "swift",         SLOTS(kCppSubstyles) },
+    { "go",            SLOTS(kCppSubstyles) },
+    { "typescript",    SLOTS(kCppSubstyles) },
+    { "javascript.js", SLOTS(kJsSubstyles) },
+    { "javascript",    SLOTS(kJsSubstyles) },
+    { "python",        SLOTS(kPythonSubstyles) },
+    { "gdscript",      SLOTS(kGDScriptSubstyles) },
+    { "lua",           SLOTS(kLuaSubstyles) },
+    { "bash",          SLOTS(kBashSubstyles) },
+    { "xml",           SLOTS(kXmlSubstyles) },
+    { "html",          SLOTS(kHtmlFamilySubstyles) },
+    { "php",           SLOTS(kHtmlFamilySubstyles) },
+    { "asp",           SLOTS(kHtmlFamilySubstyles) },
+    { "jsp",           SLOTS(kHtmlFamilySubstyles) },
+};
+
+NSUInteger NppSubstyleBasesForLanguage(NSString *lang, NppSubstyleBase out[], NSUInteger capacity) {
+    NSString *key = lang.lowercaseString;
+    const NSUInteger n = sizeof(kSubstyleSpecs) / sizeof(kSubstyleSpecs[0]);
+    for (NSUInteger i = 0; i < n; i++) {
+        if (![key isEqualToString:@(kSubstyleSpecs[i].lang)]) continue;
+        NSUInteger written = 0;
+        for (NSUInteger j = 0; j < kSubstyleSpecs[i].count && written < capacity; j++)
+            out[written++] = kSubstyleSpecs[i].bases[j];
+        return written;
+    }
+    return 0;
 }

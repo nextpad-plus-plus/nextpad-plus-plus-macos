@@ -4,12 +4,18 @@
 #import "PreferencesWindowController.h"
 #import "NppLocalizer.h"
 #import "NppThemeManager.h"
+#import "NppLangsManager.h"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MARK: - NPPStyleEntry
 // ─────────────────────────────────────────────────────────────────────────────
 
 @implementation NPPStyleEntry
+- (instancetype)init {
+    self = [super init];
+    if (self) { _keywordClass = @""; _keywords = @""; }
+    return self;
+}
 - (id)copyWithZone:(NSZone *)zone {
     NPPStyleEntry *c    = [NPPStyleEntry new];
     c.name              = [_name copy];
@@ -22,6 +28,8 @@
     c.italic            = _italic;
     c.underline         = _underline;
     c.fontStyleExplicit = _fontStyleExplicit;
+    c.keywordClass      = [_keywordClass copy];
+    c.keywords          = [_keywords copy];
     return c;
 }
 @end
@@ -61,6 +69,16 @@ static NSColor * _Nullable colorFromRRGGBB(NSString * _Nullable hex) {
                            green:((v >>  8) & 0xFF) / 255.0
                             blue:( v        & 0xFF) / 255.0
                            alpha:1.0];
+}
+
+/// Collapse a keyword list (XML text or the user's typing) to single-space
+/// separated words.
+static NSString *normalizedKeywords(NSString * _Nullable text) {
+    NSArray<NSString *> *parts = [text ?: @"" componentsSeparatedByCharactersInSet:
+                                  [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSMutableArray<NSString *> *words = [NSMutableArray arrayWithCapacity:parts.count];
+    for (NSString *w in parts) if (w.length) [words addObject:w];
+    return [words componentsJoinedByString:@" "];
 }
 
 static NSString *hexFromColor(NSColor *c) {
@@ -113,6 +131,9 @@ static NSString *modelLexerID(NSString *themeID) {
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSNumber *, NSMutableDictionary<NSString *, NSString *> *> *> *styles;
 @end
 
+/// Theme-layer key for a WordsStyle's element text (its user-defined keywords).
+static NSString *const kThemeKeywordsKey = @"#keywords";
+
 static NSMutableDictionary<NSString *, NSString *> *xmlAttributes(NSXMLElement *el) {
     NSMutableDictionary *d = [NSMutableDictionary new];
     for (NSXMLNode *a in el.attributes) if (a.name) d[a.name] = a.stringValue ?: @"";
@@ -151,7 +172,12 @@ static NSMutableDictionary<NSString *, NSString *> *xmlAttributes(NSXMLElement *
             if (!sidStr.length) continue;
             NSNumber *sid = @(sidStr.intValue);
             if (styles[sid]) continue;
-            styles[sid] = xmlAttributes(ws);
+            NSMutableDictionary<NSString *, NSString *> *attrs = xmlAttributes(ws);
+            // A row with a keywordClass holds its user-defined keywords as the
+            // element text. Kept under a key no XML attribute can have, so an
+            // empty list (cleared by the user) still overrides lower layers.
+            if (attrs[@"keywordClass"].length) attrs[kThemeKeywordsKey] = ws.stringValue ?: @"";
+            styles[sid] = attrs;
             [order addObject:sid];
         }
         layer.styles[lid]     = styles;
@@ -237,6 +263,8 @@ static void applyThemeAttributes(NPPStyleEntry *e, NSDictionary<NSString *, NSSt
                                  NSColor *fallbackFg, NSColor *fallbackBg) {
     NSString *v;
     if (!e.name.length && (v = a[@"name"]).length) e.name = v;
+    if (!e.keywordClass.length && (v = a[@"keywordClass"]).length) e.keywordClass = v;
+    if (e.keywordClass.length && (v = a[kThemeKeywordsKey])) e.keywords = normalizedKeywords(v);
     v = a[@"fgColor"]; e.fgColor = v ? colorFromRRGGBB(v) : fallbackFg;
     v = a[@"bgColor"]; e.bgColor = v ? colorFromRRGGBB(v) : fallbackBg;
     if ((v = a[@"fontName"])) e.fontName = v;
@@ -298,6 +326,8 @@ static void applyThemeAttributes(NPPStyleEntry *e, NSDictionary<NSString *, NSSt
         s.italic    = (fstVal & 2) != 0;
         s.underline = (fstVal & 4) != 0;
     }
+    s.keywordClass      = [el attributeForName:@"keywordClass"].stringValue ?: @"";
+    if (s.keywordClass.length) s.keywords = normalizedKeywords(el.stringValue);
     return s;
 }
 
@@ -592,6 +622,7 @@ static NSString *_userThemesDir(void) {
         else if ([prop isEqualToString:@"bold"])      entry.bold      = [val boolValue];
         else if ([prop isEqualToString:@"italic"])    entry.italic    = [val boolValue];
         else if ([prop isEqualToString:@"underline"]) entry.underline = [val boolValue];
+        else if ([prop isEqualToString:@"keywords"])  entry.keywords  = normalizedKeywords(val);
     }
 }
 
@@ -816,6 +847,9 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
                 if (e.italic != (b ? b.italic : NO))    overrides[[base stringByAppendingString:@"italic"]]  = @(e.italic);
                 if (e.underline != (b ? b.underline : NO)) overrides[[base stringByAppendingString:@"underline"]] = @(e.underline);
             }
+            // User-defined keywords; an empty string records a cleared list.
+            if (e.keywordClass.length && ![e.keywords ?: @"" isEqualToString:b.keywords ?: @""])
+                overrides[[base stringByAppendingString:@"keywords"]] = e.keywords ?: @"";
         }
     }
 
@@ -998,6 +1032,14 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
         if (!elements.count) continue;
 
         NSXMLElement *el = elements[0];
+        // User-defined keywords are the element text, not an attribute.
+        if ([prop isEqualToString:@"keywords"]) {
+            if (![el.stringValue isEqualToString:val]) {
+                el.stringValue = val;
+                changed = YES;
+            }
+            continue;
+        }
         // Map property name to XML attribute name
         NSString *attrName = nil;
         NSString *attrVal = nil;
@@ -1083,7 +1125,7 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
 // MARK: - StyleConfiguratorWindowController
 // ─────────────────────────────────────────────────────────────────────────────
 
-@interface StyleConfiguratorWindowController () <NSTableViewDataSource, NSTableViewDelegate>
+@interface StyleConfiguratorWindowController () <NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate>
 @end
 
 @implementation StyleConfiguratorWindowController {
@@ -1106,6 +1148,12 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
     BOOL                  _backupOverrideFg, _backupOverrideBg;
     BOOL                  _backupOverrideFont, _backupOverrideFontSize;
     BOOL                  _backupOverrideBold, _backupOverrideItalic, _backupOverrideUnderline;
+    // Keyword lists for rows with a keywordClass (Windows "Default keywords"
+    // + "User-defined keywords"). Hidden for every other row.
+    NSTextField          *_defKeywordsLabel, *_userKeywordsLabel;
+    NSScrollView         *_defKeywordsScroll, *_userKeywordsScroll;
+    NSTextView           *_defKeywordsView, *_userKeywordsView;
+    BOOL                  _userKeywordsDirty;   // typed since the last preview
 
     // Working copy — edited by user; cancelled on Cancel; committed on Save
     NSMutableArray<NPPLexer *>  *_workingLexers;
@@ -1312,6 +1360,30 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
                            _forceBoldCheck, _forceItalicCheck, _forceUnderlineCheck ])
         b.hidden = YES;
 
+    // ── Keyword lists (Windows parity) ─────────────────────────────────────
+    // Same space as the Global override checkboxes, which never show at the
+    // same time: that row has no keywordClass. Left: the langs.xml group
+    // (read-only). Right: user-defined keywords, saved as the WordsStyle text
+    // and added to that group (for USER KEYWORDS rows, the substyle's words).
+    CGFloat kwLabelY = boxY - 24;
+    CGFloat kwBottom = ry + 8;
+    CGFloat kwH      = kwLabelY - 4 - kwBottom;
+    _defKeywordsLabel = [self _label:[loc translate:@"Default keywords"]];
+    _defKeywordsLabel.frame = NSMakeRect(rx, kwLabelY, csW, 18);
+    [cv addSubview:_defKeywordsLabel];
+    _userKeywordsLabel = [self _label:[loc translate:@"User-defined keywords"]];
+    _userKeywordsLabel.frame = NSMakeRect(fsX, kwLabelY, fsW, 18);
+    [cv addSubview:_userKeywordsLabel];
+
+    _defKeywordsScroll  = [self _keywordScrollWithFrame:NSMakeRect(rx, kwBottom, csW, kwH)
+                                                editable:NO textView:&_defKeywordsView];
+    [cv addSubview:_defKeywordsScroll];
+    _userKeywordsScroll = [self _keywordScrollWithFrame:NSMakeRect(fsX, kwBottom, fsW, kwH)
+                                               editable:YES textView:&_userKeywordsView];
+    _userKeywordsView.delegate = self;
+    [cv addSubview:_userKeywordsScroll];
+    [self _setKeywordControlsHidden:YES];
+
     // Buttons
     NSButton *cancelBtn = [NSButton buttonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]
                                              target:self action:@selector(_cancel:)];
@@ -1401,6 +1473,68 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
     return f;
 }
 
+/// A bordered, wrapping, vertically scrolling text view for a keyword list.
+- (NSScrollView *)_keywordScrollWithFrame:(NSRect)frame editable:(BOOL)editable
+                                 textView:(NSTextView * __strong *)outView {
+    NSScrollView *sv = [[NSScrollView alloc] initWithFrame:frame];
+    sv.hasVerticalScroller = YES;
+    sv.autohidesScrollers  = YES;
+    sv.borderType          = NSBezelBorder;
+    NSSize content = sv.contentSize;
+    NSTextView *tv = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, content.width, content.height)];
+    tv.minSize = NSMakeSize(0, content.height);
+    tv.maxSize = NSMakeSize(FLT_MAX, FLT_MAX);
+    tv.verticallyResizable   = YES;
+    tv.horizontallyResizable = NO;
+    tv.autoresizingMask      = NSViewWidthSizable;
+    tv.textContainer.containerSize = NSMakeSize(content.width, FLT_MAX);
+    tv.textContainer.widthTracksTextView = YES;
+    tv.font                  = [NSFont systemFontOfSize:11];
+    tv.editable              = editable;
+    tv.selectable            = YES;
+    tv.richText              = NO;
+    tv.allowsUndo            = editable;
+    tv.automaticQuoteSubstitutionEnabled = NO;
+    tv.automaticDashSubstitutionEnabled  = NO;
+    tv.automaticTextReplacementEnabled   = NO;
+    tv.automaticSpellingCorrectionEnabled = NO;
+    tv.continuousSpellCheckingEnabled     = NO;
+    if (!editable) tv.backgroundColor = [NSColor controlBackgroundColor];
+    sv.documentView = tv;
+    *outView = tv;
+    return sv;
+}
+
+- (void)_setKeywordControlsHidden:(BOOL)hidden {
+    for (NSView *v in @[ _defKeywordsLabel, _userKeywordsLabel,
+                         _defKeywordsScroll, _userKeywordsScroll ])
+        v.hidden = hidden;
+}
+
+/// Push typed user-defined keywords to open editors (they refeed their lists
+/// when the keywords differ from what they last applied).
+- (void)_previewUserKeywordsIfDirty {
+    if (!_userKeywordsDirty) return;
+    _userKeywordsDirty = NO;
+    [[NPPStyleStore sharedStore] previewLexers:_workingLexers];
+}
+
+// NSTextViewDelegate: typing only updates the working entry; the preview runs
+// when editing ends, the row changes, or on Save, so a large list (PHP) is not
+// refed into every open editor on each keystroke.
+- (void)textDidChange:(NSNotification *)note {
+    if (_suppressActions || note.object != _userKeywordsView) return;
+    NPPStyleEntry *e = [self _currentEntry];
+    if (!e.keywordClass.length) return;
+    e.keywords = normalizedKeywords(_userKeywordsView.string);
+    _userKeywordsDirty = YES;
+}
+
+- (void)textDidEndEditing:(NSNotification *)note {
+    if (note.object != _userKeywordsView) return;
+    [self _previewUserKeywordsIfDirty];
+}
+
 // ── Populate theme popup from bundle ─────────────────────────────────────────
 
 - (void)_populateThemePopup {
@@ -1465,6 +1599,7 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
     _suppressActions = NO;
     _fgLabel.textColor = [NSColor secondaryLabelColor];
     _bgLabel.textColor = [NSColor secondaryLabelColor];
+    [self _setKeywordControlsHidden:YES];
 }
 
 - (void)_updateRightPanelForStyle:(NPPStyleEntry *)entry lang:(NPPLexer *)lex {
@@ -1515,6 +1650,20 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
         _forceUnderlineCheck.state = [d boolForKey:kPrefGlobalOverrideEnableUnderline]
                                      ? NSControlStateValueOn : NSControlStateValueOff;
     }
+
+    // Keyword lists: only rows tied to a langs.xml group (WordStyleDlg shows
+    // them when _keywordClass != STYLE_NOT_USED).
+    BOOL hasKeywords = entry.keywordClass.length > 0 && ![lex.lexerID isEqualToString:@"global"];
+    [self _setKeywordControlsHidden:!hasKeywords];
+    if (hasKeywords) {
+        NSString *def = [[NppLangsManager shared] keywordsForLanguage:lex.lexerID
+                                                          keywordClass:entry.keywordClass];
+        _defKeywordsView.string  = def ?: @"";
+        _userKeywordsView.string = entry.keywords ?: @"";
+    } else {
+        _defKeywordsView.string  = @"";
+        _userKeywordsView.string = @"";
+    }
     _suppressActions = NO;
 }
 
@@ -1560,6 +1709,7 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
     return _currentStyles[row].name;
 }
 - (void)tableViewSelectionDidChange:(NSNotification *)n {
+    [self _previewUserKeywordsIfDirty];
     NSInteger row = _styleTable.selectedRow;
     if (row < 0 || row >= (NSInteger)_currentStyles.count) { [self _clearRightPanel]; return; }
     NSInteger langIdx = _langPopup.indexOfSelectedItem;
@@ -1663,11 +1813,13 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
 }
 
 - (void)_saveAndClose:(id)sender {
+    _userKeywordsDirty = NO;  // commitLexers: previews everything
     [[NPPStyleStore sharedStore] commitLexers:_workingLexers themeName:_workingTheme ?: kDefaultThemeName];
     [self.window close];
 }
 
 - (void)_cancel:(id)sender {
+    _userKeywordsDirty = NO;
     [self _restoreCancelSnapshot];
     [self.window close];
 }
@@ -1810,6 +1962,7 @@ static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, N
             else if ([prop isEqualToString:@"bold"]) e.bold = [val boolValue];
             else if ([prop isEqualToString:@"italic"]) e.italic = [val boolValue];
             else if ([prop isEqualToString:@"underline"]) e.underline = [val boolValue];
+            else if ([prop isEqualToString:@"keywords"]) e.keywords = normalizedKeywords(val);
         }
     }
 
