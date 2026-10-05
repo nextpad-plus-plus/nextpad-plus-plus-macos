@@ -12,7 +12,7 @@
 // non-zero if any case fails.
 
 // STL first — Scintilla's Document.h/PerLine.h use std::map/forward_list/etc.
-// without including them, expecting the TU to have done so (see NppRegexSearch.cxx).
+// without including them, expecting the TU to have done so (as BoostRegExSearch.cxx does).
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -255,16 +255,17 @@ int main() {
               "got " + std::to_string(countAll(t, "^", LOOP)));
     }
 
-    // ---- Find within a selection that ends mid-line: $ must NOT match -------
+    // ---- Find within a selection that ends mid-line --------------------------
     {
         std::string t = "foobar";   // single line, no EOL
         Eng e(t);
         Sci::Position len = 0;
-        // Search range [0,3): "foo". $ should NOT match at 3 (range truncated
-        // mid-line; not the real line end) -> match_not_eol.
+        // Search range [0,3): "foo". As on Windows Notepad++ (no match_not_eol
+        // since 7.9.1), $ matches at the end of the range. (The old per-line
+        // std::regex backend did not match here.)
         Sci::Position p = e.find("foo$", 0, 3, FINDN, &len);
-        check("foo$ does NOT match when range ends mid-line", p < 0,
-              "pos=" + std::to_string(p));
+        check("foo$ matches at the end of a range that stops mid-line (Windows)",
+              p == 0 && len == 3, "pos=" + std::to_string(p));
     }
 
     // ---- Clean clamp: maxPos before a CRLF (not splitting it) excludes it ----

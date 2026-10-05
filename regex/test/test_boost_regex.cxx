@@ -198,14 +198,18 @@ int main() {
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));
     }
 
-    // 10) $ at the end of a search range that stops mid-line does not match
-    //     (Windows parity: match_not_eol unless the range end is a line end).
+    // 10) $ at the end of a search range that stops mid-line matches, as on
+    //     Windows (no match_not_eol since 7.9.1); ^ looks before the range.
     {
         std::string t = "foobar\nfoo";
         Eng e(t);
         Sci::Position len = 0;
         Sci::Position p = e.find("foo$", 0, 3, 0, &len);
-        check("foo$ in [0,3) of 'foobar' does not match", p < 0, "pos=" + std::to_string(p));
+        check("foo$ in [0,3) of 'foobar' matches at the range end", p == 0 && len == 3,
+              "pos=" + std::to_string(p));
+        len = 0;
+        p = e.find("^bar", 3, 6, 0, &len);
+        check("^bar in [3,6) does not match mid-line", p < 0, "pos=" + std::to_string(p));
         len = 0;
         p = e.find("foo$", 0, (Sci::Position)t.size(), 0, &len);
         check("foo$ matches the real line end", p == 7 && len == 3,
