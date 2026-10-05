@@ -1867,18 +1867,9 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
                 ? NSControlStateValueOn : NSControlStateValueOff];
         }
     }
+    // Posts NPPDarkModeChangedNotification; NPPStyleStore then switches the
+    // editor to the theme remembered for the resulting appearance.
     [NppThemeManager shared].mode = (NppDarkModeOption)mode;
-
-    // Switch theme to match dark/light mode
-    NPPStyleStore *store = [NPPStyleStore sharedStore];
-    BOOL effectiveDark = (mode == NppDarkModeDark) ||
-        (mode == NppDarkModeAuto && [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:
-            @[NSAppearanceNameDarkAqua]] != nil);
-    NSString *targetTheme = effectiveDark ? @"DarkModeDefault" : @"Default (stylers.xml)";
-    if (![store.activeThemeName isEqualToString:targetTheme]) {
-        NSArray *lexers = [store lexersForTheme:targetTheme];
-        [store commitLexers:lexers themeName:targetTheme];
-    }
 }
 
 #pragma mark - New Document Page

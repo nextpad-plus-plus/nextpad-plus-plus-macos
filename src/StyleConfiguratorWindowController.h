@@ -64,8 +64,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Update in-memory state + notify EditorViews (no NSUserDefaults write).
 - (void)previewLexers:(NSArray<NPPLexer *> *)lexers;
 
-/// Persist to NSUserDefaults + notify EditorViews.
+/// Persist to NSUserDefaults + notify EditorViews. Also records themeName as
+/// the remembered theme for the current light/dark appearance.
 - (void)commitLexers:(NSArray<NPPLexer *> *)lexers themeName:(NSString *)themeName;
+
+/// The remembered editor theme for the light or dark appearance
+/// (defaults: "Default (stylers.xml)" / "DarkModeDefault").
+- (NSString *)themeNameForDarkAppearance:(BOOL)dark;
+
+/// Switch the editor theme to the one remembered for the current appearance
+/// (NppThemeManager.isDark). No-op when it is already active. Called at launch
+/// and on NPPDarkModeChangedNotification.
+- (void)syncThemeWithAppearance;
 
 @end
 

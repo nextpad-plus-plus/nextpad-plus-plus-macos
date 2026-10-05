@@ -10471,16 +10471,9 @@ static BOOL _writeCLIScript(NSString *script, NSString *path, NSError **outErr) 
     if (![NppThemeManager shared].usesGlassMaterials)
         _statusBar.layer.backgroundColor = [NppThemeManager shared].statusBarBackground.CGColor;
 
-    // Auto mode: switch editor theme to match system appearance
-    if ([NppThemeManager shared].mode == NppDarkModeAuto) {
-        BOOL isDark = [NppThemeManager shared].isDark;
-        NSString *targetTheme = isDark ? @"DarkModeDefault" : @"Default (stylers.xml)";
-        NPPStyleStore *store = [NPPStyleStore sharedStore];
-        if (![store.activeThemeName isEqualToString:targetTheme]) {
-            NSArray *lexers = [store lexersForTheme:targetTheme];
-            [store commitLexers:lexers themeName:targetTheme];
-        }
-    }
+    // Editor theme: NPPStyleStore observes this notification itself (it is
+    // created at launch) and switches to the theme remembered for the new
+    // appearance.
 
     // Re-skin the toolbar (light/dark icon set + colorization).
     [self _reskinToolbarIcons];
