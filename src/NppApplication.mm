@@ -101,6 +101,7 @@
         @"moveToOtherHorizontalView:",
         @"cloneToOtherHorizontalView:",
         @"resetSplitView:",
+        @"moveToNewWindow:",
 
         // ── External operations (open browser, file picker) ──
         @"viewInFirefox:",
