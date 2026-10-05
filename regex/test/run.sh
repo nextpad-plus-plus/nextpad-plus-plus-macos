@@ -1,8 +1,9 @@
 #!/bin/bash
-# Build and run the NppRegexSearch unit harness (regex/test/test_npp_regex.cxx)
-# against the real Scintilla core. No CMake target needed — we compile only the
-# platform-agnostic Scintilla sources that Document depends on, plus the
-# SCI_OWNREGEX backend, and stub out the Platform debug hooks in the test TU.
+# Build and run the editor regex harness (regex/test/test_npp_regex.cxx)
+# against the real Scintilla core and the Boost backend. No CMake needed — we
+# compile only the platform-agnostic Scintilla sources that Document depends
+# on, plus the SCI_OWNREGEX backend, and stub out the Platform debug hooks in
+# the test TU. The same harness also runs under ctest (see CMakeLists.txt).
 #
 # Usage:  bash regex/test/run.sh
 set -euo pipefail
@@ -20,15 +21,12 @@ core=(Document CellBuffer CharClassify CharacterCategoryMap CharacterType \
 srcs=()
 for s in "${core[@]}"; do srcs+=("$sci/src/$s.cxx"); done
 
-# Link the full regex source set: NppRegexSearch (the engine under test) plus the
-# selector (provides CreateRegexSearch) and the Boost backend it references. The
-# default gNppUseBoostRegex=false means CreateRegexSearch() returns NppRegexSearch,
-# so this harness validates the default (per-line std::regex) path unchanged.
+# BoostRegExSearch.cxx provides CreateRegexSearch() (SCI_OWNREGEX), the engine
+# every editor Document uses.
 clang++ -std=c++17 -stdlib=libc++ \
     -DSCI_NAMESPACE -DSCI_OWNREGEX -DSCINTILLA_QT=0 -DBOOST_REGEX_STANDALONE \
     -I"$sci/include" -I"$sci/src" -I"$root/regex" \
     "$here/test_npp_regex.cxx" \
-    "$root/regex/NppRegexSearch.cxx" "$root/regex/RegexBackendSelect.cxx" \
     "$root/regex/BoostRegExSearch.cxx" "$root/regex/UTF8DocumentIterator.cxx" \
     "${srcs[@]}" \
     -o "$out/test_npp_regex"

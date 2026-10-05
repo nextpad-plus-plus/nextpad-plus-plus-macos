@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 //
-// Standalone harness for the optional Boost.Regex backend (BoostRegExSearch.cxx
-// + the UTF-32-ported UTF8DocumentIterator). It calls CreateBoostRegexSearch()
-// directly against a real Scintilla Document and focuses on the capabilities the
-// default per-line std::regex backend cannot provide — multi-line / cross-line
-// matching (DOTMATCHESNL), Boost-only dialect (lookbehind), and UTF-8 correctness
-// through the new 32-bit-wchar_t iterator.
+// Standalone harness for the Boost.Regex backend (BoostRegExSearch.cxx + the
+// UTF-32-ported UTF8DocumentIterator), the editor's only regex engine. It calls
+// CreateBoostRegexSearch() directly against a real Scintilla Document and
+// focuses on what the old per-line std::regex backend could not do: multi-line
+// / cross-line matching (DOTMATCHESNL), Boost-only dialect (lookbehind, \K),
+// Unicode-aware classes and case folding, and UTF-8 correctness through the
+// 32-bit-wchar_t iterator.
 //
-// Build & run:  bash regex/test/run_boost.sh   (exits non-zero on any failure).
+// Build & run:  ctest (target test_boost_regex) or bash regex/test/run_boost.sh
+// (exits non-zero on any failure).
 
 #include <cstddef>
 #include <cstdint>
@@ -45,7 +47,7 @@
 using namespace Scintilla;
 using namespace Scintilla::Internal;
 
-// The named factory from BoostRegExSearch.cxx (no selector linked in here).
+// The named factory from BoostRegExSearch.cxx.
 namespace Scintilla::Internal {
     RegexSearchBase *CreateBoostRegexSearch(CharClassify *charClassTable);
 }
@@ -166,6 +168,48 @@ int main() {
         std::string got = sub ? std::string(sub, subLen) : "<null>";
         check("substitute backrefs \\2, \\1", found && got == "Smith, John",
               "got='" + got + "'");
+    }
+
+    // 8) \K resets the match start (Boost-only).
+    {
+        std::string t = "price: 42 EUR";
+        Eng e(t);
+        Sci::Position len = 0;
+        Sci::Position p = e.find("price: \\K\\d+", 0, (Sci::Position)t.size(), 0, &len);
+        check("\\K keeps only the digits", p == 7 && len == 2,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+    }
+
+    // 9) Unicode-aware case folding and classes (UTF-8 regex locale).
+    {
+        std::string t = "CAF\xC3\x89 \xD0\x94\xD0\x90";   // "CAFÉ ДА"
+        Eng e(t);
+        Sci::Position len = 0;
+        Sci::Position p = e.find("caf\xC3\xA9", 0, (Sci::Position)t.size(), 0, &len, false);
+        check("icase folds \u00C9 to \u00E9", p == 0 && len == 5,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+        len = 0;
+        p = e.find("\xD0\xB4\xD0\xB0", 0, (Sci::Position)t.size(), 0, &len, false);
+        check("icase folds Cyrillic", p == 6 && len == 4,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+        len = 0;
+        p = e.find("\\b\\w+$", 0, (Sci::Position)t.size(), 0, &len);
+        check("\\w matches Cyrillic letters", p == 6 && len == 4,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+    }
+
+    // 10) $ at the end of a search range that stops mid-line does not match
+    //     (Windows parity: match_not_eol unless the range end is a line end).
+    {
+        std::string t = "foobar\nfoo";
+        Eng e(t);
+        Sci::Position len = 0;
+        Sci::Position p = e.find("foo$", 0, 3, 0, &len);
+        check("foo$ in [0,3) of 'foobar' does not match", p < 0, "pos=" + std::to_string(p));
+        len = 0;
+        p = e.find("foo$", 0, (Sci::Position)t.size(), 0, &len);
+        check("foo$ matches the real line end", p == 7 && len == 3,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
     }
 
     printf("\n%s (%d failure%s)\n", g_fail ? "FAILURES" : "ALL PASS",

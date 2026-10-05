@@ -6,10 +6,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
-// EMPTYMATCH_* / SKIPCRLFASONE flag constants — matches Windows
-// boostregex/BoostRegexSearch.h. Consumed by regex/NppRegexSearch.cxx (our
-// SCI_OWNREGEX implementation).
-#import "../regex/NppRegexSearch.h"
+#include <string>
+// EMPTYMATCH_* / SKIPCRLFASONE / DOTMATCHESNL flag constants, consumed by the
+// Boost backend (regex/BoostRegExSearch.cxx, our SCI_OWNREGEX implementation).
+// Same bit layout as Windows Notepad++'s boostregex/BoostRegexSearch.h.
+#include "BoostRegexSearch.h"
 
 // Per-operation regex flag bundles. Mirrors Windows FindReplaceDlg.cpp:3000-3014
 // FINDNEXTTYPE_* matrix:
@@ -170,14 +171,12 @@ static NSString *nppRegexReplacement(NSString *replacement,
     if (opts.matchCase) flags |= SCFIND_MATCHCASE;
     if (opts.wholeWord && opts.searchType != NPPSearchRegex) flags |= SCFIND_WHOLEWORD;
     if (opts.searchType == NPPSearchRegex) {
-        // Issue #108 — SCFIND_POSIX selects Scintilla's RESearch engine which
-        // lacks `|` alternation, lookaheads, non-capturing groups, and `\b`
-        // word boundaries (RESearch uses `\<` and `\>` instead). SCFIND_CXX11REGEX
-        // routes to std::regex (ECMAScript flavor), giving feature parity with
-        // Windows NPP Boost.Regex for in-line patterns. Multi-line patterns
-        // crossing `\n` still don't work because our build doesn't define
-        // REGEX_MULTILINE — the line-by-line scan in MatchOnLines remains.
-        flags |= SCFIND_REGEXP | SCFIND_CXX11REGEX;
+        // SCI_OWNREGEX routes every SCFIND_REGEXP search to the Boost backend
+        // (regex/BoostRegExSearch.cxx), as on Windows Notepad++: Perl syntax,
+        // whole-document matching (patterns can span lines), lookbehind, \K.
+        // ^ and $ match at line boundaries; '.' crosses line ends only with
+        // ". matches newline".
+        flags |= SCFIND_REGEXP;
         if (opts.dotMatchesNewline) flags |= SCFIND_REGEXP_DOTMATCHESNL;
     }
     return flags;

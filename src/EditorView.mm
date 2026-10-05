@@ -4433,8 +4433,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)line];
     if (startPos >= endPos) return NO;
 
-    // Use std::regex (CXX11REGEX) so the `|` alternations in `expr` actually
-    // work — Scintilla's POSIX RESearch treats `|` as a literal pipe.
+    // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the `|`
+    // alternations in `expr` work. (SCFIND_CXX11REGEX is ignored there.)
     [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
     [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 
@@ -4610,8 +4610,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
         sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)prevLine];
 
         if (startPos < endPos) {
-            // Use std::regex (CXX11REGEX) so the `(#|$)` alternation works —
-            // POSIX RESearch would match the parens/pipe literally.
+            // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the
+            // `(#|$)` alternation works. (SCFIND_CXX11REGEX is ignored there.)
             [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
             [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 
