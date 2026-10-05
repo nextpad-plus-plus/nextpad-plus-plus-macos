@@ -19,7 +19,12 @@ public:
     NppSearch::Pos Find(NppSearch::Pos start, NppSearch::Pos end, NppSearch::Pos *matchEnd) override {
         [_sci message:SCI_SETTARGETRANGE wParam:(uptr_t)start lParam:end];
         const sptr_t found = [_sci message:SCI_SEARCHINTARGET wParam:_needleLength lParam:(sptr_t)_needle];
-        if (found < 0) return -1;
+        if (found < 0) {
+            // The Boost backend returns -2 for a regex_error (bad pattern, or
+            // its complexity limit while matching) and -3 for other failures.
+            if (found <= -2) failed = true;
+            return -1;
+        }
         *matchEnd = [_sci message:SCI_GETTARGETEND];
         return found;
     }
@@ -29,6 +34,9 @@ public:
         return [_sci message:(_regexReplace ? SCI_REPLACETARGETRE : SCI_REPLACETARGET)
                       wParam:(uptr_t)-1 lParam:(sptr_t)_replacement];
     }
+
+    /// The regex failed (rather than simply not matching) at some Find.
+    bool failed = false;
 
 private:
     __unsafe_unretained ScintillaView *_sci;
@@ -41,6 +49,29 @@ private:
 } // namespace
 
 @implementation SearchEngine
+
+// The variants without regexFailed: (macro playback, menu Find Next) treat a
+// failed regex like "not found".
++ (BOOL)findInView:(ScintillaView *)sci options:(NPPFindOptions *)opts forward:(BOOL)forward {
+    return [self findInView:sci options:opts forward:forward regexFailed:NULL];
+}
++ (BOOL)replaceInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
+    return [self replaceInView:sci options:opts regexFailed:NULL];
+}
++ (NSInteger)replaceAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
+    return [self replaceAllInView:sci options:opts regexFailed:NULL];
+}
++ (NSInteger)countInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
+    return [self countInView:sci options:opts regexFailed:NULL];
+}
++ (NSArray<NPPSearchResult *> *)findAllInView:(ScintillaView *)sci
+                                     filePath:(NSString *)path
+                                      options:(NPPFindOptions *)opts {
+    return [self findAllInView:sci filePath:path options:opts regexFailed:NULL];
+}
++ (NSInteger)markAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
+    return [self markAllInView:sci options:opts regexFailed:NULL];
+}
 
 /// Prepare the search needle, applying Extended expansion if needed. Returns UTF8 C string.
 + (const char *)preparedNeedle:(NPPFindOptions *)opts {
@@ -71,7 +102,9 @@ private:
 
 #pragma mark - Find
 
-+ (BOOL)findInView:(ScintillaView *)sci options:(NPPFindOptions *)opts forward:(BOOL)forward {
++ (BOOL)findInView:(ScintillaView *)sci options:(NPPFindOptions *)opts forward:(BOOL)forward
+       regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return NO;
 
     const char *needle = [self preparedNeedle:opts];
@@ -95,6 +128,10 @@ private:
 
     [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)searchStart lParam:searchEnd];
     sptr_t found = [sci message:SCI_SEARCHINTARGET wParam:needleLen lParam:(sptr_t)needle];
+    if (found <= -2) {
+        if (regexFailed) *regexFailed = YES;
+        return NO;
+    }
 
     // Wrap around if not found and option is on
     if (found < 0 && opts.wrapAround) {
@@ -104,6 +141,10 @@ private:
             [sci message:SCI_SETTARGETRANGE wParam:docLen lParam:searchEnd];
         }
         found = [sci message:SCI_SEARCHINTARGET wParam:needleLen lParam:(sptr_t)needle];
+        if (found <= -2) {
+            if (regexFailed) *regexFailed = YES;
+            return NO;
+        }
     }
 
     if (found >= 0) {
@@ -117,7 +158,9 @@ private:
 
 #pragma mark - Replace
 
-+ (BOOL)replaceInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
++ (BOOL)replaceInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+          regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return NO;
 
     const char *needle = [self preparedNeedle:opts];
@@ -136,6 +179,10 @@ private:
         [sci message:SCI_SETSEARCHFLAGS wParam:(uptr_t)flags];
         [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)selStart lParam:selEnd];
         sptr_t found = [sci message:SCI_SEARCHINTARGET wParam:strlen(needle) lParam:(sptr_t)needle];
+        if (found <= -2) {
+            if (regexFailed) *regexFailed = YES;
+            return NO;
+        }
 
         if (found >= 0 && [sci message:SCI_GETTARGETSTART] == selStart &&
             [sci message:SCI_GETTARGETEND] == selEnd) {
@@ -150,12 +197,15 @@ private:
     }
 
     // Find next
-    return [self findInView:sci options:opts forward:(opts.direction == NPPSearchDown)];
+    return [self findInView:sci options:opts forward:(opts.direction == NPPSearchDown)
+                regexFailed:regexFailed];
 }
 
 #pragma mark - Replace All
 
-+ (NSInteger)replaceAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
++ (NSInteger)replaceAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+                 regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return 0;
 
     const char *needle = [self preparedNeedle:opts];
@@ -187,27 +237,35 @@ private:
     NSInteger count = (NSInteger)NppSearch::ReplaceAll(target, rangeStart, rangeEnd);
 
     [sci message:SCI_ENDUNDOACTION];
+    // As on Windows, replacements made before the failure stay (one undo step).
+    if (regexFailed) *regexFailed = target.failed;
     return count;
 }
 
 #pragma mark - Count
 
-+ (NSInteger)countInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
++ (NSInteger)countInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+            regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return 0;
 
     const char *needle = [self preparedNeedle:opts];
     [sci message:SCI_SETSEARCHFLAGS wParam:(uptr_t)[self loopFlagsForOptions:opts]];
 
     ViewTarget target(sci, needle, nullptr, false);
-    return (NSInteger)NppSearch::ForEachMatch(target, 0, [sci message:SCI_GETLENGTH],
+    NSInteger count = (NSInteger)NppSearch::ForEachMatch(target, 0, [sci message:SCI_GETLENGTH],
         [](NppSearch::Pos, NppSearch::Pos) { return true; });
+    if (regexFailed) *regexFailed = target.failed;
+    return count;
 }
 
 #pragma mark - Find All
 
 + (NSArray<NPPSearchResult *> *)findAllInView:(ScintillaView *)sci
                                      filePath:(NSString *)path
-                                      options:(NPPFindOptions *)opts {
+                                      options:(NPPFindOptions *)opts
+                                  regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return @[];
 
     const char *needle = [self preparedNeedle:opts];
@@ -241,12 +299,19 @@ private:
                               hitEnd:(NSUInteger)(end - lineStart)];
             return true;
         });
+    if (target.failed) {
+        // No silently truncated list.
+        if (regexFailed) *regexFailed = YES;
+        return @[];
+    }
     return results;
 }
 
 #pragma mark - Mark All
 
-+ (NSInteger)markAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts {
++ (NSInteger)markAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+             regexFailed:(nullable BOOL *)regexFailed {
+    if (regexFailed) *regexFailed = NO;
     if (!opts.searchText.length) return 0;
 
     const char *needle = [self preparedNeedle:opts];
@@ -271,7 +336,7 @@ private:
 
     const BOOL bookmark = opts.doBookmarkLine;
     ViewTarget target(sci, needle, nullptr, false);
-    return (NSInteger)NppSearch::ForEachMatch(target, 0, [sci message:SCI_GETLENGTH],
+    NSInteger count = (NSInteger)NppSearch::ForEachMatch(target, 0, [sci message:SCI_GETLENGTH],
         [&](NppSearch::Pos found, NppSearch::Pos end) {
             [sci message:SCI_INDICATORFILLRANGE wParam:(uptr_t)found lParam:end - found];
             if (bookmark) {
@@ -280,6 +345,8 @@ private:
             }
             return true;
         });
+    if (regexFailed) *regexFailed = target.failed;
+    return count;
 }
 
 @end

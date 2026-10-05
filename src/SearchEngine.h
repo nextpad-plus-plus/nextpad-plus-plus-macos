@@ -31,6 +31,26 @@ NS_ASSUME_NONNULL_BEGIN
 /// Mark all occurrences with indicator style. Returns count.
 + (NSInteger)markAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts;
 
+// Variants that report a regex failure: *regexFailed is YES when the regex
+// did not compile or the engine gave up while matching (e.g. Boost's
+// complexity limit), as opposed to simply finding nothing. Find All then
+// returns no results; Replace All keeps the replacements made before the
+// failure (one undo step), as on Windows.
++ (BOOL)findInView:(ScintillaView *)sci options:(NPPFindOptions *)opts forward:(BOOL)forward
+       regexFailed:(nullable BOOL *)regexFailed;
++ (BOOL)replaceInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+          regexFailed:(nullable BOOL *)regexFailed;
++ (NSInteger)replaceAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+                 regexFailed:(nullable BOOL *)regexFailed;
++ (NSInteger)countInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+            regexFailed:(nullable BOOL *)regexFailed;
++ (NSArray<NPPSearchResult *> *)findAllInView:(ScintillaView *)sci
+                                     filePath:(NSString *)path
+                                      options:(NPPFindOptions *)opts
+                                  regexFailed:(nullable BOOL *)regexFailed;
++ (NSInteger)markAllInView:(ScintillaView *)sci options:(NPPFindOptions *)opts
+             regexFailed:(nullable BOOL *)regexFailed;
+
 /// The view's word characters (SCI_GETWORDCHARS), for NPPFindOptions.wordChars.
 + (NSString *)wordCharsOfView:(ScintillaView *)sci;
 

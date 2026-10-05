@@ -833,8 +833,14 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 /// (instead of "Can't find the text") and return YES.
 - (BOOL)_reportInvalidPattern:(NPPFindOptions *)opts {
     if (![SearchEngine patternErrorForOptions:opts]) return NO;
-    [self _showStatus:[[NppLocalizer shared] translate:@"Find: Invalid regular expression"] found:NO];
+    [self _showInvalidRegexStatus];
     return YES;
+}
+
+/// The status Windows shows when a regex does not compile or fails while
+/// matching (e.g. Boost's complexity limit on catastrophic backtracking).
+- (void)_showInvalidRegexStatus {
+    [self _showStatus:[[NppLocalizer shared] translate:@"Find: Invalid regular expression"] found:NO];
 }
 
 // Blue = found / informational, red = not found / error (Windows NPP's
@@ -903,8 +909,11 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
     BOOL forward = (opts.direction == NPPSearchDown);
-    BOOL found = [SearchEngine findInView:ed.scintillaView options:opts forward:forward];
-    if (!found) {
+    BOOL regexFailed = NO;
+    BOOL found = [SearchEngine findInView:ed.scintillaView options:opts forward:forward regexFailed:&regexFailed];
+    if (regexFailed) {
+        [self _showInvalidRegexStatus];
+    } else if (!found) {
         [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Find: Can't find the text \"%@\""], opts.searchText] found:NO];
     } else {
         [self _showStatus:@"" found:YES];
@@ -918,7 +927,12 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
-    NSInteger count = [SearchEngine countInView:ed.scintillaView options:opts];
+    BOOL regexFailed = NO;
+    NSInteger count = [SearchEngine countInView:ed.scintillaView options:opts regexFailed:&regexFailed];
+    if (regexFailed) {
+        [self _showInvalidRegexStatus];
+        return;
+    }
     [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Count: %ld match(es)."], (long)count] found:(count > 0)];
 }
 
@@ -930,7 +944,13 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
     NSString *path = ed.filePath ?: ed.displayName;
-    NSArray *results = [SearchEngine findAllInView:ed.scintillaView filePath:path options:opts];
+    BOOL regexFailed = NO;
+    NSArray *results = [SearchEngine findAllInView:ed.scintillaView filePath:path options:opts
+                                       regexFailed:&regexFailed];
+    if (regexFailed) {
+        [self _showInvalidRegexStatus];
+        return;
+    }
     if (results.count) {
         NPPFileResults *fr = [[NPPFileResults alloc] init];
         fr.filePath = path;
@@ -951,7 +971,13 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NSMutableArray *allResults = [NSMutableArray array];
     for (EditorView *ed in editors) {
         NSString *path = ed.filePath ?: ed.displayName;
-        NSArray *results = [SearchEngine findAllInView:ed.scintillaView filePath:path options:opts];
+        BOOL regexFailed = NO;
+        NSArray *results = [SearchEngine findAllInView:ed.scintillaView filePath:path options:opts
+                                           regexFailed:&regexFailed];
+        if (regexFailed) {
+            [self _showInvalidRegexStatus];
+            return;
+        }
         if (results.count) {
             NPPFileResults *fr = [[NPPFileResults alloc] init];
             fr.filePath = path;
@@ -978,8 +1004,11 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
-    BOOL found = [SearchEngine replaceInView:ed.scintillaView options:opts];
-    if (!found)
+    BOOL regexFailed = NO;
+    BOOL found = [SearchEngine replaceInView:ed.scintillaView options:opts regexFailed:&regexFailed];
+    if (regexFailed)
+        [self _showInvalidRegexStatus];
+    else if (!found)
         [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Find: Can't find the text \"%@\""], opts.searchText] found:NO];
     else
         [self _showStatus:@"" found:YES];
@@ -993,7 +1022,12 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
-    NSInteger count = [SearchEngine replaceAllInView:ed.scintillaView options:opts];
+    BOOL regexFailed = NO;
+    NSInteger count = [SearchEngine replaceAllInView:ed.scintillaView options:opts regexFailed:&regexFailed];
+    if (regexFailed) {
+        [self _showInvalidRegexStatus];
+        return;
+    }
     NppLocalizer *loc = [NppLocalizer shared];
     NSString *scope = opts.inSelection ? [loc translate:@"in selection"] : [loc translate:@"in entire file"];
     [self _showStatus:[NSString stringWithFormat:[loc translate:@"Replace All: %ld occurrence(s) were replaced %@."], (long)count, scope]
@@ -1008,8 +1042,14 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     NSArray<EditorView *> *editors = [_delegate allOpenEditors];
     NSInteger total = 0;
-    for (EditorView *ed in editors)
-        total += [SearchEngine replaceAllInView:ed.scintillaView options:opts];
+    for (EditorView *ed in editors) {
+        BOOL regexFailed = NO;
+        total += [SearchEngine replaceAllInView:ed.scintillaView options:opts regexFailed:&regexFailed];
+        if (regexFailed) {
+            [self _showInvalidRegexStatus];
+            return;
+        }
+    }
     [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Replace in Opened Files: %ld occurrence(s) were replaced."], (long)total]
                 found:(total > 0)];
 }
@@ -1112,9 +1152,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         isOpenAndModified:(BOOL (^)(NSString *path))isOpenAndModified
              replacements:(NSInteger *)totalReplacements
              changedFiles:(NSInteger *)changedFiles
-                 problems:(NSMutableArray<NSDictionary *> *)problems {
+                 problems:(NSMutableArray<NSDictionary *> *)problems
+              regexFailed:(BOOL *)regexFailed {
     for (NPPFileResults *fr in results) {
-        if (token.isCancelled) break;
+        if (token.isCancelled || *regexFailed) break;
         // Per-file pool: decode + replace + encode temporaries are several
         // times the file size; don't let them pile up across the whole run.
         @autoreleasepool {
@@ -1130,6 +1171,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             if (st == NPPReplaceFileReplaced) {
                 *totalReplacements += count;
                 (*changedFiles)++;
+            } else if (st == NPPReplaceFileRegexFailed) {
+                // As on Windows, the run stops on the error; that file is
+                // left untouched.
+                *regexFailed = YES;
             } else if (st == NPPReplaceFileUnrepresentable || st == NPPReplaceFileDecodeNotClean
                        || st == NPPReplaceFileChangedOnDisk || st == NPPReplaceFileOpenModified
                        || st == NPPReplaceFileWriteFailed) {
@@ -1220,16 +1265,22 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSInteger scannedCount = 0;
+        NSString *regexError = nil;
         NSArray<NPPFileResults *> *results = [SearchEngine findInDirectory:opts.directory
             options:opts
             progressBlock:^(NSString *file, NSInteger hits) {
                 [self _showProgressHits:hits file:file token:token];
             }
             cancelToken:token
-            totalFilesScanned:&scannedCount];
+            totalFilesScanned:&scannedCount
+            regexError:&regexError];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self _endBackgroundRun:token];
+            if (regexError) {
+                [self _showInvalidRegexStatus];
+                return;
+            }
             [self _finishFindRun:results filesSearched:scannedCount options:opts
                        cancelled:token.isCancelled
                       doneFormat:doneFmt cancelledFormat:cancelledFmt zeroHits:zeroHits];
@@ -1267,19 +1318,27 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     // Search and rewrite both run off the main thread so the Cancel button
     // stays live; files already rewritten when Cancel lands stay rewritten.
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        NSString *regexError = nil;
         NSArray<NPPFileResults *> *results = [SearchEngine findInDirectory:opts.directory
-            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL];
+            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL
+            regexError:&regexError];
         NSInteger totalReplacements = 0, changedFiles = 0;
         NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
+        BOOL replaceRegexFailed = NO;
         [FindWindow _replaceInResults:results options:opts token:token
                     isOpenAndModified:isOpenAndModified
                          replacements:&totalReplacements changedFiles:&changedFiles
-                             problems:problems];
+                             problems:problems
+                          regexFailed:&replaceRegexFailed];
+        const BOOL regexFailed = regexError != nil || replaceRegexFailed;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self _endBackgroundRun:token];
             [self _finishReplaceRun:totalReplacements changedFiles:changedFiles problems:problems
                           cancelled:token.isCancelled
                          doneFormat:doneFmt cancelledFormat:cancelledFmt];
+            // The run stopped at the failing file, which was left untouched;
+            // files finished before it stay rewritten, as when Cancel lands.
+            if (regexFailed) [self _showInvalidRegexStatus];
         });
     });
 }
@@ -1341,16 +1400,22 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSInteger scannedCount = 0;
+        NSString *regexError = nil;
         NSArray<NPPFileResults *> *results = [SearchEngine findInFilePaths:allPaths
             options:opts
             progressBlock:^(NSString *file, NSInteger hits) {
                 [self _showProgressHits:hits file:file token:token];
             }
             cancelToken:token
-            totalFilesScanned:&scannedCount];
+            totalFilesScanned:&scannedCount
+            regexError:&regexError];
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self _endBackgroundRun:token];
+            if (regexError) {
+                [self _showInvalidRegexStatus];
+                return;
+            }
             [self _finishFindRun:results filesSearched:scannedCount options:opts
                        cancelled:token.isCancelled
                       doneFormat:doneFmt cancelledFormat:cancelledFmt zeroHits:zeroHits];
@@ -1410,19 +1475,27 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     BOOL (^isOpenAndModified)(NSString *) = [self _unsavedEditorCheck];
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        NSString *regexError = nil;
         NSArray<NPPFileResults *> *results = [SearchEngine findInFilePaths:allPaths
-            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL];
+            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL
+            regexError:&regexError];
         NSInteger totalReplacements = 0, changedFiles = 0;
         NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
+        BOOL replaceRegexFailed = NO;
         [FindWindow _replaceInResults:results options:opts token:token
                     isOpenAndModified:isOpenAndModified
                          replacements:&totalReplacements changedFiles:&changedFiles
-                             problems:problems];
+                             problems:problems
+                          regexFailed:&replaceRegexFailed];
+        const BOOL regexFailed = regexError != nil || replaceRegexFailed;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self _endBackgroundRun:token];
             [self _finishReplaceRun:totalReplacements changedFiles:changedFiles problems:problems
                           cancelled:token.isCancelled
                          doneFormat:doneFmt cancelledFormat:cancelledFmt];
+            // The run stopped at the failing file, which was left untouched;
+            // files finished before it stay rewritten, as when Cancel lands.
+            if (regexFailed) [self _showInvalidRegexStatus];
         });
     });
 }
@@ -1436,7 +1509,12 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
-    NSInteger count = [SearchEngine markAllInView:ed.scintillaView options:opts];
+    BOOL regexFailed = NO;
+    NSInteger count = [SearchEngine markAllInView:ed.scintillaView options:opts regexFailed:&regexFailed];
+    if (regexFailed) {
+        [self _showInvalidRegexStatus];
+        return;
+    }
     [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Mark: %ld match(es) marked."], (long)count] found:(count > 0)];
 }
 
