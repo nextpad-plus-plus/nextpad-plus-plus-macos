@@ -154,10 +154,19 @@
 - (void)evictEditor:(EditorView *)editor {
     NSInteger idx = [_editors indexOfObject:editor];
     if (idx == NSNotFound) return;
+    EditorView *current = self.currentEditor;
     [editor removeFromSuperview];
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
-    if (_editors.count > 0) {
+    if (_editors.count == 0) {
+        _selectedIndex = -1;
+    } else if (current && current != editor) {
+        // A background tab left (e.g. dragged to another window): keep the
+        // selection on the tab the user is looking at.
+        _selectedIndex = (NSInteger)[_editors indexOfObject:current];
+        [_tabBar selectTabAtIndex:_selectedIndex];
+    } else {
+        _selectedIndex = -1;   // the previous slot is gone; nothing to hide
         NSInteger nextIdx = MIN(idx, (NSInteger)_editors.count - 1);
         [self activateTabAtIndex:nextIdx];
     }
@@ -166,6 +175,15 @@
 
 - (void)adoptEditor:(EditorView *)editor {
     [self insertEditor:editor title:editor.displayName modified:editor.isModified];
+}
+
+- (void)adoptEditor:(EditorView *)editor atIndex:(NSInteger)index {
+    NSInteger idx = MAX(0, MIN(index, (NSInteger)_editors.count));
+    [_editors insertObject:editor atIndex:(NSUInteger)idx];
+    [_contentView addSubview:editor];
+    [_tabBar insertTabWithTitle:editor.displayName modified:editor.isModified atIndex:idx];
+    if (_selectedIndex >= idx) _selectedIndex++;   // keep pointing at the shown editor
+    [self activateTabAtIndex:idx];
 }
 
 - (void)refreshCurrentTabTitle {
@@ -233,6 +251,32 @@
     } else if (toIndex <= _selectedIndex && _selectedIndex < fromIndex) {
         _selectedIndex++;
     }
+}
+
+#pragma mark - Tab tear-off
+
+- (BOOL)tabBar:(NppTabBar *)bar canDetachTabAtIndex:(NSInteger)index {
+    if (index < 0 || index >= (NSInteger)_editors.count) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:detachEditor:toScreenPoint:)]) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:canDetachEditor:)]) return YES;
+    return [_delegate tabManager:self canDetachEditor:_editors[index]];
+}
+
+- (void)tabBar:(NppTabBar *)bar didDetachTabAtIndex:(NSInteger)index atScreenPoint:(NSPoint)screenPoint {
+    if (index < 0 || index >= (NSInteger)_editors.count) return;
+    if (![_delegate respondsToSelector:@selector(tabManager:detachEditor:toScreenPoint:)]) return;
+    [_delegate tabManager:self detachEditor:_editors[index] toScreenPoint:screenPoint];
+}
+
+- (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex {
+    if (index < 0 || index >= (NSInteger)_editors.count) return;
+    // Every editor tab bar is owned (as its delegate) by a TabManager.
+    id owner = target.delegate;
+    if (![owner isKindOfClass:[TabManager class]] || owner == self) return;
+    if (![_delegate respondsToSelector:@selector(tabManager:moveEditor:toTabManager:atIndex:)]) return;
+    [_delegate tabManager:self moveEditor:_editors[index]
+             toTabManager:(TabManager *)owner atIndex:targetIndex];
 }
 
 #pragma mark - Accessors

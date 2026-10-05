@@ -368,12 +368,15 @@ static void NppRecoveryDone(void) {
 // ── New Window ──────────────────────────────────────────────────────────────
 
 - (MainWindowController *)openNewWindow {
+    // Offset from the primary window so they don't stack exactly
+    NSRect primaryFrame = self.mainWindowController.window.frame;
+    return [self openNewWindowWithFrame:NSOffsetRect(primaryFrame, 30, -30)];
+}
+
+- (MainWindowController *)openNewWindowWithFrame:(NSRect)newFrame {
     MainWindowController *mwc = [[MainWindowController alloc] init];
     [_windowControllers addObject:mwc];
 
-    // Offset from the primary window so they don't stack exactly
-    NSRect primaryFrame = self.mainWindowController.window.frame;
-    NSRect newFrame = NSOffsetRect(primaryFrame, 30, -30);
     [mwc.window setFrame:newFrame display:NO];
 
     [mwc showWindow:nil];
@@ -399,6 +402,27 @@ static void NppRecoveryDone(void) {
     }];
 
     return mwc;
+}
+
+- (void)windowControllerWillClose:(MainWindowController *)mwc {
+    if (_isTerminating || mwc != self.mainWindowController) return;
+    MainWindowController *next = nil;
+    for (MainWindowController *c in _windowControllers)
+        if (c != mwc && !c.windowHasClosed) { next = c; break; }
+    if (!next) return;
+
+    // Promote the next window. Plugins talk to one window (the primary), so
+    // repoint them too; panels a plugin docked in the closed window are
+    // re-shown by the plugin on its next show request.
+    self.mainWindowController = next;
+    [[NppPluginManager shared] setMainWindowController:next];
+
+    // The primary has no close observer of its own (secondaries get one in
+    // -openNewWindowWithFrame:). Drop it on the next turn, once AppKit is done
+    // delivering this close, so its controller can be released.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.windowControllers removeObject:mwc];
+    });
 }
 
 // ── Folder argument expansion ────────────────────────────────────────────────
