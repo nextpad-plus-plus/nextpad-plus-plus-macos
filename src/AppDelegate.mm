@@ -597,15 +597,11 @@ static void NppRecoveryDone(void) {
     // A folder argument expands to its top-level files (issue #131).
     NSArray<NSString *> *files = [self _expandFolderArguments:@[filename]];
     if (files.count == 0) return YES;  // empty folder, or large-open declined
-    MainWindowController *mwc = [self _activeWindowController];
-    for (NSString *path in files) {
-        [mwc openFileAtPath:path];
-    }
     // Issue #63: surface the window to the user. Without this, opening a
     // file from Finder while the app is minimized silently adds the file
     // to a tab inside an invisible window and the user has to hunt for
     // the Dock icon to see it.
-    [mwc bringWindowForward];
+    [self _openFilesAndSurface:files];
     return YES;
 }
 
@@ -618,14 +614,10 @@ static void NppRecoveryDone(void) {
     // Folder arguments expand to their top-level files (issue #131).
     NSArray<NSString *> *files = [self _expandFolderArguments:filenames];
     if (files.count > 0) {
-        MainWindowController *mwc = [self _activeWindowController];
-        for (NSString *path in files) {
-            [mwc openFileAtPath:path];
-        }
         // Issue #63: bring the window forward AFTER all files are added so
         // there's no flicker between batches and the front-most tab is the
         // last one opened (the standard macOS behaviour for multi-file open).
-        [mwc bringWindowForward];
+        [self _openFilesAndSurface:files];
     }
     [sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
 }
@@ -661,11 +653,23 @@ static void NppRecoveryDone(void) {
 
     NSArray<NSString *> *files = [self _expandFolderArguments:paths];
     if (files.count == 0) return;  // empty folder, or large-open declined
+    [self _openFilesAndSurface:files];  // activates Nextpad++ over Finder
+}
+
+/// Open `files` in the key window, then bring forward the window showing the
+/// last of them. A file already open in another window is focused there
+/// rather than opened twice, so that window, not the key one, is surfaced.
+- (void)_openFilesAndSurface:(NSArray<NSString *> *)files {
     MainWindowController *mwc = [self _activeWindowController];
+    EditorView *last = nil;
     for (NSString *path in files) {
-        [mwc openFileAtPath:path];
+        EditorView *ed = [mwc openFileAtPath:path];
+        if (ed) last = ed;
     }
-    [mwc bringWindowForward];  // activates Nextpad++ over Finder
+    id owner = last.window.windowController;
+    MainWindowController *front = [owner isKindOfClass:[MainWindowController class]]
+        ? (MainWindowController *)owner : mwc;
+    [front bringWindowForward];
 }
 
 /// Returns the window controller for the key window, or mainWindowController as fallback.

@@ -652,6 +652,10 @@ static NSString *normalizeForLookup(NSString *s) {
         NSString *xmlKey = aliases[macosKey];
         NSString *translated = targetRaw[xmlKey];
         if (!translated) continue;
+        // An entry still holding the Windows English text is an untranslated
+        // placeholder (e.g. "Move to New Instance" for "Move to New Window"):
+        // keep the macOS English title rather than show the Windows wording.
+        if ([translated isEqualToString:englishRaw[xmlKey]]) continue;
         NSString *display = stripAccelerators(translated);
         display = [display stringByTrimmingCharactersInSet:
                    [NSCharacterSet whitespaceCharacterSet]];

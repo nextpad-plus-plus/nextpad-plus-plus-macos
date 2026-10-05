@@ -4268,11 +4268,8 @@ static BOOL groupHasTrailingSep(NSString *ident) {
     ((NppDropView *)_tabManager.contentView).dropHandler = ^(NSArray<NSString *> *paths) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (!strongSelf) return;
-        for (NSString *path in paths) {
-            [strongSelf->_tabManager openFileAtPath:path];
-            [strongSelf addToRecentFiles:path];
-        }
-        [strongSelf updateTitle];
+        for (NSString *path in paths)
+            [strongSelf openFileAtPath:path];   // focuses it if open in any window
     };
 }
 
@@ -5056,10 +5053,40 @@ static void removeMacroFromShortcutsXML(NSString *name) {
 
 #pragma mark - Public
 
-- (void)openFileAtPath:(NSString *)path {
-    [_tabManager openFileAtPath:path];
+- (EditorView *)openFileAtPath:(NSString *)path {
+    EditorView *ed = [self _focusEditorForOpenPath:path];
+    if (!ed) ed = [_tabManager openFileAtPath:path];
     [self addToRecentFiles:path];
     [self updateTitle];
+    return ed;
+}
+
+/// If `path` is already open in this window (any pane) or another window,
+/// select that tab, bring its window forward when it is not this one, and
+/// return its editor. With tabs movable between windows a file must not end
+/// up with a second, diverging buffer just because it is open elsewhere.
+- (nullable EditorView *)_focusEditorForOpenPath:(NSString *)path {
+    if (!path.length) return nil;
+    NSString *want = path.stringByStandardizingPath;
+    NSMutableArray<MainWindowController *> *controllers = [NSMutableArray arrayWithObject:self];
+    id appDel = NSApp.delegate;
+    if ([appDel isKindOfClass:[AppDelegate class]])
+        for (MainWindowController *mwc in [(AppDelegate *)appDel windowControllers])
+            if (mwc != self && !mwc.windowHasClosed) [controllers addObject:mwc];
+
+    for (MainWindowController *mwc in controllers) {
+        for (TabManager *mgr in [mwc sessionTabManagers]) {
+            NSArray<EditorView *> *eds = mgr.allEditors;
+            for (NSInteger i = 0; i < (NSInteger)eds.count; i++) {
+                NSString *have = eds[i].filePath;
+                if (!have || ![have.stringByStandardizingPath isEqualToString:want]) continue;
+                [mgr selectTabAtIndex:i];
+                if (mwc != self) [mwc bringWindowForward];
+                return eds[i];
+            }
+        }
+    }
+    return nil;
 }
 
 // Issue #63: macOS routes Finder "Open With…" / drag-drop / double-click
@@ -5130,9 +5157,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
         [a runModal];
         return;
     }
-    [_tabManager openFileAtPath:path];
-    [self addToRecentFiles:path]; // move to top
-    [self updateTitle];
+    [self openFileAtPath:path];   // also moves it to the top of the recent list
 }
 
 - (void)clearRecentFiles:(id)sender {
@@ -5154,10 +5179,8 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     panel.canChooseDirectories = NO;
     [panel beginWithCompletionHandler:^(NSModalResponse r) {
         if (r == NSModalResponseOK)
-            for (NSURL *u in panel.URLs) {
-                [self->_tabManager openFileAtPath:u.path];
-                [self addToRecentFiles:u.path];
-            }
+            for (NSURL *u in panel.URLs)
+                [self openFileAtPath:u.path];
         [self updateTitle];
     }];
 }
@@ -5903,7 +5926,9 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:name
                                                       action:@selector(_runSavedCommand:)
                                                keyEquivalent:@""];
-        item.target = self;
+        // No fixed target: the shared main menu is rebuilt by every window,
+        // so the action goes down the responder chain to the key window.
+        item.target = nil;
         item.representedObject = cmdText;
         item.tag = 9910;
 
@@ -6466,6 +6491,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 /// Horizontal offset (pt) from the tab bar's left edge to where a torn-off
 /// tab's new window puts the pointer: roughly the middle of the first tab.
 static const CGFloat kTearOffGrabX = 60.0;
+/// Torn off from a full-screen window: distance (pt) from the pointer up to
+/// the new window's top edge (title bar plus toolbar above the tab bar).
+static const CGFloat kTearOffFullScreenTopGap = 90.0;
+
+/// `frame` shrunk to fit `screen`'s usable area and moved fully onto it.
+- (NSRect)_frame:(NSRect)frame fittedToScreen:(NSScreen *)screen {
+    NSRect vis = screen.visibleFrame;
+    frame.size.width  = MIN(frame.size.width,  NSWidth(vis));
+    frame.size.height = MIN(frame.size.height, NSHeight(vis));
+    frame.origin.x = MAX(NSMinX(vis), MIN(frame.origin.x, NSMaxX(vis) - NSWidth(frame)));
+    frame.origin.y = MAX(NSMinY(vis), MIN(frame.origin.y, NSMaxY(vis) - NSHeight(frame)));
+    return frame;
+}
 
 - (NSInteger)_totalEditorCount {
     NSInteger n = 0;
@@ -6526,22 +6564,46 @@ static const CGFloat kTearOffGrabX = 60.0;
     id appDel = NSApp.delegate;
     if (![appDel isKindOfClass:[AppDelegate class]]) return;
 
-    NSRect frame = NSOffsetRect(self.window.frame, 30, -30);
+    // Size: this window's, unless it is full screen (a new window must not
+    // copy the screen-filling size), in which case the stock 1024x768.
+    BOOL srcFullScreen = (self.window.styleMask & NSWindowStyleMaskFullScreen) != 0;
+    NSRect frame = self.window.frame;
+    if (srcFullScreen) frame.size = NSMakeSize(1024, 768);
+
+    NSScreen *screen = self.window.screen ?: [NSScreen mainScreen];
     if (placeAtPoint) {
-        frame = self.window.frame;
-        NppTabBar *bar = _tabManager.tabBar;
-        NSRect barRect = [self.window convertRectToScreen:[bar convertRect:bar.bounds toView:nil]];
-        frame.origin.x += screenPoint.x - (NSMinX(barRect) + kTearOffGrabX);
-        frame.origin.y += screenPoint.y - NSMidY(barRect);
-        // Keep the title bar reachable on the screen the tab was dropped on.
-        NSScreen *screen = self.window.screen;
+        // Put the new window's first tab under the pointer, on the screen the
+        // tab was dropped on.
         for (NSScreen *s in [NSScreen screens])
             if (NSPointInRect(screenPoint, s.frame)) { screen = s; break; }
-        if (screen) frame = [self.window constrainFrameRect:frame toScreen:screen];
+        if (srcFullScreen) {
+            // No usable bar geometry to copy: hang the window from the pointer,
+            // leaving room for the title bar and toolbar above the tabs.
+            frame.origin = NSMakePoint(screenPoint.x - kTearOffGrabX,
+                                       screenPoint.y + kTearOffFullScreenTopGap - NSHeight(frame));
+        } else {
+            NppTabBar *bar = _tabManager.tabBar;
+            NSRect barRect = [self.window convertRectToScreen:[bar convertRect:bar.bounds toView:nil]];
+            frame.origin.x += screenPoint.x - (NSMinX(barRect) + kTearOffGrabX);
+            frame.origin.y += screenPoint.y - NSMidY(barRect);
+        }
     }
+    // Never larger than the screen's usable area, and kept on it.
+    if (screen) frame = [self _frame:frame fittedToScreen:screen];
 
     MainWindowController *dst = [(AppDelegate *)appDel openNewWindowWithFrame:frame];
     if (!dst) return;
+    if (!placeAtPoint) {
+        // Menu command: cascade from this window the standard way (with a
+        // zero point the call on self.window only reports the next cascade
+        // point), then keep the result on screen.
+        NSRect vis = screen.visibleFrame;
+        NSPoint next = srcFullScreen ? NSMakePoint(NSMinX(vis) + 40, NSMaxY(vis) - 40)
+                                     : [self.window cascadeTopLeftFromPoint:NSZeroPoint];
+        [dst.window cascadeTopLeftFromPoint:next];
+        if (screen)
+            [dst.window setFrame:[self _frame:dst.window.frame fittedToScreen:screen] display:NO];
+    }
     [self _transferEditor:ed from:src to:dst->_tabManager ofController:dst atIndex:0];
 }
 
@@ -6557,6 +6619,16 @@ static const CGFloat kTearOffGrabX = 60.0;
     NSInteger colorId = [src.tabBar tabColorAtIndex:srcIdx];
 
     [src evictEditor:ed];
+    // Moving the primary view's last tab into this window's split pane: refill
+    // the primary BEFORE adopting (as -_moveEditor:toVertical: does), so the
+    // adopted tab, not the fresh untitled one, ends up active.
+    if (dstMWC == self && src == _tabManager && _tabManager.allEditors.count == 0)
+        [_tabManager addNewTab];
+    // Pinned tabs stay a leading group: a pinned tab lands among them, an
+    // unpinned one after them (the tab bar's drop marker applies the same rule).
+    NSInteger pinnedRun = 0;
+    while (pinnedRun < dst.tabBar.tabCount && [dst.tabBar isTabPinnedAtIndex:pinnedRun]) pinnedRun++;
+    index = pinned ? MIN(index, pinnedRun) : MAX(index, pinnedRun);
     [dst adoptEditor:ed atIndex:index];
     NSInteger dstIdx = (NSInteger)[dst.allEditors indexOfObject:ed];
     if (dstIdx != NSNotFound) {
@@ -6615,6 +6687,10 @@ static const CGFloat kTearOffGrabX = 60.0;
             break;
         }
     }
+    // A background tab may have left without any selection change, so no
+    // didSelectEditor: refreshed the Document List: reload it here or its rows
+    // (and their context menu) would still point at the departed editor.
+    if (_docListPanel) [_docListPanel reloadData];
     [self updateTitle];
     [self updateStatusBar];
 }
@@ -7087,8 +7163,9 @@ static const CGFloat kTearOffGrabX = 60.0;
 }
 
 - (void)_ensureFindWindow {
-    FindWindow *fw = [FindWindow sharedWindow];
-    if (!fw.delegate) fw.delegate = self;
+    // The Find window is shared by every window; it acts on whichever window
+    // last invoked it, not the first one that ever did.
+    [FindWindow sharedWindow].delegate = self;
 }
 
 - (void)_fillFindFieldWithSelectionIfEnabled {
@@ -7807,8 +7884,8 @@ static const CGFloat kTearOffGrabX = 60.0;
 }
 
 - (void)findWindow:(FindWindow *)fw navigateToFile:(NSString *)path atLine:(NSInteger)line {
-    [self openFileAtPath:path];
-    EditorView *ed = [self currentEditor];
+    // The file may be open in another window: use the editor actually shown.
+    EditorView *ed = [self openFileAtPath:path];
     if (ed && line > 0) [ed goToLineNumber:line];
 }
 
@@ -7836,8 +7913,8 @@ static const CGFloat kTearOffGrabX = 60.0;
           navigateToFile:(NSString *)path atLine:(NSInteger)line
                matchText:(NSString *)text matchCase:(BOOL)mc {
     if (!path.length || line <= 0) return;
-    [self openFileAtPath:path];
-    EditorView *ed = [self currentEditor];
+    // The file may be open in another window: use the editor actually shown.
+    EditorView *ed = [self openFileAtPath:path];
     if (ed && line > 0) {
         [ed goToLineNumber:line];
         // Highlight the line
@@ -8428,7 +8505,9 @@ static const CGFloat kTearOffGrabX = 60.0;
         NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:udl.name
                                                     action:@selector(setUDLLanguageFromMenu:)
                                              keyEquivalent:@""];
-        mi.target = self;
+        // No fixed target: the shared main menu is rebuilt by every window,
+        // so the action goes down the responder chain to the key window.
+        mi.target = nil;
         mi.representedObject = udl.name;
         mi.tag = 8800;
         [langMenu insertItem:mi atIndex:insertIdx];
@@ -11353,6 +11432,13 @@ static int64_t _sysctlInt(const char *name) {
 }
 
 #pragma mark - NSWindowDelegate
+
+// With several windows open, the shared Find window's buttons must act on the
+// document window the user is working in. Retarget it whenever this window
+// becomes key (it is never created here just for that).
+- (void)windowDidBecomeKey:(NSNotification *)n {
+    [FindWindow existingWindow].delegate = self;
+}
 
 - (void)windowWillClose:(NSNotification *)n {
     // The session save already ran in -windowShouldClose:, while this window was
