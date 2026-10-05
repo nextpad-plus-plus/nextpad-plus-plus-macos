@@ -34,6 +34,8 @@ NSNotificationName const EditorViewZoomDidChangeNotification  = @"EditorViewZoom
 namespace Scintilla { struct ILexer5; }
 extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
 
+static NSString *stylerKeywordSignature(NSString *lang);  // defined with applyKeywords:
+
 /// Returns YES if the named theme belongs to the explicit "dark fold margin" list.
 /// These themes get fold-margin bg = Default Style background; all others get #f2f2f2.
 static BOOL foldMarginUsesEditorBg(NSString *themeName) {
@@ -327,6 +329,12 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     // Git gutter state
     BOOL               _gitGutterEnabled;
+
+    // Lexer substyles (applyKeywords:): "substyleN" → allocated style ID for
+    // the current language's own styler rows, and the styler user-defined
+    // keywords last fed, so a Style Configurator keyword edit re-feeds lists.
+    NSDictionary<NSString *, NSNumber *> *_substyleIDs;
+    NSString          *_appliedStylerKeywords;
 
     // Hex view
 }
@@ -1658,6 +1666,12 @@ static NSColor *nppColorFromHex(NSString *hex) {
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {
+            // A Style Configurator edit to user-defined keywords arrives
+            // through this same path; refeed the lists only when they changed
+            // (a colour drag fires many previews, and PHP's lists are large).
+            if (![stylerKeywordSignature(_currentLanguage.lowercaseString)
+                    isEqualToString:_appliedStylerKeywords ?: @""])
+                [self applyKeywords:_currentLanguage];
             [self applyLexerColors:_currentLanguage];
         }
     }
@@ -2754,6 +2768,51 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 
 #pragma mark - Keywords
 
+/// User-defined keywords the Style Configurator holds for `group` in the
+/// `styler` lexer (the WordsStyle text of the row whose keywordClass is
+/// `group`). Windows' makeStyle() keeps the last such row; so does this.
+static NSString *stylerUserKeywords(NSString *styler, NSString *group) {
+    if (!styler.length) return nil;
+    NSString *words = nil;
+    for (NPPStyleEntry *e in [[NPPStyleStore sharedStore] stylesForLexer:styler]) {
+        if (e.keywords.length && [e.keywordClass isEqualToString:group]) words = e.keywords;
+    }
+    return words;
+}
+
+/// Windows concatToBuildKeywordList(): user-defined words, a space, then the
+/// langs.xml list.
+static NSString *joinKeywordLists(NSString *user, NSString *def) {
+    if (!user.length) return def;
+    if (!def.length) return user;
+    return [NSString stringWithFormat:@"%@ %@", user, def];
+}
+
+/// Every styler user-defined keyword list applyKeywords: reads for `lang`.
+/// A change means the Style Configurator edited keywords and the lists need
+/// feeding again.
+static NSString *stylerKeywordSignature(NSString *lang) {
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";  // as applyKeywords:
+    NSMutableString *sig = [NSMutableString string];
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        [sig appendFormat:@"%@\n", stylerUserKeywords(styler, @(slots[i].group)) ?: @""];
+    }
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            [sig appendFormat:@"%@\n", stylerUserKeywords(src, group) ?: @""];
+        }
+    }
+    return sig;
+}
+
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
@@ -2773,12 +2832,18 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
     // Several entries may target one slot; their words are merged (deduped).
     // Only the language's own lists count as "fed": a lone cross-language
     // list such as cpp's doxygen tags must not suppress the fallback below.
+    // Each entry contributes its styler's user-defined keywords (Style
+    // Configurator) followed by the langs.xml group, like Windows'
+    // concatToBuildKeywordList().
     NppKeywordSlot slots[kNppKeywordSlotsMax];
     NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
     NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
     for (NSUInteger i = 0; i < slotCount; i++) {
         NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
-        NSString *kw = [lm keywordsForLanguage:src keywordClass:@(slots[i].group)];
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        NSString *group = @(slots[i].group);
+        NSString *kw = joinKeywordLists(stylerUserKeywords(styler, group),
+                                        [lm keywordsForLanguage:src keywordClass:group]);
         if (!kw.length) continue;
         NSMutableOrderedSet *set = words[@(slots[i].slot)];
         if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
@@ -2790,6 +2855,35 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
         NSString *kw = [words[slot].array componentsJoinedByString:@" "];
         [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
     }
+
+    // Substyles (Windows populateSubStyleKeywords()): allocate each base's
+    // substyles in Windows' order, then feed the substyleN groups to them with
+    // SCI_SETIDENTIFIERS. The lexer is fresh after setLanguage:, but this also
+    // runs again on a Style Configurator keyword edit, so free first; the
+    // reallocation hands out the same IDs.
+    [sci message:SCI_FREESUBSTYLES];
+    NSMutableDictionary<NSString *, NSNumber *> *substyleIDs = [NSMutableDictionary new];
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        sptr_t first = [sci message:SCI_ALLOCATESUBSTYLES
+                             wParam:(uptr_t)bases[i].baseStyle
+                             lParam:(sptr_t)bases[i].count];
+        if (first < 0) continue;  // lexer has no substyles for this base
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            NSString *words = joinKeywordLists(stylerUserKeywords(src, group),
+                                               [lm keywordsForLanguage:src keywordClass:group]);
+            [sci message:SCI_SETIDENTIFIERS wParam:(uptr_t)(first + k)
+                  lParam:(sptr_t)(words.UTF8String ?: "")];
+            // applyLexerColors: puts this language's own substyle rows on
+            // the IDs actually allocated.
+            if ([src isEqualToString:lang]) substyleIDs[group] = @(first + k);
+        }
+    }
+    _substyleIDs = [substyleIDs copy];
+    _appliedStylerKeywords = stylerKeywordSignature(lang);
 
     if (fed) return;
 
@@ -2893,6 +2987,13 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
 
     for (NPPStyleEntry *e in styles) {
         int sid = e.styleID;
+        // Substyle rows (keywordClass substyleN) go on the ID applyKeywords:
+        // allocated. stylers.xml numbers them to match Lexilla's allocation
+        // order, so this only differs if a stylers.xml was edited by hand.
+        if ([e.keywordClass hasPrefix:@"substyle"]) {
+            NSNumber *allocated = _substyleIDs[e.keywordClass];
+            if (allocated) sid = allocated.intValue;
+        }
 
         // fg
         if (ovFg && gov) {
