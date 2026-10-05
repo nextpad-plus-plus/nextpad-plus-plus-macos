@@ -180,21 +180,52 @@ static NSMutableDictionary<NSString *, NSString *> *xmlAttributes(NSXMLElement *
     }
 }
 
-/// True for the placeholder sections older bundled themes shipped (every
-/// style the same fgColor), e.g. TypeScript before it had its own colours.
-- (BOOL)isPlaceholderLexer:(NSString *)lid {
-    NSDictionary<NSNumber *, NSDictionary *> *styles = _styles[lid];
-    if (styles.count < 2) return NO;
-    NSMutableSet *fg = [NSMutableSet new];
-    for (NSDictionary *a in styles.allValues) [fg addObject:[a[@"fgColor"] uppercaseString] ?: @""];
-    return fg.count == 1;
-}
-
-- (void)removeLexer:(NSString *)lid {
-    [_styles removeObjectForKey:lid]; [_styleOrder removeObjectForKey:lid];
-    [_lexerDesc removeObjectForKey:lid]; [_lexerOrder removeObject:lid];
+- (void)removeStyle:(NSNumber *)sid ofLexer:(NSString *)lid {
+    [_styles[lid] removeObjectForKey:sid];
+    [_styleOrder[lid] removeObject:sid];
 }
 @end
+
+/// True when a TypeScript WordsStyle in a user copy of bundled theme
+/// `themeName` is still exactly what that theme shipped before TypeScript got
+/// real colours: the placeholder's fgColor and bgColor (per theme, below),
+/// empty fontName and fontSize, and the placeholder's fontStyle for that
+/// styleID (the same in all 20 themes). Anything the user changed (colour,
+/// font, bold, italic) makes it a customised style that must be kept.
+static BOOL isOldTypeScriptPlaceholderStyle(NSString *themeName, int sid,
+                                            NSDictionary<NSString *, NSString *> *a) {
+    static NSDictionary<NSString *, NSArray<NSString *> *> *colours;   // theme -> fg, bg
+    static NSDictionary<NSNumber *, NSString *> *fontStyles;            // styleID -> fontStyle
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        colours = @{
+            @"Bespin"            : @[@"BDAE9D", @"2A211C"], @"Black board"     : @[@"F8F8F8", @"0C1021"],
+            @"Choco"             : @[@"C3BE98", @"1A0F0B"], @"DansLeRuSH-Dark" : @[@"C7C7C7", @"2E2E2E"],
+            @"Deep Black"        : @[@"FFFFFF", @"000000"], @"Hello Kitty"     : @[@"000000", @"FFB0FF"],
+            @"HotFudgeSundae"    : @[@"B7975D", @"2B0F01"], @"Mono Industrial" : @[@"FFFFFF", @"222C28"],
+            @"Monokai"           : @[@"F8F8F2", @"272822"], @"MossyLawn"       : @[@"F2C476", @"58693D"],
+            @"Navajo"            : @[@"000000", @"BA9C80"], @"Obsidian"        : @[@"E0E2E4", @"293134"],
+            @"Plastic Code Wrap" : @[@"F8F8F8", @"0B161D"], @"Ruby Blue"       : @[@"FFFFFF", @"112435"],
+            @"Solarized-light"   : @[@"657B83", @"FDF6E3"], @"Solarized"       : @[@"839496", @"002B36"],
+            @"Twilight"          : @[@"F8F8F8", @"141414"], @"Vibrant Ink"     : @[@"FFFFFF", @"000000"],
+            @"khaki"             : @[@"5F5F00", @"D7D7AF"], @"vim Dark Blue"   : @[@"FFFFBF", @"000040"],
+        };
+        fontStyles = @{
+            @11: @"0", @5: @"1", @16: @"0", @19: @"1", @4: @"0", @6: @"0", @20: @"0",
+            @7: @"0", @10: @"1", @13: @"0", @14: @"1", @1: @"0", @2: @"0", @3: @"0",
+            @15: @"0", @17: @"1", @18: @"0", @128: @"1", @129: @"1", @130: @"1",
+            @131: @"1", @132: @"1", @133: @"1", @134: @"1", @135: @"1",
+        };
+    });
+    NSArray<NSString *> *c = colours[themeName];
+    NSString *fs = fontStyles[@(sid)];
+    if (!c || !fs) return NO;
+    return [a[@"fgColor"] caseInsensitiveCompare:c[0]] == NSOrderedSame
+        && [a[@"bgColor"] caseInsensitiveCompare:c[1]] == NSOrderedSame
+        && [a[@"fontName"] isEqualToString:@""]
+        && [a[@"fontSize"] isEqualToString:@""]
+        && [a[@"fontStyle"] isEqualToString:fs];
+}
 
 /// Apply one theme entry's attributes. An attribute the theme sets wins (an
 /// empty colour means "inherit"); a colour attribute it omits takes the
@@ -365,10 +396,14 @@ static NSString *userThemePath(NSString *themeName) {
     if ([[NSFileManager defaultManager] fileExistsAtPath:userPath]) {
         _NPPThemeLayer *user = [_NPPThemeLayer layerWithContentsOfURL:[NSURL fileURLWithPath:userPath]];
         // A copy taken before the bundled TypeScript section got real colours
-        // still holds the single-colour placeholder: let the bundled one show.
-        if (user && theme && [user isPlaceholderLexer:@"typescript"]
-            && theme.styles[@"typescript"] && ![theme isPlaceholderLexer:@"typescript"])
-            [user removeLexer:@"typescript"];
+        // still holds the old single-colour placeholder. Let the bundled style
+        // show for each TypeScript style that is still exactly the placeholder;
+        // a style the user changed in any way is kept.
+        if (user && theme.styles[@"typescript"]) {
+            for (NSNumber *sid in [user.styleOrder[@"typescript"] copy])
+                if (isOldTypeScriptPlaceholderStyle(themeName, sid.intValue, user.styles[@"typescript"][sid]))
+                    [user removeStyle:sid ofLexer:@"typescript"];
+        }
         if (theme && user) [theme overlay:user];
         else if (user)     theme = user;
     }
@@ -776,26 +811,29 @@ static NSString *_userThemesDir(void) {
     BOOL changed = NO;
 
     // A user copy of a bundled theme taken before TypeScript got real colours
-    // holds the single-colour placeholder. lexersForTheme: shows the bundled
-    // section instead, but writing a TypeScript edit into the placeholder would
-    // make it look customised. Replace it with the bundled section first.
+    // holds the old single-colour placeholder. lexersForTheme: shows the
+    // bundled style for each placeholder style, but writing a TypeScript edit
+    // into the file would make that style look customised. So first replace
+    // each TypeScript style that is still exactly the placeholder with the
+    // bundled one; styles the user changed are left alone.
     NSURL *bundled = [xmlPath isEqualToString:NppConfigSubpath(@"stylers.xml")]
                    ? nil : bundledThemeURL(themeName);
-    if (bundled) {
-        NSXMLElement *userTS = [[doc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']"
-                                             error:nil] firstObject];
+    NSXMLElement *userTS = bundled ? [[doc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']"
+                                                   error:nil] firstObject] : nil;
+    if (userTS) {
         NSData *bData = [NSData dataWithContentsOfURL:bundled];
-        NSXMLDocument *bDoc = bData ? [[NSXMLDocument alloc] initWithData:bData
-                                                                  options:NSXMLNodePreserveWhitespace
-                                                                    error:nil] : nil;
-        NSXMLElement *bundledTS = [[bDoc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']"
-                                                 error:nil] firstObject];
-        _NPPThemeLayer *uLayer = [_NPPThemeLayer layerWithContentsOfURL:[NSURL fileURLWithPath:xmlPath]];
-        _NPPThemeLayer *bLayer = [_NPPThemeLayer layerWithContentsOfURL:bundled];
-        if (userTS && bundledTS && [uLayer isPlaceholderLexer:@"typescript"]
-            && ![bLayer isPlaceholderLexer:@"typescript"]) {
-            NSXMLElement *parent = (NSXMLElement *)userTS.parent;
-            [parent replaceChildAtIndex:userTS.index withNode:[bundledTS copy]];
+        NSXMLDocument *bDoc = bData ? [[NSXMLDocument alloc] initWithData:bData options:0 error:nil] : nil;
+        NSMutableDictionary<NSString *, NSXMLElement *> *bundledStyles = [NSMutableDictionary new];
+        for (NSXMLElement *ws in [bDoc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']/WordsStyle"
+                                               error:nil]) {
+            NSString *sid = [ws attributeForName:@"styleID"].stringValue;
+            if (sid.length && !bundledStyles[sid]) bundledStyles[sid] = ws;
+        }
+        for (NSXMLElement *ws in [userTS elementsForName:@"WordsStyle"]) {
+            NSString *sid = [ws attributeForName:@"styleID"].stringValue;
+            NSXMLElement *src = sid.length ? bundledStyles[sid] : nil;
+            if (!src || !isOldTypeScriptPlaceholderStyle(themeName, sid.intValue, xmlAttributes(ws))) continue;
+            [userTS replaceChildAtIndex:ws.index withNode:[src copy]];
             changed = YES;
         }
     }
