@@ -363,15 +363,24 @@ static void NppRecoveryDone(void) {
 // ── New Window ──────────────────────────────────────────────────────────────
 
 - (MainWindowController *)openNewWindow {
+    // Offset from the primary window so they don't stack exactly
+    NSRect primaryFrame = self.mainWindowController.window.frame;
+    return [self openNewWindowWithFrame:NSOffsetRect(primaryFrame, 30, -30)];
+}
+
+- (MainWindowController *)openNewWindowWithFrame:(NSRect)newFrame {
     MainWindowController *mwc = [[MainWindowController alloc] init];
     [_windowControllers addObject:mwc];
 
-    // Offset from the primary window so they don't stack exactly
-    NSRect primaryFrame = self.mainWindowController.window.frame;
-    NSRect newFrame = NSOffsetRect(primaryFrame, 30, -30);
-    [mwc.window setFrame:newFrame display:NO];
-
+    // Show first, THEN place. Until a window is first ordered in, its content
+    // size is computed against an estimated title bar plus toolbar height that
+    // is taller than the real one. Moving the still-hidden window here (on top
+    // of the saved frame -init already applied) made AppKit, on showing it,
+    // shrink the frame by that difference AND the content view by it again,
+    // leaving an empty band between the toolbar and the tab bar. The primary
+    // window is shown without this extra move, so it never had the band.
     [mwc showWindow:nil];
+    [mwc.window setFrame:newFrame display:YES];
 
     // Observe close to remove from our array. Keep the returned token and
     // remove the observer when it fires — otherwise the notification center
@@ -394,6 +403,27 @@ static void NppRecoveryDone(void) {
     }];
 
     return mwc;
+}
+
+- (void)windowControllerWillClose:(MainWindowController *)mwc {
+    if (_isTerminating || mwc != self.mainWindowController) return;
+    MainWindowController *next = nil;
+    for (MainWindowController *c in _windowControllers)
+        if (c != mwc && !c.windowHasClosed) { next = c; break; }
+    if (!next) return;
+
+    // Promote the next window. Plugins talk to one window (the primary), so
+    // repoint them too; panels a plugin docked in the closed window are
+    // re-shown by the plugin on its next show request.
+    self.mainWindowController = next;
+    [[NppPluginManager shared] setMainWindowController:next];
+
+    // The primary has no close observer of its own (secondaries get one in
+    // -openNewWindowWithFrame:). Drop it on the next turn, once AppKit is done
+    // delivering this close, so its controller can be released.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.windowControllers removeObject:mwc];
+    });
 }
 
 // ── Folder argument expansion ────────────────────────────────────────────────
@@ -568,15 +598,11 @@ static void NppRecoveryDone(void) {
     // A folder argument expands to its top-level files (issue #131).
     NSArray<NSString *> *files = [self _expandFolderArguments:@[filename]];
     if (files.count == 0) return YES;  // empty folder, or large-open declined
-    MainWindowController *mwc = [self _activeWindowController];
-    for (NSString *path in files) {
-        [mwc openFileAtPath:path];
-    }
     // Issue #63: surface the window to the user. Without this, opening a
     // file from Finder while the app is minimized silently adds the file
     // to a tab inside an invisible window and the user has to hunt for
     // the Dock icon to see it.
-    [mwc bringWindowForward];
+    [self _openFilesAndSurface:files];
     return YES;
 }
 
@@ -589,14 +615,10 @@ static void NppRecoveryDone(void) {
     // Folder arguments expand to their top-level files (issue #131).
     NSArray<NSString *> *files = [self _expandFolderArguments:filenames];
     if (files.count > 0) {
-        MainWindowController *mwc = [self _activeWindowController];
-        for (NSString *path in files) {
-            [mwc openFileAtPath:path];
-        }
         // Issue #63: bring the window forward AFTER all files are added so
         // there's no flicker between batches and the front-most tab is the
         // last one opened (the standard macOS behaviour for multi-file open).
-        [mwc bringWindowForward];
+        [self _openFilesAndSurface:files];
     }
     [sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
 }
@@ -632,11 +654,23 @@ static void NppRecoveryDone(void) {
 
     NSArray<NSString *> *files = [self _expandFolderArguments:paths];
     if (files.count == 0) return;  // empty folder, or large-open declined
+    [self _openFilesAndSurface:files];  // activates Nextpad++ over Finder
+}
+
+/// Open `files` in the key window, then bring forward the window showing the
+/// last of them. A file already open in another window is focused there
+/// rather than opened twice, so that window, not the key one, is surfaced.
+- (void)_openFilesAndSurface:(NSArray<NSString *> *)files {
     MainWindowController *mwc = [self _activeWindowController];
+    EditorView *last = nil;
     for (NSString *path in files) {
-        [mwc openFileAtPath:path];
+        EditorView *ed = [mwc openFileAtPath:path];
+        if (ed) last = ed;
     }
-    [mwc bringWindowForward];  // activates Nextpad++ over Finder
+    id owner = last.window.windowController;
+    MainWindowController *front = [owner isKindOfClass:[MainWindowController class]]
+        ? (MainWindowController *)owner : mwc;
+    [front bringWindowForward];
 }
 
 /// Returns the window controller for the key window, or mainWindowController as fallback.

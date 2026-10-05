@@ -26,6 +26,20 @@ static const CGFloat kTabMaxWidth  = 190.0;
 static const CGFloat kIconSize     = 16.0;
 static const CGFloat kCloseSize    = 14.0;
 static const CGFloat kArrowBtnW    = 14.0;  // width of each scroll-arrow button
+// Tab tear-off: how far (pt) the pointer may stray above or below the bar
+// before a reorder drag detaches the tab, and how far around a foreign bar a
+// detached tab still counts as "over" it.
+static const CGFloat kTearOffSlop  = 30.0;
+static const CGFloat kDropBarSlop  = 10.0;
+
+// Every live tab bar, across all windows: the drop targets for a detached tab.
+// Weak, so a bar torn down with its window simply drops out.
+static NSHashTable *allTabBars(void) {
+    static NSHashTable *bars;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ bars = [NSHashTable weakObjectsHashTable]; });
+    return bars;
+}
 
 // ── Colors (all routed through NppThemeManager) ──────────────────────────────
 #define TM [NppThemeManager shared]
@@ -446,6 +460,21 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 @property (nonatomic, weak, nullable) NppTabBar *tabBar;
 @end
 
+// Thin bar marking where a tab dragged in from another bar will land. Drawn
+// in the system accent color inside a 1pt halo of the text background, so it
+// reads against the orange active tab (Classic) and any per-tab color alike.
+@interface _NppDropMarkerView : NSView
+@end
+
+@implementation _NppDropMarkerView
+- (void)drawRect:(NSRect)dirtyRect {
+    [[NSColor textBackgroundColor] setFill];
+    NSRectFill(self.bounds);
+    [[NSColor controlAccentColor] setFill];
+    NSRectFill(NSInsetRect(self.bounds, 1, 1));
+}
+@end
+
 @implementation _NppTabBarContainer {
     NSTimeInterval _lastClickHere;  // timestamp of last mouseDown delivered to us
 }
@@ -489,6 +518,8 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     NSInteger                      _dragReorderFromIndex;
     /// Drop slot index.
     NSInteger                      _dragReorderToIndex;
+    /// Insertion marker shown while a tab detached from ANOTHER bar hovers here.
+    NSView                        *_dropMarker;
 }
 
 - (instancetype)initWithFrame:(NSRect)frame {
@@ -503,6 +534,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_darkModeChanged:)
                    name:NPPDarkModeChangedNotification object:nil];
+        [allTabBars() addObject:self];
     }
     return self;
 }
@@ -579,15 +611,22 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 #pragma mark - Public API
 
 - (void)addTabWithTitle:(NSString *)title modified:(BOOL)modified {
+    [self insertTabWithTitle:title modified:modified atIndex:(NSInteger)_items.count];
+}
+
+- (void)insertTabWithTitle:(NSString *)title modified:(BOOL)modified atIndex:(NSInteger)index {
+    NSInteger idx = MAX(0, MIN(index, (NSInteger)_items.count));
     _NppTabItem *item  = [[_NppTabItem alloc] initWithFrame:NSZeroRect];
     item.title         = title;
     item.isModified    = modified;
     item.isSelected    = NO;
-    item.tabIndex      = _items.count;
     item.target        = self;
     item.selectAction  = @selector(tabItemSelected:);
     item.closeAction   = @selector(tabItemClosed:);
-    [_items addObject:item];
+    [_items insertObject:item atIndex:(NSUInteger)idx];
+    for (NSInteger i = idx; i < (NSInteger)_items.count; i++)
+        _items[i].tabIndex = i;
+    if (_selectedIndex >= idx) _selectedIndex++;   // selection follows its tab
     [_containerView addSubview:item];
     [self relayout];
     [self setNeedsLayout:YES];   // schedule Auto Layout pass → layout → relayout
@@ -809,9 +848,65 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
     BOOL aborted = NO;  // Issue #84 hardening #2 — flag for abort-on-removal path
 
+    // Dragging off the bar. The tab may leave the bar only when the delegate
+    // can take it somewhere: onto another bar (another split pane, or another
+    // window's tab bar), or anywhere else, where the delegate decides (a split
+    // pane's text area, or a new window).
+    id<NppTabBarDelegate> dlg = self.delegate;
+    BOOL canRelease = [dlg respondsToSelector:@selector(tabBar:didReleaseTabAtIndex:atScreenPoint:copy:)];
+    BOOL canAskRelease = canRelease &&
+        [dlg respondsToSelector:@selector(tabBar:canReleaseTabAtIndex:atScreenPoint:copy:)];
+    BOOL canDropElsewhere = [dlg respondsToSelector:@selector(tabBar:didDropTabAtIndex:onTabBar:atIndex:copy:)];
+    BOOL detachable = canRelease || canDropElsewhere;
+    BOOL copy = NO;                  // Option held: clone instead of move
+    BOOL setCursor = NO;             // the copy cursor was shown
+    BOOL detached = NO;              // pointer is outside this bar's drag band
+    NppTabBar *dropBar = nil;        // another bar under the pointer while detached
+    NSInteger dropBarIndex = -1;
+    NSWindow *floatingGhost = nil;   // follows the pointer across windows
+    NSPoint screenPoint = NSZeroPoint;
+    BOOL cancelled = NO;             // Escape pressed mid-drag
+    NSMutableArray<NSEvent *> *heldKeys = nil;  // non-Escape keys seen mid-drag
+
+    // Option: the copy cursor, as Finder shows for a copy. Pushed, not set,
+    // so popping it restores whatever cursor was showing before.
+    auto showCopyCursor = [&](BOOL on) {
+        if (on && !setCursor)      { [[NSCursor dragCopyCursor] push]; setCursor = YES; }
+        else if (!on && setCursor) { [NSCursor pop];                   setCursor = NO;  }
+    };
+    // While detached: fade the ghost when releasing here would do nothing
+    // (over a toolbar or side panel, say, or the window's only tab over the
+    // desktop), and show the copy cursor while Option is held.
+    auto updateDetachedFeedback = [&]() {
+        BOOL willDrop = dropBar || (canRelease &&
+            (!canAskRelease || [dlg tabBar:self canReleaseTabAtIndex:fromIndex
+                             atScreenPoint:screenPoint copy:copy]));
+        floatingGhost.alphaValue = willDrop ? 0.85 : 0.4;
+        showCopyCursor(copy && willDrop);
+    };
+
     while (YES) {
-        NSEvent *nextEvent = [self.window nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+        // Keys are only looked at once a drag is under way (a plain click
+        // leaves them alone), and then only Escape is used: it cancels the
+        // drag. Any other key is held and re-posted after the drag, so it
+        // still reaches the editor, in order.
+        NSEventMask mask = NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp;
+        if (dragging) mask |= NSEventMaskKeyDown | NSEventMaskFlagsChanged;
+        NSEvent *nextEvent = [self.window nextEventMatchingMask:mask];
         if (!nextEvent) break;
+
+        if (nextEvent.type == NSEventTypeKeyDown) {
+            if (nextEvent.keyCode == 53 /* kVK_Escape */) { cancelled = YES; break; }
+            if (!heldKeys) heldKeys = [NSMutableArray array];
+            [heldKeys addObject:nextEvent];
+            continue;
+        }
+        if (nextEvent.type == NSEventTypeFlagsChanged) {
+            // Option pressed or released without moving the pointer.
+            copy = (nextEvent.modifierFlags & NSEventModifierFlagOption) != 0;
+            if (detached) updateDetachedFeedback();
+            continue;
+        }
 
         // Issue #84 hardening #2 — re-anchor fromIndex by object identity each
         // tick. If external code mutated _items between events (a plugin or
@@ -824,6 +919,8 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         fromIndex = live;
 
         NSPoint currentPoint = [_containerView convertPoint:nextEvent.locationInWindow fromView:nil];
+        screenPoint = [self.window convertPointToScreen:nextEvent.locationInWindow];
+        copy = (nextEvent.modifierFlags & NSEventModifierFlagOption) != 0;
         if (nextEvent.type == NSEventTypeLeftMouseDragged) {
             CGFloat dx = currentPoint.x - downPoint.x;
             CGFloat dy = currentPoint.y - downPoint.y;
@@ -853,6 +950,48 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
                     _dragReorderFromIndex = fromIndex;
                     [self relayout];
                 }
+
+                // Straying above or below the band around the bar, out of the
+                // window, or onto another tab bar (e.g. the other split pane)
+                // detaches the tab; coming back re-attaches it.
+                NppTabBar *overBar = canDropElsewhere
+                    ? [NppTabBar _tabBarAtScreenPoint:screenPoint excluding:self aboveGhost:floatingGhost]
+                    : nil;
+                BOOL nowDetached = detachable &&
+                    (overBar || ![self _screenPointIsInDragBand:screenPoint aboveGhost:floatingGhost]);
+                if (nowDetached != detached) {
+                    detached = nowDetached;
+                    dragGhost.hidden = detached;
+                    if (detached) {
+                        // Hold the gap at the tab's own slot, so dropping back
+                        // (or a refused drop) leaves it where it was.
+                        _dragReorderToIndex = fromIndex;
+                        toIndex = fromIndex;
+                        [self relayout];
+                        if (!floatingGhost && dragGhost.image)
+                            floatingGhost = [NppTabBar _floatingGhostWithImage:dragGhost.image];
+                        [floatingGhost orderFront:nil];
+                    } else {
+                        [floatingGhost orderOut:nil];
+                        [dropBar _setExternalDropIndex:-1];
+                        dropBar = nil;
+                        dropBarIndex = -1;
+                        showCopyCursor(NO);   // reordering ignores Option
+                    }
+                }
+                if (detached) {
+                    [floatingGhost setFrameOrigin:NSMakePoint(screenPoint.x - dragOffsetInItem.x,
+                                                              screenPoint.y - dragOffsetInItem.y)];
+                    NppTabBar *bar = overBar;
+                    if (bar != dropBar) [dropBar _setExternalDropIndex:-1];
+                    dropBar = bar;
+                    dropBarIndex = bar ? [bar _insertionIndexForScreenPoint:screenPoint
+                                                                     pinned:item.isPinned] : -1;
+                    [dropBar _setExternalDropIndex:dropBarIndex];
+                    updateDetachedFeedback();
+                    continue;
+                }
+
                 if (dragGhost) {
                     NSPoint ghostPoint = [self convertPoint:nextEvent.locationInWindow fromView:nil];
                     dragGhost.frame = NSMakeRect(ghostPoint.x - dragOffsetInItem.x,
@@ -870,16 +1009,54 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
             continue;
         }
 
-        if (nextEvent.type == NSEventTypeLeftMouseUp) break;
+        if (nextEvent.type == NSEventTypeLeftMouseUp) {
+            // Commit to where the button was RELEASED, not to the target of
+            // the last drag event: the pointer can move between the two.
+            if (dragging) {
+                NppTabBar *overBar = canDropElsewhere
+                    ? [NppTabBar _tabBarAtScreenPoint:screenPoint excluding:self aboveGhost:floatingGhost]
+                    : nil;
+                detached = detachable &&
+                    (overBar || ![self _screenPointIsInDragBand:screenPoint aboveGhost:floatingGhost]);
+                if (overBar != dropBar) [dropBar _setExternalDropIndex:-1];
+                dropBar = detached ? overBar : nil;
+                dropBarIndex = dropBar ? [dropBar _insertionIndexForScreenPoint:screenPoint
+                                                                         pinned:item.isPinned] : -1;
+                toIndex = detached ? fromIndex
+                                   : [self _dropTargetIndexForContainerPoint:currentPoint fromIndex:fromIndex];
+            }
+            break;
+        }
     }
 
     // Issue #84 hardening #3 — single cleanup point. Restores the source tab,
     // removes the ghost, clears preview-state ivars, and forces a relayout so
     // the gap-preview is torn down. Reached via every loop exit (mouseUp,
-    // nil-event, identity-abort).
+    // nil-event, identity-abort, Escape).
+    [dropBar _setExternalDropIndex:-1];
+    [floatingGhost orderOut:nil];
+    showCopyCursor(NO);
     [self _endDragCleanup:item ghost:dragGhost];
+    for (NSEvent *key in heldKeys) [NSApp postEvent:key atStart:NO];
 
     if (aborted) return;  // dragged tab was removed mid-drag; nothing to commit/select
+    if (cancelled) return; // Escape: the tab stays where it was
+
+    if (dragging && detached) {
+        // Hand-off to the delegate is the LAST thing done here: moving the tab
+        // can close this bar's window (it may have been the window's last tab),
+        // so nothing after it may touch self.
+        if (dropBar && dropBarIndex >= 0) {
+            [dlg tabBar:self didDropTabAtIndex:fromIndex onTabBar:dropBar atIndex:dropBarIndex copy:copy];
+            return;
+        }
+        if (canRelease &&
+            [dlg tabBar:self didReleaseTabAtIndex:fromIndex atScreenPoint:screenPoint copy:copy])
+            return;
+        // Released where the tab cannot go: it stays put.
+        [self tabItemSelected:item];
+        return;
+    }
 
     if (dragging && toIndex != fromIndex && toIndex >= 0 && toIndex < (NSInteger)_items.count) {
         [self moveTabAtIndex:fromIndex toIndex:toIndex];
@@ -902,6 +1079,137 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     _dragReorderFromIndex = -1;
     _dragReorderToIndex   = -1;
     if (hadPreview) [self relayout];
+}
+
+#pragma mark - Tab tear-off helpers
+
+/// The window under `sp`, looking beneath the floating drag ghost (which sits
+/// under the pointer itself) when it is on screen.
+static NSInteger windowNumberUnderDrag(NSPoint sp, NSWindow *ghost) {
+    NSInteger below = ghost.isVisible ? ghost.windowNumber : 0;
+    return [NSWindow windowNumberAtPoint:sp belowWindowWithWindowNumber:below];
+}
+
+/// YES while a dragged tab may stay attached to this bar: the pointer is over
+/// this bar's window and no further than kTearOffSlop above or below the bar.
+/// Horizontal position does not matter here: overshooting sideways (into a
+/// docked side panel, say) keeps reordering, clamped to the end slot. Only a
+/// different tab bar under the pointer, checked by the caller, detaches it.
+- (BOOL)_screenPointIsInDragBand:(NSPoint)sp aboveGhost:(NSWindow *)ghost {
+    NSWindow *win = self.window;
+    if (!win || windowNumberUnderDrag(sp, ghost) != win.windowNumber) return NO;
+    NSPoint p = [self convertPoint:[win convertPointFromScreen:sp] fromView:nil];
+    return p.y >= NSMinY(self.bounds) - kTearOffSlop && p.y <= NSMaxY(self.bounds) + kTearOffSlop;
+}
+
+/// The visible tab bar (other than `exclude`) under `sp`, in whichever window
+/// is frontmost at that point, or nil.
++ (nullable NppTabBar *)_tabBarAtScreenPoint:(NSPoint)sp
+                                   excluding:(NppTabBar *)exclude
+                                  aboveGhost:(NSWindow *)ghost {
+    NSInteger under = windowNumberUnderDrag(sp, ghost);
+    for (NppTabBar *bar in allTabBars()) {
+        if (bar == exclude || !bar.delegate) continue;
+        NSWindow *w = bar.window;
+        if (!w || !w.isVisible || w.windowNumber != under) continue;
+        // A collapsed split pane or a hidden tab bar is not a target.
+        if (bar.isHiddenOrHasHiddenAncestor || NSIsEmptyRect(bar.visibleRect)) continue;
+        if (bar.bounds.size.height < 1) continue;
+        NSPoint p = [bar convertPoint:[w convertPointFromScreen:sp] fromView:nil];
+        if (NSPointInRect(p, NSInsetRect(bar.bounds, 0, -kDropBarSlop))) return bar;
+    }
+    return nil;
+}
+
+/// Insertion slot (0…tabCount) for a tab dropped at `sp` on this bar. Picks
+/// the row nearest the pointer (wrap mode), then the first tab in it whose
+/// midpoint is right of the pointer. The slot is kept on the right side of
+/// the leading run of pinned tabs: a pinned tab lands among them, an
+/// unpinned one after them.
+- (NSInteger)_insertionIndexForScreenPoint:(NSPoint)sp pinned:(BOOL)pinned {
+    NSInteger slot = [self _rawInsertionIndexForScreenPoint:sp];
+    NSInteger pinnedRun = 0;
+    while (pinnedRun < (NSInteger)_items.count && _items[pinnedRun].isPinned) pinnedRun++;
+    return pinned ? MIN(slot, pinnedRun) : MAX(slot, pinnedRun);
+}
+
+- (NSInteger)_rawInsertionIndexForScreenPoint:(NSPoint)sp {
+    NSInteger n = (NSInteger)_items.count;
+    if (n == 0 || !self.window) return 0;
+    NSPoint p = [_containerView convertPoint:[self.window convertPointFromScreen:sp] fromView:nil];
+
+    // Nearest row: the tab whose vertical span is closest to the pointer.
+    _NppTabItem *rowRef = nil;
+    CGFloat bestDY = CGFLOAT_MAX;
+    for (_NppTabItem *it in _items) {
+        NSRect f = it.frame;
+        CGFloat dy = (p.y < NSMinY(f)) ? NSMinY(f) - p.y : (p.y > NSMaxY(f) ? p.y - NSMaxY(f) : 0);
+        if (dy < bestDY) { bestDY = dy; rowRef = it; }
+    }
+    NSRect rf = rowRef.frame;
+    NSInteger lastInRow = rowRef.tabIndex;
+    for (_NppTabItem *it in _items) {
+        NSRect f = it.frame;
+        BOOL sameRow = NSMaxY(f) > NSMinY(rf) && NSMinY(f) < NSMaxY(rf);
+        if (!sameRow) continue;
+        if (p.x < NSMidX(f)) return it.tabIndex;
+        lastInRow = MAX(lastInRow, it.tabIndex);
+    }
+    return lastInRow + 1;
+}
+
+/// Show (index >= 0) or hide (index < 0) the insertion marker for a tab
+/// detached from another bar and hovering over this one.
+- (void)_setExternalDropIndex:(NSInteger)index {
+    if (index < 0) { _dropMarker.hidden = YES; return; }
+    if (!_dropMarker) {
+        _dropMarker = [[_NppDropMarkerView alloc] initWithFrame:NSZeroRect];
+        [self addSubview:_dropMarker positioned:NSWindowAbove relativeTo:nil];
+    }
+    NSInteger n = (NSInteger)_items.count;
+    NSRect ref;
+    CGFloat x;
+    if (n == 0) {
+        ref = NSMakeRect(0, 0, 0, self.bounds.size.height - kTabTopGap);
+        x = 2;
+    } else if (index < n) {
+        ref = [self convertRect:_items[index].frame fromView:_containerView];
+        x = NSMinX(ref);
+    } else {
+        ref = [self convertRect:_items[n - 1].frame fromView:_containerView];
+        x = NSMaxX(ref);
+    }
+    x = MAX(2, MIN(x, self.bounds.size.width - 2));
+    _dropMarker.frame = NSMakeRect(round(x - 2), NSMinY(ref), 4, NSHeight(ref));
+    _dropMarker.hidden = NO;
+}
+
+/// Borderless, click-through window showing the dragged tab while it is
+/// outside its bar. It floats above every window so it can cross them.
++ (NSWindow *)_floatingGhostWithImage:(NSImage *)image {
+    NSRect r = NSMakeRect(0, 0, image.size.width, image.size.height);
+    NSWindow *w = [[NSWindow alloc] initWithContentRect:r
+                                              styleMask:NSWindowStyleMaskBorderless
+                                                backing:NSBackingStoreBuffered
+                                                  defer:NO];
+    w.releasedWhenClosed = NO;
+    w.opaque = NO;
+    w.backgroundColor = [NSColor clearColor];
+    w.hasShadow = YES;
+    w.ignoresMouseEvents = YES;
+    w.level = NSPopUpMenuWindowLevel;
+    // Follow the drag over full-screen windows and across Spaces, and stay
+    // out of Exposé and window cycling.
+    w.collectionBehavior = NSWindowCollectionBehaviorFullScreenAuxiliary |
+                           NSWindowCollectionBehaviorCanJoinAllSpaces |
+                           NSWindowCollectionBehaviorTransient |
+                           NSWindowCollectionBehaviorIgnoresCycle;
+    w.alphaValue = 0.85;
+    NSImageView *iv = [[NSImageView alloc] initWithFrame:r];
+    iv.image = image;
+    iv.imageScaling = NSImageScaleAxesIndependently;
+    w.contentView = iv;
+    return w;
 }
 
 - (void)tabItemSelected:(_NppTabItem *)item {

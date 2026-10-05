@@ -51,6 +51,8 @@ Special built-in commands (no MenuEntryName needed):
 		<Item FolderName="Move Document" MenuEntryName="View" MenuItemName="Move to Other Horizontal View"/>
 		<Item FolderName="Move Document" MenuEntryName="View" MenuItemName="Clone to Other Horizontal View"/>
 		<Item FolderName="Move Document" id="0"/>
+		<Item FolderName="Move Document" MenuEntryName="View" MenuItemName="Move to New Window"/>
+		<Item FolderName="Move Document" id="0"/>
 		<Item FolderName="Move Document" MenuEntryName="View" MenuItemName="Reset View"/>
 
 		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Apply Color 1"/>

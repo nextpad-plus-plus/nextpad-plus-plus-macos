@@ -37,6 +37,9 @@ typedef NS_ENUM(NSInteger, FindWindowTab) {
 /// Singleton accessor.
 + (instancetype)sharedWindow;
 
+/// The singleton if it has been created, else nil (never creates it).
++ (nullable instancetype)existingWindow;
+
 /// Show the window and switch to the specified tab.
 - (void)showTab:(FindWindowTab)tab;
 

@@ -625,6 +625,10 @@ static NSMenu *buildLanguageMenu() {
     [moveCloneMenu addItem:item(@"Move to Other Horizontal View",  @selector(moveToOtherHorizontalView:),  @"")];
     [moveCloneMenu addItem:item(@"Clone to Other Horizontal View", @selector(cloneToOtherHorizontalView:), @"")];
     [moveCloneMenu addItem:[NSMenuItem separatorItem]];
+    // Windows "Move to New Instance" (10003); on macOS a window in the same
+    // process. The localizer aliases this title to that entry's translations.
+    [moveCloneMenu addItem:item(@"Move to New Window",             @selector(moveToNewWindow:),            @"")];
+    [moveCloneMenu addItem:[NSMenuItem separatorItem]];
     [moveCloneMenu addItem:item(@"Reset View",                     @selector(resetView:),                  @"")];
     [viewMenu addItem:withSubmenu(@"Move/Clone Current Document", moveCloneMenu)];
 

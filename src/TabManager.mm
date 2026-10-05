@@ -153,10 +153,19 @@
 - (void)evictEditor:(EditorView *)editor {
     NSInteger idx = [_editors indexOfObject:editor];
     if (idx == NSNotFound) return;
+    EditorView *current = self.currentEditor;
     [editor removeFromSuperview];
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
-    if (_editors.count > 0) {
+    if (_editors.count == 0) {
+        _selectedIndex = -1;
+    } else if (current && current != editor) {
+        // A background tab left (e.g. dragged to another window): keep the
+        // selection on the tab the user is looking at.
+        _selectedIndex = (NSInteger)[_editors indexOfObject:current];
+        [_tabBar selectTabAtIndex:_selectedIndex];
+    } else {
+        _selectedIndex = -1;   // the previous slot is gone; nothing to hide
         NSInteger nextIdx = MIN(idx, (NSInteger)_editors.count - 1);
         [self activateTabAtIndex:nextIdx];
     }
@@ -165,6 +174,15 @@
 
 - (void)adoptEditor:(EditorView *)editor {
     [self insertEditor:editor title:editor.displayName modified:editor.isModified];
+}
+
+- (void)adoptEditor:(EditorView *)editor atIndex:(NSInteger)index {
+    NSInteger idx = MAX(0, MIN(index, (NSInteger)_editors.count));
+    [_editors insertObject:editor atIndex:(NSUInteger)idx];
+    [_contentView addSubview:editor];
+    [_tabBar insertTabWithTitle:editor.displayName modified:editor.isModified atIndex:idx];
+    if (_selectedIndex >= idx) _selectedIndex++;   // keep pointing at the shown editor
+    [self activateTabAtIndex:idx];
 }
 
 - (void)refreshCurrentTabTitle {
@@ -197,8 +215,10 @@
 }
 
 - (void)tabBar:(NppTabBar *)bar didCloseTabAtIndex:(NSInteger)index {
-    // NPP behavior: can't close the last tab when it's already clean and untitled
-    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) return;
+    // NPP behavior: can't close the last tab when it's already clean and untitled,
+    // unless the pane can be hidden (another pane of the window has tabs).
+    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath &&
+        ![self _mayBecomeEmpty]) return;
     [self closeEditor:_editors[index]];
 }
 
@@ -227,6 +247,39 @@
     } else if (toIndex <= _selectedIndex && _selectedIndex < fromIndex) {
         _selectedIndex++;
     }
+}
+
+#pragma mark - Tab tear-off
+
+- (BOOL)tabBar:(NppTabBar *)bar canReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
+    if (index < 0 || index >= (NSInteger)_editors.count) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:releaseEditor:atScreenPoint:copy:)]) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:canReleaseEditor:atScreenPoint:copy:)]) return YES;
+    return [_delegate tabManager:self canReleaseEditor:_editors[index] atScreenPoint:screenPoint copy:copy];
+}
+
+- (BOOL)tabBar:(NppTabBar *)bar didReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
+    if (index < 0 || index >= (NSInteger)_editors.count) return NO;
+    if (![_delegate respondsToSelector:@selector(tabManager:releaseEditor:atScreenPoint:copy:)]) return NO;
+    return [_delegate tabManager:self releaseEditor:_editors[index] atScreenPoint:screenPoint copy:copy];
+}
+
+- (BOOL)_mayBecomeEmpty {
+    return [_delegate respondsToSelector:@selector(tabManagerMayBecomeEmpty:)] &&
+           [_delegate tabManagerMayBecomeEmpty:self];
+}
+
+- (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex copy:(BOOL)copy {
+    if (index < 0 || index >= (NSInteger)_editors.count) return;
+    // Every editor tab bar is owned (as its delegate) by a TabManager.
+    id owner = target.delegate;
+    if (![owner isKindOfClass:[TabManager class]] || owner == self) return;
+    if (![_delegate respondsToSelector:@selector(tabManager:moveEditor:toTabManager:atIndex:copy:)]) return;
+    [_delegate tabManager:self moveEditor:_editors[index]
+             toTabManager:(TabManager *)owner atIndex:targetIndex copy:copy];
 }
 
 #pragma mark - Accessors
@@ -296,9 +349,17 @@
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
 
-    // Always keep at least one tab
+    // Keep at least one tab, unless the owner hides this pane instead (Windows
+    // Notepad++ hides a view whose last tab closes while the other has tabs).
     if (_editors.count == 0) {
-        [self addNewTab];
+        if ([self _mayBecomeEmpty]) {
+            _selectedIndex = -1;
+            [_delegate tabManager:self didCloseEditor:editor];
+            if ([_delegate respondsToSelector:@selector(tabManagerDidBecomeEmpty:)])
+                [_delegate tabManagerDidBecomeEmpty:self];
+        } else {
+            [self addNewTab];
+        }
         return;
     }
 
