@@ -9,7 +9,9 @@
 
 #include <chrono>
 #include <cstdio>
+#include <atomic>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -217,7 +219,7 @@ int main() {
         const Pos f = c.Find(0, c.Length(), &end);
         const double secs = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
         check("catastrophic pattern stops with an error in bounded time",
-              f < 0 && c.LastStatus() != NppSearch::Status::Ok && secs < 30.0,
+              f < 0 && c.LastStatus() != NppSearch::Status::Ok && secs < 120.0,   // generous: sanitizer builds are slow
               "status=" + std::to_string((int)c.LastStatus()) + " secs=" + std::to_string(secs));
     }
 
@@ -229,6 +231,40 @@ int main() {
         check("CR, CRLF and LF all end lines",
               s.LineFromPosition(2) == 1 && s.LineFromPosition(5) == 2 && s.LineFromPosition(7) == 3
               && s.LineEnd(1) == 3 && s.LineStart(2) == 5);
+    }
+
+    // ---- Concurrency: searches on several threads at once ---------------------
+    // Find in Files runs on a background queue while the editor searches on
+    // the main thread. Each thread compiles its own (different, case-folded)
+    // regexes, which goes through Boost's shared traits cache, and runs
+    // Normal-mode case-insensitive searches through Scintilla's case tables.
+    // Build with -DNPP_TEST_SANITIZER=thread to have TSan check this.
+    {
+        NppSearch::PrepareForBackgroundUse();
+        std::string text;
+        for (int i = 0; i < 200; i++) text += "Alpha beta GAMMA delta \xC3\x89t\xC3\xA9 caf\xC3\xA9\n";
+        std::atomic<int> bad{0};
+        std::vector<std::thread> threads;
+        for (int t = 0; t < 8; t++) {
+            threads.emplace_back([&, t] {
+                for (int round = 0; round < 20; round++) {
+                    const std::string reps = "{" + std::to_string(1 + round % 3) + ",}";
+                    const std::string pattern = t % 2 ? "\\b[[:alpha:]]" + reps + "a\\b"
+                                                      : "(?<=\\s)\\w" + reps;
+                    BufferSearch s;
+                    s.SetSearch(pattern, kRegex, "<$0>", true);
+                    s.SetText(text.data(), text.size());
+                    Pos n = NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
+                    if (n <= 0 || s.LastStatus() != NppSearch::Status::Ok) bad++;
+                    BufferSearch plain;
+                    plain.SetSearch("\xC3\xA9T\xC3\x89", 0, "x", false);
+                    plain.SetText(text.data(), text.size());
+                    if (NppSearch::ReplaceAll(plain, 0, plain.Length()) != 200) bad++;
+                }
+            });
+        }
+        for (auto &th : threads) th.join();
+        check("8 threads searching and replacing at once", bad == 0, "bad=" + std::to_string(bad.load()));
     }
 
     // ---- Reuse: one BufferSearch for several buffers ----------------------------

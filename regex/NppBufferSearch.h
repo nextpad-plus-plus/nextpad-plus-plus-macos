@@ -83,9 +83,11 @@ private:
     std::string errorMessage;
 };
 
-/// Scintilla's case-conversion tables are built lazily and without locking.
-/// Call this once on the main thread before searching on a background queue,
-/// so the editor and a background search never build them at the same time.
+/// Scintilla's case-conversion tables (used by Normal-mode case-insensitive
+/// search) are built lazily and without locking. Call this once on the main
+/// thread before searching on a background queue, so the editor and a
+/// background search never build them at the same time. (Boost's own regex
+/// traits cache is locked: BOOST_HAS_THREADS, see BoostRegExSearch.cxx.)
 void PrepareForBackgroundUse();
 
 } // namespace NppSearch

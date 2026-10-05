@@ -47,6 +47,7 @@ set(SCI_DEFINITIONS
     SCI_OWNREGEX
     SCINTILLA_QT=0
     BOOST_REGEX_STANDALONE
+    BOOST_HAS_THREADS=  # Boost.Regex traits cache locking; see BoostRegExSearch.cxx
 )
 
 # Platform-agnostic core + regex engine: no Cocoa, so the headless tests link it.
@@ -524,7 +525,8 @@ set_source_files_properties(${APP_SRCS} PROPERTIES
 #                         UTF-8 through the Boost backend
 #   buffer_search         tests/test_buffer_search.cxx: the shared engine and loops
 #                         Find in Files uses (\K, replacement formats, empty matches,
-#                         whole word, word chars, errors, backtracking limit)
+#                         whole word, word chars, errors, backtracking limit,
+#                         searches on several threads at once)
 #   search_core           tests/test_search_core.mm: Find/Replace in Files on a temp
 #                         tree (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252,
 #                         Shift-JIS, binary skip, multi-hit lines, cancel,
@@ -549,10 +551,22 @@ if(NPP_BUILD_TESTS)
         src/SearchCore.mm
         src/NppTextEncoding.mm)
 
+    # -DNPP_TEST_SANITIZER=thread (or address) builds scintilla_core and the
+    # tests with that sanitizer, e.g. to have TSan check the concurrent search
+    # case in buffer_search. Use a separate build directory for it.
+    set(NPP_TEST_SANITIZER "" CACHE STRING "Sanitizer for scintilla_core and the tests (thread, address)")
+    if(NPP_TEST_SANITIZER)
+        target_compile_options(scintilla_core PRIVATE -fsanitize=${NPP_TEST_SANITIZER} -g)
+        target_link_options(scintilla_core INTERFACE -fsanitize=${NPP_TEST_SANITIZER})
+    endif()
+
     foreach(_t test_npp_regex test_boost_regex test_buffer_search test_search_core)
         target_link_libraries(${_t} PRIVATE scintilla_core)
         target_include_directories(${_t} PRIVATE "${NPP_REGEX_ROOT}" src)
         target_compile_definitions(${_t} PRIVATE ${SCI_DEFINITIONS})
+        if(NPP_TEST_SANITIZER)
+            target_compile_options(${_t} PRIVATE -fsanitize=${NPP_TEST_SANITIZER} -g)
+        endif()
     endforeach()
     target_compile_options(test_search_core PRIVATE -fobjc-arc)
     # Foundation only: linking fails if the code under test needs AppKit.
