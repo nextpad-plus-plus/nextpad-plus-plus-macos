@@ -4,6 +4,7 @@
 #import "NppLangsManager.h"
 #import "UserDefineLangManager.h"
 #import "NppBuiltinLanguages.h"
+#import "NppKeywordSlots.h"
 #import "NppPluginManager.h"
 #import "PreferencesWindowController.h"
 #import "SearchEngine.h"   // #166 Phase 1: replay Windows Find/Replace (type-3) macros
@@ -2698,73 +2699,45 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
-
-    // Some languages share lexers — map to the canonical language for keyword lookup.
-    // c, objc, swift all use the cpp lexer; javascript.js uses javascript.
-    NSString *kwLang = lang;
-    if ([@[@"c", @"objc"] containsObject:lang]) kwLang = @"cpp";
-    if ([lang isEqualToString:@"javascript.js"]) kwLang = @"javascript";
+    // Legacy "javascript" tabs (L_JS_EMBEDDED) read the javascript.js lists, so
+    // treat them as javascript.js for the own-list check below.
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";
 
     NppLangsManager *lm = [NppLangsManager shared];
     BOOL fed = NO;
 
-    // Keyword class names → Scintilla SCI_SETKEYWORDS index.
-    // The mapping follows the most common pattern used by Scintilla lexers:
-    // instre1→0, type1→1, instre2→2, type2→3, type3→4, type4→5, type5→6, type6→7, type7→8
-    static NSDictionary<NSString *, NSNumber *> *kwClassToIndex;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        kwClassToIndex = @{
-            @"instre1": @0, @"type1": @1, @"instre2": @2,
-            @"type2": @3, @"type3": @4, @"type4": @5,
-            @"type5": @6, @"type6": @7, @"type7": @8,
-        };
-    });
-
-    // Issue #28 — LexHTML's WordListSet uses bespoke slot semantics that
-    // diverge from the universal `instre1=0` convention. The slot layout
-    // (htmlWordListDesc[] in lexilla/lexers/LexHTML.cxx) is:
-    //   0 = HTML elements & attributes (lowercased)
-    //   1 = JavaScript keywords
-    //   2 = VBScript keywords
-    //   3 = Python keywords
-    //   4 = PHP keywords
-    //   5 = SGML/DTD keywords
-    // langs.xml exposes each language's keywords under `instre1` (and HTML
-    // also under `instre2` for DTD), so without an override:
-    //   • PHP keywords land in slot 0 → never matched as SCE_HPHP_WORD
-    //   • ASP/VB keywords land in slot 0 → never matched as SCE_HB_WORD
-    //   • HTML's instre2 (DTD) lands in slot 2 (VBScript) → never matched
-    //   • XML's instre1 (DTD) lands in slot 0 → never matched
-    // All other 127 Lexilla lexers follow `slot 0 = primary keywords`, so the
-    // generic mapping is correct for them. The override only triggers for
-    // LexHTML-family languages.
-    NSDictionary<NSString *, NSNumber *> *idxOverride = nil;
-    if ([kwLang isEqualToString:@"php"]) {
-        idxOverride = @{ @"instre1": @4 };               // PHP keywords
-    } else if ([kwLang isEqualToString:@"asp"]) {
-        idxOverride = @{ @"instre1": @2 };               // VBScript keywords
-    } else if ([kwLang isEqualToString:@"html"]) {
-        idxOverride = @{ @"instre2": @5 };               // SGML/DTD; instre1 already correct (HTML tags → slot 0)
-    } else if ([kwLang isEqualToString:@"xml"]) {
-        idxOverride = @{ @"instre1": @5 };               // SGML/DTD
-    }
-
-    // Feed keywords from langs.xml for all keyword classes
-    for (NSString *kwClass in kwClassToIndex) {
-        NSString *kw = [lm keywordsForLanguage:kwLang keywordClass:kwClass];
+    // Feed langs.xml keyword groups into the lexer's word list slots the way
+    // Windows Notepad++ does. The group-to-slot table (generic LIST_n masks
+    // plus the bespoke C++/JS/ObjC/TCL/JSON/XML/HTML setters) lives in
+    // NppKeywordSlots.mm. Some slots read another language's list: doxygen
+    // tags come from cpp's type2, and HTML/PHP/ASP/JSP all load the HTML,
+    // embedded JavaScript, VBScript and PHP lists into LexHTML's slots.
+    // Several entries may target one slot; their words are merged (deduped).
+    // Only the language's own lists count as "fed": a lone cross-language
+    // list such as cpp's doxygen tags must not suppress the fallback below.
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *kw = [lm keywordsForLanguage:src keywordClass:@(slots[i].group)];
         if (!kw.length) continue;
-        NSNumber *ov = idxOverride[kwClass];
-        NSInteger idx = ov ? ov.integerValue : kwClassToIndex[kwClass].integerValue;
-        const char *utf8 = kw.UTF8String;
-        [sci message:SCI_SETKEYWORDS wParam:(uptr_t)idx lParam:(sptr_t)utf8];
-        fed = YES;
+        NSMutableOrderedSet *set = words[@(slots[i].slot)];
+        if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
+        for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
+            if (w.length) [set addObject:w];
+        if ([src isEqualToString:lang]) fed = YES;
+    }
+    for (NSNumber *slot in words) {
+        NSString *kw = [words[slot].array componentsJoinedByString:@" "];
+        [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
     }
 
     if (fed) return;
 
-    // Hardcoded fallback for the 4 languages that had keywords before langs.xml
-    if ([kwLang isEqualToString:@"cpp"]) {
+    // Hardcoded fallback, used only when langs.xml supplied nothing (e.g. it
+    // failed to load). Every list here is primary keywords, so slot 0.
+    if ([@[@"c", @"cpp", @"objc"] containsObject:lang]) {
         const char *kw = "alignas alignof and and_eq asm auto bitand bitor bool break case catch char "
             "char8_t char16_t char32_t class compl concept const consteval constexpr constinit "
             "const_cast continue co_await co_return co_yield decltype default delete do double "
@@ -2775,18 +2748,18 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
             "typedef typeid typename union unsigned using virtual void volatile wchar_t while "
             "xor xor_eq";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"python"]) {
+    } else if ([lang isEqualToString:@"python"]) {
         const char *kw = "False None True and as assert async await break class continue def del "
             "elif else except finally for from global if import in is lambda nonlocal not or "
             "pass raise return try while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"javascript"]) {
+    } else if ([@[@"javascript", @"javascript.js"] containsObject:lang]) {
         const char *kw = "async await break case catch class const continue debugger default "
             "delete do else export extends false finally for from function if import in "
             "instanceof let new null of return static super switch this throw true try typeof "
             "undefined var void while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"sql"]) {
+    } else if ([lang isEqualToString:@"sql"]) {
         const char *kw = "add all alter and any as asc authorization backup begin between by "
             "cascade case check close clustered coalesce column commit compute constraint "
             "contains containstable continue convert create cross current current_date "
