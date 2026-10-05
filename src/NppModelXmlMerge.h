@@ -20,9 +20,11 @@
 //      to existing model values (a new default colour or font) are not migrated.
 //
 //  The merge edits the file text in place, so formatting, comments, attribute
-//  order and line endings are kept. Before writing, the old file is saved as
-//  "<name>.bak-<yyyyMMdd>" next to it (one backup per file is kept) and the
-//  result is written atomically. A file that does not parse is left untouched.
+//  order, line endings and a UTF-8 BOM are kept. Before writing, the old file
+//  is saved as "<name>.bak-<yyyyMMdd>" next to it (one backup per file is kept)
+//  and the result is written atomically with the file's permissions. A file
+//  that does not parse, or is read-only, is left untouched and not retried
+//  for the rest of the run.
 //
 //  Future model changes reach existing users only if the PR that makes them
 //  also bumps modelDate in the model file it touches.
@@ -65,7 +67,11 @@ FOUNDATION_EXPORT NppModelXmlMergeStatus NppMergeModelXmlFile(NSString *userPath
 FOUNDATION_EXPORT void NppInstallUserLangsAndStylers(void);
 
 /// Merge newer stylers.model.xml entries into a theme file in the user themes
-/// directory. Cheap when the file is current; call before reading the theme.
-FOUNDATION_EXPORT void NppUpdateUserThemeFromModel(NSString *themePath);
+/// directory. Call it for the active theme only (at launch, and when a theme
+/// is committed as the active one), never for previews, as Notepad++ does.
+/// Each path is checked once per run. A copy identical to the bundled theme of
+/// the same name is skipped, as is a merge that would only store the date.
+/// Returns YES when the file was rewritten, so callers can reload it.
+FOUNDATION_EXPORT BOOL NppUpdateUserThemeFromModel(NSString *themePath);
 
 NS_ASSUME_NONNULL_END

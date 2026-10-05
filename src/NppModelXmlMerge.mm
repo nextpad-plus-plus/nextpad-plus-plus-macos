@@ -243,6 +243,55 @@ static NSArray<NSString *> *tokens(NSString *s) {
     return out;
 }
 
+/// Decode the predefined XML entities and numeric character references, so
+/// "&amp;&amp;" and "&#38;&#38;" are recognised as the same word. Only used for
+/// comparing and sorting; the raw text is what gets written.
+static NSString *decodeEntities(NSString *s) {
+    if ([s rangeOfString:@"&"].location == NSNotFound) return s;
+    NSMutableString *out = [NSMutableString stringWithCapacity:s.length];
+    const NSUInteger n = s.length;
+    for (NSUInteger i = 0; i < n;) {
+        unichar c = [s characterAtIndex:i];
+        NSUInteger semi = c == '&' ? [s rangeOfString:@";" options:0
+                                                range:NSMakeRange(i, MIN(n - i, (NSUInteger)12))].location
+                                   : NSNotFound;
+        if (semi == NSNotFound) { [out appendFormat:@"%C", c]; i++; continue; }
+        NSString *ent = [s substringWithRange:NSMakeRange(i + 1, semi - i - 1)];
+        static NSDictionary<NSString *, NSString *> *named = @{
+            @"lt": @"<", @"gt": @">", @"amp": @"&", @"quot": @"\"", @"apos": @"'"};
+        NSString *rep = named[ent];
+        if (!rep && ent.length > 1 && [ent characterAtIndex:0] == '#') {
+            BOOL hex = [ent characterAtIndex:1] == 'x' || [ent characterAtIndex:1] == 'X';
+            NSString *digits = [ent substringFromIndex:hex ? 2 : 1];
+            NSScanner *sc = [NSScanner scannerWithString:digits];
+            unsigned long long v = 0;
+            BOOL ok = hex ? [sc scanHexLongLong:&v] : [sc scanUnsignedLongLong:&v];
+            if (ok && sc.isAtEnd && v > 0 && v <= 0x10FFFF) {
+                UTF32Char cp = (UTF32Char)v;
+                rep = [[NSString alloc] initWithBytes:&cp length:4 encoding:NSUTF32LittleEndianStringEncoding];
+            }
+        }
+        if (!rep) { [out appendFormat:@"%C", c]; i++; continue; }
+        [out appendString:rep];
+        i = semi + 1;
+    }
+    return out;
+}
+
+/// Raw tokens of `a` followed by those of `b` that are not already present,
+/// compared after entity decoding.
+static NSMutableArray<NSString *> *unionTokens(NSArray<NSString *> *a, NSArray<NSString *> *b) {
+    NSMutableArray<NSString *> *out = [NSMutableArray array];
+    NSMutableSet<NSString *> *seen = [NSMutableSet set];
+    for (NSString *t in [a arrayByAddingObjectsFromArray:b]) {
+        NSString *key = decodeEntities(t);
+        if ([seen containsObject:key]) continue;
+        [seen addObject:key];
+        [out addObject:t];
+    }
+    return out;
+}
+
 static NSString *normalizeNewlines(NSString *s) {
     s = [s stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
     return [s stringByReplacingOccurrencesOfString:@"\r" withString:@"\n"];
@@ -255,29 +304,34 @@ static NSString *detectEOL(NSString *s) {
     return [s rangeOfString:@"\r"].location != NSNotFound ? @"\r" : @"\n";
 }
 
+/// One indentation step: the first child indent that extends its parent's.
+static NSString *detectIndentUnit(const XDoc &d) {
+    for (size_t i = 0; i < d.elems.size(); i++) {
+        int p = d.elems[i].parent;
+        if (p < 0) continue;
+        NSString *ci = d.indentOf((int)i), *pi = d.indentOf(p);
+        if (ci && pi && ci.length > pi.length && [ci hasPrefix:pi])
+            return [ci substringFromIndex:pi.length];
+    }
+    return @"    ";
+}
+
 class Merger {
 public:
     const XDoc &u;  // user
     const XDoc &m;  // model
     const bool isTheme;
     NSString *eol;
-    NSString *unit;  // one indentation step in the user file
+    NSString *unit;       // one indentation step in the user file
+    NSString *modelUnit;  // and in the model
     std::map<int, Pending> pend;
     std::vector<Edit> edits;
     size_t seq = 0;
 
     Merger(const XDoc &user, const XDoc &model, bool theme) : u(user), m(model), isTheme(theme) {
         eol = detectEOL(u.text);
-        unit = @"    ";
-        for (size_t i = 0; i < u.elems.size(); i++) {
-            int p = u.elems[i].parent;
-            if (p < 0) continue;
-            NSString *ci = u.indentOf((int)i), *pi = u.indentOf(p);
-            if (ci && pi && ci.length > pi.length && [ci hasPrefix:pi]) {
-                unit = [ci substringFromIndex:pi.length];
-                break;
-            }
-        }
+        unit = detectIndentUnit(u);
+        modelUnit = detectIndentUnit(m);
     }
 
     void addAttr(int e, NSString *name, NSString *value, unichar quote = '"') {
@@ -304,15 +358,22 @@ public:
         std::sort(reps.begin(), reps.end(), [](auto &a, auto &b) { return a.first.location > b.first.location; });
         for (auto &r : reps) [s replaceCharactersInRange:r.first withString:r.second];
 
+        // Lines after the first keep their depth relative to the element, but
+        // each model indent step becomes the user file's step (tabs or spaces).
         NSString *modelIndent = m.indentOf(c.srcElem) ?: @"";
         NSArray<NSString *> *lines = [normalizeNewlines(s) componentsSeparatedByString:@"\n"];
         NSMutableArray<NSString *> *out = [NSMutableArray arrayWithCapacity:lines.count];
         for (NSUInteger i = 0; i < lines.count; i++) {
             NSString *l = lines[i];
-            if (i > 0 && modelIndent.length && [l hasPrefix:modelIndent])
-                l = [indent stringByAppendingString:[l substringFromIndex:modelIndent.length]];
-            else if (i > 0 && !modelIndent.length && l.length)
-                l = [indent stringByAppendingString:l];
+            if (i > 0 && l.length && [l hasPrefix:modelIndent]) {
+                NSString *rest = [l substringFromIndex:modelIndent.length];
+                NSMutableString *lead = [indent mutableCopy];
+                while (modelUnit.length && [rest hasPrefix:modelUnit]) {
+                    [lead appendString:unit];
+                    rest = [rest substringFromIndex:modelUnit.length];
+                }
+                l = [lead stringByAppendingString:rest];
+            }
             [out addObject:l];
         }
         return [out componentsJoinedByString:eol];
@@ -393,8 +454,9 @@ public:
     /// Space-separated words, sorted, with lines wrapped near 8000 characters,
     /// exactly as updateLangXml writes them.
     NSString *joinWords(NSArray<NSString *> *words) {
+        // Sort on the decoded words, as upstream sorts TinyXML's decoded text.
         NSArray *sorted = [words sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
-            int r = strcmp(a.UTF8String, b.UTF8String);
+            int r = strcmp(decodeEntities(a).UTF8String, decodeEntities(b).UTF8String);
             return r < 0 ? NSOrderedAscending : r > 0 ? NSOrderedDescending : NSOrderedSame;
         }];
         NSMutableString *out = [NSMutableString string];
@@ -456,11 +518,8 @@ public:
                     }
                     continue;
                 }
-                NSMutableArray<NSString *> *all = [userWords mutableCopy];
-                NSMutableSet<NSString *> *seen = [NSMutableSet setWithArray:userWords];
-                for (NSString *w in modelWords)
-                    if (![seen containsObject:w]) { [seen addObject:w]; [all addObject:w]; }
-                if (all.count != userWords.count) setContent(uk.intValue, joinWords(all));
+                NSMutableArray<NSString *> *all = unionTokens(userWords, modelWords);
+                if (all.count != unionTokens(userWords, @[]).count) setContent(uk.intValue, joinWords(all));
             }
 
             // Missing <Language> attributes, and extensions missing from "ext".
@@ -470,11 +529,8 @@ public:
                 NSString *mv = m.sub(a.value);
                 if (!uv) { addAttr(ul, an, mv, a.quote); continue; }
                 if ([an isEqualToString:@"ext"]) {
-                    NSMutableArray<NSString *> *exts = [NSMutableArray array];
-                    NSMutableSet<NSString *> *seen = [NSMutableSet set];
-                    for (NSString *t in [tokens(uv) arrayByAddingObjectsFromArray:tokens(mv)])
-                        if (![seen containsObject:t]) { [seen addObject:t]; [exts addObject:t]; }
-                    if (exts.count != tokens(uv).count)
+                    NSMutableArray<NSString *> *exts = unionTokens(tokens(uv), tokens(mv));
+                    if (exts.count != unionTokens(tokens(uv), @[]).count)
                         setAttrValue(ul, @"ext", [exts componentsJoinedByString:@" "]);
                 }
             }
@@ -545,11 +601,28 @@ public:
             NSString *lexName = m.attrValue(ml, @"name");
             if (!lexName) continue;
 
-            // A theme gaining "javascript.js" takes its colours from the theme's
-            // embedded "javascript" lexer (dot-js styleID -> embedded styleID).
-            std::map<std::string, std::map<std::string, std::string>> jsColors;
-            if (isTheme && [lexName isEqualToString:@"javascript.js"] && userLexers[@"javascript"]) {
-                static const std::pair<const char *, const char *> kMap[] = {
+            // Colours for styles a theme gains, taken from related styles the
+            // theme already has (target styleID -> source styleID):
+            //  - "javascript.js" from the embedded "javascript" lexer, as upstream;
+            //  - cpp STRINGRAW (20) from cpp STRING (6), the rule the bundled
+            //    themes use for that style.
+            std::map<std::string, std::map<std::string, std::string>> srcColors;
+            auto collect = [&](NSString *srcLexer, const std::pair<const char *, const char *> *map, size_t count) {
+                NSNumber *src = userLexers[srcLexer];
+                if (!isTheme || !src) return;
+                for (int ews : u.childrenNamed(src.intValue, @"WordsStyle")) {
+                    NSString *eid = u.attrValue(ews, @"styleID");
+                    if (!eid) continue;
+                    NSString *efg = u.attrValue(ews, @"fgColor"), *ebg = u.attrValue(ews, @"bgColor");
+                    for (size_t k = 0; k < count; k++) {
+                        if (strcmp(map[k].second, eid.UTF8String) != 0) continue;
+                        if (efg) srcColors[map[k].first]["fgColor"] = efg.UTF8String;
+                        if (ebg) srcColors[map[k].first]["bgColor"] = ebg.UTF8String;
+                    }
+                }
+            };
+            if ([lexName isEqualToString:@"javascript.js"]) {
+                static const std::pair<const char *, const char *> kJsMap[] = {
                     {"11", "41"}, {"4", "45"}, {"16", "46"}, {"5", "47"}, {"19", "47"},
                     {"6", "48"}, {"20", "48"}, {"7", "49"}, {"10", "50"}, {"14", "52"},
                     {"1", "42"}, {"2", "43"}, {"3", "44"}, {"15", "44"}, {"17", "44"},
@@ -557,20 +630,14 @@ public:
                     {"130", "202"}, {"131", "203"}, {"132", "204"}, {"133", "205"},
                     {"134", "206"}, {"135", "207"},
                 };
-                for (int ews : u.childrenNamed(userLexers[@"javascript"].intValue, @"WordsStyle")) {
-                    NSString *eid = u.attrValue(ews, @"styleID");
-                    if (!eid) continue;
-                    NSString *efg = u.attrValue(ews, @"fgColor"), *ebg = u.attrValue(ews, @"bgColor");
-                    for (const auto &pr : kMap) {
-                        if (strcmp(pr.second, eid.UTF8String) != 0) continue;
-                        if (efg) jsColors[pr.first]["fgColor"] = efg.UTF8String;
-                        if (ebg) jsColors[pr.first]["bgColor"] = ebg.UTF8String;
-                    }
-                }
+                collect(@"javascript", kJsMap, sizeof kJsMap / sizeof kJsMap[0]);
+            } else if ([lexName isEqualToString:@"cpp"]) {
+                static const std::pair<const char *, const char *> kCppMap[] = {{"20", "6"}};
+                collect(@"cpp", kCppMap, 1);
             }
             auto themeColor = [&](NSString *styleID, NSString *attrName) -> NSString * {
-                auto it = jsColors.find(styleID.UTF8String ?: "");
-                if (it != jsColors.end()) {
+                auto it = srcColors.find(styleID.UTF8String ?: "");
+                if (it != srcColors.end()) {
                     auto jt = it->second.find(attrName.UTF8String);
                     if (jt != it->second.end()) return @(jt->second.c_str());
                 }
@@ -669,6 +736,10 @@ NSString *NppMergeModelXmlText(NSString *userText, NSString *modelText, NppModel
     bool ok = kind == NppModelXmlKindLangs ? mg.mergeLangs() : mg.mergeStylers();
     if (!ok) return fail(kind == NppModelXmlKindLangs ? @"missing <Languages>"
                                                       : @"missing <GlobalStyles> or <LexerStyles>");
+    // A theme that would gain nothing is left alone: bundled themes carry an
+    // older modelDate than the stylers model, and rewriting every user copy
+    // only to store the date would churn files and backups for no change.
+    if (isTheme && mg.pend.empty() && mg.edits.empty()) return nil;
     mg.setAttrValue(u.root, @"modelDate", modelDate);
     NSString *merged = mg.apply();
 
@@ -677,11 +748,23 @@ NSString *NppMergeModelXmlText(NSString *userText, NSString *modelText, NppModel
     return merged;
 }
 
-NppModelXmlMergeStatus NppMergeModelXmlFile(NSString *userPath, NSString *modelPath,
-                                            NppModelXmlKind kind, BOOL isTheme) {
-    // Follow a symlinked config file (dotfiles setups) instead of replacing the link.
-    NSString *path = [userPath stringByResolvingSymlinksInPath];
+static NSMutableSet<NSString *> *failedPaths(void) {
+    static NSMutableSet<NSString *> *set;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ set = [NSMutableSet set]; });
+    return set;
+}
+
+/// True for "<file>.bak-" followed by exactly eight digits.
+static BOOL isBackupName(NSString *name, NSString *prefix) {
+    if (![name hasPrefix:prefix] || name.length != prefix.length + 8) return NO;
+    NSString *date = [name substringFromIndex:prefix.length];
+    return [date rangeOfCharacterFromSet:NSCharacterSet.decimalDigitCharacterSet.invertedSet].location == NSNotFound;
+}
+
+static NppModelXmlMergeStatus mergeFile(NSString *path, NSString *modelPath, NppModelXmlKind kind, BOOL isTheme) {
     NSString *file = path.lastPathComponent;
+    NSFileManager *fm = [NSFileManager defaultManager];
 
     NSData *userData = [NSData dataWithContentsOfFile:path];
     NSData *modelData = [NSData dataWithContentsOfFile:modelPath];
@@ -689,6 +772,9 @@ NppModelXmlMergeStatus NppMergeModelXmlFile(NSString *userPath, NSString *modelP
         NSLog(@"[ModelMerge] %@: could not read %@", file, userData ? modelPath : path);
         return NppModelXmlMergeFailed;
     }
+    // NSString drops a UTF-8 byte order mark; put it back on write.
+    static const uint8_t kBOM[3] = {0xEF, 0xBB, 0xBF};
+    const BOOL hasBOM = userData.length >= 3 && memcmp(userData.bytes, kBOM, 3) == 0;
     NSString *userText = [[NSString alloc] initWithData:userData encoding:NSUTF8StringEncoding];
     NSString *modelText = [[NSString alloc] initWithData:modelData encoding:NSUTF8StringEncoding];
     if (!userText || !modelText) {
@@ -705,28 +791,57 @@ NppModelXmlMergeStatus NppMergeModelXmlFile(NSString *userPath, NSString *modelP
     }
     if (!merged) return status;
 
-    // Keep one backup of the pre-merge file next to it.
-    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm isWritableFileAtPath:path]) {
+        NSLog(@"[ModelMerge] %@: read-only, left untouched", file);
+        return NppModelXmlMergeFailed;
+    }
+
+    // Back up the pre-merge file next to it; older backups go only once the
+    // new backup and the merged file are both written.
     NSString *dir = path.stringByDeletingLastPathComponent;
     NSString *prefix = [file stringByAppendingString:@".bak-"];
-    for (NSString *name in [fm contentsOfDirectoryAtPath:dir error:nil])
-        if ([name hasPrefix:prefix]) [fm removeItemAtPath:[dir stringByAppendingPathComponent:name] error:nil];
     NSDateFormatter *df = [NSDateFormatter new];
     df.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     df.dateFormat = @"yyyyMMdd";
-    NSString *backup = [dir stringByAppendingPathComponent:
-                        [prefix stringByAppendingString:[df stringFromDate:[NSDate date]]]];
+    NSString *backupName = [prefix stringByAppendingString:[df stringFromDate:[NSDate date]]];
+    NSString *backup = [dir stringByAppendingPathComponent:backupName];
     if (![userData writeToFile:backup options:NSDataWritingAtomic error:&err]) {
         NSLog(@"[ModelMerge] %@: backup failed (%@); left untouched", file, err.localizedDescription);
         return NppModelXmlMergeFailed;
     }
-    if (![[merged dataUsingEncoding:NSUTF8StringEncoding] writeToFile:path options:NSDataWritingAtomic error:&err]) {
+
+    NSMutableData *out = [NSMutableData data];
+    if (hasBOM) [out appendBytes:kBOM length:3];
+    [out appendData:[merged dataUsingEncoding:NSUTF8StringEncoding]];
+    NSNumber *perms = [fm attributesOfItemAtPath:path error:nil][NSFilePosixPermissions];
+    if (![out writeToFile:path options:NSDataWritingAtomic error:&err]) {
         NSLog(@"[ModelMerge] %@: write failed (%@); left untouched", file, err.localizedDescription);
         return NppModelXmlMergeFailed;
     }
+    if (perms) [fm setAttributes:@{NSFilePosixPermissions: perms} ofItemAtPath:path error:nil];
+
+    for (NSString *name in [fm contentsOfDirectoryAtPath:dir error:nil])
+        if (isBackupName(name, prefix) && ![name isEqualToString:backupName])
+            [fm removeItemAtPath:[dir stringByAppendingPathComponent:name] error:nil];
+
     NSLog(@"[ModelMerge] %@: merged entries from %@ (backup %@)", file,
-          modelPath.lastPathComponent, backup.lastPathComponent);
+          modelPath.lastPathComponent, backupName);
     return NppModelXmlMergeMerged;
+}
+
+NppModelXmlMergeStatus NppMergeModelXmlFile(NSString *userPath, NSString *modelPath,
+                                            NppModelXmlKind kind, BOOL isTheme) {
+    // Follow a symlinked config file (dotfiles setups) instead of replacing the link.
+    NSString *path = [userPath stringByResolvingSymlinksInPath];
+    // A file that failed once is not re-read and re-logged for the rest of the run.
+    @synchronized (failedPaths()) {
+        if ([failedPaths() containsObject:path]) return NppModelXmlMergeFailed;
+    }
+    NppModelXmlMergeStatus status = mergeFile(path, modelPath, kind, isTheme);
+    if (status == NppModelXmlMergeFailed) {
+        @synchronized (failedPaths()) { [failedPaths() addObject:path]; }
+    }
+    return status;
 }
 
 namespace {
@@ -769,8 +884,28 @@ void NppInstallUserLangsAndStylers(void) {
     });
 }
 
-void NppUpdateUserThemeFromModel(NSString *themePath) {
-    if (![[NSFileManager defaultManager] fileExistsAtPath:themePath]) return;
+BOOL NppUpdateUserThemeFromModel(NSString *themePath) {
+    // Checked at most once per run: on launch for the active theme, or when a
+    // theme first becomes the active one.
+    static NSMutableSet<NSString *> *checked;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ checked = [NSMutableSet set]; });
+    NSString *key = themePath.stringByStandardizingPath;
+    @synchronized (checked) {
+        if ([checked containsObject:key]) return NO;
+        [checked addObject:key];
+    }
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:themePath]) return NO;
     NSString *modelPath = [[NSBundle mainBundle] pathForResource:@"stylers.model" ofType:@"xml"];
-    if (modelPath) NppMergeModelXmlFile(themePath, modelPath, NppModelXmlKindStylers, YES);
+    if (!modelPath) return NO;
+
+    // An unedited copy of a bundled theme is exactly as current as the bundle.
+    NSString *bundled = [[NSBundle mainBundle] pathForResource:themePath.lastPathComponent.stringByDeletingPathExtension
+                                                        ofType:@"xml"
+                                                   inDirectory:@"themes"];
+    if (bundled && [fm contentsEqualAtPath:themePath andPath:bundled]) return NO;
+
+    return NppMergeModelXmlFile(themePath, modelPath, NppModelXmlKindStylers, YES) == NppModelXmlMergeMerged;
 }
