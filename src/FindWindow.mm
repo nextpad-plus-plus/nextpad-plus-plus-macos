@@ -241,6 +241,11 @@ static FindWindow *_sharedInstance = nil;
         o.searchType = [self _searchModeFromGroup:4];
         o.dotMatchesNewline = (_smDotNL[4].state == NSControlStateValueOn);
     }
+    if (t == FindWindowTabFindInFiles || t == FindWindowTabFindInProjects) {
+        // Whole word in files uses the editor's word characters.
+        EditorView *ed = [_delegate currentEditor];
+        if (ed) o.wordChars = [SearchEngine wordCharsOfView:ed.scintillaView];
+    }
     return o;
 }
 
@@ -824,6 +829,14 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 
 #pragma mark - Status
 
+/// Regex mode: if the pattern does not compile, say so in the status line
+/// (instead of "Can't find the text") and return YES.
+- (BOOL)_reportInvalidPattern:(NPPFindOptions *)opts {
+    if (![SearchEngine patternErrorForOptions:opts]) return NO;
+    [self _showStatus:[[NppLocalizer shared] translate:@"Find: Invalid regular expression"] found:NO];
+    return YES;
+}
+
 // Blue = found / informational, red = not found / error (Windows NPP's
 // meaning). System colours, so both stay legible in Dark Mode; the old fixed
 // dark blue was unreadable on the dark window background.
@@ -885,6 +898,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findNext:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
@@ -900,6 +914,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_count:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
@@ -910,6 +925,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findAllCurrent:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
@@ -929,6 +945,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findAllOpened:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     NSArray<EditorView *> *editors = [_delegate allOpenEditors];
     NSMutableArray *allResults = [NSMutableArray array];
@@ -956,6 +973,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replace:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     EditorView *ed = [_delegate currentEditor];
@@ -970,6 +988,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replaceAll:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     EditorView *ed = [_delegate currentEditor];
@@ -984,6 +1003,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replaceAllOpened:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     NSArray<EditorView *> *editors = [_delegate allOpenEditors];
@@ -1006,6 +1026,9 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 /// still arrive).
 - (nullable NPPCancelToken *)_beginBackgroundRunFromButton:(NSButton *)button {
     if (_searchToken) return nil;
+    // Build Scintilla's lazily created case tables here, on the main thread,
+    // before the worker's Documents and the editor can race to create them.
+    [SearchEngine prepareForBackgroundSearch];
     _searchToken = [[NPPCancelToken alloc] init];
     _runButton = button;
     _runButtonTitle = button.title;
@@ -1063,7 +1086,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
        cancelledFormat:(NSString *)cancelledFormat
               zeroHits:(NSString *)zeroHits {
     NSInteger totalHits = 0;
-    for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
+    for (NPPFileResults *fr in results) totalHits += fr.hitCount;
     if (results.count) {
         [_delegate findWindow:self showResults:results forSearchText:opts.searchText
                       options:opts filesSearched:scannedCount];
@@ -1183,6 +1206,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findInFiles:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length || !opts.directory.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     NPPCancelToken *token = [self _beginBackgroundRunFromButton:_fifFindBtn];
     if (!token) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
@@ -1216,6 +1240,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replaceInFiles:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length || !opts.directory.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     if (_searchToken) return;
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = [[NppLocalizer shared] translate:@"Replace in Files"];
@@ -1265,6 +1290,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NPPFindOptions *opts = [self currentOptions];
     NppLocalizer *loc = [NppLocalizer shared];
     if (!opts.searchText.length || _searchToken) return;
+    if ([self _reportInvalidPattern:opts]) return;
 
     // Validate: Project Panel must be open
     ProjectPanel *pp = [_delegate projectPanel];
@@ -1336,6 +1362,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NPPFindOptions *opts = [self currentOptions];
     NppLocalizer *loc = [NppLocalizer shared];
     if (!opts.searchText.length || _searchToken) return;
+    if ([self _reportInvalidPattern:opts]) return;
 
     ProjectPanel *pp = [_delegate projectPanel];
     if (!pp) {
@@ -1405,6 +1432,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_markAll:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length) return;
+    if ([self _reportInvalidPattern:opts]) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
