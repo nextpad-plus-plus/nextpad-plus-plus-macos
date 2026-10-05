@@ -211,10 +211,12 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
 // over the built-in map, as on Windows (Buffer::setFileName checks
 // getUserDefinedLangNameFromExt first), so a user's UDL for an extension a
 // built-in also claims takes effect. For a light/dark UDL pair the variant
-// matching the editor theme is picked.
-static NSString *languageNameForFileName(NSString *fileName) {
+// matching the editor theme is picked. *isUDL says which kind the name is,
+// for setLanguage:preferUDL: (a UDL may share a built-in's name).
+static NSString *languageNameForFileName(NSString *fileName, BOOL *isUDL) {
     UserDefinedLang *udl = [[UserDefineLangManager shared] languageForFileName:fileName ?: @""];
-    if (udl.name.length) return udl.name;
+    *isUDL = (udl.name.length > 0);
+    if (*isUDL) return udl.name;
     return extensionLanguageMap()[fileName.pathExtension.lowercaseString] ?: @"";
 }
 
@@ -396,10 +398,10 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 /// (removed), fall back to plain text like Windows (L_TEXT).
 - (void)_userDefineLangsChanged:(NSNotification *)n {
     NSString *name = n.userInfo[@"name"], *oldName = n.userInfo[@"oldName"];
-    if (!_currentLanguage.length || !name.length) return;
+    if (!_currentLanguageIsUDL || !_currentLanguage.length || !name.length) return;
     if (![_currentLanguage isEqualToString:(oldName ?: name)]) return;
     BOOL exists = [[UserDefineLangManager shared] languageNamed:name] != nil;
-    [self setLanguage:exists ? name : @""];
+    [self setLanguage:exists ? name : @"" preferUDL:YES];
 }
 
 - (void)dealloc {
@@ -452,7 +454,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _dirtyFromBackup = source->_dirtyFromBackup;
     _largeFileMode = source->_largeFileMode;
     if (source.currentLanguage.length)
-        [self setLanguage:source.currentLanguage];
+        [self setLanguage:source.currentLanguage preferUDL:source.currentLanguageIsUDL];
 
     // Establish bidirectional sibling link.
     self.cloneSibling = source;
@@ -689,7 +691,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     _largeFileMode = large;
 
-    NSString *lang = languageNameForFileName(path.lastPathComponent);
+    BOOL langIsUDL = NO;
+    NSString *lang = languageNameForFileName(path.lastPathComponent, &langIsUDL);
     if (large) {
         // Syntax highlighting off (undo was already disabled before SCI_ADDTEXT
         // above — see "Pre-insert undo gate" comment).
@@ -702,7 +705,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             [_scintillaView message:SCI_SETWRAPMODE wParam:SC_WRAP_NONE];
         }
     } else {
-        [self setLanguage:lang];
+        [self setLanguage:lang preferUDL:langIsUDL];
         // Re-enable undo in case this tab was previously in large-file mode.
         [_scintillaView message:SCI_SETUNDOCOLLECTION wParam:1 lParam:0];
     }
@@ -877,10 +880,11 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     // maps to (its extension, or a whole-name UDL ext= entry such as
     // "foo.conf"). A language picked by hand survives a rename that does not
     // change the detected language.
-    NSString *oldDetected = languageNameForFileName(oldPath.lastPathComponent ?: @"");
-    NSString *newDetected = languageNameForFileName(path.lastPathComponent);
-    if (![oldDetected isEqualToString:newDetected]) {
-        [self setLanguage:newDetected];
+    BOOL oldIsUDL = NO, newIsUDL = NO;
+    NSString *oldDetected = languageNameForFileName(oldPath.lastPathComponent ?: @"", &oldIsUDL);
+    NSString *newDetected = languageNameForFileName(path.lastPathComponent, &newIsUDL);
+    if (![oldDetected isEqualToString:newDetected] || oldIsUDL != newIsUDL) {
+        [self setLanguage:newDetected preferUDL:newIsUDL];
     }
 
     // Issue #76 — DO NOT call updateGitDiffMarkers here unconditionally.
@@ -1208,7 +1212,12 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 #pragma mark - Language / Lexer
 
 - (void)setLanguage:(NSString *)languageName {
+    [self setLanguage:languageName preferUDL:NO];
+}
+
+- (void)setLanguage:(NSString *)languageName preferUDL:(BOOL)preferUDL {
     _currentLanguage = [languageName copy];
+    _currentLanguageIsUDL = NO;
 
     // Reset all styles to STYLE_DEFAULT before switching language.
     // This prevents stale styles from a previous language from bleeding through.
@@ -1230,7 +1239,11 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
         return;
     }
 
-    NSString *lexerName = languageLexerNameMap()[languageName.lowercaseString];
+    // A UDL that must win over a built-in of the same name skips the
+    // built-in lookup.
+    UserDefinedLang *preferredUDL = preferUDL
+        ? [[UserDefineLangManager shared] languageNamed:languageName] : nil;
+    NSString *lexerName = preferredUDL ? nil : languageLexerNameMap()[languageName.lowercaseString];
     if (!lexerName) {
         // Not a built-in language. Try a User Defined Language of this exact
         // name (issue #130). Routing UDLs through setLanguage: makes them work
@@ -1238,9 +1251,10 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
         // restore, and the Language menu — not just the manual menu selection.
         // STYLECLEARALL above already reset styles; applyLanguage: then installs
         // the user lexer and the UDL's WordsStyle colors on top.
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageNamed:languageName];
+        UserDefinedLang *udl = preferredUDL ?: [[UserDefineLangManager shared] languageNamed:languageName];
         if (udl) {
             [[UserDefineLangManager shared] applyLanguage:udl toScintillaView:_scintillaView];
+            _currentLanguageIsUDL = YES;
         } else {
             [self applyPreferencesFromDefaults];
         }
@@ -1649,7 +1663,9 @@ static NSColor *nppColorFromHex(NSString *hex) {
     // the new editor theme.
     if (_currentLanguage.length) {
         UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
-        UserDefinedLang *udl = [udlMgr languageNamed:_currentLanguage];
+        // The flag, not the name, says whether this is a UDL: a built-in
+        // "python" must not be swapped for a UDL that happens to share it.
+        UserDefinedLang *udl = _currentLanguageIsUDL ? [udlMgr languageNamed:_currentLanguage] : nil;
         if (udl) {
             // Default: re-apply the same UDL. Only switch to the
             // theme-matching variant (markdown light/dark pair) when the

@@ -4416,6 +4416,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         }
 
         if (ed.currentLanguage.length) info[@"language"] = ed.currentLanguage;
+        if (ed.currentLanguageIsUDL) info[@"languageIsUDL"] = @YES;
 
         // ── Cursor, selection, scroll state (matches Windows NPP session format) ──
         ScintillaView *sci = ed.scintillaView;
@@ -4637,12 +4638,17 @@ static BOOL groupHasTrailingSep(NSString *ident) {
             [ed markAsModified];
         }
         if (lang.length) {
+            // languageIsUDL tells a UDL from a built-in of the same name;
+            // older sessions lack it and keep the name-based resolution.
+            [ed setLanguage:lang preferUDL:[info[@"languageIsUDL"] boolValue]];
             // A saved light/dark UDL variant follows the current editor
             // theme, as on a theme change (only for a UDL claiming the file).
-            UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
-            UserDefinedLang *udl = [udlMgr languageNamed:lang];
-            if (udl) lang = [udlMgr variantOf:udl forFileName:ed.filePath.lastPathComponent].name;
-            [ed setLanguage:lang];
+            if (ed.currentLanguageIsUDL) {
+                UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
+                UserDefinedLang *udl = [udlMgr languageNamed:lang];
+                UserDefinedLang *variant = udl ? [udlMgr variantOf:udl forFileName:ed.filePath.lastPathComponent] : nil;
+                if (variant && variant != udl) [ed setLanguage:variant.name preferUDL:YES];
+            }
         }
         [_tabManager refreshCurrentTabTitle];
 
@@ -4960,6 +4966,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
         info[@"filePath"] = ed.filePath;
         if (ed.currentLanguage.length) info[@"language"] = ed.currentLanguage;
+        if (ed.currentLanguageIsUDL) info[@"languageIsUDL"] = @YES;
         info[@"cursorLine"] = @(ed.cursorLine);
         [tabs addObject:info];
     }
@@ -6892,14 +6899,14 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // and top-level XML/YAML/KIXtart items walking up to the menu bar).
     if (action == @selector(setLanguageFromMenu:)) {
         NSString *langCode = [(NSMenuItem *)item representedObject];
-        NSString *current  = ed.currentLanguage ?: @"";
+        NSString *current  = ed.currentLanguageIsUDL ? @"" : (ed.currentLanguage ?: @"");
         [mi setState:[current isEqualToString:langCode]
             ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
     }
     if (action == @selector(setUDLLanguageFromMenu:)) {
         NSString *udlName = [(NSMenuItem *)item representedObject];
-        NSString *current = ed.currentLanguage ?: @"";
+        NSString *current = ed.currentLanguageIsUDL ? (ed.currentLanguage ?: @"") : @"";
         [mi setState:[current isEqualToString:udlName]
             ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
@@ -8216,7 +8223,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // the global style colours, so the previous lexer's colours do not show
     // through styles whose colorStyle leaves fg/bg transparent. It also keeps
     // currentLanguage in sync (UDL menu checkmark) and notifies plugins.
-    [ed setLanguage:udlName];
+    [ed setLanguage:udlName preferUDL:YES];
     [self updateStatusBar];
 }
 
@@ -8533,7 +8540,8 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (!_languagesMenu) return;
 
     EditorView *ed = [self currentEditor];
-    NSString *current = ed.currentLanguage ?: @"";
+    // Letter headers cover built-in languages only.
+    NSString *current = ed.currentLanguageIsUDL ? @"" : (ed.currentLanguage ?: @"");
 
     for (NSMenuItem *topItem in _languagesMenu.itemArray) {
         NSMenu *sub = topItem.submenu;
