@@ -155,10 +155,11 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
             // .md/.markdown intentionally NOT mapped here — markdown is no
             // longer a built-in language; the preinstalled Markdown UDL
             // (~/Library/Application Support/Nextpad++/userDefineLangs/markdown._preinstalled.udl.xml)
-            // claims these extensions and is resolved via the UDL fallback
-            // in loadFileAtPath:. Mapping them to "markdown" here would
-            // shadow that fallback and leave the file plain (issue #130
-            // follow-up to the Windows-table menu overhaul).
+            // claims these extensions; languageNameForFileName() checks
+            // UDLs first. Without that UDL (e.g. the user deleted it) a
+            // "markdown" mapping here would leave the file plain, as there
+            // is no built-in markdown lexer (issue #130 follow-up to the
+            // Windows-table menu overhaul).
             @"tex"  : @"latex",   @"latex": @"latex",
             @"yml"  : @"yaml",    @"yaml" : @"yaml",
             @"toml" : @"toml",
@@ -202,6 +203,20 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
         map = [m copy];
     });
     return map;
+}
+
+// Language for a file name (no directory). A User Defined Language whose
+// ext= list claims the extension (or the whole name, when it has a dot) wins
+// over the built-in map, as on Windows (Buffer::setFileName checks
+// getUserDefinedLangNameFromExt first), so a user's UDL for an extension a
+// built-in also claims takes effect. For a light/dark UDL pair the variant
+// matching the editor theme is picked. *isUDL says which kind the name is,
+// for setLanguage:preferUDL: (a UDL may share a built-in's name).
+static NSString *languageNameForFileName(NSString *fileName, BOOL *isUDL) {
+    UserDefinedLang *udl = [[UserDefineLangManager shared] languageForFileName:fileName ?: @""];
+    *isUDL = (udl.name.length > 0);
+    if (*isUDL) return udl.name;
+    return extensionLanguageMap()[fileName.pathExtension.lowercaseString] ?: @"";
 }
 
 // Mirrors NPP's per-buffer ID — gives each untitled tab a unique number ("new 1", "new 2" …)
@@ -348,6 +363,20 @@ static NSUInteger nppLargeFileThreshold(void) {
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_preferencesChanged:)
                name:@"NPPPreferencesChanged" object:nil];
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_userDefineLangsChanged:)
+               name:UserDefineLangsDidChangeNotification object:nil];
+}
+
+/// The UDL dialog saved (or renamed / removed) a UDL: re-apply it if this
+/// buffer uses it, following a rename to the new name. If the UDL is gone
+/// (removed), fall back to plain text like Windows (L_TEXT).
+- (void)_userDefineLangsChanged:(NSNotification *)n {
+    NSString *name = n.userInfo[@"name"], *oldName = n.userInfo[@"oldName"];
+    if (!_currentLanguageIsUDL || !_currentLanguage.length || !name.length) return;
+    if (![_currentLanguage isEqualToString:(oldName ?: name)]) return;
+    BOOL exists = [[UserDefineLangManager shared] languageNamed:name] != nil;
+    [self setLanguage:exists ? name : @"" preferUDL:YES];
 }
 
 - (void)dealloc {
@@ -400,7 +429,7 @@ static NSUInteger nppLargeFileThreshold(void) {
     _dirtyFromBackup = source->_dirtyFromBackup;
     _largeFileMode = source->_largeFileMode;
     if (source.currentLanguage.length)
-        [self setLanguage:source.currentLanguage];
+        [self setLanguage:source.currentLanguage preferUDL:source.currentLanguageIsUDL];
 
     // Establish bidirectional sibling link.
     self.cloneSibling = source;
@@ -633,14 +662,8 @@ static NSUInteger nppLargeFileThreshold(void) {
 
     _largeFileMode = large;
 
-    NSString *ext = path.pathExtension.lowercaseString;
-    NSString *lang = extensionLanguageMap()[ext] ?: @"";
-    // Issue #130 — built-in extensions take precedence; if none matches, fall
-    // back to a User Defined Language whose ext= list claims this extension.
-    if (!lang.length) {
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:ext];
-        if (udl) lang = udl.name;
-    }
+    BOOL langIsUDL = NO;
+    NSString *lang = languageNameForFileName(path.lastPathComponent, &langIsUDL);
     if (large) {
         // Syntax highlighting off (undo was already disabled before SCI_ADDTEXT
         // above — see "Pre-insert undo gate" comment).
@@ -653,7 +676,7 @@ static NSUInteger nppLargeFileThreshold(void) {
             [_scintillaView message:SCI_SETWRAPMODE wParam:SC_WRAP_NONE];
         }
     } else {
-        [self setLanguage:lang];
+        [self setLanguage:lang preferUDL:langIsUDL];
         // Re-enable undo in case this tab was previously in large-file mode.
         [_scintillaView message:SCI_SETUNDOCOLLECTION wParam:1 lParam:0];
     }
@@ -824,16 +847,15 @@ static NSUInteger nppLargeFileThreshold(void) {
     _lastKnownModDate = [[NSFileManager defaultManager]
                          attributesOfItemAtPath:path error:nil][NSFileModificationDate];
 
-    // Re-detect language if the file extension changed (e.g. Save As with new name)
-    NSString *oldExt = oldPath.pathExtension.lowercaseString ?: @"";
-    NSString *newExt = path.pathExtension.lowercaseString ?: @"";
-    if (![oldExt isEqualToString:newExt]) {
-        NSString *lang = extensionLanguageMap()[newExt] ?: @"";
-        if (!lang.length) {  // issue #130 — UDL extension fallback
-            UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:newExt];
-            if (udl) lang = udl.name;
-        }
-        [self setLanguage:lang];
+    // Re-detect the language when Save As / rename changes what the name
+    // maps to (its extension, or a whole-name UDL ext= entry such as
+    // "foo.conf"). A language picked by hand survives a rename that does not
+    // change the detected language.
+    BOOL oldIsUDL = NO, newIsUDL = NO;
+    NSString *oldDetected = languageNameForFileName(oldPath.lastPathComponent ?: @"", &oldIsUDL);
+    NSString *newDetected = languageNameForFileName(path.lastPathComponent, &newIsUDL);
+    if (![oldDetected isEqualToString:newDetected] || oldIsUDL != newIsUDL) {
+        [self setLanguage:newDetected preferUDL:newIsUDL];
     }
 
     // Issue #76 — DO NOT call updateGitDiffMarkers here unconditionally.
@@ -1161,7 +1183,12 @@ static NSUInteger nppLargeFileThreshold(void) {
 #pragma mark - Language / Lexer
 
 - (void)setLanguage:(NSString *)languageName {
+    [self setLanguage:languageName preferUDL:NO];
+}
+
+- (void)setLanguage:(NSString *)languageName preferUDL:(BOOL)preferUDL {
     _currentLanguage = [languageName copy];
+    _currentLanguageIsUDL = NO;
 
     // Reset all styles to STYLE_DEFAULT before switching language.
     // This prevents stale styles from a previous language from bleeding through.
@@ -1183,7 +1210,11 @@ static NSUInteger nppLargeFileThreshold(void) {
         return;
     }
 
-    NSString *lexerName = languageLexerNameMap()[languageName.lowercaseString];
+    // A UDL that must win over a built-in of the same name skips the
+    // built-in lookup.
+    UserDefinedLang *preferredUDL = preferUDL
+        ? [[UserDefineLangManager shared] languageNamed:languageName] : nil;
+    NSString *lexerName = preferredUDL ? nil : languageLexerNameMap()[languageName.lowercaseString];
     if (!lexerName) {
         // Not a built-in language. Try a User Defined Language of this exact
         // name (issue #130). Routing UDLs through setLanguage: makes them work
@@ -1191,9 +1222,10 @@ static NSUInteger nppLargeFileThreshold(void) {
         // restore, and the Language menu — not just the manual menu selection.
         // STYLECLEARALL above already reset styles; applyLanguage: then installs
         // the user lexer and the UDL's WordsStyle colors on top.
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageNamed:languageName];
+        UserDefinedLang *udl = preferredUDL ?: [[UserDefineLangManager shared] languageNamed:languageName];
         if (udl) {
             [[UserDefineLangManager shared] applyLanguage:udl toScintillaView:_scintillaView];
+            _currentLanguageIsUDL = YES;
         } else {
             [self applyPreferencesFromDefaults];
         }
@@ -1595,34 +1627,21 @@ static NSColor *nppColorFromHex(NSString *hex) {
     // applyLexerColors is a no-op (NPPStyleStore only knows built-in lexers),
     // so SCI_STYLECLEARALL above would otherwise leave UDL-styled tabs as
     // plain text after every theme toggle. Re-route UDLs through the UDL
-    // apply path, and re-resolve by file extension so a multi-variant UDL
+    // apply path, and re-resolve by file name so a multi-variant UDL
     // (the markdown light/dark preinstalled pair) picks the variant matching
-    // the new dark-mode state.
+    // the new editor theme.
     if (_currentLanguage.length) {
         UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
-        UserDefinedLang *udl = [udlMgr languageNamed:_currentLanguage];
+        // The flag, not the name, says whether this is a UDL: a built-in
+        // "python" must not be swapped for a UDL that happens to share it.
+        UserDefinedLang *udl = _currentLanguageIsUDL ? [udlMgr languageNamed:_currentLanguage] : nil;
         if (udl) {
-            // Default: re-apply the same UDL. Only re-resolve by extension
-            // (which picks the theme-matching variant for multi-variant UDLs
-            // like the markdown light/dark pair) when the *current* UDL
-            // actually claims this file's extension. Otherwise the user
+            // Default: re-apply the same UDL. Only switch to the
+            // theme-matching variant (markdown light/dark pair) when the
+            // *current* UDL actually claims this file. Otherwise the user
             // manually picked a UDL whose ext list doesn't include this
             // file (an override) — respect that choice.
-            UserDefinedLang *target = udl;
-            NSString *ext = _filePath.pathExtension.lowercaseString;
-            if (ext.length) {
-                BOOL currentClaimsExt = NO;
-                for (NSString *e in [udl.extensions componentsSeparatedByString:@" "]) {
-                    if ([e.lowercaseString isEqualToString:ext]) {
-                        currentClaimsExt = YES;
-                        break;
-                    }
-                }
-                if (currentClaimsExt) {
-                    UserDefinedLang *resolved = [udlMgr languageForExtension:ext];
-                    if (resolved) target = resolved;
-                }
-            }
+            UserDefinedLang *target = [udlMgr variantOf:udl forFileName:_filePath.lastPathComponent];
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {
