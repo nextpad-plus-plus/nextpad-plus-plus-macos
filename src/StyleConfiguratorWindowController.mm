@@ -1,5 +1,6 @@
 #import "StyleConfiguratorWindowController.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "PreferencesWindowController.h"
 #import "NppLocalizer.h"
 #import "NppThemeManager.h"
@@ -218,6 +219,8 @@ static NSString *modelLexerID(NSString *themeID) {
     NSString *userPath = [_userThemesDir() stringByAppendingPathComponent:
                           [themeName stringByAppendingPathExtension:@"xml"]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:userPath]) {
+        // Add entries from a newer stylers.model.xml, as Notepad++ does for the active theme.
+        NppUpdateUserThemeFromModel(userPath);
         themeURL = [NSURL fileURLWithPath:userPath];
     } else {
         themeURL = [[NSBundle mainBundle] URLForResource:themeName
