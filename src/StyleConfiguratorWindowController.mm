@@ -84,10 +84,10 @@ static NSString *const kNSDefaultsDarkThemeKey  = @"NPPDarkTheme";
 static NSString *const kDefaultDarkThemeName    = @"DarkModeDefault";
 
 /// Mapping: theme/model lexer ID aliases.
-/// Some theme XML files use "c" while the model uses "cpp"; merge into "cpp".
+/// "c", "objc" and "typescript" are real sections with their own styles (as on
+/// Windows); they are not folded into "cpp".
 static NSString *modelLexerID(NSString *themeID) {
     NSDictionary<NSString *, NSString *> *aliases = @{
-        @"c"          : @"cpp",
         @"hypertext"  : @"html",
         @"js"         : @"javascript",
         @"ts"         : @"typescript",
@@ -185,7 +185,24 @@ static NSString *modelLexerID(NSString *themeID) {
     if (!url) { NSLog(@"[NPPStyleStore] stylers.xml not found"); return [NSMutableArray new]; }
     NSData *data = [NSData dataWithContentsOfURL:url];
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
-    return doc ? [self _parseXML:doc] : [NSMutableArray new];
+    NSMutableArray<NPPLexer *> *result = doc ? [self _parseXML:doc] : [NSMutableArray new];
+
+    // A user stylers.xml can lack whole sections (e.g. "c", "objc",
+    // "typescript", which used to borrow the "cpp" styles). Give such a
+    // language the bundled model's section rather than no styles at all.
+    if (doc && [url.path isEqualToString:userStylers]) {
+        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"stylers.model" withExtension:@"xml"];
+        NSData *modelData = modelURL ? [NSData dataWithContentsOfURL:modelURL] : nil;
+        NSXMLDocument *modelDoc = modelData
+            ? [[NSXMLDocument alloc] initWithData:modelData options:0 error:nil] : nil;
+        if (modelDoc) {
+            NSMutableSet<NSString *> *have = [NSMutableSet new];
+            for (NPPLexer *lex in result) [have addObject:lex.lexerID];
+            for (NPPLexer *lex in [self _parseXML:modelDoc])
+                if (![have containsObject:lex.lexerID]) [result addObject:lex];
+        }
+    }
+    return result;
 }
 
 // ── Merge theme entry into target ─────────────────────────────────────────────
@@ -232,36 +249,51 @@ static NSString *modelLexerID(NSString *themeID) {
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
     if (!doc) return result;
 
-    // Build quick lookup by lexerID
-    NSMutableDictionary<NSString *, NPPLexer *> *lookup = [NSMutableDictionary new];
-    for (NPPLexer *lex in result) lookup[lex.lexerID] = lex;
+    [self _mergeThemeDocument:doc into:result];
+    return result;
+}
 
-    // Merge GlobalStyles (match by name, not styleID)
+// ── Merge a theme document over a base set of lexers ─────────────────────────
+//
+// Windows semantics (NppParameters): the theme file is authoritative and any
+// entry it lacks is filled from the base. Theme entries override matching
+// base entries; theme-only lexers and style IDs are appended, not dropped.
+
+- (void)_mergeThemeDocument:(NSXMLDocument *)doc into:(NSMutableArray<NPPLexer *> *)lexers {
+    NSMutableDictionary<NSString *, NPPLexer *> *lookup = [NSMutableDictionary new];
+    for (NPPLexer *lex in lexers) lookup[lex.lexerID] = lex;
+
+    // GlobalStyles match by name, not styleID (many share styleID 0).
     NPPLexer *globalLex = lookup[@"global"];
     NSArray<NSXMLElement *> *widgets = [doc nodesForXPath:@"//GlobalStyles/WidgetStyle" error:nil];
     for (NSXMLElement *el in widgets) {
         NPPStyleEntry *themeEntry = [self _parseElement:el];
         NPPStyleEntry *target = [globalLex styleForName:themeEntry.name];
         if (target) [self _mergeThemeEntry:themeEntry into:target];
+        else if (globalLex && themeEntry.name.length) [globalLex.styles addObject:themeEntry];
     }
 
-    // Merge per-language styles
     NSArray<NSXMLElement *> *lexerTypes = [doc nodesForXPath:@"//LexerStyles/LexerType" error:nil];
     for (NSXMLElement *lt in lexerTypes) {
         NSString *rawID = [lt attributeForName:@"name"].stringValue.lowercaseString ?: @"";
-        NSString *lid   = modelLexerID(rawID); // e.g. "c" → "cpp"
-        NPPLexer *lex   = lookup[lid];
-        // If not found by alias, try original ID too
-        if (!lex) lex   = lookup[rawID];
-        if (!lex) continue;
+        if (!rawID.length) continue;
+        NSString *lid   = modelLexerID(rawID);
+        NPPLexer *lex   = lookup[lid] ?: lookup[rawID];
+        if (!lex) {
+            lex             = [NPPLexer new];
+            lex.lexerID     = lid;
+            lex.displayName = [lt attributeForName:@"desc"].stringValue ?: lid;
+            [lexers addObject:lex];
+            lookup[lid] = lex;
+        }
         NSArray<NSXMLElement *> *words = [lt nodesForXPath:@"WordsStyle" error:nil];
         for (NSXMLElement *el in words) {
             NPPStyleEntry *themeEntry = [self _parseElement:el];
             NPPStyleEntry *target = [lex styleForID:themeEntry.styleID];
             if (target) [self _mergeThemeEntry:themeEntry into:target];
+            else        [lex.styles addObject:themeEntry];
         }
     }
-    return result;
 }
 
 // ── Available themes ──────────────────────────────────────────────────────────
@@ -370,8 +402,7 @@ static NSString *_userThemesDir(void) {
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID {
     if (!_lexers.count) [self loadFromDefaults];
     NSString *lid = lexerID.lowercaseString;
-    if ([lid isEqualToString:@"c"] || [lid isEqualToString:@"objc"])  lid = @"cpp";
-    else if ([lid isEqualToString:@"js"])   lid = @"javascript";
+    if ([lid isEqualToString:@"js"])        lid = @"javascript.js";
     else if ([lid isEqualToString:@"ts"])   lid = @"typescript";
     NPPLexer *lex = _lexerDict[lid];
     return lex ? lex.styles : nil;
@@ -1302,33 +1333,14 @@ static NSString *_userThemesDir(void) {
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
     if (!doc) return;
 
-    // Apply GlobalStyles Default Style fg/bg/font
-    NSArray<NSXMLElement *> *widgets = [doc nodesForXPath:@"//GlobalStyles/WidgetStyle" error:nil];
-    NPPLexer *global = [self _workingLexerForID:@"global"];
-    for (NSXMLElement *el in widgets) {
-        NSString *name = [el attributeForName:@"name"].stringValue;
-        NPPStyleEntry *target = [global styleForName:name];
-        if (target) {
-            NPPStyleStore *s = [NPPStyleStore sharedStore];
-            NPPStyleEntry *te = [s _parseElement:el];
-            [s _mergeThemeEntry:te into:target];
-        }
-    }
-
-    // Apply per-language styles
-    NSArray<NSXMLElement *> *lexerTypes = [doc nodesForXPath:@"//LexerStyles/LexerType" error:nil];
-    for (NSXMLElement *lt in lexerTypes) {
-        NSString *rawID = [lt attributeForName:@"name"].stringValue.lowercaseString ?: @"";
-        NSString *lid = modelLexerID(rawID);
-        NPPLexer *lex = [self _workingLexerForID:lid] ?: [self _workingLexerForID:rawID];
-        if (!lex) continue;
-        NSArray<NSXMLElement *> *words = [lt nodesForXPath:@"WordsStyle" error:nil];
-        NPPStyleStore *s = [NPPStyleStore sharedStore];
-        for (NSXMLElement *el in words) {
-            NPPStyleEntry *te = [s _parseElement:el];
-            NPPStyleEntry *target = [lex styleForID:te.styleID];
-            if (target) [s _mergeThemeEntry:te into:target];
-        }
+    // Same merge as a bundled theme: theme entries win, theme-only lexers
+    // and styles are appended.
+    NSUInteger lexerCount = _workingLexers.count;
+    [[NPPStyleStore sharedStore] _mergeThemeDocument:doc into:_workingLexers];
+    if (_workingLexers.count != lexerCount) {
+        NSInteger langIdx = _langPopup.indexOfSelectedItem;
+        [self _populateLangPopup];
+        [_langPopup selectItemAtIndex:langIdx];
     }
 
     [_themePopup selectItemWithTitle:@"Custom"];
