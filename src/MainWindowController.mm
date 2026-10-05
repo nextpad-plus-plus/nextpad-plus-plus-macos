@@ -11,6 +11,7 @@
 #import "FindWindow.h"
 #import "SearchResultsPanel.h"
 #import "SearchEngine.h"
+#import "NppScintillaIDs.h"
 #import "NPPBatchDialog.h"
 #import "MenuBuilder.h"
 #import "ColumnEditorPanel.h"
@@ -4397,7 +4398,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         {
             NSMutableArray *marks = [NSMutableArray array];
             sptr_t line = 0;
-            while ((line = [sci message:SCI_MARKERNEXT wParam:(uptr_t)line lParam:(1 << 20)]) >= 0) {
+            while ((line = [sci message:SCI_MARKERNEXT wParam:(uptr_t)line lParam:(1 << kBookmarkMarker)]) >= 0) {
                 [marks addObject:@(line)];
                 line++; // advance past this line
             }
@@ -4571,7 +4572,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         // ── Restore bookmarks ──
         NSArray *bookmarks = info[@"bookmarks"];
         for (NSNumber *bkLine in bookmarks)
-            [sci message:SCI_MARKERADD wParam:(uptr_t)bkLine.longLongValue lParam:20]; // kBookmarkMarker=20
+            [sci message:SCI_MARKERADD wParam:(uptr_t)bkLine.longLongValue lParam:kBookmarkMarker];
 
         // ── Restore fold state (BEFORE caret so a saved caret on a header
         // line lands consistently with the display, and any later

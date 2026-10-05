@@ -181,6 +181,7 @@ set(APP_HEADERS
     src/UDLStylerDialog.h
     src/NppPluginManager.h
     src/NppPluginInterfaceMac.h
+    src/NppScintillaIDs.h
     src/PluginsAdminWindowController.h
     src/NppBuiltinLanguages.h
 )
