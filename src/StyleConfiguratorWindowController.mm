@@ -555,6 +555,34 @@ static NSString *_userThemesDir(void) {
     [self commitLexers:[self lexersForTheme:target] themeName:target];
 }
 
+/// Append a WordsStyle row (name, styleID, keywordClass from the in-memory
+/// entry) under LexerType `lexerID`, creating the LexerType if needed.
+/// Returns the new element, or nil when there is no such entry.
+- (nullable NSArray<NSXMLElement *> *)_addWordsStyleForLexer:(NSString *)lexerID
+                                                      styleID:(NSString *)sid
+                                                   toDocument:(NSXMLDocument *)doc {
+    NPPStyleEntry *entry = [_lexerDict[lexerID] styleForID:sid.intValue];
+    if (!entry.keywordClass.length) return nil;
+    NSString *ltPath = [NSString stringWithFormat:@"//LexerStyles/LexerType[@name='%@']", lexerID];
+    NSXMLElement *lt = [doc nodesForXPath:ltPath error:nil].firstObject;
+    if (!lt) {
+        NSXMLElement *styles = [doc nodesForXPath:@"//LexerStyles" error:nil].firstObject;
+        if (!styles) return nil;
+        lt = [NSXMLElement elementWithName:@"LexerType"];
+        [lt addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:lexerID]];
+        [lt addAttribute:[NSXMLNode attributeWithName:@"desc"
+                                          stringValue:_lexerDict[lexerID].displayName ?: lexerID]];
+        [lt addAttribute:[NSXMLNode attributeWithName:@"ext" stringValue:@""]];
+        [styles addChild:lt];
+    }
+    NSXMLElement *ws = [NSXMLElement elementWithName:@"WordsStyle"];
+    [ws addAttribute:[NSXMLNode attributeWithName:@"name" stringValue:entry.name ?: @""]];
+    [ws addAttribute:[NSXMLNode attributeWithName:@"styleID" stringValue:sid]];
+    [ws addAttribute:[NSXMLNode attributeWithName:@"keywordClass" stringValue:entry.keywordClass]];
+    [lt addChild:ws];
+    return @[ ws ];
+}
+
 /// Selectively update changed style attributes in the theme/stylers XML file.
 /// Only modifies attribute values for entries that have overrides — preserves
 /// file structure, comments, and unchanged entries.
@@ -616,6 +644,14 @@ static NSString *_userThemesDir(void) {
                     lexerID, sidOrName];
                 elements = [doc nodesForXPath:xpath error:nil];
             }
+        }
+        // A theme file without this row would otherwise lose a keyword edit
+        // (an explicit empty list included) once another theme is saved and
+        // the NSUserDefaults override is replaced: add the row so the file
+        // itself carries the list.
+        if (!elements.count && [prop isEqualToString:@"keywords"]) {
+            elements = [self _addWordsStyleForLexer:lexerID styleID:sidOrName toDocument:doc];
+            if (elements.count) changed = YES;
         }
         if (!elements.count) continue;
 

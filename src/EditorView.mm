@@ -2848,9 +2848,12 @@ static NSString *stylerKeywordSignature(NSString *lang) {
         NSString *group = @(slots[i].group);
         NSString *kw = joinKeywordLists(stylerUserKeywords(styler, group),
                                         [lm keywordsForLanguage:src keywordClass:group]);
-        if (!kw.length) continue;
+        // Every slot in the table is sent, empty ones as "": on a live
+        // refresh (same lexer, Style Configurator keywords cleared or
+        // cancelled) that is what removes the old words.
         NSMutableOrderedSet *set = words[@(slots[i].slot)];
         if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
+        if (!kw.length) continue;
         for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
             if (w.length) [set addObject:w];
         if ([src isEqualToString:lang]) fed = YES;
@@ -2879,6 +2882,7 @@ static NSString *stylerKeywordSignature(NSString *lang) {
             NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
             NSString *words = joinKeywordLists(stylerUserKeywords(src, group),
                                                [lm keywordsForLanguage:src keywordClass:group]);
+            // Sent even when empty, which clears a substyle on a live refresh.
             [sci message:SCI_SETIDENTIFIERS wParam:(uptr_t)(first + k)
                   lParam:(sptr_t)(words.UTF8String ?: "")];
             // applyLexerColors: puts this language's own substyle rows on
