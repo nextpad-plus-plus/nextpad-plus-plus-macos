@@ -156,10 +156,11 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
             // .md/.markdown intentionally NOT mapped here — markdown is no
             // longer a built-in language; the preinstalled Markdown UDL
             // (~/Library/Application Support/Nextpad++/userDefineLangs/markdown._preinstalled.udl.xml)
-            // claims these extensions and is resolved via the UDL fallback
-            // in loadFileAtPath:. Mapping them to "markdown" here would
-            // shadow that fallback and leave the file plain (issue #130
-            // follow-up to the Windows-table menu overhaul).
+            // claims these extensions; languageNameForExtension() checks
+            // UDLs first. Without that UDL (e.g. the user deleted it) a
+            // "markdown" mapping here would leave the file plain, as there
+            // is no built-in markdown lexer (issue #130 follow-up to the
+            // Windows-table menu overhaul).
             @"tex"  : @"latex",   @"latex": @"latex",
             @"yml"  : @"yaml",    @"yaml" : @"yaml",
             @"toml" : @"toml",
@@ -203,6 +204,17 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
         map = [m copy];
     });
     return map;
+}
+
+// Language for a file extension. A User Defined Language whose ext= list
+// claims the extension wins over the built-in map, as on Windows
+// (Buffer::setFileName checks getUserDefinedLangNameFromExt first), so a
+// user's UDL for an extension a built-in also claims takes effect. For a
+// light/dark UDL pair the variant matching the current theme is picked.
+static NSString *languageNameForExtension(NSString *ext) {
+    UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:ext];
+    if (udl.name.length) return udl.name;
+    return extensionLanguageMap()[ext] ?: @"";
 }
 
 // Mirrors NPP's per-buffer ID — gives each untitled tab a unique number ("new 1", "new 2" …)
@@ -677,13 +689,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _largeFileMode = large;
 
     NSString *ext = path.pathExtension.lowercaseString;
-    NSString *lang = extensionLanguageMap()[ext] ?: @"";
-    // Issue #130 — built-in extensions take precedence; if none matches, fall
-    // back to a User Defined Language whose ext= list claims this extension.
-    if (!lang.length) {
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:ext];
-        if (udl) lang = udl.name;
-    }
+    NSString *lang = languageNameForExtension(ext);
     if (large) {
         // Syntax highlighting off (undo was already disabled before SCI_ADDTEXT
         // above — see "Pre-insert undo gate" comment).
@@ -871,12 +877,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     NSString *oldExt = oldPath.pathExtension.lowercaseString ?: @"";
     NSString *newExt = path.pathExtension.lowercaseString ?: @"";
     if (![oldExt isEqualToString:newExt]) {
-        NSString *lang = extensionLanguageMap()[newExt] ?: @"";
-        if (!lang.length) {  // issue #130 — UDL extension fallback
-            UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:newExt];
-            if (udl) lang = udl.name;
-        }
-        [self setLanguage:lang];
+        [self setLanguage:languageNameForExtension(newExt)];
     }
 
     // Issue #76 — DO NOT call updateGitDiffMarkers here unconditionally.

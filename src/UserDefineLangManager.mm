@@ -4,6 +4,7 @@
 #import "ScintillaView.h"
 #import "Scintilla.h"
 #import "ScintillaMessages.h"
+#import <objc/runtime.h>
 
 namespace Scintilla { struct ILexer5; }
 extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
@@ -349,6 +350,48 @@ static NSData *preprocessKeywords(NSString *raw) {
     return result;
 }
 
+// Windows COLORSTYLE_* bits for the WordsStyle colorStyle attribute.
+static const int kUDLColorStyleForeground = 1;
+static const int kUDLColorStyleBackground = 2;
+static const int kUDLColorStyleAll        = 3;
+
+/// Small id per UDL name for userDefine.udlName. Keyed by name so a reload
+/// (which creates new UserDefinedLang objects) keeps the same id; LexUser
+/// rebuilds the cached keyword vectors whenever it lexes from position 0,
+/// which applyLanguage: always does.
+static int udlLexerIdForName(NSString *name) {
+    static NSMutableDictionary<NSString *, NSNumber *> *ids;
+    static int nextId = 0;
+    if (!ids) ids = [NSMutableDictionary dictionary];
+    NSString *key = name ?: @"";
+    NSNumber *n = ids[key];
+    if (!n) {
+        n = @(++nextId);
+        ids[key] = n;
+    }
+    return n.intValue;
+}
+
+/// Small id per Scintilla view for userDefine.currentBufferID, stored on the
+/// view so it lives exactly as long as the view.
+static int udlLexerIdForView(id view) {
+    static char kKey;
+    static int nextId = 0;
+    NSNumber *n = objc_getAssociatedObject(view, &kKey);
+    if (!n) {
+        n = @(++nextId);
+        objc_setAssociatedObject(view, &kKey, n, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return n.intValue;
+}
+
+static BOOL udlFontIsInstalled(NSString *fontName) {
+    if ([NSFont fontWithName:fontName size:12]) return YES;
+    for (NSString *family in [NSFontManager sharedFontManager].availableFontFamilies)
+        if ([family caseInsensitiveCompare:fontName] == NSOrderedSame) return YES;
+    return NO;
+}
+
 /// Mirrors Windows ScintillaEditView::setUserLexer() exactly.
 /// Iterates all 28 keyword list indices in order. Indices that are in the
 /// setLexerMapper go via SCI_SETPROPERTY; all others go via SCI_SETKEYWORDS
@@ -465,44 +508,73 @@ static NSData *preprocessKeywords(NSString *raw) {
         [sv message:SCI_SETPROPERTY wParam:(uptr_t)propNameBuf lParam:(sptr_t)(isPrefix ? "1" : "0")];
     }
 
-    // UDL name (pointer value as identifier for lexer cache)
+    // Cache keys for LexUser: the keyword cache is keyed by userDefine.udlName
+    // and the nesting state by userDefine.currentBufferID. Windows passes
+    // pointer values, but LexUser reads both with GetPropertyInt (atoi into
+    // an int), which truncates a 64-bit pointer: two objects whose low 32
+    // bits match would share an entry. Pass small stable ids instead.
     char udlNameBuf[32];
-    snprintf(udlNameBuf, sizeof(udlNameBuf), "%lu", (unsigned long)(uintptr_t)lang);
+    snprintf(udlNameBuf, sizeof(udlNameBuf), "%d", udlLexerIdForName(lang.name));
     [sv message:SCI_SETPROPERTY wParam:(uptr_t)"userDefine.udlName" lParam:(sptr_t)udlNameBuf];
 
-    // Buffer ID (use ScintillaView pointer as unique ID)
     char bufIdBuf[32];
-    snprintf(bufIdBuf, sizeof(bufIdBuf), "%lu", (unsigned long)(uintptr_t)sv);
+    snprintf(bufIdBuf, sizeof(bufIdBuf), "%d", udlLexerIdForView(sv));
     [sv message:SCI_SETPROPERTY wParam:(uptr_t)"userDefine.currentBufferID" lParam:(sptr_t)bufIdBuf];
 
     // ── Apply styles ─────────────────────────────────────────────────────
+    // Mirrors Windows setUserLexer() + setSpecialStyle(): each style sends
+    // its nesting mask, then fg/bg only where colorStyle says so (a cleared
+    // bit means transparent: keep the theme default that SCI_STYLECLEARALL
+    // copied in), then font name, bold/italic/underline and size.
     for (NSDictionary *style in lang.styles) {
         NSString *styleName = style[@"name"];
         NSString *fgStr = style[@"fgColor"];
         NSString *bgStr = style[@"bgColor"];
         NSString *fontStyleStr = style[@"fontStyle"];
+        NSString *colorStyleStr = style[@"colorStyle"];
+        NSString *fontName = style[@"fontName"];
+        NSString *fontSizeStr = style[@"fontSize"];
 
         int styleID = [self _styleIDForName:styleName];
         if (styleID < 0) continue;
 
-        if (fgStr.length == 6) {
+        char nestingName[32], nestingVal[32];
+        snprintf(nestingName, sizeof(nestingName), "userDefine.nesting.%02d", styleID);
+        snprintf(nestingVal, sizeof(nestingVal), "%d", [style[@"nesting"] intValue]);
+        [sv message:SCI_SETPROPERTY wParam:(uptr_t)nestingName lParam:(sptr_t)nestingVal];
+
+        // Absent colorStyle = both colours used (Windows COLORSTYLE_ALL).
+        int colorStyle = colorStyleStr.length ? colorStyleStr.intValue : kUDLColorStyleAll;
+
+        if ((colorStyle & kUDLColorStyleForeground) && fgStr.length == 6) {
             unsigned int rgb = 0;
             [[NSScanner scannerWithString:fgStr] scanHexInt:&rgb];
             // NPP stores RRGGBB, Scintilla expects BBGGRR
             int bgr = (int)(((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF));
             [sv message:SCI_STYLESETFORE wParam:styleID lParam:bgr];
         }
-        if (bgStr.length == 6) {
+        if ((colorStyle & kUDLColorStyleBackground) && bgStr.length == 6) {
             unsigned int rgb = 0;
             [[NSScanner scannerWithString:bgStr] scanHexInt:&rgb];
             int bgr = (int)(((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF));
             [sv message:SCI_STYLESETBACK wParam:styleID lParam:bgr];
         }
-        if (fontStyleStr) {
+        // Windows substitutes Courier New for a font that is not installed;
+        // here a missing font keeps the theme font instead.
+        if (fontName.length && udlFontIsInstalled(fontName)) {
+            [sv message:SCI_STYLESETFONT wParam:styleID lParam:(sptr_t)fontName.UTF8String];
+        }
+        if (fontStyleStr.length) {
             int fs = fontStyleStr.intValue;
-            if (fs & 1) [sv message:SCI_STYLESETBOLD      wParam:styleID lParam:1];
-            if (fs & 2) [sv message:SCI_STYLESETITALIC     wParam:styleID lParam:1];
-            if (fs & 4) [sv message:SCI_STYLESETUNDERLINE  wParam:styleID lParam:1];
+            if (fs >= 0) {
+                [sv message:SCI_STYLESETBOLD      wParam:styleID lParam:(fs & 1) ? 1 : 0];
+                [sv message:SCI_STYLESETITALIC    wParam:styleID lParam:(fs & 2) ? 1 : 0];
+                [sv message:SCI_STYLESETUNDERLINE wParam:styleID lParam:(fs & 4) ? 1 : 0];
+            }
+        }
+        int fontSize = fontSizeStr.intValue;
+        if (fontSize > 0) {
+            [sv message:SCI_STYLESETSIZE wParam:styleID lParam:fontSize];
         }
     }
 
