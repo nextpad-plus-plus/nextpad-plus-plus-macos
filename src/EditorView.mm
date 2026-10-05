@@ -253,18 +253,10 @@ static NSStringEncoding canonicalCJKEncoding(NSStringEncoding ns) {
     }
 }
 
-// Files larger than the threshold get a warning + large-file mode (no syntax,
-// no undo, plus per-feature gates from Performance prefs). When the user has
-// disabled "Enable Large File Restriction" entirely, returns SIZE_MAX so no
-// file ever crosses the threshold.
-static NSUInteger nppLargeFileThreshold(void) {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if (![ud boolForKey:kPrefLargeFileEnabled]) return NSUIntegerMax;
-    NSInteger mb = [ud integerForKey:kPrefLargeFileSizeMB];
-    if (mb < 1)    mb = 1;
-    if (mb > 2046) mb = 2046;
-    return (NSUInteger)mb * 1024UL * 1024UL;
-}
+// Files larger than the threshold (NppLargeFileThreshold, NppTextEncoding.h)
+// get a warning + large-file mode (no syntax, no undo, plus per-feature gates
+// from Performance prefs). Find in Files skips the charset detector above the
+// same size.
 
 // Scintilla's EOL mode is a per-document property and every new document
 // starts as SC_EOL_LF on macOS. New tabs take the "Default line ending" pref
@@ -442,7 +434,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     NSUInteger fileSize = 0;
     if (attrs) fileSize = (NSUInteger)[attrs[NSFileSize] unsignedLongLongValue];
 
-    BOOL large = (fileSize > nppLargeFileThreshold());
+    BOOL large = (fileSize > NppLargeFileThreshold());
     if (large) {
         // The 2 GB suppress-warning toggle silences the dialog ONLY for files
         // ≥2 GB — smaller large files still prompt the user, since the prompt
@@ -568,16 +560,23 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             utf8Data = rawData;
         } else {
             // Small non-UTF-8: shared legacy detection (NppTextEncoding) so the
-            // editor and Find/Replace in Files decode a file identically. The
+            // editor and Find/Replace in Files decode a file the same way. The
             // detector covers the CJK encodings the old Win-1252/Latin-1
             // fallback turned into mojibake (GBK/GB18030, Big5, Shift-JIS,
-            // EUC, ...); Western files still land on Win-1252/Latin-1.
+            // EUC, ...); otherwise Win-1252, then Latin-1. The editor runs the
+            // detector over the whole (small) file. A detector result whose
+            // UTF-8 conversion fails is vetoed so Win-1252/Latin-1 get a turn.
+            __block NSData *detectedUTF8 = nil;
             NSStringEncoding legacyEnc = 0;
-            NSString *content = NppDecodeLegacyText(rawData, &legacyEnc);
+            NSString *content = NppDecodeLegacyText(rawData, NppDetectorWholeData, &legacyEnc,
+                                                    ^BOOL(NSString *text) {
+                detectedUTF8 = [text dataUsingEncoding:NSUTF8StringEncoding];
+                return detectedUTF8 != nil;
+            });
             if (content) {
                 NSStringEncoding canon = canonicalCJKEncoding(legacyEnc);
                 enc = canon ?: legacyEnc;
-                utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
+                utf8Data = detectedUTF8 ?: [content dataUsingEncoding:NSUTF8StringEncoding];
             }
         }
     }

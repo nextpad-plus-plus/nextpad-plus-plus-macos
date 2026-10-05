@@ -560,7 +560,9 @@ static NSString *nppRegexReplacement(NSString *replacement,
                                      encoding:(nullable NSStringEncoding *)encoding
                                        hasBOM:(nullable BOOL *)hasBOM
                                       rawData:(NSData * _Nullable * _Nullable)rawData {
-    NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:nil];
+    // Plain read, not mapped: Find in Files walks arbitrary trees, and a file
+    // truncated by another process (log rotation) under a mapping is a SIGBUS.
+    NSData *data = [NSData dataWithContentsOfFile:path options:0 error:nil];
     if (!data) return nil;
     if (rawData) *rawData = data;
     return NppDecodeTextData(data, YES, encoding, hasBOM);
@@ -574,6 +576,10 @@ static NSString *nppRegexReplacement(NSString *replacement,
                                 encoding:(nullable NSStringEncoding *)encodingOut
                                    error:(NSError **)error {
     if (replacementCount) *replacementCount = 0;
+    // Remember size + mtime from before the read; checked again just before
+    // the write (see below).
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDictionary *attrsBefore = [fm attributesOfItemAtPath:path error:nil];
     NSStringEncoding enc = NSUTF8StringEncoding;
     BOOL hasBOM = NO;
     NSData *original = nil;
@@ -591,16 +597,27 @@ static NSString *nppRegexReplacement(NSString *replacement,
     if (count <= 0 || [replaced isEqualToString:content]) return NPPReplaceFileUnchanged;
 
     // Write back in the file's own encoding + BOM, never lossily. Two guards:
-    //  1. The untouched text must re-encode to the exact original bytes. A
-    //     detector guess that doesn't round-trip would otherwise rewrite
-    //     every unrelated character in the file.
+    //  1. The untouched text must re-encode to the exact original bytes. If it
+    //     doesn't, the decode itself was not clean (odd-length UTF-16, a
+    //     doubled BOM, a detector guess that doesn't round-trip) and a rewrite
+    //     would change bytes outside the matches.
     //  2. The replaced text must be fully representable (e.g. typing a CJK
     //     character into a Windows-1252 file). NppEncodeTextData refuses to
     //     substitute, so nil means "would lose data".
     NSData *roundTrip = NppEncodeTextData(content, enc, hasBOM);
+    if (!roundTrip || ![roundTrip isEqualToData:original])
+        return NPPReplaceFileDecodeNotClean;
     NSData *out = NppEncodeTextData(replaced, enc, hasBOM);
-    if (!roundTrip || ![roundTrip isEqualToData:original] || !out)
-        return NPPReplaceFileUnrepresentable;
+    if (!out) return NPPReplaceFileUnrepresentable;
+
+    // Replace runs off the main thread, so the user may have saved this file
+    // from an editor tab since we read it. Writing now would silently drop
+    // that save; skip the file instead if its size or mtime moved.
+    NSDictionary *attrsNow = [fm attributesOfItemAtPath:path error:nil];
+    if (!attrsBefore || !attrsNow
+        || ![attrsBefore.fileModificationDate isEqualToDate:attrsNow.fileModificationDate]
+        || attrsBefore.fileSize != attrsNow.fileSize)
+        return NPPReplaceFileChangedOnDisk;
 
     if (![out writeToFile:path options:NSDataWritingAtomic error:error])
         return NPPReplaceFileWriteFailed;
@@ -657,91 +674,96 @@ static NSString *nppRegexReplacement(NSString *replacement,
     while ((rel = [en nextObject])) {
         if (cancelToken.isCancelled) break;
 
-        NSString *full = [directory stringByAppendingPathComponent:rel];
-        BOOL isDir = NO;
-        [fm fileExistsAtPath:full isDirectory:&isDir];
-        if (isDir) {
-            // Skip hidden directories
-            if (!opts.isInHiddenDirs && [rel.lastPathComponent hasPrefix:@"."]) {
-                [en skipDescendants];
-            }
-            continue;
-        }
-
-        // Skip hidden files
-        if (!opts.isInHiddenDirs && [rel.lastPathComponent hasPrefix:@"."]) continue;
-
-        // Apply file filter
-        NSString *name = rel.lastPathComponent;
-        BOOL pass = (preds.count == 0);
-        for (NSPredicate *p in preds) {
-            if ([p evaluateWithObject:name]) { pass = YES; break; }
-        }
-        if (!pass) continue;
-
-        filesScanned++;
-
-        // Read file with the editor's encoding detection (skips binaries)
-        NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
-        if (!content) continue;
-
-        NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
-        NPPFileResults *fileRes = nil;
-
-        for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
-            if (cancelToken.isCancelled) break;
-
-            NSString *line = lines[ln];
-            NSRange range;
-
-            if (opts.searchType == NPPSearchRegex) {
-                NSTextCheckingResult *m = [re firstMatchInString:line options:0
-                                                          range:NSMakeRange(0, line.length)];
-                if (!m) continue;
-                range = m.range;
-            } else {
-                range = [line rangeOfString:searchText options:cmpOpts];
-                if (range.location == NSNotFound) continue;
-            }
-
-            // Whole word check for non-regex
-            if (opts.wholeWord && opts.searchType != NPPSearchRegex) {
-                if (range.location > 0) {
-                    unichar c = [line characterAtIndex:range.location - 1];
-                    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
-                        continue;
+        // Per-file pool: decoding a non-UTF-8 file (charset detector, NSString
+        // conversions, line splitting) leaves autoreleased temporaries several
+        // times the file size. Without a pool they pile up for the whole run.
+        @autoreleasepool {
+            NSString *full = [directory stringByAppendingPathComponent:rel];
+            BOOL isDir = NO;
+            [fm fileExistsAtPath:full isDirectory:&isDir];
+            if (isDir) {
+                // Skip hidden directories
+                if (!opts.isInHiddenDirs && [rel.lastPathComponent hasPrefix:@"."]) {
+                    [en skipDescendants];
                 }
-                NSUInteger endPos = range.location + range.length;
-                if (endPos < line.length) {
-                    unichar c = [line characterAtIndex:endPos];
-                    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
-                        continue;
+                continue;
+            }
+
+            // Skip hidden files
+            if (!opts.isInHiddenDirs && [rel.lastPathComponent hasPrefix:@"."]) continue;
+
+            // Apply file filter
+            NSString *name = rel.lastPathComponent;
+            BOOL pass = (preds.count == 0);
+            for (NSPredicate *p in preds) {
+                if ([p evaluateWithObject:name]) { pass = YES; break; }
+            }
+            if (!pass) continue;
+
+            filesScanned++;
+
+            // Read file with the editor's encoding detection (skips binaries)
+            NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
+            if (!content) continue;
+
+            NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
+            NPPFileResults *fileRes = nil;
+
+            for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
+                if (cancelToken.isCancelled) break;
+
+                NSString *line = lines[ln];
+                NSRange range;
+
+                if (opts.searchType == NPPSearchRegex) {
+                    NSTextCheckingResult *m = [re firstMatchInString:line options:0
+                                                              range:NSMakeRange(0, line.length)];
+                    if (!m) continue;
+                    range = m.range;
+                } else {
+                    range = [line rangeOfString:searchText options:cmpOpts];
+                    if (range.location == NSNotFound) continue;
                 }
+
+                // Whole word check for non-regex
+                if (opts.wholeWord && opts.searchType != NPPSearchRegex) {
+                    if (range.location > 0) {
+                        unichar c = [line characterAtIndex:range.location - 1];
+                        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
+                            continue;
+                    }
+                    NSUInteger endPos = range.location + range.length;
+                    if (endPos < line.length) {
+                        unichar c = [line characterAtIndex:endPos];
+                        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
+                            continue;
+                    }
+                }
+
+                if (!fileRes) {
+                    fileRes = [[NPPFileResults alloc] init];
+                    fileRes.filePath = full;
+                }
+
+                NPPSearchResult *r = [[NPPSearchResult alloc] init];
+                r.filePath    = full;
+                r.lineNumber  = ln + 1;
+                r.lineText    = line;
+                r.matchStart  = (NSInteger)range.location;
+                r.matchLength = (NSInteger)range.length;
+                [fileRes.results addObject:r];
             }
 
-            if (!fileRes) {
-                fileRes = [[NPPFileResults alloc] init];
-                fileRes.filePath = full;
-            }
-
-            NPPSearchResult *r = [[NPPSearchResult alloc] init];
-            r.filePath    = full;
-            r.lineNumber  = ln + 1;
-            r.lineText    = line;
-            r.matchStart  = (NSInteger)range.location;
-            r.matchLength = (NSInteger)range.length;
-            [fileRes.results addObject:r];
-        }
-
-        if (fileRes) {
-            totalHits += (NSInteger)fileRes.results.count;
-            [allResults addObject:fileRes];
-            if (progressBlock) {
-                NSInteger h = totalHits;
-                NSString *f = full;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    progressBlock(f, h);
-                });
+            if (fileRes) {
+                totalHits += (NSInteger)fileRes.results.count;
+                [allResults addObject:fileRes];
+                if (progressBlock) {
+                    NSInteger h = totalHits;
+                    NSString *f = full;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        progressBlock(f, h);
+                    });
+                }
             }
         }
     }
@@ -795,80 +817,85 @@ static NSString *nppRegexReplacement(NSString *replacement,
     for (NSString *full in filePaths) {
         if (cancelToken.isCancelled) break;
 
-        // Check file exists
-        if (![fm fileExistsAtPath:full]) continue;
+        // Per-file pool: decoding a non-UTF-8 file (charset detector, NSString
+        // conversions, line splitting) leaves autoreleased temporaries several
+        // times the file size. Without a pool they pile up for the whole run.
+        @autoreleasepool {
+            // Check file exists
+            if (![fm fileExistsAtPath:full]) continue;
 
-        // Apply file filter
-        NSString *name = full.lastPathComponent;
-        BOOL pass = (preds.count == 0);
-        for (NSPredicate *p in preds) {
-            if ([p evaluateWithObject:name]) { pass = YES; break; }
-        }
-        if (!pass) continue;
-
-        filesScanned++;
-
-        // Read file with the editor's encoding detection (skips binaries)
-        NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
-        if (!content) continue;
-
-        NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
-        NPPFileResults *fileRes = nil;
-
-        for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
-            if (cancelToken.isCancelled) break;
-
-            NSString *line = lines[ln];
-            NSRange range;
-
-            if (opts.searchType == NPPSearchRegex) {
-                NSTextCheckingResult *m = [re firstMatchInString:line options:0
-                                                          range:NSMakeRange(0, line.length)];
-                if (!m) continue;
-                range = m.range;
-            } else {
-                range = [line rangeOfString:searchText options:cmpOpts];
-                if (range.location == NSNotFound) continue;
+            // Apply file filter
+            NSString *name = full.lastPathComponent;
+            BOOL pass = (preds.count == 0);
+            for (NSPredicate *p in preds) {
+                if ([p evaluateWithObject:name]) { pass = YES; break; }
             }
+            if (!pass) continue;
 
-            // Whole word check for non-regex
-            if (opts.wholeWord && opts.searchType != NPPSearchRegex) {
-                if (range.location > 0) {
-                    unichar c = [line characterAtIndex:range.location - 1];
-                    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
-                        continue;
+            filesScanned++;
+
+            // Read file with the editor's encoding detection (skips binaries)
+            NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
+            if (!content) continue;
+
+            NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
+            NPPFileResults *fileRes = nil;
+
+            for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
+                if (cancelToken.isCancelled) break;
+
+                NSString *line = lines[ln];
+                NSRange range;
+
+                if (opts.searchType == NPPSearchRegex) {
+                    NSTextCheckingResult *m = [re firstMatchInString:line options:0
+                                                              range:NSMakeRange(0, line.length)];
+                    if (!m) continue;
+                    range = m.range;
+                } else {
+                    range = [line rangeOfString:searchText options:cmpOpts];
+                    if (range.location == NSNotFound) continue;
                 }
-                NSUInteger endPos = range.location + range.length;
-                if (endPos < line.length) {
-                    unichar c = [line characterAtIndex:endPos];
-                    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
-                        continue;
+
+                // Whole word check for non-regex
+                if (opts.wholeWord && opts.searchType != NPPSearchRegex) {
+                    if (range.location > 0) {
+                        unichar c = [line characterAtIndex:range.location - 1];
+                        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
+                            continue;
+                    }
+                    NSUInteger endPos = range.location + range.length;
+                    if (endPos < line.length) {
+                        unichar c = [line characterAtIndex:endPos];
+                        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:c] || c == '_')
+                            continue;
+                    }
                 }
+
+                if (!fileRes) {
+                    fileRes = [[NPPFileResults alloc] init];
+                    fileRes.filePath = full;
+                }
+
+                NPPSearchResult *r = [[NPPSearchResult alloc] init];
+                r.filePath    = full;
+                r.lineNumber  = ln + 1;
+                r.lineText    = line;
+                r.matchStart  = (NSInteger)range.location;
+                r.matchLength = (NSInteger)range.length;
+                [fileRes.results addObject:r];
             }
 
-            if (!fileRes) {
-                fileRes = [[NPPFileResults alloc] init];
-                fileRes.filePath = full;
-            }
-
-            NPPSearchResult *r = [[NPPSearchResult alloc] init];
-            r.filePath    = full;
-            r.lineNumber  = ln + 1;
-            r.lineText    = line;
-            r.matchStart  = (NSInteger)range.location;
-            r.matchLength = (NSInteger)range.length;
-            [fileRes.results addObject:r];
-        }
-
-        if (fileRes) {
-            totalHits += (NSInteger)fileRes.results.count;
-            [allResults addObject:fileRes];
-            if (progressBlock) {
-                NSInteger h = totalHits;
-                NSString *f = full;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    progressBlock(f, h);
-                });
+            if (fileRes) {
+                totalHits += (NSInteger)fileRes.results.count;
+                [allResults addObject:fileRes];
+                if (progressBlock) {
+                    NSInteger h = totalHits;
+                    NSString *f = full;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        progressBlock(f, h);
+                    });
+                }
             }
         }
     }

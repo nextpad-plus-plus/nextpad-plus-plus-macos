@@ -69,6 +69,8 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
     NPPReplaceFileUnchanged,         // no match, or replacement was a no-op
     NPPReplaceFileUnreadable,        // missing, binary, or undecodable
     NPPReplaceFileUnrepresentable,   // result not encodable in the original encoding
+    NPPReplaceFileDecodeNotClean,    // file did not decode cleanly; a rewrite would change other bytes
+    NPPReplaceFileChangedOnDisk,     // file changed between read and write (e.g. saved in a tab)
     NPPReplaceFileWriteFailed,       // write error (see *error)
 };
 
@@ -133,7 +135,10 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
 /// in its original encoding, keeping its BOM. Never writes a lossy result: if
 /// the replaced text cannot be represented in the original encoding the file
 /// is left untouched and NPPReplaceFileUnrepresentable is returned, with
-/// *encodingOut set to that encoding. Safe to call off the main thread.
+/// *encodingOut set to that encoding. A file whose decoded text does not
+/// re-encode to its original bytes (NPPReplaceFileDecodeNotClean) or that
+/// changed on disk since it was read (NPPReplaceFileChangedOnDisk) is also
+/// left untouched. Safe to call off the main thread.
 + (NPPReplaceFileStatus)replaceAllInFile:(NSString *)path
                                  options:(NPPFindOptions *)opts
                         replacementCount:(NSInteger *)replacementCount

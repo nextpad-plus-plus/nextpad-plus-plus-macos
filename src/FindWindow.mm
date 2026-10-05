@@ -1001,10 +1001,16 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     _runButtonAction = button.action;
     button.title = [[NppLocalizer shared] translate:@"Cancel"];
     button.action = @selector(_cancelBackgroundRun:);
+    [self _setRunButtonsEnabled:NO except:button];
+    return _searchToken;
+}
+
+/// Enable or disable the Find All / Replace buttons of the Find in Files and
+/// Find in Projects tabs, leaving `except` (may be nil) as it is.
+- (void)_setRunButtonsEnabled:(BOOL)enabled except:(nullable NSButton *)except {
     NSButton *runButtons[] = { _fifFindBtn, _fifReplaceBtn, _fipFindBtn, _fipReplaceBtn };
     for (NSButton *b : runButtons)
-        if (b != button) b.enabled = NO;
-    return _searchToken;
+        if (b != except) b.enabled = enabled;
 }
 
 /// Restore the buttons once `token`'s run has finished.
@@ -1015,13 +1021,15 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     _runButton.action = _runButtonAction;
     _runButton = nil;
     _runButtonTitle = nil;
-    NSButton *runButtons[] = { _fifFindBtn, _fifReplaceBtn, _fipFindBtn, _fipReplaceBtn };
-    for (NSButton *b : runButtons) b.enabled = YES;
+    [self _setRunButtonsEnabled:YES except:nil];
 }
 
 - (void)_cancelBackgroundRun:(id)sender {
     if (!_searchToken || _searchToken.isCancelled) return;
     [_searchToken cancel];
+    // Nothing more to click until the worker winds down; _endBackgroundRun:
+    // restores the title and re-enables it.
+    _runButton.enabled = NO;
     [self _showStatus:[[NppLocalizer shared] translate:@"Cancelling..."] found:YES];
 }
 
@@ -1072,21 +1080,26 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                  problems:(NSMutableArray<NSDictionary *> *)problems {
     for (NPPFileResults *fr in results) {
         if (token.isCancelled) break;
-        NSInteger count = 0;
-        NSStringEncoding enc = 0;
-        NSError *writeError = nil;
-        NPPReplaceFileStatus st = [SearchEngine replaceAllInFile:fr.filePath
-                                                         options:opts
-                                                replacementCount:&count
-                                                        encoding:&enc
-                                                           error:&writeError];
-        if (st == NPPReplaceFileReplaced) {
-            *totalReplacements += count;
-            (*changedFiles)++;
-        } else if (st == NPPReplaceFileUnrepresentable || st == NPPReplaceFileWriteFailed) {
-            NSMutableDictionary *p = [@{ @"path": fr.filePath, @"status": @(st), @"encoding": @(enc) } mutableCopy];
-            if (writeError.localizedDescription) p[@"error"] = writeError.localizedDescription;
-            [problems addObject:p];
+        // Per-file pool: decode + replace + encode temporaries are several
+        // times the file size; don't let them pile up across the whole run.
+        @autoreleasepool {
+            NSInteger count = 0;
+            NSStringEncoding enc = 0;
+            NSError *writeError = nil;
+            NPPReplaceFileStatus st = [SearchEngine replaceAllInFile:fr.filePath
+                                                             options:opts
+                                                    replacementCount:&count
+                                                            encoding:&enc
+                                                               error:&writeError];
+            if (st == NPPReplaceFileReplaced) {
+                *totalReplacements += count;
+                (*changedFiles)++;
+            } else if (st == NPPReplaceFileUnrepresentable || st == NPPReplaceFileDecodeNotClean
+                       || st == NPPReplaceFileChangedOnDisk || st == NPPReplaceFileWriteFailed) {
+                NSMutableDictionary *p = [@{ @"path": fr.filePath, @"status": @(st), @"encoding": @(enc) } mutableCopy];
+                if (writeError.localizedDescription) p[@"error"] = writeError.localizedDescription;
+                [problems addObject:p];
+            }
         }
     }
 }
@@ -1106,12 +1119,22 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NSMutableArray<NSString *> *failures = [NSMutableArray array];
     for (NSDictionary *p in problems) {
         NSString *reason;
-        if ([p[@"status"] integerValue] == NPPReplaceFileUnrepresentable) {
+        NPPReplaceFileStatus st = (NPPReplaceFileStatus)[p[@"status"] integerValue];
+        if (st == NPPReplaceFileChangedOnDisk) {
+            // Reuses the existing "\"%@\" changed on disk" string, which
+            // already names the file.
+            [failures addObject:[NSString stringWithFormat:
+                [loc translate:@"\"%@\" changed on disk"], p[@"path"]]];
+            continue;
+        }
+        if (st == NPPReplaceFileUnrepresentable) {
             NSStringEncoding enc = (NSStringEncoding)[p[@"encoding"] unsignedIntegerValue];
             NSString *encName = [NSString localizedNameOfStringEncoding:enc] ?: @"?";
             reason = [NSString stringWithFormat:
                 [loc translate:@"skipped, the result cannot be saved in the file's encoding (%@) without data loss"],
                 encName];
+        } else if (st == NPPReplaceFileDecodeNotClean) {
+            reason = [loc translate:@"skipped, the file did not decode cleanly, so rewriting it could change other bytes"];
         } else {
             reason = p[@"error"] ?: [loc translate:@"Unknown write error"];
         }
@@ -1517,10 +1540,12 @@ doCommandBySelector:(SEL)commandSelector {
 
 // Escape closes the window. cancelOperation: bubbles up the responder chain
 // even when focus is in a field editor, which is why we use it instead of
-// catching 0x1B in keyDown:. While a Find/Replace in Files run is in flight,
-// Escape cancels the run instead; a second Escape then closes.
+// catching 0x1B in keyDown:. While a Find/Replace in Files run is in flight
+// and its tab is the one showing, Escape cancels the run instead; a second
+// Escape then closes. On any other tab Escape still closes (#348).
 - (void)cancelOperation:(id)sender {
-    if (_searchToken && !_searchToken.isCancelled) {
+    if (_searchToken && !_searchToken.isCancelled
+        && _runButton.superview == _views[_currentTab]) {
         [self _cancelBackgroundRun:nil];
         return;
     }

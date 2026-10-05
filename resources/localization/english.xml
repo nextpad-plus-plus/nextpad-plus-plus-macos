@@ -1936,6 +1936,7 @@ You can re-activate this dialog in Preferences later."/>
 				<Item id="90476" name="Cancelling..."/>
 				<Item id="90477" name="skipped, the result cannot be saved in the file's encoding (%@) without data loss"/>
 				<Item id="90478" name="Unknown write error"/>
+				<Item id="90479" name="skipped, the file did not decode cleanly, so rewriting it could change other bytes"/>
 				<Item id="90500" name="%@ (recovered)"/>
 			</MacStrings>
 		</Dialog>

@@ -2,22 +2,68 @@
 //  Shared text-file encoding detection. See NppTextEncoding.h.
 
 #import "NppTextEncoding.h"
+#import "PreferencesWindowController.h"
 
-NSString *NppDecodeLegacyText(NSData *data, NSStringEncoding *outEncoding) {
+// Detector sample size for NppDetectorPrefix. Large enough for the detector
+// to see plenty of non-ASCII text, small enough that its temporaries (many
+// times the input size) stay bounded no matter how big the file is.
+static const NSUInteger kDetectorPrefixBytes = 64 * 1024;
+
+NSUInteger NppLargeFileThreshold(void) {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if (![ud boolForKey:kPrefLargeFileEnabled]) return NSUIntegerMax;
+    NSInteger mb = [ud integerForKey:kPrefLargeFileSizeMB];
+    if (mb < 1)    mb = 1;
+    if (mb > 2046) mb = 2046;
+    return (NSUInteger)mb * 1024UL * 1024UL;
+}
+
+NSString *NppDecodeLegacyText(NSData *data, NppDetectorMode mode,
+                              NSStringEncoding *outEncoding,
+                              BOOL (^acceptDetected)(NSString *text)) {
     // macOS's heuristic charset detector covers the CJK encodings a plain
     // Win-1252/Latin-1 fallback turns into mojibake (GBK/GB18030, Big5,
     // Shift-JIS, EUC, ...). Only trust a result that decoded *without* lossy
-    // substitution; anything else falls through to Win-1252/Latin-1, so
-    // Western files never regress.
-    NSString *detected = nil;
-    BOOL detLossy = NO;
-    NSStringEncoding guess = [NSString stringEncodingForData:data
-                                            encodingOptions:nil
-                                            convertedString:&detected
-                                        usedLossyConversion:&detLossy];
-    if (detected && guess != 0 && !detLossy && guess != NSUTF8StringEncoding) {
-        if (outEncoding) *outEncoding = guess;
-        return detected;
+    // substitution; anything else falls through to Win-1252/Latin-1. The
+    // detector can also pick another single-byte code page (e.g. Windows-1250,
+    // 1251 or 1254) for some Western text; the editor sees the same guess.
+    if (mode != NppDetectorSkip) {
+        NSData *sample = data;
+        BOOL partial = NO;
+        if (mode == NppDetectorPrefix && data.length > kDetectorPrefixBytes) {
+            // Cut the sample at its last LF. 0x0A is never a trail byte in the
+            // multibyte encodings the detector reports (Shift-JIS, GBK/GB18030,
+            // Big5, EUC), so the cut can't split a character. A window with no
+            // LF is used as is; if that splits a character the detector reports
+            // a lossy decode and we fall through to Win-1252/Latin-1.
+            const uint8_t *b = (const uint8_t *)data.bytes;
+            NSUInteger cut = kDetectorPrefixBytes;
+            while (cut > 0 && b[cut - 1] != '\n') cut--;
+            if (cut == 0) cut = kDetectorPrefixBytes;
+            sample = [data subdataWithRange:NSMakeRange(0, cut)];
+            partial = YES;
+        }
+
+        NSString *detected = nil;
+        BOOL detLossy = NO;
+        NSStringEncoding guess = 0;
+        @autoreleasepool {
+            // Drain the detector's temporaries right away; `detected` is a
+            // strong local, so the result itself survives the pool.
+            guess = [NSString stringEncodingForData:sample
+                                    encodingOptions:nil
+                                    convertedString:&detected
+                                usedLossyConversion:&detLossy];
+        }
+        if (detected && guess != 0 && !detLossy && guess != NSUTF8StringEncoding) {
+            // Prefix mode: decode the whole data once with the guess. A guess
+            // that fails on the rest of the file falls through below.
+            NSString *full = partial ? [[NSString alloc] initWithData:data encoding:guess] : detected;
+            if (full && (!acceptDetected || acceptDetected(full))) {
+                if (outEncoding) *outEncoding = guess;
+                return full;
+            }
+        }
     }
 
     NSStringEncoding win1252 = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingWindowsLatin1);
@@ -70,7 +116,11 @@ NSString *NppDecodeTextData(NSData *data, BOOL rejectBinary,
     // byte sequence and turn every image/archive into searchable "text".
     if (rejectBinary && len > 0 && memchr(b, 0, len) != NULL) return nil;
 
-    return NppDecodeLegacyText(data, outEncoding);
+    // Large files skip the detector entirely (as the editor does); smaller
+    // ones only show it a prefix. Replace in Files' round-trip check still
+    // guards any write made with a prefix-based guess.
+    NppDetectorMode mode = (len > NppLargeFileThreshold()) ? NppDetectorSkip : NppDetectorPrefix;
+    return NppDecodeLegacyText(data, mode, outEncoding, nil);
 }
 
 NSData *NppEncodeTextData(NSString *text, NSStringEncoding encoding, BOOL hasBOM) {
