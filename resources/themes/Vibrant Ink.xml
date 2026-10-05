@@ -1819,7 +1819,7 @@ http://sourceforge.net/donate/index.php?group_id=95717
     </LexerStyles>
     <GlobalStyles>
         <!-- Attention : Don't modify the name of styleID="0" -->
-        <WidgetStyle name="Default Style" styleID="32" fgColor="FFFFFF" bgColor="000000" fontName="Monaco" fontStyle="0" fontSize="10"></WidgetStyle>
+        <WidgetStyle name="Default Style" styleID="32" fgColor="FFFFFF" bgColor="000000" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Indent guideline style" styleID="37" fgColor="C0C0C0" bgColor="000000" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Brace highlight style" styleID="34" fgColor="99CC99" bgColor="000000" fontName="" fontStyle="1" fontSize=""></WidgetStyle>
         <WidgetStyle name="Bad brace colour" styleID="35" fgColor="CCFF33" bgColor="000000" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
@@ -1871,7 +1871,7 @@ http://sourceforge.net/donate/index.php?group_id=95717
         <WidgetStyle name="URL hovered" styleID="0" fgColor="FFFFFF"></WidgetStyle>
         <WidgetStyle name="Document map" styleID="0" fgColor="FFFFFF" bgColor="000000"></WidgetStyle>
         <WidgetStyle name="EOL custom color" styleID="0" fgColor="808080"></WidgetStyle>
-        <WidgetStyle name="Global override" styleID="0" fgColor="FFFF80" bgColor="FF8000" fontName="Courier New" fontStyle="0" fontSize=""></WidgetStyle>
+        <WidgetStyle name="Global override" styleID="0" fgColor="FFFF80" bgColor="FF8000" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Non-printing characters custom color" styleID="0" fgColor="FF8080"></WidgetStyle>
     </GlobalStyles>
 </NotepadPlus>

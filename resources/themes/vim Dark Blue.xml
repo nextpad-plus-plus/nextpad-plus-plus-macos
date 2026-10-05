@@ -1800,7 +1800,7 @@
     </LexerStyles>
     <GlobalStyles>
         <!-- Attention : Don't modify the name of styleID="0" -->
-        <WidgetStyle name="Default Style" styleID="32" fgColor="FFFFBF" bgColor="000040" fontName="Consolas" fontStyle="0" fontSize="10"></WidgetStyle>
+        <WidgetStyle name="Default Style" styleID="32" fgColor="FFFFBF" bgColor="000040" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Indent guideline style" styleID="37" fgColor="808080" bgColor="000040" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Brace highlight style" styleID="34" fgColor="80FF80" bgColor="000040" fontName="" fontStyle="1" fontSize=""></WidgetStyle>
         <WidgetStyle name="Bad brace colour" styleID="35" fgColor="FF8000" bgColor="000040" fontName="" fontStyle="0" fontSize=""></WidgetStyle>

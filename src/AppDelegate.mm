@@ -111,6 +111,10 @@ static void NppRecoveryDone(void) {
     // Load config.xml preferences before building UI (applies saved XML → NSUserDefaults)
     readConfigXML();
 
+    // Move a never-customised Courier New 10 default in the user's stylers.xml
+    // to the Mac default editor font, before any editor reads the style store.
+    [NPPStyleStore migrateLegacyDefaultEditorFont];
+
     [MenuBuilder buildMainMenu];
 
     // Apply saved shortcut overrides from shortcuts.xml <InternalCommands>

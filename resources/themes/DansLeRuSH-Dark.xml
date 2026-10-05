@@ -1815,7 +1815,7 @@ Installation : Copy this file to "%APPDATA%\Nextpad++\themes" and in a portable 
     </LexerStyles>
     <GlobalStyles>
         <!-- Attention : Don't modify the name of styleID="0" -->
-        <WidgetStyle name="Default Style" styleID="32" fgColor="C7C7C7" bgColor="2E2E2E" fontName="Source Code Pro" fontStyle="0" fontSize="10"></WidgetStyle>
+        <WidgetStyle name="Default Style" styleID="32" fgColor="C7C7C7" bgColor="2E2E2E" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Indent guideline style" styleID="37" fgColor="4D4D4D" bgColor="2E2E2E" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Brace highlight style" styleID="34" fgColor="9865A8" bgColor="A88AB6" fontName="" fontStyle="1" fontSize=""></WidgetStyle>
         <WidgetStyle name="Bad brace colour" styleID="35" fgColor="A88AB6" bgColor="2E2E2E" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
@@ -1867,7 +1867,7 @@ Installation : Copy this file to "%APPDATA%\Nextpad++\themes" and in a portable 
         <WidgetStyle name="URL hovered" styleID="0" fgColor="FFFFFF"></WidgetStyle>
         <WidgetStyle name="Document map" styleID="0" fgColor="C7C7C7" bgColor="2E2E2E"></WidgetStyle>
         <WidgetStyle name="EOL custom color" styleID="0" fgColor="808080"></WidgetStyle>
-        <WidgetStyle name="Global override" styleID="0" fgColor="C7C7C7" bgColor="2E2E2E" fontName="Source Code Pro" fontStyle="0" fontSize=""></WidgetStyle>
+        <WidgetStyle name="Global override" styleID="0" fgColor="C7C7C7" bgColor="2E2E2E" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Non-printing characters custom color" styleID="0" fgColor="4D4D4D"></WidgetStyle>
     </GlobalStyles>
 </NotepadPlus>
