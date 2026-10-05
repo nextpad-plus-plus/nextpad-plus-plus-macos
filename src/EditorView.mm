@@ -156,7 +156,7 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
             // .md/.markdown intentionally NOT mapped here — markdown is no
             // longer a built-in language; the preinstalled Markdown UDL
             // (~/Library/Application Support/Nextpad++/userDefineLangs/markdown._preinstalled.udl.xml)
-            // claims these extensions; languageNameForExtension() checks
+            // claims these extensions; languageNameForFileName() checks
             // UDLs first. Without that UDL (e.g. the user deleted it) a
             // "markdown" mapping here would leave the file plain, as there
             // is no built-in markdown lexer (issue #130 follow-up to the
@@ -206,15 +206,16 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
     return map;
 }
 
-// Language for a file extension. A User Defined Language whose ext= list
-// claims the extension wins over the built-in map, as on Windows
-// (Buffer::setFileName checks getUserDefinedLangNameFromExt first), so a
-// user's UDL for an extension a built-in also claims takes effect. For a
-// light/dark UDL pair the variant matching the current theme is picked.
-static NSString *languageNameForExtension(NSString *ext) {
-    UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:ext];
+// Language for a file name (no directory). A User Defined Language whose
+// ext= list claims the extension (or the whole name, when it has a dot) wins
+// over the built-in map, as on Windows (Buffer::setFileName checks
+// getUserDefinedLangNameFromExt first), so a user's UDL for an extension a
+// built-in also claims takes effect. For a light/dark UDL pair the variant
+// matching the editor theme is picked.
+static NSString *languageNameForFileName(NSString *fileName) {
+    UserDefinedLang *udl = [[UserDefineLangManager shared] languageForFileName:fileName ?: @""];
     if (udl.name.length) return udl.name;
-    return extensionLanguageMap()[ext] ?: @"";
+    return extensionLanguageMap()[fileName.pathExtension.lowercaseString] ?: @"";
 }
 
 // Mirrors NPP's per-buffer ID — gives each untitled tab a unique number ("new 1", "new 2" …)
@@ -688,8 +689,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     _largeFileMode = large;
 
-    NSString *ext = path.pathExtension.lowercaseString;
-    NSString *lang = languageNameForExtension(ext);
+    NSString *lang = languageNameForFileName(path.lastPathComponent);
     if (large) {
         // Syntax highlighting off (undo was already disabled before SCI_ADDTEXT
         // above — see "Pre-insert undo gate" comment).
@@ -873,11 +873,14 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _lastKnownModDate = [[NSFileManager defaultManager]
                          attributesOfItemAtPath:path error:nil][NSFileModificationDate];
 
-    // Re-detect language if the file extension changed (e.g. Save As with new name)
-    NSString *oldExt = oldPath.pathExtension.lowercaseString ?: @"";
-    NSString *newExt = path.pathExtension.lowercaseString ?: @"";
-    if (![oldExt isEqualToString:newExt]) {
-        [self setLanguage:languageNameForExtension(newExt)];
+    // Re-detect the language when Save As / rename changes what the name
+    // maps to (its extension, or a whole-name UDL ext= entry such as
+    // "foo.conf"). A language picked by hand survives a rename that does not
+    // change the detected language.
+    NSString *oldDetected = languageNameForFileName(oldPath.lastPathComponent ?: @"");
+    NSString *newDetected = languageNameForFileName(path.lastPathComponent);
+    if (![oldDetected isEqualToString:newDetected]) {
+        [self setLanguage:newDetected];
     }
 
     // Issue #76 — DO NOT call updateGitDiffMarkers here unconditionally.
@@ -1641,34 +1644,19 @@ static NSColor *nppColorFromHex(NSString *hex) {
     // applyLexerColors is a no-op (NPPStyleStore only knows built-in lexers),
     // so SCI_STYLECLEARALL above would otherwise leave UDL-styled tabs as
     // plain text after every theme toggle. Re-route UDLs through the UDL
-    // apply path, and re-resolve by file extension so a multi-variant UDL
+    // apply path, and re-resolve by file name so a multi-variant UDL
     // (the markdown light/dark preinstalled pair) picks the variant matching
-    // the new dark-mode state.
+    // the new editor theme.
     if (_currentLanguage.length) {
         UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
         UserDefinedLang *udl = [udlMgr languageNamed:_currentLanguage];
         if (udl) {
-            // Default: re-apply the same UDL. Only re-resolve by extension
-            // (which picks the theme-matching variant for multi-variant UDLs
-            // like the markdown light/dark pair) when the *current* UDL
-            // actually claims this file's extension. Otherwise the user
+            // Default: re-apply the same UDL. Only switch to the
+            // theme-matching variant (markdown light/dark pair) when the
+            // *current* UDL actually claims this file. Otherwise the user
             // manually picked a UDL whose ext list doesn't include this
             // file (an override) — respect that choice.
-            UserDefinedLang *target = udl;
-            NSString *ext = _filePath.pathExtension.lowercaseString;
-            if (ext.length) {
-                BOOL currentClaimsExt = NO;
-                for (NSString *e in [udl.extensions componentsSeparatedByString:@" "]) {
-                    if ([e.lowercaseString isEqualToString:ext]) {
-                        currentClaimsExt = YES;
-                        break;
-                    }
-                }
-                if (currentClaimsExt) {
-                    UserDefinedLang *resolved = [udlMgr languageForExtension:ext];
-                    if (resolved) target = resolved;
-                }
-            }
+            UserDefinedLang *target = [udlMgr variantOf:udl forFileName:_filePath.lastPathComponent];
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {

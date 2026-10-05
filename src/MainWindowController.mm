@@ -4636,7 +4636,14 @@ static BOOL groupHasTrailingSep(NSString *ident) {
                 ed.recoveredFromName = recoveredFrom;
             [ed markAsModified];
         }
-        if (lang.length) [ed setLanguage:lang];
+        if (lang.length) {
+            // A saved light/dark UDL variant follows the current editor
+            // theme, as on a theme change (only for a UDL claiming the file).
+            UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
+            UserDefinedLang *udl = [udlMgr languageNamed:lang];
+            if (udl) lang = [udlMgr variantOf:udl forFileName:ed.filePath.lastPathComponent].name;
+            [ed setLanguage:lang];
+        }
         [_tabManager refreshCurrentTabTitle];
 
         ScintillaView *sci = ed.scintillaView;
@@ -8205,13 +8212,11 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (!udl) return;
     EditorView *ed = [self currentEditor];
     if (!ed) return;
-    [[UserDefineLangManager shared] applyLanguage:udl toScintillaView:ed.scintillaView];
-    // Keep the editor's currentLanguage in sync with what's actually lexing
-    // the buffer. Without this, validateUserInterfaceItem: for UDL items
-    // compares against a stale language name and the UDL checkmark never
-    // appears, and the Languages-menu parent-header refresh can't see that
-    // a UDL is now active.
-    ed.currentLanguage = udlName;
+    // setLanguage: routes UDLs to applyLanguage: after SCI_STYLECLEARALL and
+    // the global style colours, so the previous lexer's colours do not show
+    // through styles whose colorStyle leaves fg/bg transparent. It also keeps
+    // currentLanguage in sync (UDL menu checkmark) and notifies plugins.
+    [ed setLanguage:udlName];
     [self updateStatusBar];
 }
 

@@ -1,6 +1,7 @@
 #import "UserDefineLangManager.h"
 #import "NppPaths.h"
 #import "NppThemeManager.h"
+#import "StyleConfiguratorWindowController.h"   // NPPStyleStore
 #import "ScintillaView.h"
 #import "Scintilla.h"
 #import "ScintillaMessages.h"
@@ -242,21 +243,61 @@ NSNotificationName const UserDefineLangsDidChangeNotification = @"UserDefineLang
 
 - (nullable UserDefinedLang *)languageForExtension:(NSString *)ext {
     if (!ext.length) return nil;
-    NSArray<UserDefinedLang *> *bucket = _extIndex[ext.lowercaseString];
-    if (!bucket.count) return nil;
-    if (bucket.count == 1) return bucket[0];
+    return [self _themeMatchIn:_extIndex[ext.lowercaseString]];
+}
 
-    // Multiple UDLs claim this extension — prefer the one whose
-    // darkModeTheme flag matches the current dark-mode state. Mirrors
-    // Windows NPP behaviour (NppParameters::getUserDefinedLangNameFromExt,
-    // Parameters.cpp:1921): the markdown UDL ships as a light + dark pair,
-    // and Windows auto-picks the right one based on dark-mode state.
-    // Falls back to the first match if no theme-specific variant exists.
-    BOOL wantDark = [NppThemeManager shared].isDark;
-    for (UserDefinedLang *udl in bucket) {
+- (nullable UserDefinedLang *)languageForFileName:(NSString *)fileName {
+    return [self _themeMatchIn:[self _candidatesForFileName:fileName]];
+}
+
+- (UserDefinedLang *)variantOf:(UserDefinedLang *)udl forFileName:(nullable NSString *)fileName {
+    NSArray<UserDefinedLang *> *candidates = [self _candidatesForFileName:fileName ?: @""];
+    if (![candidates containsObject:udl]) return udl;
+    return [self _themeMatchIn:candidates] ?: udl;
+}
+
+/// UDLs whose ext= list claims `fileName`, in load order. Windows
+/// (Parameters.cpp getUserDefinedLangNameFromExt) needs a non-empty extension,
+/// then matches an entry against the extension or, when the name contains a
+/// dot, against the whole name, case-insensitively.
+- (NSArray<UserDefinedLang *> *)_candidatesForFileName:(NSString *)fileName {
+    NSString *ext = fileName.pathExtension.lowercaseString;
+    if (!ext.length) return @[];
+    NSMutableOrderedSet<UserDefinedLang *> *set = [NSMutableOrderedSet orderedSet];
+    [set addObjectsFromArray:_extIndex[ext] ?: @[]];
+    NSString *whole = fileName.lowercaseString;
+    if ([whole containsString:@"."] && ![whole isEqualToString:ext])
+        [set addObjectsFromArray:_extIndex[whole] ?: @[]];
+    if (set.count < 2) return set.array;
+    return [set.array sortedArrayUsingComparator:^NSComparisonResult(UserDefinedLang *a, UserDefinedLang *b) {
+        NSUInteger ia = [self->_languages indexOfObjectIdenticalTo:a];
+        NSUInteger ib = [self->_languages indexOfObjectIdenticalTo:b];
+        return ia < ib ? NSOrderedAscending : (ia > ib ? NSOrderedDescending : NSOrderedSame);
+    }];
+}
+
+/// Multiple UDLs can claim one file: the markdown UDL ships as a light + dark
+/// pair. Prefer the one whose darkModeTheme flag matches, as Windows does
+/// (getUserDefinedLangNameFromExt), and fall back to the first match.
+- (nullable UserDefinedLang *)_themeMatchIn:(NSArray<UserDefinedLang *> *)candidates {
+    if (candidates.count < 2) return candidates.firstObject;
+    BOOL wantDark = [self _editorThemeIsDark];
+    for (UserDefinedLang *udl in candidates) {
         if (udl.isDarkModeTheme == wantDark) return udl;
     }
-    return bucket[0];
+    return candidates[0];
+}
+
+/// Windows keys the variant on its dark mode, which also switches the editor
+/// theme. Here the editor theme is chosen separately from the app appearance
+/// (e.g. Monokai under a light system appearance), and UDL styles with
+/// transparent backgrounds sit on the theme background, so the variant
+/// follows the editor theme's default background. App appearance is the
+/// fallback when that colour cannot be read.
+- (BOOL)_editorThemeIsDark {
+    NSColor *bg = [[NPPStyleStore sharedStore].globalBg colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (bg) return bg.brightnessComponent < 0.5;
+    return [NppThemeManager shared].isDark;
 }
 
 #pragma mark - Import / Export / Delete
