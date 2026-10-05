@@ -1,6 +1,8 @@
 #import "SearchEngine.h"
 #import "Scintilla.h"
 #import "NppScintillaIDs.h"
+#import "NppTextEncoding.h"
+#include <atomic>
 // EMPTYMATCH_* / SKIPCRLFASONE flag constants — matches Windows
 // boostregex/BoostRegexSearch.h. Consumed by regex/NppRegexSearch.cxx (our
 // SCI_OWNREGEX implementation).
@@ -103,6 +105,15 @@ static NSString *nppRegexReplacement(NSString *replacement,
     if (self) _results = [NSMutableArray array];
     return self;
 }
+@end
+
+// ── NPPCancelToken ───────────────────────────────────────────────────────────
+
+@implementation NPPCancelToken {
+    std::atomic<bool> _cancelled;
+}
+- (BOOL)isCancelled { return _cancelled.load(std::memory_order_relaxed) ? YES : NO; }
+- (void)cancel      { _cancelled.store(true, std::memory_order_relaxed); }
 @end
 
 // ── SearchEngine ─────────────────────────────────────────────────────────────
@@ -538,12 +549,71 @@ static NSString *nppRegexReplacement(NSString *replacement,
     return count;
 }
 
+#pragma mark - File decoding
+
+/// Read and decode a file for Find/Replace in Files. Used to be a UTF-8-only
+/// read, which silently skipped every Windows-1252 / Latin-1 / UTF-16 / CJK
+/// file. Now uses the editor's detection rules (NppTextEncoding) so anything
+/// that opens as text in a tab is searchable. Binary files (non-Unicode bytes
+/// with a NUL) are still skipped. Returns nil when the file can't be read.
++ (nullable NSString *)_decodedContentsOfFile:(NSString *)path
+                                     encoding:(nullable NSStringEncoding *)encoding
+                                       hasBOM:(nullable BOOL *)hasBOM
+                                      rawData:(NSData * _Nullable * _Nullable)rawData {
+    NSData *data = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:nil];
+    if (!data) return nil;
+    if (rawData) *rawData = data;
+    return NppDecodeTextData(data, YES, encoding, hasBOM);
+}
+
+#pragma mark - Replace in File
+
++ (NPPReplaceFileStatus)replaceAllInFile:(NSString *)path
+                                 options:(NPPFindOptions *)opts
+                        replacementCount:(NSInteger *)replacementCount
+                                encoding:(nullable NSStringEncoding *)encodingOut
+                                   error:(NSError **)error {
+    if (replacementCount) *replacementCount = 0;
+    NSStringEncoding enc = NSUTF8StringEncoding;
+    BOOL hasBOM = NO;
+    NSData *original = nil;
+    NSString *content = [self _decodedContentsOfFile:path encoding:&enc hasBOM:&hasBOM rawData:&original];
+    if (encodingOut) *encodingOut = enc;
+    if (!content) return NPPReplaceFileUnreadable;
+
+    NSInteger count = 0;
+    NSString *replaced = [self stringByReplacingAllInString:content
+                                                    options:opts
+                                           replacementCount:&count];
+    // A replacement can be a no-op ("foo" -> "foo", regex (foo) -> \1).
+    // Comparing the text as well as the count keeps those files from being
+    // rewritten, which would bump their mtime for no reason.
+    if (count <= 0 || [replaced isEqualToString:content]) return NPPReplaceFileUnchanged;
+
+    // Write back in the file's own encoding + BOM, never lossily. Two guards:
+    //  1. The untouched text must re-encode to the exact original bytes. A
+    //     detector guess that doesn't round-trip would otherwise rewrite
+    //     every unrelated character in the file.
+    //  2. The replaced text must be fully representable (e.g. typing a CJK
+    //     character into a Windows-1252 file). NppEncodeTextData refuses to
+    //     substitute, so nil means "would lose data".
+    NSData *roundTrip = NppEncodeTextData(content, enc, hasBOM);
+    NSData *out = NppEncodeTextData(replaced, enc, hasBOM);
+    if (!roundTrip || ![roundTrip isEqualToData:original] || !out)
+        return NPPReplaceFileUnrepresentable;
+
+    if (![out writeToFile:path options:NSDataWritingAtomic error:error])
+        return NPPReplaceFileWriteFailed;
+    if (replacementCount) *replacementCount = count;
+    return NPPReplaceFileReplaced;
+}
+
 #pragma mark - Find in Directory
 
 + (NSArray<NPPFileResults *> *)findInDirectory:(NSString *)directory
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
-                                    cancelFlag:(BOOL *)cancelFlag
+                                   cancelToken:(nullable NPPCancelToken *)cancelToken
                             totalFilesScanned:(nullable NSInteger *)totalFilesScanned {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDirectoryEnumerator *en = [fm enumeratorAtPath:directory];
@@ -585,7 +655,7 @@ static NSString *nppRegexReplacement(NSString *replacement,
     }
 
     while ((rel = [en nextObject])) {
-        if (cancelFlag && *cancelFlag) break;
+        if (cancelToken.isCancelled) break;
 
         NSString *full = [directory stringByAppendingPathComponent:rel];
         BOOL isDir = NO;
@@ -611,16 +681,15 @@ static NSString *nppRegexReplacement(NSString *replacement,
 
         filesScanned++;
 
-        // Read file
-        NSString *content = [NSString stringWithContentsOfFile:full
-                                                     encoding:NSUTF8StringEncoding error:nil];
+        // Read file with the editor's encoding detection (skips binaries)
+        NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
         if (!content) continue;
 
         NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
         NPPFileResults *fileRes = nil;
 
         for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
-            if (cancelFlag && *cancelFlag) break;
+            if (cancelToken.isCancelled) break;
 
             NSString *line = lines[ln];
             NSRange range;
@@ -683,7 +752,7 @@ static NSString *nppRegexReplacement(NSString *replacement,
 + (NSArray<NPPFileResults *> *)findInFilePaths:(NSArray<NSString *> *)filePaths
                                        options:(NPPFindOptions *)opts
                                  progressBlock:(nullable void(^)(NSString *currentFile, NSInteger hits))progressBlock
-                                    cancelFlag:(BOOL *)cancelFlag
+                                   cancelToken:(nullable NPPCancelToken *)cancelToken
                             totalFilesScanned:(nullable NSInteger *)totalFilesScanned {
     NSFileManager *fm = [NSFileManager defaultManager];
 
@@ -724,7 +793,7 @@ static NSString *nppRegexReplacement(NSString *replacement,
     }
 
     for (NSString *full in filePaths) {
-        if (cancelFlag && *cancelFlag) break;
+        if (cancelToken.isCancelled) break;
 
         // Check file exists
         if (![fm fileExistsAtPath:full]) continue;
@@ -739,16 +808,15 @@ static NSString *nppRegexReplacement(NSString *replacement,
 
         filesScanned++;
 
-        // Read file
-        NSString *content = [NSString stringWithContentsOfFile:full
-                                                     encoding:NSUTF8StringEncoding error:nil];
+        // Read file with the editor's encoding detection (skips binaries)
+        NSString *content = [self _decodedContentsOfFile:full encoding:NULL hasBOM:NULL rawData:NULL];
         if (!content) continue;
 
         NSArray<NSString *> *lines = [content componentsSeparatedByString:@"\n"];
         NPPFileResults *fileRes = nil;
 
         for (NSInteger ln = 0; ln < (NSInteger)lines.count; ln++) {
-            if (cancelFlag && *cancelFlag) break;
+            if (cancelToken.isCancelled) break;
 
             NSString *line = lines[ln];
             NSRange range;

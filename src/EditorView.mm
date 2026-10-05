@@ -1,4 +1,5 @@
 #import "EditorView.h"
+#import "NppTextEncoding.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
 #import "NppLangsManager.h"
@@ -566,38 +567,17 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             enc = NSISOLatin1StringEncoding;
             utf8Data = rawData;
         } else {
-            // Small non-UTF-8: first ask macOS's heuristic charset detector — it
-            // covers the CJK encodings the old Win-1252/Latin-1 fallback turned into
-            // mojibake (GBK/GB18030, Big5, Shift-JIS, EUC, …). We only trust a result
-            // that decoded *without* lossy substitution; anything else falls through
-            // to the unchanged Win-1252/Latin-1 path, so Western files never regress.
-            NSString *detected = nil;
-            BOOL detLossy = NO;
-            NSStringEncoding guess = [NSString stringEncodingForData:rawData
-                                                    encodingOptions:nil
-                                                    convertedString:&detected
-                                                usedLossyConversion:&detLossy];
-            if (detected && guess != 0 && !detLossy && guess != NSUTF8StringEncoding) {
-                NSStringEncoding canon = canonicalCJKEncoding(guess);
-                enc = canon ?: guess;
-                utf8Data = [detected dataUsingEncoding:NSUTF8StringEncoding];
-            }
-
-            if (!utf8Data) {
-                // Fallback: try Win-1252, then Latin-1 (cheap walk on small files).
-                NSStringEncoding win1252 = nppEnc(kCFStringEncodingWindowsLatin1);
-                NSString *content = [[NSString alloc] initWithData:rawData encoding:win1252];
-                if (content) {
-                    enc = win1252;
-                    utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                } else {
-                    content = [[NSString alloc] initWithData:rawData
-                                                    encoding:NSISOLatin1StringEncoding];
-                    if (content) {
-                        enc = NSISOLatin1StringEncoding;
-                        utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                    }
-                }
+            // Small non-UTF-8: shared legacy detection (NppTextEncoding) so the
+            // editor and Find/Replace in Files decode a file identically. The
+            // detector covers the CJK encodings the old Win-1252/Latin-1
+            // fallback turned into mojibake (GBK/GB18030, Big5, Shift-JIS,
+            // EUC, ...); Western files still land on Win-1252/Latin-1.
+            NSStringEncoding legacyEnc = 0;
+            NSString *content = NppDecodeLegacyText(rawData, &legacyEnc);
+            if (content) {
+                NSStringEncoding canon = canonicalCJKEncoding(legacyEnc);
+                enc = canon ?: legacyEnc;
+                utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
             }
         }
     }
