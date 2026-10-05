@@ -102,12 +102,12 @@ static NSString *const kNSDefaultsDarkThemeKey  = @"NPPDarkTheme";
 static NSString *const kDefaultDarkThemeName    = @"DarkModeDefault";
 
 /// Mapping: theme/model lexer ID aliases.
-/// Some theme XML files use "c" while the model uses "cpp"; merge into "cpp".
+/// "c", "objc" and "typescript" are real sections with their own styles (as on
+/// Windows); they are not folded into "cpp".
 static NSString *modelLexerID(NSString *themeID) {
     NSDictionary<NSString *, NSString *> *aliases = @{
-        @"c"          : @"cpp",
         @"hypertext"  : @"html",
-        @"js"         : @"javascript",
+        @"js"         : @"javascript.js",
         @"ts"         : @"typescript",
     };
     NSString *mapped = aliases[themeID.lowercaseString];
