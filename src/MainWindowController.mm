@@ -2063,6 +2063,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
     // Scroll synchronization
     BOOL _syncVerticalScrolling;
     BOOL _inCloseBatch;   // -_closeEditors:inManager: is closing several tabs
+    BOOL _closingIntoClone; // -_transferEditor: closes a tab its clone replaces
     BOOL _syncHorizontalScrolling;
     intptr_t _syncColumnDelta;  // column offset between views when sync was enabled
     intptr_t _syncLineDelta;    // line offset between views when sync was enabled
@@ -6801,15 +6802,17 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
 
     // `dst` already shows this document (its clone): as Windows does, show
     // that tab and close this one, which the clone keeps the text alive for.
-    // Not when this is the window's only tab, which must move to close it.
-    if (ed.cloneSibling && [self _totalEditorCount] > 1) {
+    // If it was this window's only tab, the window closes as after any move.
+    if (ed.cloneSibling) {
         sptr_t doc = NppDocumentOf(ed);
         NSArray<EditorView *> *there = dst.allEditors;
         for (NSUInteger i = 0; i < there.count; i++) {
             if (NppDocumentOf(there[i]) != doc) continue;
             [dst selectTabAtIndex:(NSInteger)i];
             if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
+            _closingIntoClone = YES;
             [src removeEditor:ed];
+            _closingIntoClone = NO;
             return;
         }
     }
@@ -9068,9 +9071,9 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
     [self _refreshToolbarStates];
 }
 
+// Sent for closes and also for -evictEditor: (a tab moving out), so it must
+// not reshape panes: a moving tab is briefly in no pane at all.
 - (void)tabManager:(id)tabManager didCloseEditor:(EditorView *)editor {
-    TabManager *pane = tabManager;
-    if (pane.allEditors.count == 0) [self _paneEmptiedByClose:pane];
     [self updateTitle];
     if (_docListPanel) [_docListPanel reloadData];
 }
@@ -9090,18 +9093,29 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
 }
 
 // A pane may lose its last tab to a close only while another pane of this
-// window still has tabs; the pane is then hidden (-_paneEmptiedByClose:).
+// window still has tabs; the pane is then hidden (-tabManagerDidBecomeEmpty:).
+// A tab closed because its clone replaced it elsewhere may also empty the
+// whole window, which then closes as after a move.
 - (BOOL)tabManagerMayBecomeEmpty:(TabManager *)tabManager {
+    if (_closingIntoClone) return YES;
     if (_inCloseBatch && tabManager == _tabManager) return NO;
     return [self _totalEditorCount] - (NSInteger)tabManager.allEditors.count > 0;
+}
+
+- (void)tabManagerDidBecomeEmpty:(TabManager *)tabManager {
+    [self _paneEmptiedByClose:tabManager];
 }
 
 /// Windows Notepad++ hides a view whose last tab is closed while the other
 /// view still has tabs. An emptied split pane collapses. The primary view
 /// cannot be hidden here, so it takes the split pane's tabs instead, which
-/// looks the same: one view holding the remaining documents.
+/// looks the same: one view holding the remaining documents. A window left
+/// with no tabs at all closes, or gets a fresh tab if it is the last window.
 - (void)_paneEmptiedByClose:(TabManager *)pane {
-    if (pane != _tabManager) { [self _settleAfterEditorLeft:pane]; return; }
+    if (pane != _tabManager || [self _totalEditorCount] == 0) {
+        [self _settleAfterEditorLeft:pane];
+        return;
+    }
     TabManager *sub = _subTabManagerV.allEditors.count ? _subTabManagerV : _subTabManagerH;
     if (sub.allEditors.count == 0) { [_tabManager addNewTab]; return; }
     EditorView *shown = sub.currentEditor;
