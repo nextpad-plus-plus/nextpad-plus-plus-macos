@@ -200,7 +200,10 @@
             // would yank away a buffer the user was actively working in.
             // The closePreExistingTabs flag is the explicit opt-in.
             if (_options.closeAfter && (!preExisting || _options.closePreExistingTabs)) {
+                MainWindowController *mwc = _mwc;
+                mwc.suppressClosedFileRecording = YES;
                 [tm closeEditor:ed];
+                mwc.suppressClosedFileRecording = NO;
             } else if (_options.closeAfter && preExisting) {
                 // Record the protected-tab case so the user can see in the
                 // result summary why some tabs remained open.
