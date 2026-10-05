@@ -6899,16 +6899,18 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // and top-level XML/YAML/KIXtart items walking up to the menu bar).
     if (action == @selector(setLanguageFromMenu:)) {
         NSString *langCode = [(NSMenuItem *)item representedObject];
-        NSString *current  = ed.currentLanguageIsUDL ? @"" : (ed.currentLanguage ?: @"");
-        [mi setState:[current isEqualToString:langCode]
-            ? NSControlStateValueOn : NSControlStateValueOff];
+        // Built-in items (including "None (Normal Text)", whose code is
+        // the empty string) are never checked while a UDL is active.
+        NSString *current  = ed.currentLanguage ?: @"";
+        BOOL on = !ed.currentLanguageIsUDL && [current isEqualToString:langCode];
+        [mi setState:on ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
     }
     if (action == @selector(setUDLLanguageFromMenu:)) {
         NSString *udlName = [(NSMenuItem *)item representedObject];
-        NSString *current = ed.currentLanguageIsUDL ? (ed.currentLanguage ?: @"") : @"";
-        [mi setState:[current isEqualToString:udlName]
-            ? NSControlStateValueOn : NSControlStateValueOff];
+        NSString *current = ed.currentLanguage ?: @"";
+        BOOL on = ed.currentLanguageIsUDL && [current isEqualToString:udlName];
+        [mi setState:on ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
     }
 
@@ -8541,7 +8543,8 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
     EditorView *ed = [self currentEditor];
     // Letter headers cover built-in languages only.
-    NSString *current = ed.currentLanguageIsUDL ? @"" : (ed.currentLanguage ?: @"");
+    BOOL builtInActive = !ed.currentLanguageIsUDL;
+    NSString *current = ed.currentLanguage ?: @"";
 
     for (NSMenuItem *topItem in _languagesMenu.itemArray) {
         NSMenu *sub = topItem.submenu;
@@ -8553,7 +8556,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             if (child.action == @selector(setLanguageFromMenu:)) {
                 isLetterSubmenu = YES;
                 NSString *code = (NSString *)child.representedObject ?: @"";
-                if (code.length && [current isEqualToString:code]) {
+                if (builtInActive && code.length && [current isEqualToString:code]) {
                     anyMatch = YES;
                     break;
                 }
