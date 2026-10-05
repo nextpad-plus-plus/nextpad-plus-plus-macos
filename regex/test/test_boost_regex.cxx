@@ -216,6 +216,21 @@ int main() {
               "pos=" + std::to_string(p) + " len=" + std::to_string(len));
     }
 
+    // 11) Bytes 0xF8-0xFF never start UTF-8; each is one (invalid) character.
+    //     0xFE/0xFF used to read past the lead-byte mask table (ASan).
+    {
+        std::string t = "a\xFE\xFF" "b\xF8z";
+        Eng e(t);
+        Sci::Position len = 0;
+        Sci::Position p = e.find("a..b", 0, (Sci::Position)t.size(), 0, &len);
+        check("0xFE and 0xFF are one character each", p == 0 && len == 4,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+        len = 0;
+        p = e.find("b.z", 0, (Sci::Position)t.size(), 0, &len);
+        check("0xF8 is one character", p == 3 && len == 3,
+              "pos=" + std::to_string(p) + " len=" + std::to_string(len));
+    }
+
     printf("\n%s (%d failure%s)\n", g_fail ? "FAILURES" : "ALL PASS",
            g_fail, g_fail == 1 ? "" : "s");
     return g_fail ? 1 : 0;
