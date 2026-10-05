@@ -2771,10 +2771,14 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 /// User-defined keywords the Style Configurator holds for `group` in the
 /// `styler` lexer (the WordsStyle text of the row whose keywordClass is
 /// `group`). Windows' makeStyle() keeps the last such row; so does this.
+/// Reads that language's own styler (C keywords from "c", not "cpp"); the
+/// aliasing lookup is only a fallback for a stylers.xml without it.
 static NSString *stylerUserKeywords(NSString *styler, NSString *group) {
     if (!styler.length) return nil;
+    NPPStyleStore *store = [NPPStyleStore sharedStore];
+    NSArray<NPPStyleEntry *> *styles = [store stylesForExactLexer:styler] ?: [store stylesForLexer:styler];
     NSString *words = nil;
-    for (NPPStyleEntry *e in [[NPPStyleStore sharedStore] stylesForLexer:styler]) {
+    for (NPPStyleEntry *e in styles) {
         if (e.keywords.length && [e.keywordClass isEqualToString:group]) words = e.keywords;
     }
     return words;

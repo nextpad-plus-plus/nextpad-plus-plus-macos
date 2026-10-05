@@ -42,6 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Return all style entries for a lexer (resolved = theme + user override).
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID;
 
+/// Style entries of exactly the LexerType named `lexerID` (case-insensitive),
+/// with no c/objc/js/ts aliasing; nil when stylers.xml has no such LexerType.
+- (nullable NSArray<NPPStyleEntry *> *)stylesForExactLexer:(NSString *)lexerID;
+
 /// Ordered list of all lexers (Global Styles first, then alphabetical).
 @property (readonly, nonatomic) NSArray<NPPLexer *> *allLexers;
 

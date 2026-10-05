@@ -163,7 +163,7 @@ static NSString *modelLexerID(NSString *themeID) {
         s.underline = (fstVal & 4) != 0;
     }
     s.keywordClass      = [el attributeForName:@"keywordClass"].stringValue ?: @"";
-    if (s.keywordClass.length) s.keywords = normalizedKeywords(el.stringValue);
+    s.keywords          = normalizedKeywords(el.stringValue);
     return s;
 }
 
@@ -221,7 +221,9 @@ static NSString *modelLexerID(NSString *themeID) {
         dst.underline = src.underline;
         dst.fontStyleExplicit = YES;
     }
-    if (src.keywords.length)   dst.keywords = src.keywords;
+    // The theme has this element, so its keyword text replaces the model's
+    // verbatim, an empty list included (that is how a theme clears one).
+    if (dst.keywordClass.length) dst.keywords = src.keywords ?: @"";
 }
 
 // ── Load theme from XML ───────────────────────────────────────────────────────
@@ -397,6 +399,11 @@ static NSString *_userThemesDir(void) {
     else if ([lid isEqualToString:@"ts"])   lid = @"typescript";
     NPPLexer *lex = _lexerDict[lid];
     return lex ? lex.styles : nil;
+}
+
+- (nullable NSArray<NPPStyleEntry *> *)stylesForExactLexer:(NSString *)lexerID {
+    if (!_lexers.count) [self loadFromDefaults];
+    return _lexerDict[lexerID.lowercaseString].styles;
 }
 
 - (NSArray<NPPLexer *> *)allLexers {
@@ -735,6 +742,9 @@ static NSString *_userThemesDir(void) {
     NSScrollView         *_defKeywordsScroll, *_userKeywordsScroll;
     NSTextView           *_defKeywordsView, *_userKeywordsView;
     BOOL                  _userKeywordsDirty;   // typed since the last preview
+    // The user keywords view's own undo stack, emptied whenever the view is
+    // filled for another row, so Undo never replays edits onto other text.
+    NSUndoManager        *_userKeywordsUndo;
 
     // Working copy — edited by user; cancelled on Cancel; committed on Save
     NSMutableArray<NPPLexer *>  *_workingLexers;
@@ -962,6 +972,9 @@ static NSString *_userThemesDir(void) {
     _userKeywordsScroll = [self _keywordScrollWithFrame:NSMakeRect(fsX, kwBottom, fsW, kwH)
                                                editable:YES textView:&_userKeywordsView];
     _userKeywordsView.delegate = self;
+    _userKeywordsUndo = [NSUndoManager new];
+    _defKeywordsView.accessibilityLabel  = _defKeywordsLabel.stringValue;
+    _userKeywordsView.accessibilityLabel = _userKeywordsLabel.stringValue;
     [cv addSubview:_userKeywordsScroll];
     [self _setKeywordControlsHidden:YES];
 
@@ -1100,6 +1113,18 @@ static NSString *_userThemesDir(void) {
     [[NPPStyleStore sharedStore] previewLexers:_workingLexers];
 }
 
+/// Fill both keyword views for a row (programmatic, so no textDidChange:) and
+/// drop the user view's undo history, which belonged to the previous text.
+- (void)_fillKeywordViewsDefault:(NSString *)def user:(NSString *)user {
+    _defKeywordsView.string  = def ?: @"";
+    _userKeywordsView.string = user ?: @"";
+    [_userKeywordsUndo removeAllActions];
+}
+
+- (NSUndoManager *)undoManagerForTextView:(NSTextView *)view {
+    return (view == _userKeywordsView) ? _userKeywordsUndo : self.window.undoManager;
+}
+
 // NSTextViewDelegate: typing only updates the working entry; the preview runs
 // when editing ends, the row changes, or on Save, so a large list (PHP) is not
 // refed into every open editor on each keystroke.
@@ -1158,6 +1183,12 @@ static NSString *_userThemesDir(void) {
         // which populates the right panel from the freshly-selected entry.
         [_styleTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0]
                  byExtendingSelection:NO];
+        // If row 0 was already selected (language or theme switch), no
+        // selection change is posted and the panel would keep showing, and
+        // editing, the previous lexer's row. Refresh it explicitly.
+        [self tableViewSelectionDidChange:
+            [NSNotification notificationWithName:NSTableViewSelectionDidChangeNotification
+                                          object:_styleTable]];
     } else {
         [_styleTable deselectAll:nil];
         _selectedStyleID = -1;
@@ -1181,6 +1212,7 @@ static NSString *_userThemesDir(void) {
     _fgLabel.textColor = [NSColor secondaryLabelColor];
     _bgLabel.textColor = [NSColor secondaryLabelColor];
     [self _setKeywordControlsHidden:YES];
+    [self _fillKeywordViewsDefault:nil user:nil];
 }
 
 - (void)_updateRightPanelForStyle:(NPPStyleEntry *)entry lang:(NPPLexer *)lex {
@@ -1239,11 +1271,9 @@ static NSString *_userThemesDir(void) {
     if (hasKeywords) {
         NSString *def = [[NppLangsManager shared] keywordsForLanguage:lex.lexerID
                                                           keywordClass:entry.keywordClass];
-        _defKeywordsView.string  = def ?: @"";
-        _userKeywordsView.string = entry.keywords ?: @"";
+        [self _fillKeywordViewsDefault:def user:entry.keywords];
     } else {
-        _defKeywordsView.string  = @"";
-        _userKeywordsView.string = @"";
+        [self _fillKeywordViewsDefault:nil user:nil];
     }
     _suppressActions = NO;
 }
