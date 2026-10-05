@@ -5140,6 +5140,149 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     [self rebuildRecentFilesMenu];
 }
 
+#pragma mark - Restore Recent Closed File
+
+// Windows (IDM_FILE_RESTORELASTCLOSEDFILE) reopens the head of its recent-files
+// list, which only ever holds closed files. Open Recent here also lists files
+// that are still open, so closed tabs get a stack of their own. It is app-wide,
+// not per window, so the tabs of a window that was closed can still come back,
+// and it lives in memory only: open tabs already survive a relaunch through the
+// session. Untitled tabs are never recorded; like Windows, there is no path to
+// reopen.
+static const NSUInteger kClosedFileStackMax = 30;
+
+static NSMutableArray<NSDictionary *> *closedFileStack(void) {
+    static NSMutableArray<NSDictionary *> *stack;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ stack = [NSMutableArray array]; });
+    return stack;
+}
+
+/// Push `ed` (about to close, owned by `mgr`) onto the closed-file stack with
+/// the view state needed to put it back where it was.
+- (void)_recordClosedEditor:(EditorView *)ed inManager:(TabManager *)mgr {
+    NSString *path = ed.filePath;
+    if (!path.length) return;
+
+    ScintillaView *sci = ed.scintillaView;
+    NSMutableDictionary *entry = [NSMutableDictionary dictionary];
+    entry[@"filePath"]         = path;
+    entry[@"view"]             = mgr == _subTabManagerV ? @"V" : mgr == _subTabManagerH ? @"H" : @"main";
+    entry[@"language"]         = ed.currentLanguage ?: @"";
+    entry[@"startPos"]         = @([sci message:SCI_GETANCHOR]);
+    entry[@"endPos"]           = @([sci message:SCI_GETCURRENTPOS]);
+    entry[@"selMode"]          = @([sci message:SCI_GETSELECTIONMODE]);
+    entry[@"firstVisibleLine"] = @([sci message:SCI_GETFIRSTVISIBLELINE]);
+    entry[@"xOffset"]          = @([sci message:SCI_GETXOFFSET]);
+    // Only a buffer that matches the disk says how to read the file. With unsaved
+    // changes being discarded, a Set/Convert encoding may describe bytes that were
+    // never written.
+    if (!ed.isModified && !ed.largeFileMode) {
+        entry[@"encoding"] = @(ed.fileEncoding);
+        entry[@"hasBOM"]   = @(ed.hasBOM);
+    }
+
+    NSMutableArray<NSDictionary *> *stack = closedFileStack();
+    NSIndexSet *older = [stack indexesOfObjectsPassingTest:^BOOL(NSDictionary *e, NSUInteger i, BOOL *stop) {
+        return [e[@"filePath"] isEqualToString:path];
+    }];
+    [stack removeObjectsAtIndexes:older];
+    [stack addObject:entry];
+    if (stack.count > kClosedFileStackMax) [stack removeObjectAtIndex:0];
+}
+
+- (void)tabManager:(id)tabManager willCloseEditor:(EditorView *)editor {
+    // A clone still open in the other view keeps the document open.
+    if (editor.cloneSibling) return;
+    [self _recordClosedEditor:editor inManager:tabManager];
+}
+
+- (BOOL)_hasRestorableClosedFile {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    for (NSDictionary *e in closedFileStack())
+        if ([fm fileExistsAtPath:e[@"filePath"]]) return YES;
+    return NO;
+}
+
+/// Select the tab showing `path` in any live window. Returns NO if none does.
+- (BOOL)_focusOpenEditorForPath:(NSString *)path {
+    for (MainWindowController *mwc in [self _sessionContributingControllers]) {
+        for (TabManager *mgr in [mwc sessionTabManagers]) {
+            NSUInteger idx = [mgr.allEditors indexOfObjectPassingTest:^BOOL(EditorView *e, NSUInteger i, BOOL *stop) {
+                return [e.filePath isEqualToString:path];
+            }];
+            if (idx == NSNotFound) continue;
+            if (mwc != self) [mwc.window makeKeyAndOrderFront:nil];
+            [mgr selectTabAtIndex:(NSInteger)idx];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)_applyClosedFileState:(NSDictionary *)entry toEditor:(EditorView *)ed {
+    NSNumber *enc = entry[@"encoding"];
+    BOOL bom = [entry[@"hasBOM"] boolValue];
+    if (enc && !ed.largeFileMode && (enc.unsignedIntegerValue != ed.fileEncoding || bom != ed.hasBOM))
+        [ed reloadWithEncoding:enc.unsignedIntegerValue hasBOM:bom error:nil];
+
+    NSString *lang = entry[@"language"];
+    if (lang && ![lang isEqualToString:ed.currentLanguage ?: @""]) [ed setLanguage:lang];
+
+    // Same order as the session restore: selection, then scroll, so the saved
+    // first visible line wins over the scroll ENSUREVISIBLE causes. Clamped in
+    // case the file changed on disk since it was closed.
+    ScintillaView *sci = ed.scintillaView;
+    sptr_t docLen = [sci message:SCI_GETLENGTH];
+    sptr_t anchor = MAX((sptr_t)0, MIN((sptr_t)[entry[@"startPos"] longLongValue], docLen));
+    sptr_t caret  = MAX((sptr_t)0, MIN((sptr_t)[entry[@"endPos"] longLongValue],   docLen));
+    NSInteger selMode = [entry[@"selMode"] integerValue];
+    if (selMode > 0)
+        [sci message:SCI_SETSELECTIONMODE wParam:(uptr_t)selMode];
+    [sci message:SCI_SETSEL wParam:(uptr_t)anchor lParam:caret];
+    sptr_t caretLine = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)caret];
+    [sci message:SCI_ENSUREVISIBLEENFORCEPOLICY wParam:(uptr_t)caretLine];
+    [sci message:SCI_SETXOFFSET wParam:(uptr_t)[entry[@"xOffset"] longLongValue]];
+    [sci message:SCI_SETFIRSTVISIBLELINE wParam:(uptr_t)[entry[@"firstVisibleLine"] longLongValue]];
+}
+
+/// File > Restore Recent Closed File: reopen the most recently closed file tab
+/// with its view state. Entries whose file is gone are dropped on the way; one
+/// whose file is already open is focused and dropped.
+- (void)restoreRecentClosedFile:(id)sender {
+    NSMutableArray<NSDictionary *> *stack = closedFileStack();
+    NSFileManager *fm = [NSFileManager defaultManager];
+    while (stack.count) {
+        NSDictionary *entry = stack.lastObject;
+        [stack removeLastObject];
+        NSString *path = entry[@"filePath"];
+        BOOL isDir = NO;
+        if (![fm fileExistsAtPath:path isDirectory:&isDir] || isDir) continue;
+        if ([self _focusOpenEditorForPath:path]) return;
+
+        // Back to the secondary view it came from, unless the other split
+        // orientation is in use (the two are mutually exclusive).
+        NSString *view = entry[@"view"];
+        TabManager *mgr = _tabManager;
+        if ([view isEqualToString:@"V"] && _subTabManagerV && _subTabManagerH.allEditors.count == 0)
+            mgr = _subTabManagerV;
+        else if ([view isEqualToString:@"H"] && _subTabManagerH && _subTabManagerV.allEditors.count == 0)
+            mgr = _subTabManagerH;
+
+        EditorView *ed = [mgr openFileAtPath:path];
+        if (!ed) return;  // load failed; TabManager already showed the error
+        if (mgr == _subTabManagerV)      [self _ensureVerticalViewVisible];
+        else if (mgr == _subTabManagerH) [self _ensureHorizontalViewVisible];
+
+        [self _applyClosedFileState:entry toEditor:ed];
+        [mgr refreshTitleForEditor:ed];
+        [self addToRecentFiles:path];
+        [self updateTitle];
+        [self updateStatusBar];
+        return;
+    }
+}
+
 #pragma mark - File menu actions
 
 - (void)newDocument:(id)sender {
@@ -6673,6 +6816,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (action == @selector(saveCurrentMacro:))     return ed && !recording && ed.macroActions.count > 0;
     if (action == @selector(runSavedMacro:))        return ed && !recording;
     if (action == @selector(trimTrailingSpaceAndSave:)) return _tabManager.allEditors.count > 0;
+    if (action == @selector(restoreRecentClosedFile:)) return [self _hasRestorableClosedFile];
 
     // Scroll sync — disabled when no split view is active
     BOOL hasSplitView = (_subTabManagerV.allEditors.count > 0 || _subTabManagerH.allEditors.count > 0);
@@ -11235,6 +11379,12 @@ static int64_t _sysctlInt(const char *name) {
     if (!terminating && [self sessionPersistenceEnabled]) {
         [self saveSessionForAllWindows];
     }
+    // Closing a window closes its tabs; keep them restorable from another
+    // window. Quitting does not close tabs, so it records nothing.
+    if (!terminating)
+        for (TabManager *mgr in [self sessionTabManagers])
+            for (EditorView *ed in mgr.allEditors)
+                [self _recordClosedEditor:ed inManager:mgr];
     writeConfigXML();
     return YES;
 }
