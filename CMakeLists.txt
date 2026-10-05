@@ -503,3 +503,69 @@ target_link_libraries(NotepadPlusPlusMac PRIVATE
 set_source_files_properties(${APP_SRCS} PROPERTIES
     COMPILE_FLAGS "-fobjc-arc"
 )
+
+# -----------------------------------------------------------------------------
+# Headless tests (ctest)
+# -----------------------------------------------------------------------------
+# Search engine tests that build without AppKit UI and never launch the app:
+# they link scintilla_core (no Cocoa) plus, for the file-search tests,
+# SearchCore.mm and NppTextEncoding.mm against Foundation only. They write only
+# to a fresh temporary directory and never touch the app's defaults domain
+# (org.nextpadplusplus.mac) or ~/Library.
+#
+#   cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
+#   cmake --build build-release --target npp_tests -j 8
+#   ctest --test-dir build-release --output-on-failure
+#
+# Tests:
+#   regex_editor_engine   regex/test/test_npp_regex.cxx: the editor's regex
+#                         search (#151, #167 cases, ^/$ on CRLF, backward search)
+#   regex_boost_backend   regex/test/test_boost_regex.cxx: multi-line, lookbehind,
+#                         UTF-8 through the Boost backend
+#   buffer_search         tests/test_buffer_search.cxx: the shared engine and loops
+#                         Find in Files uses (\K, replacement formats, empty matches,
+#                         whole word, word chars, errors, backtracking limit)
+#   search_core           tests/test_search_core.mm: Find/Replace in Files on a temp
+#                         tree (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252,
+#                         Shift-JIS, binary skip, multi-hit lines, cancel,
+#                         round-trip safety)
+#   regex_run_sh,         the standalone harness scripts (regex/test/run.sh and
+#   regex_run_boost_sh    run_boost.sh), which build their own copy with clang++;
+#                         label "standalone" (ctest -LE standalone skips them)
+option(NPP_BUILD_TESTS "Build the headless search tests (ctest)" ON)
+if(NPP_BUILD_TESTS)
+    enable_testing()
+
+    set(NPP_TEST_ROOT "${CMAKE_SOURCE_DIR}/tests")
+
+    add_executable(test_npp_regex EXCLUDE_FROM_ALL "${NPP_REGEX_ROOT}/test/test_npp_regex.cxx")
+    add_executable(test_boost_regex EXCLUDE_FROM_ALL "${NPP_REGEX_ROOT}/test/test_boost_regex.cxx")
+    add_executable(test_buffer_search EXCLUDE_FROM_ALL
+        "${NPP_TEST_ROOT}/test_buffer_search.cxx"
+        "${NPP_TEST_ROOT}/PlatformStubs.cxx")
+    add_executable(test_search_core EXCLUDE_FROM_ALL
+        "${NPP_TEST_ROOT}/test_search_core.mm"
+        "${NPP_TEST_ROOT}/PlatformStubs.cxx"
+        src/SearchCore.mm
+        src/NppTextEncoding.mm)
+
+    foreach(_t test_npp_regex test_boost_regex test_buffer_search test_search_core)
+        target_link_libraries(${_t} PRIVATE scintilla_core)
+        target_include_directories(${_t} PRIVATE "${NPP_REGEX_ROOT}" src)
+        target_compile_definitions(${_t} PRIVATE ${SCI_DEFINITIONS})
+    endforeach()
+    target_compile_options(test_search_core PRIVATE -fobjc-arc)
+    # Foundation only: linking fails if the code under test needs AppKit.
+    target_link_libraries(test_search_core PRIVATE "-framework Foundation")
+
+    add_custom_target(npp_tests
+        DEPENDS test_npp_regex test_boost_regex test_buffer_search test_search_core)
+
+    add_test(NAME regex_editor_engine COMMAND test_npp_regex)
+    add_test(NAME regex_boost_backend COMMAND test_boost_regex)
+    add_test(NAME buffer_search COMMAND test_buffer_search)
+    add_test(NAME search_core COMMAND test_search_core)
+    add_test(NAME regex_run_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run.sh")
+    add_test(NAME regex_run_boost_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run_boost.sh")
+    set_tests_properties(regex_run_sh regex_run_boost_sh PROPERTIES LABELS standalone TIMEOUT 600)
+endif()
