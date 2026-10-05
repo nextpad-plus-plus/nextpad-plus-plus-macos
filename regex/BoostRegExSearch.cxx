@@ -241,8 +241,6 @@ private:
 	class SearchParameters {
 	public:
 		Sci::Position nextCharacter(Sci::Position position) const;
-		bool isLineStart(Sci::Position position) const;
-		bool isLineEnd(Sci::Position position) const;
 
 		Document* _document;
 		const char *_regexString;
@@ -331,13 +329,12 @@ Sci::Position BoostRegexSearch::FindText(Document* doc, Sci::Position startPosit
 			regex_constants::ECMAScript
 			| (caseSensitive ? 0 : regex_constants::icase);
 		search._regexString = regexString;
-		// As on Windows: ^ and $ only match at the range ends when those are real
-		// line boundaries, so "foo$" does not match "foo" in "foobar" when the
-		// search range (e.g. a selection) stops after "foo".
+		// As on Windows (since 7.9.1): no match_not_bol/match_not_eol. The
+		// iterators carry the whole document (baseIterator), so ^ looks at the
+		// character before the range; $ also matches at the end of the range,
+		// e.g. "foo$" matches "foo" in "foobar" when a selection stops there.
 		search._boostRegexFlags =
-			  (search.isLineStart(search._startPosition) ? regex_constants::match_default : regex_constants::match_not_bol)
-			| (search.isLineEnd(search._endPosition)     ? regex_constants::match_default : regex_constants::match_not_eol)
-			| ((static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_DOTMATCHESNL) ? regex_constants::match_default : regex_constants::match_not_dot_newline);
+			((static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_DOTMATCHESNL) ? regex_constants::match_default : regex_constants::match_not_dot_newline);
 
 		const int empty_match_style = static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_EMPTYMATCH_MASK;
 		const int allow_empty_at_start = static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART;
@@ -494,20 +491,6 @@ Sci::Position BoostRegexSearch::SearchParameters::nextCharacter(Sci::Position po
 		return position + 2;
 	else
 		return std::max(_document->NextPosition(position, 1), position + 1);
-}
-
-bool BoostRegexSearch::SearchParameters::isLineStart(Sci::Position position) const
-{
-	return (position == 0)
-		|| _document->CharAt(position-1) == '\n'
-		|| (_document->CharAt(position-1) == '\r' && _document->CharAt(position) != '\n');
-}
-
-bool BoostRegexSearch::SearchParameters::isLineEnd(Sci::Position position) const
-{
-	return (position == _document->Length())
-		|| _document->CharAt(position) == '\r'
-		|| (_document->CharAt(position) == '\n' && (position == 0 || _document->CharAt(position-1) != '\r'));
 }
 
 const char *BoostRegexSearch::SubstituteByPosition(Document* doc, const char *text, Sci::Position *length) {
