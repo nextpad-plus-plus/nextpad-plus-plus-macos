@@ -46,6 +46,14 @@
 #include "AnsiDocumentIterator.h"
 #include "BoostRegexSearch.h"
 
+// BOOST_REGEX_STANDALONE skips Boost.Config, which is what normally defines
+// BOOST_HAS_THREADS. Without it the regex traits cache (object_cache) has no
+// mutex, and Find in Files compiles regexes on a background queue while the
+// editor compiles its own on the main thread. CMake defines it too.
+#ifndef BOOST_HAS_THREADS
+#define BOOST_HAS_THREADS
+#endif
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"

@@ -24,7 +24,7 @@ for s in "${core[@]}"; do srcs+=("$sci/src/$s.cxx"); done
 # BoostRegExSearch.cxx provides CreateRegexSearch() (SCI_OWNREGEX), the engine
 # every editor Document uses.
 clang++ -std=c++17 -stdlib=libc++ \
-    -DSCI_NAMESPACE -DSCI_OWNREGEX -DSCINTILLA_QT=0 -DBOOST_REGEX_STANDALONE \
+    -DSCI_NAMESPACE -DSCI_OWNREGEX -DSCINTILLA_QT=0 -DBOOST_REGEX_STANDALONE -DBOOST_HAS_THREADS= \
     -I"$sci/include" -I"$sci/src" -I"$root/regex" \
     "$here/test_npp_regex.cxx" \
     "$root/regex/BoostRegExSearch.cxx" "$root/regex/UTF8DocumentIterator.cxx" \
