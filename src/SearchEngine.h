@@ -71,6 +71,7 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
     NPPReplaceFileUnrepresentable,   // result not encodable in the original encoding
     NPPReplaceFileDecodeNotClean,    // file did not decode cleanly; a rewrite would change other bytes
     NPPReplaceFileChangedOnDisk,     // file changed between read and write (e.g. saved in a tab)
+    NPPReplaceFileOpenModified,      // file is open in a tab with unsaved changes
     NPPReplaceFileWriteFailed,       // write error (see *error)
 };
 
@@ -138,11 +139,17 @@ typedef NS_ENUM(NSInteger, NPPReplaceFileStatus) {
 /// *encodingOut set to that encoding. A file whose decoded text does not
 /// re-encode to its original bytes (NPPReplaceFileDecodeNotClean) or that
 /// changed on disk since it was read (NPPReplaceFileChangedOnDisk) is also
-/// left untouched. Safe to call off the main thread.
+/// left untouched. The new contents are staged in a temp file and committed
+/// by a rename on the main thread, where editor saves also run, so a save
+/// can't slip in between the final check and the write. isOpenAndModified
+/// (optional, called on the main thread just before the commit) returns YES
+/// to skip a file that has unsaved changes in an editor tab
+/// (NPPReplaceFileOpenModified). Safe to call off the main thread.
 + (NPPReplaceFileStatus)replaceAllInFile:(NSString *)path
                                  options:(NPPFindOptions *)opts
                         replacementCount:(NSInteger *)replacementCount
                                 encoding:(nullable NSStringEncoding *)encodingOut
+                       isOpenAndModified:(nullable BOOL (^)(NSString *path))isOpenAndModified
                                    error:(NSError * _Nullable * _Nullable)error;
 
 @end

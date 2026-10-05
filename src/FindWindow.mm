@@ -1075,6 +1075,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 + (void)_replaceInResults:(NSArray<NPPFileResults *> *)results
                   options:(NPPFindOptions *)opts
                     token:(NPPCancelToken *)token
+        isOpenAndModified:(BOOL (^)(NSString *path))isOpenAndModified
              replacements:(NSInteger *)totalReplacements
              changedFiles:(NSInteger *)changedFiles
                  problems:(NSMutableArray<NSDictionary *> *)problems {
@@ -1090,18 +1091,39 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                                                              options:opts
                                                     replacementCount:&count
                                                             encoding:&enc
+                                                   isOpenAndModified:isOpenAndModified
                                                                error:&writeError];
             if (st == NPPReplaceFileReplaced) {
                 *totalReplacements += count;
                 (*changedFiles)++;
             } else if (st == NPPReplaceFileUnrepresentable || st == NPPReplaceFileDecodeNotClean
-                       || st == NPPReplaceFileChangedOnDisk || st == NPPReplaceFileWriteFailed) {
+                       || st == NPPReplaceFileChangedOnDisk || st == NPPReplaceFileOpenModified
+                       || st == NPPReplaceFileWriteFailed) {
                 NSMutableDictionary *p = [@{ @"path": fr.filePath, @"status": @(st), @"encoding": @(enc) } mutableCopy];
                 if (writeError.localizedDescription) p[@"error"] = writeError.localizedDescription;
                 [problems addObject:p];
             }
         }
     }
+}
+
+/// Check passed to +[SearchEngine replaceAllInFile:...], which calls it on
+/// the main thread right before committing a file: YES when the file is open
+/// in a tab with unsaved changes. Rewriting it underneath the tab would leave
+/// the user choosing between their edits and the replacement, so skip it.
+- (BOOL (^)(NSString *path))_unsavedEditorCheck {
+    __weak FindWindow *weakSelf = self;
+    return ^BOOL(NSString *path) {
+        FindWindow *strongSelf = weakSelf;
+        if (!strongSelf) return NO;
+        NSString *want = path.stringByResolvingSymlinksInPath.stringByStandardizingPath;
+        for (EditorView *ed in [strongSelf->_delegate allOpenEditors]) {
+            if (!ed.isModified || !ed.filePath) continue;
+            if ([ed.filePath.stringByResolvingSymlinksInPath.stringByStandardizingPath isEqualToString:want])
+                return YES;
+        }
+        return NO;
+    };
 }
 
 /// Main-thread tail of Replace in Files / Replace in Projects.
@@ -1133,6 +1155,8 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             reason = [NSString stringWithFormat:
                 [loc translate:@"skipped, the result cannot be saved in the file's encoding (%@) without data loss"],
                 encName];
+        } else if (st == NPPReplaceFileOpenModified) {
+            reason = [loc translate:@"skipped, the file has unsaved changes in an open tab"];
         } else if (st == NPPReplaceFileDecodeNotClean) {
             reason = [loc translate:@"skipped, the file did not decode cleanly, so rewriting it could change other bytes"];
         } else {
@@ -1202,6 +1226,8 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NSString *doneFmt      = [loc translate:@"Replace in Files: %ld replacement(s) in %ld file(s)."];
     NSString *cancelledFmt = [loc translate:@"Replace in Files cancelled: %ld replacement(s) in %ld file(s)."];
 
+    BOOL (^isOpenAndModified)(NSString *) = [self _unsavedEditorCheck];
+
     // Search and rewrite both run off the main thread so the Cancel button
     // stays live; files already rewritten when Cancel lands stay rewritten.
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1210,6 +1236,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         NSInteger totalReplacements = 0, changedFiles = 0;
         NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
         [FindWindow _replaceInResults:results options:opts token:token
+                    isOpenAndModified:isOpenAndModified
                          replacements:&totalReplacements changedFiles:&changedFiles
                              problems:problems];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1342,6 +1369,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [self _showStatus:[loc translate:@"Replacing in files..."] found:YES];
     NSString *doneFmt      = [loc translate:@"Replace in Projects: %ld replacement(s) in %ld file(s)."];
     NSString *cancelledFmt = [loc translate:@"Replace in Projects cancelled: %ld replacement(s) in %ld file(s)."];
+    BOOL (^isOpenAndModified)(NSString *) = [self _unsavedEditorCheck];
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSArray<NPPFileResults *> *results = [SearchEngine findInFilePaths:allPaths
@@ -1349,6 +1377,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         NSInteger totalReplacements = 0, changedFiles = 0;
         NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
         [FindWindow _replaceInResults:results options:opts token:token
+                    isOpenAndModified:isOpenAndModified
                          replacements:&totalReplacements changedFiles:&changedFiles
                              problems:problems];
         dispatch_async(dispatch_get_main_queue(), ^{

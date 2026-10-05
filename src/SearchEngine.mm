@@ -3,6 +3,9 @@
 #import "NppScintillaIDs.h"
 #import "NppTextEncoding.h"
 #include <atomic>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
 // EMPTYMATCH_* / SKIPCRLFASONE flag constants — matches Windows
 // boostregex/BoostRegexSearch.h. Consumed by regex/NppRegexSearch.cxx (our
 // SCI_OWNREGEX implementation).
@@ -574,12 +577,15 @@ static NSString *nppRegexReplacement(NSString *replacement,
                                  options:(NPPFindOptions *)opts
                         replacementCount:(NSInteger *)replacementCount
                                 encoding:(nullable NSStringEncoding *)encodingOut
+                       isOpenAndModified:(nullable BOOL (^)(NSString *path))isOpenAndModified
                                    error:(NSError **)error {
     if (replacementCount) *replacementCount = 0;
-    // Remember size + mtime from before the read; checked again just before
-    // the write (see below).
+    // Remember size, mtime and inode from before the read; checked again at
+    // commit time (see below). Work on the symlink target so the check and
+    // the final rename apply to the real file, not the link.
+    NSString *target = [path stringByResolvingSymlinksInPath];
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSDictionary *attrsBefore = [fm attributesOfItemAtPath:path error:nil];
+    NSDictionary *attrsBefore = [fm attributesOfItemAtPath:target error:nil];
     NSStringEncoding enc = NSUTF8StringEncoding;
     BOOL hasBOM = NO;
     NSData *original = nil;
@@ -610,19 +616,92 @@ static NSString *nppRegexReplacement(NSString *replacement,
     NSData *out = NppEncodeTextData(replaced, enc, hasBOM);
     if (!out) return NPPReplaceFileUnrepresentable;
 
-    // Replace runs off the main thread, so the user may have saved this file
-    // from an editor tab since we read it. Writing now would silently drop
-    // that save; skip the file instead if its size or mtime moved.
-    NSDictionary *attrsNow = [fm attributesOfItemAtPath:path error:nil];
-    if (!attrsBefore || !attrsNow
-        || ![attrsBefore.fileModificationDate isEqualToDate:attrsNow.fileModificationDate]
-        || attrsBefore.fileSize != attrsNow.fileSize)
-        return NPPReplaceFileChangedOnDisk;
+    if (!attrsBefore) return NPPReplaceFileChangedOnDisk;
 
-    if (![out writeToFile:path options:NSDataWritingAtomic error:error])
-        return NPPReplaceFileWriteFailed;
+    // Replace runs off the main thread, so the user may save this file from
+    // an editor tab while we work. A check-then-write is not enough: an
+    // atomic write creates its temp file and renames *after* the check, and
+    // a save landing in between is overwritten. So stage the new bytes in a
+    // temp file next to the original first, then validate and rename as one
+    // step on the main thread. Editor saves run on the main thread too, so
+    // none can interleave with the commit.
+    NSString *staged = [self _stageReplacement:out forFile:target
+                                    permissions:(mode_t)attrsBefore.filePosixPermissions
+                                          error:error];
+    if (!staged) return NPPReplaceFileWriteFailed;
+
+    __block NPPReplaceFileStatus status = NPPReplaceFileReplaced;
+    __block NSError *commitError = nil;
+    void (^commit)(void) = ^{
+        if (isOpenAndModified && isOpenAndModified(path)) {
+            status = NPPReplaceFileOpenModified;
+            return;
+        }
+        // Size + mtime + inode: an editor's atomic save swaps the inode even
+        // when size and mtime happen to match.
+        NSDictionary *attrsNow = [fm attributesOfItemAtPath:target error:nil];
+        if (!attrsNow
+            || ![attrsBefore.fileModificationDate isEqualToDate:attrsNow.fileModificationDate]
+            || attrsBefore.fileSize != attrsNow.fileSize
+            || attrsBefore.fileSystemFileNumber != attrsNow.fileSystemFileNumber) {
+            status = NPPReplaceFileChangedOnDisk;
+            return;
+        }
+        if (rename(staged.fileSystemRepresentation, target.fileSystemRepresentation) != 0) {
+            commitError = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+            status = NPPReplaceFileWriteFailed;
+        }
+    };
+    if ([NSThread isMainThread]) commit();
+    else dispatch_sync(dispatch_get_main_queue(), commit);
+
+    if (status != NPPReplaceFileReplaced) {
+        unlink(staged.fileSystemRepresentation);
+        if (error && commitError) *error = commitError;
+        return status;
+    }
     if (replacementCount) *replacementCount = count;
     return NPPReplaceFileReplaced;
+}
+
+/// Write `data` to a new temp file in the same directory as `file` (same
+/// volume, so the later rename is atomic), with the original file's
+/// permission bits. Returns the temp path, or nil with *error set.
++ (nullable NSString *)_stageReplacement:(NSData *)data
+                                 forFile:(NSString *)file
+                             permissions:(mode_t)permissions
+                                   error:(NSError **)error {
+    NSString *templ = [[file stringByDeletingLastPathComponent] stringByAppendingPathComponent:
+        [NSString stringWithFormat:@".%@.npp-replace-XXXXXX", file.lastPathComponent]];
+    char *buf = strdup(templ.fileSystemRepresentation);
+    int fd = mkstemp(buf);
+    if (fd < 0) {
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:nil];
+        free(buf);
+        return nil;
+    }
+    NSString *staged = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:buf
+                                                                                  length:strlen(buf)];
+    free(buf);
+    BOOL ok = YES;
+    const uint8_t *p = (const uint8_t *)data.bytes;
+    NSUInteger left = data.length;
+    while (ok && left > 0) {
+        ssize_t n = write(fd, p, left);
+        if (n < 0) { if (errno == EINTR) continue; ok = NO; break; }
+        p += n;
+        left -= (NSUInteger)n;
+    }
+    if (ok && fchmod(fd, permissions & 07777) != 0) ok = NO;
+    if (ok && fsync(fd) != 0) ok = NO;
+    int savedErrno = errno;
+    if (close(fd) != 0 && ok) { ok = NO; savedErrno = errno; }
+    if (!ok) {
+        unlink(staged.fileSystemRepresentation);
+        if (error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:savedErrno userInfo:nil];
+        return nil;
+    }
+    return staged;
 }
 
 #pragma mark - Find in Directory
