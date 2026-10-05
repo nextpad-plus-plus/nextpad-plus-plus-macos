@@ -5092,6 +5092,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     NSMutableArray *recents = [([ud stringArrayForKey:@"RecentFiles"] ?: @[]) mutableCopy];
     [recents removeObject:path];
     [recents insertObject:path atIndex:0];
+    [self _forgetClosedFile:path];  // open again: no longer a closed file
     if (recents.count > 15) [recents removeLastObject];
     [ud setObject:recents forKey:@"RecentFiles"];
     [self rebuildRecentFilesMenu];
@@ -5137,6 +5138,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
 
 - (void)clearRecentFiles:(id)sender {
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"RecentFiles"];
+    [self _clearClosedFiles];  // Windows keeps both in one list
     [self rebuildRecentFilesMenu];
 }
 
@@ -5148,7 +5150,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
 // not per window, so the tabs of a window that was closed can still come back,
 // and it lives in memory only: open tabs already survive a relaunch through the
 // session. Untitled tabs are never recorded; like Windows, there is no path to
-// reopen.
+// reopen. As on Windows, opening a file drops it from the stack.
 static const NSUInteger kClosedFileStackMax = 30;
 
 static NSMutableArray<NSDictionary *> *closedFileStack(void) {
@@ -5157,6 +5159,15 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
     dispatch_once(&once, ^{ stack = [NSMutableArray array]; });
     return stack;
 }
+
+- (void)_forgetClosedFile:(NSString *)path {
+    NSMutableArray<NSDictionary *> *stack = closedFileStack();
+    [stack removeObjectsAtIndexes:[stack indexesOfObjectsPassingTest:^BOOL(NSDictionary *e, NSUInteger i, BOOL *stop) {
+        return [e[@"filePath"] isEqualToString:path];
+    }]];
+}
+
+- (void)_clearClosedFiles { [closedFileStack() removeAllObjects]; }
 
 /// Push `ed` (about to close, owned by `mgr`) onto the closed-file stack with
 /// the view state needed to put it back where it was.
@@ -5176,54 +5187,83 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
     entry[@"xOffset"]          = @([sci message:SCI_GETXOFFSET]);
     // Only a buffer that matches the disk says how to read the file. With unsaved
     // changes being discarded, a Set/Convert encoding may describe bytes that were
-    // never written.
-    if (!ed.isModified && !ed.largeFileMode) {
+    // never written. The file's date and size let the restore tell whether those
+    // bytes are still the ones on disk.
+    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+    if (!ed.isModified && !ed.largeFileMode && attrs.fileModificationDate) {
         entry[@"encoding"] = @(ed.fileEncoding);
         entry[@"hasBOM"]   = @(ed.hasBOM);
+        entry[@"fileDate"] = attrs.fileModificationDate;
+        entry[@"fileSize"] = @(attrs.fileSize);
     }
 
+    [self _forgetClosedFile:path];
     NSMutableArray<NSDictionary *> *stack = closedFileStack();
-    NSIndexSet *older = [stack indexesOfObjectsPassingTest:^BOOL(NSDictionary *e, NSUInteger i, BOOL *stop) {
-        return [e[@"filePath"] isEqualToString:path];
-    }];
-    [stack removeObjectsAtIndexes:older];
     [stack addObject:entry];
     if (stack.count > kClosedFileStackMax) [stack removeObjectAtIndex:0];
 }
 
 - (void)tabManager:(id)tabManager willCloseEditor:(EditorView *)editor {
-    // A clone still open in the other view keeps the document open.
-    if (editor.cloneSibling) return;
+    // A clone still open in the other view keeps the document open. A batch
+    // run closing the files it processed is not the user closing tabs.
+    if (editor.cloneSibling || _suppressClosedFileRecording) return;
     [self _recordClosedEditor:editor inManager:tabManager];
 }
 
-- (BOOL)_hasRestorableClosedFile {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    for (NSDictionary *e in closedFileStack())
-        if ([fm fileExistsAtPath:e[@"filePath"]]) return YES;
-    return NO;
-}
-
-/// Select the tab showing `path` in any live window. Returns NO if none does.
-- (BOOL)_focusOpenEditorForPath:(NSString *)path {
-    for (MainWindowController *mwc in [self _sessionContributingControllers]) {
-        for (TabManager *mgr in [mwc sessionTabManagers]) {
-            NSUInteger idx = [mgr.allEditors indexOfObjectPassingTest:^BOOL(EditorView *e, NSUInteger i, BOOL *stop) {
-                return [e.filePath isEqualToString:path];
-            }];
-            if (idx == NSNotFound) continue;
-            if (mwc != self) [mwc.window makeKeyAndOrderFront:nil];
-            [mgr selectTabAtIndex:(NSInteger)idx];
-            return YES;
+/// Record every tab of this window as it closes. A clone pair is recorded once,
+/// from the view met first (primary before secondary), and the active tab goes
+/// last so it is the first to come back.
+- (void)_recordClosedTabsOfWindow {
+    EditorView *active = [self currentEditor];
+    TabManager *activeMgr = nil;
+    NSMapTable<EditorView *, TabManager *> *recorded = [NSMapTable strongToStrongObjectsMapTable];
+    for (TabManager *mgr in [self sessionTabManagers]) {
+        for (EditorView *ed in mgr.allEditors) {
+            if (ed == active) { activeMgr = mgr; continue; }
+            if (ed.cloneSibling && ([recorded objectForKey:ed.cloneSibling] || ed.cloneSibling == active)) continue;
+            [self _recordClosedEditor:ed inManager:mgr];
+            [recorded setObject:mgr forKey:ed];
         }
     }
+    if (!activeMgr) return;
+    TabManager *siblingMgr = active.cloneSibling ? [recorded objectForKey:active.cloneSibling] : nil;
+    if (siblingMgr) [self _recordClosedEditor:active.cloneSibling inManager:siblingMgr];
+    else            [self _recordClosedEditor:active inManager:activeMgr];
+}
+
+/// Paths of every file open in a live window.
+- (NSSet<NSString *> *)_openFilePaths {
+    NSMutableSet<NSString *> *paths = [NSMutableSet set];
+    for (MainWindowController *mwc in [self _sessionContributingControllers])
+        for (TabManager *mgr in [mwc sessionTabManagers])
+            for (EditorView *ed in mgr.allEditors)
+                if (ed.filePath) [paths addObject:ed.filePath];
+    return paths;
+}
+
+/// Menu validation runs often, so no disk access here: an entry whose file has
+/// gone is skipped when the command runs.
+- (BOOL)_hasRestorableClosedFile {
+    NSArray<NSDictionary *> *stack = closedFileStack();
+    if (stack.count == 0) return NO;
+    NSSet<NSString *> *open = [self _openFilePaths];
+    for (NSDictionary *e in stack)
+        if (![open containsObject:e[@"filePath"]]) return YES;
     return NO;
 }
 
 - (void)_applyClosedFileState:(NSDictionary *)entry toEditor:(EditorView *)ed {
+    // Reapply the encoding only to the same bytes it was chosen for, and never
+    // over one the fresh load read from a BOM. reloadWithEncoding: does not
+    // validate the decode and leaves the buffer clean, so a wrong guess here
+    // would be written back by the next save.
     NSNumber *enc = entry[@"encoding"];
     BOOL bom = [entry[@"hasBOM"] boolValue];
-    if (enc && !ed.largeFileMode && (enc.unsignedIntegerValue != ed.fileEncoding || bom != ed.hasBOM))
+    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:ed.filePath error:nil];
+    BOOL unchanged = attrs && [attrs.fileModificationDate isEqualToDate:entry[@"fileDate"]] &&
+                     attrs.fileSize == [entry[@"fileSize"] unsignedLongLongValue];
+    if (enc && unchanged && !ed.largeFileMode && !ed.hasBOM &&
+        (enc.unsignedIntegerValue != ed.fileEncoding || bom != ed.hasBOM))
         [ed reloadWithEncoding:enc.unsignedIntegerValue hasBOM:bom error:nil];
 
     NSString *lang = entry[@"language"];
@@ -5247,18 +5287,19 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
 }
 
 /// File > Restore Recent Closed File: reopen the most recently closed file tab
-/// with its view state. Entries whose file is gone are dropped on the way; one
-/// whose file is already open is focused and dropped.
+/// with its view state. Entries whose file is gone or already open are dropped
+/// on the way.
 - (void)restoreRecentClosedFile:(id)sender {
     NSMutableArray<NSDictionary *> *stack = closedFileStack();
     NSFileManager *fm = [NSFileManager defaultManager];
+    NSSet<NSString *> *open = [self _openFilePaths];
     while (stack.count) {
         NSDictionary *entry = stack.lastObject;
         [stack removeLastObject];
         NSString *path = entry[@"filePath"];
+        if ([open containsObject:path]) continue;
         BOOL isDir = NO;
         if (![fm fileExistsAtPath:path isDirectory:&isDir] || isDir) continue;
-        if ([self _focusOpenEditorForPath:path]) return;
 
         // Back to the secondary view it came from, unless the other split
         // orientation is in use (the two are mutually exclusive).
@@ -11381,10 +11422,7 @@ static int64_t _sysctlInt(const char *name) {
     }
     // Closing a window closes its tabs; keep them restorable from another
     // window. Quitting does not close tabs, so it records nothing.
-    if (!terminating)
-        for (TabManager *mgr in [self sessionTabManagers])
-            for (EditorView *ed in mgr.allEditors)
-                [self _recordClosedEditor:ed inManager:mgr];
+    if (!terminating) [self _recordClosedTabsOfWindow];
     writeConfigXML();
     return YES;
 }
