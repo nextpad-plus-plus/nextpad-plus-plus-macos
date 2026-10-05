@@ -541,6 +541,7 @@ static NSString *normalizeForLookup(NSString *s) {
         @"show symbol":                    @"submenu:view-showSymbol",
         @"zoom":                           @"submenu:view-zoom",
         @"move/clone current document":    @"submenu:view-moveCloneDocument",
+        @"move to new window":             @"cmd:10003",  // Windows says "Move to New Instance"
         @"tab":                            @"submenu:view-tab",
         @"fold level":                     @"submenu:view-collapseLevel",
         @"unfold level":                   @"submenu:view-uncollapseLevel",
