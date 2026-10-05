@@ -2062,6 +2062,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
 
     // Scroll synchronization
     BOOL _syncVerticalScrolling;
+    BOOL _inCloseBatch;   // -_closeEditors:inManager: is closing several tabs
     BOOL _syncHorizontalScrolling;
     intptr_t _syncColumnDelta;  // column offset between views when sync was enabled
     intptr_t _syncLineDelta;    // line offset between views when sync was enabled
@@ -6437,17 +6438,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     [self updateTitle];
 }
 
+/// The Scintilla document `ed` shows (shared by an editor and its clone).
+static sptr_t NppDocumentOf(EditorView *ed) {
+    return ed ? [ed.scintillaView message:SCI_GETDOCPOINTER] : 0;
+}
+
 // Clone: share the same Scintilla document in the other view.
 // Both views stay in sync — edits in one appear in the other.
 - (void)_cloneEditor:(EditorView *)ed toVertical:(BOOL)vertical {
     if (!ed) return;
     TabManager *sub = vertical ? _subTabManagerV : _subTabManagerH;
-    EditorView *clone = [sub addNewTab];
-    [clone shareDocumentFrom:ed];
-    [sub refreshCurrentTabTitle];
-    if (vertical) [self _ensureVerticalViewVisible];
-    else          [self _ensureHorizontalViewVisible];
-    [self updateTitle];
+    // Like the move above (and Windows' Clone to Other View): a tab that is
+    // already in the split pane clones into the primary one.
+    TabManager *dst = ([self _managerOwningEditor:ed] == sub) ? _tabManager : sub;
+    [self _cloneEditor:ed into:dst ofController:self atIndex:NSIntegerMax];
 }
 
 - (void)moveToOtherVerticalView:(id)sender {
@@ -6494,9 +6498,15 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 #pragma mark - Tab tear-off / Move to New Window
 
-// A tab can leave its window in two ways: dragged out of the tab bar (or
-// "Move to New Window" from the tab menu), which opens a new window holding
-// it, or dropped onto another window's tab bar. Either way the SAME EditorView
+// A tab dragged off its tab bar goes where Windows Notepad++ sends it
+// (TCN_TABDROPPEDOUTSIDE), with Option standing in for Ctrl:
+//  - onto its own pane's text area: a menu offers Move/Clone to Other View;
+//  - onto another pane's tab bar or text area, in this window or another:
+//    it moves there (Option: a clone opens there);
+//  - anywhere else in one of this app's windows: nothing happens;
+//  - outside every window: a new window opens holding it (Option: a clone).
+// "Move to New Window" in the tab menu also opens a new window. A moved tab
+// is the SAME EditorView
 // object moves, exactly as "Move to Other View" moves it between panes: the
 // buffer, undo history, unsaved changes, encoding, language, bookmarks, file
 // monitoring and backup file all travel with it, and nothing is reloaded from
@@ -6552,25 +6562,170 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
     [self _moveEditor:ed toNewWindowAtScreenPoint:NSZeroPoint placeAtPoint:NO];
 }
 
-// TabManagerDelegate. A window's only tab is not torn off: there is nothing
-// to separate it from (Windows Notepad++ refuses the same drag). It can still
-// be dropped onto another window's tab bar, which then closes this window.
-- (BOOL)tabManager:(TabManager *)tabManager canDetachEditor:(EditorView *)editor {
-    return [self _totalEditorCount] > 1;
+typedef NS_ENUM(NSInteger, NppTabDrop) {
+    NppTabDropNone,        // over this app's chrome: nothing happens
+    NppTabDropOwnPane,     // over the tab's own pane's text area: offer a menu
+    NppTabDropOtherPane,   // over another pane's text area (any window)
+    NppTabDropNewWindow,   // outside every window of this app
+};
+
+/// Where a tab dragged out of `src` and released at `sp` (away from every tab
+/// bar) goes. For NppTabDropOtherPane, `*outPane` and `*outMWC` name the pane.
+- (NppTabDrop)_tabDropAtScreenPoint:(NSPoint)sp source:(TabManager *)src
+                               pane:(TabManager * __strong *)outPane
+                         controller:(MainWindowController * __strong *)outMWC {
+    // The window under the pointer, looking beneath the click-through drag
+    // ghost that floats there while the tab is being dragged.
+    NSInteger num = [NSWindow windowNumberAtPoint:sp belowWindowWithWindowNumber:0];
+    NSWindow *win = [NSApp windowWithWindowNumber:num];
+    for (int i = 0; i < 4 && win.ignoresMouseEvents; i++) {
+        num = [NSWindow windowNumberAtPoint:sp belowWindowWithWindowNumber:num];
+        win = [NSApp windowWithWindowNumber:num];
+    }
+    if (!win) return NppTabDropNewWindow;     // the desktop or another app
+
+    MainWindowController *mwc = nil;
+    id appDel = NSApp.delegate;
+    if ([appDel isKindOfClass:[AppDelegate class]])
+        for (MainWindowController *c in [(AppDelegate *)appDel windowControllers])
+            if (c.window == win && !c.windowHasClosed) { mwc = c; break; }
+    if (!mwc) return NppTabDropNone;          // Find, Settings, a floating panel
+
+    for (TabManager *mgr in [mwc sessionTabManagers]) {
+        NSView *area = mgr.contentView;
+        // A collapsed split pane has no visible area and is not a target.
+        if (area.isHiddenOrHasHiddenAncestor || NSIsEmptyRect(area.visibleRect)) continue;
+        NSPoint p = [area convertPoint:[win convertPointFromScreen:sp] fromView:nil];
+        if (!NSPointInRect(p, area.visibleRect)) continue;
+        if (mgr == src) return NppTabDropOwnPane;
+        if (outPane) *outPane = mgr;
+        if (outMWC)  *outMWC  = mwc;
+        return NppTabDropOtherPane;
+    }
+    return NppTabDropNone;                    // toolbar, status bar, side panel
 }
 
-- (void)tabManager:(TabManager *)tabManager detachEditor:(EditorView *)editor
-     toScreenPoint:(NSPoint)screenPoint {
-    [self _moveEditor:editor toNewWindowAtScreenPoint:screenPoint placeAtPoint:YES];
+// TabManagerDelegate.
+- (BOOL)tabManager:(TabManager *)tabManager canReleaseEditor:(EditorView *)editor
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
+    switch ([self _tabDropAtScreenPoint:screenPoint source:tabManager pane:NULL controller:NULL]) {
+        case NppTabDropNone:      return NO;
+        case NppTabDropOwnPane:
+        case NppTabDropOtherPane: return YES;
+        // A window's only tab is not moved out to a new window: there is
+        // nothing to separate it from. A clone of it can still go.
+        case NppTabDropNewWindow: return copy || [self _totalEditorCount] > 1;
+    }
+    return NO;
+}
+
+- (BOOL)tabManager:(TabManager *)tabManager releaseEditor:(EditorView *)editor
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy {
+    if (![self tabManager:tabManager canReleaseEditor:editor atScreenPoint:screenPoint copy:copy])
+        return NO;
+    TabManager *pane = nil;
+    MainWindowController *dstMWC = nil;
+    switch ([self _tabDropAtScreenPoint:screenPoint source:tabManager pane:&pane controller:&dstMWC]) {
+        case NppTabDropNone:
+            return NO;
+        case NppTabDropOwnPane:
+            [self _showTabDropMenuForEditor:editor inPane:tabManager atScreenPoint:screenPoint];
+            return YES;
+        case NppTabDropOtherPane:
+            if (copy) [self _cloneEditor:editor into:pane ofController:dstMWC atIndex:NSIntegerMax];
+            else      [self _transferEditor:editor from:tabManager to:pane ofController:dstMWC
+                                    atIndex:NSIntegerMax];
+            return YES;
+        case NppTabDropNewWindow:
+            if (copy) {
+                // A tab already linked to a clone cannot get another one.
+                if (editor.cloneSibling) { NSBeep(); return YES; }
+                MainWindowController *dst = [self _newWindowForTabAtScreenPoint:screenPoint placeAtPoint:YES];
+                if (dst) [self _cloneEditor:editor into:dst->_tabManager ofController:dst atIndex:0];
+            } else {
+                [self _moveEditor:editor toNewWindowAtScreenPoint:screenPoint placeAtPoint:YES];
+            }
+            return YES;
+    }
+    return NO;
 }
 
 - (void)tabManager:(TabManager *)tabManager moveEditor:(EditorView *)editor
-      toTabManager:(TabManager *)target atIndex:(NSInteger)index {
+      toTabManager:(TabManager *)target atIndex:(NSInteger)index copy:(BOOL)copy {
     id owner = target.delegate;
     if (![owner isKindOfClass:[MainWindowController class]]) return;
     MainWindowController *dstMWC = (MainWindowController *)owner;
     if (dstMWC.windowHasClosed) return;
-    [self _transferEditor:editor from:tabManager to:target ofController:dstMWC atIndex:index];
+    if (copy) [self _cloneEditor:editor into:target ofController:dstMWC atIndex:index];
+    else      [self _transferEditor:editor from:tabManager to:target ofController:dstMWC atIndex:index];
+}
+
+/// The menu Windows Notepad++ shows when a tab is dropped on its own text
+/// area. Its commands act on the current document, so the dropped tab is
+/// selected first; they are validated like the View > Move/Clone items.
+- (void)_showTabDropMenuForEditor:(EditorView *)ed inPane:(TabManager *)pane
+                    atScreenPoint:(NSPoint)sp {
+    NSUInteger idx = [pane.allEditors indexOfObject:ed];
+    if (idx == NSNotFound) return;
+    [pane selectTabAtIndex:(NSInteger)idx];
+
+    NppLocalizer *loc = [NppLocalizer shared];
+    NSMenu *menu = [[NSMenu alloc] init];
+    NSArray *items = @[
+        @[@"Move to Other Vertical View",    NSStringFromSelector(@selector(moveToOtherVerticalView:))],
+        @[@"Clone to Other Vertical View",   NSStringFromSelector(@selector(cloneToOtherVerticalView:))],
+        @[@""],
+        @[@"Move to Other Horizontal View",  NSStringFromSelector(@selector(moveToOtherHorizontalView:))],
+        @[@"Clone to Other Horizontal View", NSStringFromSelector(@selector(cloneToOtherHorizontalView:))],
+    ];
+    for (NSArray *it in items) {
+        if (it.count < 2) { [menu addItem:[NSMenuItem separatorItem]]; continue; }
+        NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:[loc translate:it[0]]
+                                                    action:NSSelectorFromString(it[1])
+                                             keyEquivalent:@""];
+        mi.target = self;
+        [menu addItem:mi];
+    }
+    NSView *view = self.window.contentView;
+    NSPoint p = [view convertPoint:[self.window convertPointFromScreen:sp] fromView:nil];
+    [menu popUpMenuPositioningItem:nil atLocation:p inView:view];
+}
+
+/// Open a clone of `ed` (sharing its document) in pane `dst` of `dstMWC`,
+/// at insertion slot `index` (clamped). As in Windows, a pane that already
+/// shows the document just activates that tab.
+- (void)_cloneEditor:(EditorView *)ed into:(TabManager *)dst
+        ofController:(MainWindowController *)dstMWC atIndex:(NSInteger)index {
+    if (!ed || !dst || !dstMWC) return;
+    sptr_t doc = NppDocumentOf(ed);
+    NSArray<EditorView *> *existing = dst.allEditors;
+    for (NSUInteger i = 0; i < existing.count; i++) {
+        if (NppDocumentOf(existing[i]) == doc) {
+            [dst selectTabAtIndex:(NSInteger)i];
+            if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
+            return;
+        }
+    }
+    // cloneSibling links exactly one pair of tabs (Save As, closing and the
+    // save prompt rely on it), so a document is shown by at most two tabs.
+    // Windows has the same limit: one tab per view, and two views.
+    if (ed.cloneSibling) { NSBeep(); return; }
+    EditorView *clone = [dst addNewTab];
+    [clone shareDocumentFrom:ed];
+    // Unpinned tabs follow the leading run of pinned ones.
+    NSInteger pinnedRun = 0;
+    while (pinnedRun < dst.tabBar.tabCount && [dst.tabBar isTabPinnedAtIndex:pinnedRun]) pinnedRun++;
+    NSInteger at = (NSInteger)dst.allEditors.count - 1;
+    NSInteger want = MAX(pinnedRun, MIN(index, at));
+    for (; at > want; at--) [dst swapEditorAtIndex:at withIndex:at - 1];
+    [dst selectTabAtIndex:want];
+    [dst refreshCurrentTabTitle];
+
+    if (dst == dstMWC->_subTabManagerV)      [dstMWC _ensureVerticalViewVisible];
+    else if (dst == dstMWC->_subTabManagerH) [dstMWC _ensureHorizontalViewVisible];
+    if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
+    [dstMWC updateTitle];
+    [dstMWC updateStatusBar];
 }
 
 /// Open a new window holding `ed`. With `placeAtPoint`, the window takes this
@@ -6581,8 +6736,16 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
        placeAtPoint:(BOOL)placeAtPoint {
     TabManager *src = [self _managerOwningEditor:ed];
     if (!src || [self _totalEditorCount] < 2) return;
+    MainWindowController *dst = [self _newWindowForTabAtScreenPoint:screenPoint placeAtPoint:placeAtPoint];
+    if (!dst) return;
+    [self _transferEditor:ed from:src to:dst->_tabManager ofController:dst atIndex:0];
+}
+
+/// A new, empty window for a tab leaving this one. See -_moveEditor:toNewWindowAtScreenPoint:placeAtPoint:.
+- (nullable MainWindowController *)_newWindowForTabAtScreenPoint:(NSPoint)screenPoint
+                                                   placeAtPoint:(BOOL)placeAtPoint {
     id appDel = NSApp.delegate;
-    if (![appDel isKindOfClass:[AppDelegate class]]) return;
+    if (![appDel isKindOfClass:[AppDelegate class]]) return nil;
 
     // Size: this window's, unless it is full screen (a new window must not
     // copy the screen-filling size), in which case the stock 1024x768.
@@ -6612,7 +6775,7 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
     if (screen) frame = [self _frame:frame fittedToScreen:screen];
 
     MainWindowController *dst = [(AppDelegate *)appDel openNewWindowWithFrame:frame];
-    if (!dst) return;
+    if (!dst) return nil;
     if (!placeAtPoint) {
         // Menu command: cascade from this window the standard way (with a
         // zero point the call on self.window only reports the next cascade
@@ -6624,7 +6787,7 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
         if (screen)
             [dst.window setFrame:[self _frame:dst.window.frame fittedToScreen:screen] display:NO];
     }
-    [self _transferEditor:ed from:src to:dst->_tabManager ofController:dst atIndex:0];
+    return dst;
 }
 
 /// Move `ed` from `src` (a pane of this window) to `dst` (a pane of `dstMWC`,
@@ -6635,6 +6798,21 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
     if (!ed || !src || !dst || src == dst || !dstMWC) return;
     NSInteger srcIdx = (NSInteger)[src.allEditors indexOfObject:ed];
     if (srcIdx == NSNotFound) return;
+
+    // `dst` already shows this document (its clone): as Windows does, show
+    // that tab and close this one, which the clone keeps the text alive for.
+    // Not when this is the window's only tab, which must move to close it.
+    if (ed.cloneSibling && [self _totalEditorCount] > 1) {
+        sptr_t doc = NppDocumentOf(ed);
+        NSArray<EditorView *> *there = dst.allEditors;
+        for (NSUInteger i = 0; i < there.count; i++) {
+            if (NppDocumentOf(there[i]) != doc) continue;
+            [dst selectTabAtIndex:(NSInteger)i];
+            if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
+            [src removeEditor:ed];
+            return;
+        }
+    }
     BOOL pinned = [src.tabBar isTabPinnedAtIndex:srcIdx];
     NSInteger colorId = [src.tabBar tabColorAtIndex:srcIdx];
 
@@ -8891,6 +9069,8 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
 }
 
 - (void)tabManager:(id)tabManager didCloseEditor:(EditorView *)editor {
+    TabManager *pane = tabManager;
+    if (pane.allEditors.count == 0) [self _paneEmptiedByClose:pane];
     [self updateTitle];
     if (_docListPanel) [_docListPanel reloadData];
 }
@@ -8907,6 +9087,28 @@ static const CGFloat kTearOffFullScreenTopGap = 90.0;
     // app will quit automatically.
     [self.window performClose:nil];
     return YES;
+}
+
+// A pane may lose its last tab to a close only while another pane of this
+// window still has tabs; the pane is then hidden (-_paneEmptiedByClose:).
+- (BOOL)tabManagerMayBecomeEmpty:(TabManager *)tabManager {
+    if (_inCloseBatch && tabManager == _tabManager) return NO;
+    return [self _totalEditorCount] - (NSInteger)tabManager.allEditors.count > 0;
+}
+
+/// Windows Notepad++ hides a view whose last tab is closed while the other
+/// view still has tabs. An emptied split pane collapses. The primary view
+/// cannot be hidden here, so it takes the split pane's tabs instead, which
+/// looks the same: one view holding the remaining documents.
+- (void)_paneEmptiedByClose:(TabManager *)pane {
+    if (pane != _tabManager) { [self _settleAfterEditorLeft:pane]; return; }
+    TabManager *sub = _subTabManagerV.allEditors.count ? _subTabManagerV : _subTabManagerH;
+    if (sub.allEditors.count == 0) { [_tabManager addNewTab]; return; }
+    EditorView *shown = sub.currentEditor;
+    for (EditorView *e in [sub.allEditors copy])
+        [self _transferEditor:e from:sub to:_tabManager ofController:self atIndex:NSIntegerMax];
+    NSUInteger i = [_tabManager.allEditors indexOfObject:shown];
+    if (i != NSNotFound) [_tabManager selectTabAtIndex:(NSInteger)i];
 }
 
 #pragma mark - Cursor notification
@@ -9195,10 +9397,13 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     BOOL allowAll = dirtyCount > 1;
 
     BOOL discardAll = NO;
+    // A batch that empties the primary view (Close All) leaves an untitled tab
+    // there rather than pulling the split pane's tabs in mid-batch.
+    _inCloseBatch = YES;
     for (EditorView *ed in editors) {
         if (ed.isModified && !ed.cloneSibling && !discardAll) {
             switch ([self _promptBatchSaveBeforeClose:ed allowAll:allowAll]) {
-                case NppBatchCloseCancel:     return;            // abort the whole batch
+                case NppBatchCloseCancel:     _inCloseBatch = NO; return;  // abort the whole batch
                 case NppBatchCloseDiscardAll: discardAll = YES; break;
                 case NppBatchCloseSaveAttempted:
                     if (ed.isModified) continue;                 // save failed/declined — keep this tab
@@ -9208,6 +9413,7 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
         }
         [mgr removeEditor:ed];
     }
+    _inCloseBatch = NO;
     [self updateTitle];
 }
 

@@ -15,23 +15,27 @@ NS_ASSUME_NONNULL_BEGIN
 /// with no implementer simply don't react to the gesture.
 - (void)tabBarDidRequestNewTab:(NppTabBar *)bar;
 
-// ── Tab tear-off ──
+// ── Dragging a tab off the bar ──
 // A drag that leaves the bar (vertically past a small band, or out of its
 // window) detaches the tab. Released over another visible NppTabBar, the tab
-// is offered to that bar; released anywhere else, it is torn off. A delegate
-// that implements neither of the did… methods keeps every drag inside the bar.
+// is offered to that bar; released anywhere else, the delegate decides what
+// happens. A delegate that implements neither of the did… methods keeps every
+// drag inside the bar. `copy` is YES when Option is held at release (Ctrl on
+// Windows): the tab is cloned rather than moved.
 
-/// Whether the tab may be torn off into a new window. Not consulted for a
-/// drop onto another bar. Defaults to YES when not implemented.
-- (BOOL)tabBar:(NppTabBar *)bar canDetachTabAtIndex:(NSInteger)index;
-/// The tab was released outside every tab bar. `screenPoint` is the pointer
-/// position in screen coordinates.
-- (void)tabBar:(NppTabBar *)bar didDetachTabAtIndex:(NSInteger)index
-     atScreenPoint:(NSPoint)screenPoint;
+/// Whether releasing the tab at `screenPoint`, away from every tab bar, would
+/// do anything. Only used to dim the dragged tab. Defaults to YES.
+- (BOOL)tabBar:(NppTabBar *)bar canReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy;
+/// The tab was released away from every tab bar. `screenPoint` is the pointer
+/// position in screen coordinates. Returns NO when nothing happened; the tab
+/// is then selected, as after a plain click.
+- (BOOL)tabBar:(NppTabBar *)bar didReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy;
 /// The tab was released over `target` (another bar, possibly in another
 /// window) at insertion slot `targetIndex` (0…target.tabCount).
 - (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
-      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex;
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex copy:(BOOL)copy;
 @end
 
 /// Left-aligned tab bar styled after Nextpad++.
