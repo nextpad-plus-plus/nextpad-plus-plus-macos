@@ -52,11 +52,6 @@ The goal is not just to make Notepad++ "run" on Mac — it's to make it feel lik
   <br><em>Nextpad++ for macOS in Light mode and Classic Look</em>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/assets/images/github_screen1.png" alt="Notepad++ for macOS" width="1000">
-  <br><em>Nextpad++ for macOS in Dark mode and Tahoe Look</em>
-</p>
-
 ## Installation
 ### Download
 
