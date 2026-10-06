@@ -9182,15 +9182,20 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     panel.title = [NSString stringWithFormat:@"Choose files for %@ hash", algo];
     if ([panel runModal] != NSModalResponseOK) return;
 
+    // Lines use the target document's own line ending so a CRLF/CR
+    // document doesn't end up with mixed EOLs.
+    EditorView *ed = [self currentEditor];
+    NSString *eolName = ed.eolName;
+    NSString *eol = [eolName isEqualToString:@"CRLF"] ? @"\r\n"
+                  : [eolName isEqualToString:@"CR"]   ? @"\r" : @"\n";
     NSMutableString *results = [NSMutableString string];
     for (NSURL *url in panel.URLs) {
         NSData *data = [NSData dataWithContentsOfURL:url];
-        if (!data) { [results appendFormat:@"Error reading %@\n", url.path]; continue; }
+        if (!data) { [results appendFormat:@"Error reading %@%@", url.path, eol]; continue; }
         NSString *hash = [EditorView hexHashForAlgorithm:algo data:data];
-        [results appendFormat:@"%@  %@\n", hash ?: @"(error)", url.path];
+        [results appendFormat:@"%@  %@%@", hash ?: @"(error)", url.path, eol];
     }
     if (!results.length) return;
-    EditorView *ed = [self currentEditor];
     if (ed) {
         const char *u = results.UTF8String;
         [ed.scintillaView message:SCI_APPENDTEXT wParam:(uptr_t)strlen(u) lParam:(sptr_t)u];
