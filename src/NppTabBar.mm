@@ -12,6 +12,7 @@
 
 @interface NppTabBar (TabItemEvents)
 - (void)tabItemMouseDown:(_NppTabItem *)item event:(NSEvent *)event;
+- (void)tabItemClosed:(_NppTabItem *)item;
 @end
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -131,6 +132,7 @@ static NSImage *toolbarIcon(NSString *name) {
 @interface _NppTabItem : NSView {
     BOOL _hovered;
     BOOL _closeHovered;
+    BOOL _middleClickArmed;
     NSTrackingArea *_trackingArea;
 }
 @property (nonatomic) NSInteger tabIndex;
@@ -367,6 +369,28 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
 - (void)mouseDown:(NSEvent *)event {
     [(NppTabBar *)_target tabItemMouseDown:self event:event];
+}
+
+- (void)otherMouseDown:(NSEvent *)event {
+    if (event.buttonNumber != 2) {
+        [super otherMouseDown:event];
+        return;
+    }
+    _middleClickArmed = YES;
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    if (event.buttonNumber != 2) {
+        [super otherMouseUp:event];
+        return;
+    }
+    BOOL armed = _middleClickArmed;
+    _middleClickArmed = NO;
+    NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+    // Close the clicked tab without selecting it first. Use the usual close
+    // route so unsaved-change prompts and the last empty tab behave as before.
+    if (armed && self.superview && NSPointInRect(p, self.visibleRect))
+        [(NppTabBar *)_target tabItemClosed:self];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
