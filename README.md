@@ -3,7 +3,7 @@
 **The full native port of Notepad++ to macOS.** A full port of the original [Notepad++](https://notepad-plus-plus.org) codebase — not a rewrite, not an alternative, not Wine.
 
 <p align="center">
-  <a href="https://nextpad.org"><img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/assets/images/github_screen1.png" alt="Notepad++ for macOS" width="1000"></a>
+  <a href="https://nextpad.org"><img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/news/npp_v1.1.1_updates/bottom-docked-panels-dark.png" alt="Notepad++ for macOS" width="1000"></a>
 </p>
 
 <p align="center">
