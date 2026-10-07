@@ -8386,6 +8386,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (_docListPanel) [_docListPanel reloadData];
 }
 
+- (BOOL)tabManagerShouldExitOnLastTabClose:(id)tabManager {
+    // Only exit when ALL tab managers across this window are empty. If a split
+    // view still holds tabs, don't quit — just let the empty pane remain.
+    for (TabManager *mgr in @[_tabManager, _subTabManagerH, _subTabManagerV]) {
+        if (mgr && mgr != (TabManager *)tabManager && mgr.allEditors.count > 0)
+            return NO;
+    }
+    // Every pane is empty. Close this window; if it is the last window,
+    // -applicationShouldTerminateAfterLastWindowClosed: returns YES and the
+    // app will quit automatically.
+    [self.window performClose:nil];
+    return YES;
+}
+
 #pragma mark - Cursor notification
 
 - (void)editorCursorMoved:(NSNotification *)note {
