@@ -76,6 +76,7 @@ extern NSNotificationName const EditorViewZoomDidChangeNotification;
 @property (nonatomic, readonly) NSString *encodingName;  // "UTF-8", "UTF-8 BOM", etc.
 @property (nonatomic, readonly) NSString *eolName;       // "LF" / "CR" / "CRLF"
 @property (nonatomic, readonly) BOOL hasBOM;             // YES if file has/should have BOM
+@property (nonatomic, readonly) NSStringEncoding fileEncoding; // encoding used to read/save the file
 
 // Current language name (e.g. "python"). Empty string = plain text.
 @property (nonatomic, copy) NSString *currentLanguage;

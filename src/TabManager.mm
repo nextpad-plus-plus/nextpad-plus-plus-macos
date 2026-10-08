@@ -272,6 +272,9 @@
     NSInteger idx = [_editors indexOfObject:editor];
     if (idx == NSNotFound) return;
 
+    if ([_delegate respondsToSelector:@selector(tabManager:willCloseEditor:)])
+        [_delegate tabManager:self willCloseEditor:editor];
+
     // The tab is going away for good: every caller has already saved it or the
     // user chose "Don't Save". Its backup used to linger until the next session
     // prune; now that launch recovers unreferenced backups as orphans, a

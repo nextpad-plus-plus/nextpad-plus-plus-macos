@@ -14,6 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol TabManagerDelegate <NSObject>
 - (void)tabManager:(id)tabManager didSelectEditor:(EditorView *)editor;
 - (void)tabManager:(id)tabManager didCloseEditor:(EditorView *)editor;
+@optional
+/// Sent just before a tab is closed for good (not when it is moved to another
+/// view), while the editor still holds its document and view state.
+- (void)tabManager:(id)tabManager willCloseEditor:(EditorView *)editor;
 @end
 
 /// Manages the custom tab bar and the set of open editor views.
