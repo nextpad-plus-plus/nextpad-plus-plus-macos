@@ -126,7 +126,16 @@ UTF8DocumentIterator& UTF8DocumentIterator::operator -- ()
 void UTF8DocumentIterator::readCharacter()
 {
 	unsigned char currentChar = m_doc->CharAt(m_pos);
-	if (currentChar & 0x80)
+	if (currentChar >= 0xF8)
+	{
+		// 0xF8-0xFF never start a UTF-8 sequence (and 0xFE/0xFF would index
+		// past m_firstByteMask): one invalid byte, one character.
+		m_utf8Length = 1;
+		m_utf16Length = 1;
+		m_characterIndex = 0;
+		m_character[0] = static_cast<wchar_t>(currentChar);
+	}
+	else if (currentChar & 0x80)
 	{
 		int mask = 0x40;
 		int nBytes = 1;

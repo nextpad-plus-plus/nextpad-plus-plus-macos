@@ -6,10 +6,6 @@
 #import "StyleConfiguratorWindowController.h"
 #import "TahoeToolbarConfig.h"
 
-// Defined in regex/RegexBackendSelect.cxx — selects the Boost.Regex backend over
-// the default per-line std::regex one. Mirrored from kPrefUseBoostRegex.
-extern "C" bool gNppUseBoostRegex;
-
 // ── NSUserDefaults keys (mirrors NPP settings) ────────────────────────────────
 NSString *const kPrefTabWidth           = @"tabWidth";
 NSString *const kPrefUseTabs            = @"useTabs";
@@ -88,7 +84,6 @@ NSString *const kPrefDisableTextDragDrop = @"disableTextDragDrop";
 NSString *const kPrefMonoFontFind        = @"monoFontFind";
 NSString *const kPrefConfirmReplaceAll   = @"confirmReplaceAll";
 NSString *const kPrefReplaceAndStop      = @"replaceAndStop";
-NSString *const kPrefUseBoostRegex       = @"useBoostRegex";
 NSString *const kPrefSmartHiliteCase     = @"smartHiliteCase";
 NSString *const kPrefSmartHiliteWord     = @"smartHiliteWord";
 NSString *const kPrefDateTimeReverse     = @"dateTimeReverse";
@@ -233,7 +228,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefGlobalOverrideEnableUnderline: @NO,
         kPrefCopyLineNoSelection:  @YES,
         kPrefSmartHighlight:       @YES,
-        kPrefUseBoostRegex:        @NO,   // off = current per-line std::regex backend
         kPrefFillFindWithSelection:@YES,
         kPrefFuncParamsHint:       @NO,
         kPrefFindTransparencyEnabled: @YES,  // matches Windows default
@@ -298,9 +292,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         [ud setBool:YES forKey:kPrefUseTabs];
         [ud setBool:YES forKey:@"_useTabsDefaultApplied"];
     }
-    // Sync the regex-backend selector flag from the saved/default preference at
-    // startup (registerDefaults above makes boolForKey valid immediately).
-    gNppUseBoostRegex = [ud boolForKey:kPrefUseBoostRegex];
 }
 
 + (instancetype)sharedController {
@@ -2023,7 +2014,6 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         @[[loc translate:@"Use monospaced font in Find dialog"],      @1004, kPrefMonoFontFind],
         @[[loc translate:@"Confirm Replace All in open documents"],   @1005, kPrefConfirmReplaceAll],
         @[[loc translate:@"Replace: don't move to next occurrence"],  @1006, kPrefReplaceAndStop],
-        @[[loc translate:@"Use Boost Regex mode (multi-line; restart to apply)"], @1008, kPrefUseBoostRegex],
     ];
     for (NSArray *def in checks) {
         NSButton *chk = [NSButton checkboxWithTitle:def[0] target:self action:@selector(prefChanged:)];
@@ -2535,15 +2525,6 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 1005: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefConfirmReplaceAll]; break;
         case 1006: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefReplaceAndStop]; break;
         case 1007: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefInSelThreshold]; break;
-        case 1008: {
-            BOOL on = [(NSButton *)sender state] == NSControlStateValueOn;
-            [ud setBool:on forKey:kPrefUseBoostRegex];
-            // New Documents (and any not-yet-searched ones) pick up the new engine
-            // immediately; already-searched Documents keep their cached backend
-            // until reopened — hence "restart to apply" in the label.
-            gNppUseBoostRegex = on;
-            break;
-        }
         // General
         case 901: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowStatusBar]; break;
         case 902: {

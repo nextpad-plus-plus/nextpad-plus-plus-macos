@@ -28,42 +28,52 @@ set(SCI_COCOA_SRCS
     "${SCI_ROOT}/cocoa/InfoBar.mm"
 )
 
-# regex/  is this repo's SCI_OWNREGEX implementation — see regex/NppRegexSearch.cxx.
-# Mirrors Notepad++ Windows's `boostregex/` sibling-directory pattern. We compile
-# BOTH backends and a small selector picks one at runtime (RegexBackendSelect.cxx):
-#   * NppRegexSearch.cxx   — per-line std::regex (default, "Use Boost Regex" off)
-#   * BoostRegExSearch.cxx — whole-buffer Boost.Regex (opt-in, Windows parity:
-#                            multi-line, lookbehind, \K). Header-only Boost subset
-#                            vendored under regex/boost/ (BOOST_REGEX_STANDALONE).
-# With SCI_OWNREGEX defined, Scintilla's built-in CreateRegexSearch() compiles out
-# and the linker picks up the selector's one.
+# regex/  is this repo's SCI_OWNREGEX implementation, mirroring Notepad++
+# Windows's `boostregex/` sibling directory. BoostRegExSearch.cxx is the one
+# regex engine (whole-buffer Boost.Regex: Perl syntax, multi-line matches,
+# lookbehind, \K), over the header-only Boost subset vendored under
+# regex/boost/ (BOOST_REGEX_STANDALONE). With SCI_OWNREGEX defined, Scintilla's
+# built-in CreateRegexSearch() compiles out and the linker picks up Boost's.
+# NppBufferSearch.cxx runs the same engine over a headless Document for
+# Find/Replace in Files (see regex/NppBufferSearch.h).
 set(NPP_REGEX_ROOT "${CMAKE_SOURCE_DIR}/regex")
 set(NPP_REGEX_SRCS
-    "${NPP_REGEX_ROOT}/NppRegexSearch.cxx"
     "${NPP_REGEX_ROOT}/BoostRegExSearch.cxx"
     "${NPP_REGEX_ROOT}/UTF8DocumentIterator.cxx"
-    "${NPP_REGEX_ROOT}/RegexBackendSelect.cxx"
+    "${NPP_REGEX_ROOT}/NppBufferSearch.cxx"
+)
+set(SCI_DEFINITIONS
+    SCI_NAMESPACE
+    SCI_OWNREGEX
+    SCINTILLA_QT=0
+    BOOST_REGEX_STANDALONE
+    BOOST_HAS_THREADS=  # Boost.Regex traits cache locking; see BoostRegExSearch.cxx
 )
 
-add_library(scintilla STATIC ${SCI_CORE_SRCS} ${SCI_COCOA_SRCS} ${NPP_REGEX_SRCS})
+# Platform-agnostic core + regex engine: no Cocoa, so the headless tests link it.
+# Platform::DebugPrintf/Assert come from PlatCocoa.mm in the app and from
+# tests/PlatformStubs.cxx in the tests.
+add_library(scintilla_core STATIC ${SCI_CORE_SRCS} ${NPP_REGEX_SRCS})
+target_include_directories(scintilla_core PUBLIC
+    "${SCI_ROOT}/include"
+    "${SCI_ROOT}/src"
+)
+target_include_directories(scintilla_core PRIVATE
+    # contains boost/ — boost headers self-include as <boost/...>, so the root
+    # (not boost/ itself) goes on the include path
+    "${NPP_REGEX_ROOT}"
+)
+target_compile_definitions(scintilla_core PRIVATE ${SCI_DEFINITIONS})
 
+# Cocoa platform layer + ScintillaView.
+add_library(scintilla STATIC ${SCI_COCOA_SRCS})
 target_include_directories(scintilla PUBLIC
     "${SCI_ROOT}/include"
     "${SCI_ROOT}/src"
     "${SCI_ROOT}/cocoa"
 )
-target_include_directories(scintilla PRIVATE
-    # contains boost/ — boost headers self-include as <boost/...>, so the root
-    # (not boost/ itself) goes on the include path
-    "${NPP_REGEX_ROOT}"
-)
-
-target_compile_definitions(scintilla PRIVATE
-    SCI_NAMESPACE
-    SCI_OWNREGEX
-    SCINTILLA_QT=0
-    BOOST_REGEX_STANDALONE
-)
+target_compile_definitions(scintilla PRIVATE ${SCI_DEFINITIONS})
+target_link_libraries(scintilla PUBLIC scintilla_core)
 
 set_source_files_properties(${SCI_COCOA_SRCS} PROPERTIES
     COMPILE_FLAGS "-fobjc-arc"
@@ -124,7 +134,9 @@ set(APP_SRCS
     src/FunctionListPanel.mm
     src/DocumentMapPanel.mm
     src/ProjectPanel.mm
+    src/SearchCore.mm
     src/SearchEngine.mm
+    src/NppTextEncoding.mm
     src/NPPBatchRunner.mm
     src/NPPBatchDialog.mm
     src/SearchResultsPanel.mm
@@ -166,7 +178,9 @@ set(APP_HEADERS
     src/FunctionListPanel.h
     src/DocumentMapPanel.h
     src/ProjectPanel.h
+    src/SearchCore.h
     src/SearchEngine.h
+    src/NppTextEncoding.h
     src/SearchResultsPanel.h
     src/FindWindow.h
     src/StyleConfiguratorWindowController.h
@@ -489,3 +503,82 @@ target_link_libraries(NotepadPlusPlusMac PRIVATE
 set_source_files_properties(${APP_SRCS} PROPERTIES
     COMPILE_FLAGS "-fobjc-arc"
 )
+
+# -----------------------------------------------------------------------------
+# Headless tests (ctest)
+# -----------------------------------------------------------------------------
+# Search engine tests that build without AppKit UI and never launch the app:
+# they link scintilla_core (no Cocoa) plus, for the file-search tests,
+# SearchCore.mm and NppTextEncoding.mm against Foundation only. They write only
+# to a fresh temporary directory and never touch the app's defaults domain
+# (org.nextpadplusplus.mac) or ~/Library.
+#
+#   cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
+#   cmake --build build-release --target npp_tests -j 8
+#   ctest --test-dir build-release --output-on-failure
+#
+# Tests:
+#   regex_editor_engine   regex/test/test_npp_regex.cxx: the editor's regex
+#                         search (#151, #167 cases, ^/$ on CRLF, backward search)
+#   regex_boost_backend   regex/test/test_boost_regex.cxx: multi-line, lookbehind,
+#                         UTF-8 through the Boost backend
+#   buffer_search         tests/test_buffer_search.cxx: the shared engine and loops
+#                         Find in Files uses (\K, replacement formats, empty matches,
+#                         whole word, word chars, errors, backtracking limit,
+#                         searches on several threads at once)
+#   search_core           tests/test_search_core.mm: Find/Replace in Files on a temp
+#                         tree (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252,
+#                         Shift-JIS, binary skip, multi-hit lines, cancel,
+#                         round-trip safety)
+#   regex_run_sh,         the standalone harness scripts (regex/test/run.sh and
+#   regex_run_boost_sh    run_boost.sh), which build their own copy with clang++;
+#                         label "standalone" (ctest -LE standalone skips them)
+option(NPP_BUILD_TESTS "Build the headless search tests (ctest)" ON)
+if(NPP_BUILD_TESTS)
+    enable_testing()
+
+    set(NPP_TEST_ROOT "${CMAKE_SOURCE_DIR}/tests")
+
+    add_executable(test_npp_regex EXCLUDE_FROM_ALL "${NPP_REGEX_ROOT}/test/test_npp_regex.cxx")
+    add_executable(test_boost_regex EXCLUDE_FROM_ALL "${NPP_REGEX_ROOT}/test/test_boost_regex.cxx")
+    add_executable(test_buffer_search EXCLUDE_FROM_ALL
+        "${NPP_TEST_ROOT}/test_buffer_search.cxx"
+        "${NPP_TEST_ROOT}/PlatformStubs.cxx")
+    add_executable(test_search_core EXCLUDE_FROM_ALL
+        "${NPP_TEST_ROOT}/test_search_core.mm"
+        "${NPP_TEST_ROOT}/PlatformStubs.cxx"
+        src/SearchCore.mm
+        src/NppTextEncoding.mm)
+
+    # -DNPP_TEST_SANITIZER=thread (or address) builds scintilla_core and the
+    # tests with that sanitizer, e.g. to have TSan check the concurrent search
+    # case in buffer_search. Use a separate build directory for it.
+    set(NPP_TEST_SANITIZER "" CACHE STRING "Sanitizer for scintilla_core and the tests (thread, address)")
+    if(NPP_TEST_SANITIZER)
+        target_compile_options(scintilla_core PRIVATE -fsanitize=${NPP_TEST_SANITIZER} -g)
+        target_link_options(scintilla_core INTERFACE -fsanitize=${NPP_TEST_SANITIZER})
+    endif()
+
+    foreach(_t test_npp_regex test_boost_regex test_buffer_search test_search_core)
+        target_link_libraries(${_t} PRIVATE scintilla_core)
+        target_include_directories(${_t} PRIVATE "${NPP_REGEX_ROOT}" src)
+        target_compile_definitions(${_t} PRIVATE ${SCI_DEFINITIONS})
+        if(NPP_TEST_SANITIZER)
+            target_compile_options(${_t} PRIVATE -fsanitize=${NPP_TEST_SANITIZER} -g)
+        endif()
+    endforeach()
+    target_compile_options(test_search_core PRIVATE -fobjc-arc)
+    # Foundation only: linking fails if the code under test needs AppKit.
+    target_link_libraries(test_search_core PRIVATE "-framework Foundation")
+
+    add_custom_target(npp_tests
+        DEPENDS test_npp_regex test_boost_regex test_buffer_search test_search_core)
+
+    add_test(NAME regex_editor_engine COMMAND test_npp_regex)
+    add_test(NAME regex_boost_backend COMMAND test_boost_regex)
+    add_test(NAME buffer_search COMMAND test_buffer_search)
+    add_test(NAME search_core COMMAND test_search_core)
+    add_test(NAME regex_run_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run.sh")
+    add_test(NAME regex_run_boost_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run_boost.sh")
+    set_tests_properties(regex_run_sh regex_run_boost_sh PROPERTIES LABELS standalone TIMEOUT 600)
+endif()

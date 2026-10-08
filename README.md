@@ -129,6 +129,18 @@ This project is written in C++ and Objective-C++ and uses CMake as its build sys
 
 Build instructions will be published as the macOS build pipeline matures. For now, the easiest way to use Nextpad++ on macOS is to download the signed `.dmg` release.
 
+### Running the tests
+
+The search engine has headless tests that run under CTest. They build without the AppKit UI, never launch the app, and only write to a temporary directory (not to `~/Library` or the app's preferences):
+
+```sh
+cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
+cmake --build build-release --target npp_tests -j 8
+ctest --test-dir build-release --output-on-failure
+```
+
+They cover the Boost.Regex engine used by Find/Replace in the editor, and Find/Replace in Files on a temporary tree in several encodings (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252, Shift-JIS). `ctest -LE standalone` skips the two script-based regex harnesses, which compile their own copy of the engine. The test list is in a comment at the end of `CMakeLists.txt`.
+
 ## Contributing
 
 Bug reports, feedback, and contributions are welcome. For:
