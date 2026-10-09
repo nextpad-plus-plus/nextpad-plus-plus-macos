@@ -55,6 +55,8 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
 
 @implementation NppThemeManager {
     BOOL _cachedIsDark;
+    NSImage *_unsavedIconLight;   // -unsavedDocumentIconForDarkBackground: cache
+    NSImage *_unsavedIconDark;
 }
 
 @synthesize appearanceStyle = _appearanceStyle;
@@ -106,6 +108,8 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
 }
 
 - (void)_recalcIsDark {
+    _unsavedIconLight = nil;
+    _unsavedIconDark  = nil;
     switch (_mode) {
         case NppDarkModeLight: _cachedIsDark = NO; break;
         case NppDarkModeDark:  _cachedIsDark = YES; break;
@@ -273,6 +277,64 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
 - (NSColor *)tabTextInactive {
     return _cachedIsDark ? [NSColor colorWithWhite:0.65 alpha:1]
                          : [NSColor colorWithWhite:0.15 alpha:1];
+}
+
+// Unsaved-document marker. As saturated as each background allows while
+// keeping >= 4.5:1 on the Classic selected tab (white / 0x313131) and >= 3:1
+// on the orange-tinted Tahoe selected tab. A purer red (e.g. 0xFF3B30) is
+// too dark for 4.5:1 on the dark tab, so dark mode stays slightly warm.
+static NSColor *unsavedTintForDark(BOOL dark) {
+    return dark ? [NSColor colorWithRed:0xFF/255.0 green:0x68/255.0 blue:0x5E/255.0 alpha:1]
+                : [NSColor colorWithRed:0xD7/255.0 green:0x00/255.0 blue:0x15/255.0 alpha:1];
+}
+
+- (NSColor *)unsavedIconTint {
+    return unsavedTintForDark(_cachedIsDark);
+}
+
+- (nullable NSImage *)unsavedDocumentIconForDarkBackground:(BOOL)dark {
+    // The same outline save glyph saved documents use (regular/save_off),
+    // with the whole outline painted in the unsaved tint and the stroke
+    // thickened to about 1.6x (the glyph is stamped around a small ring
+    // before tinting) so it still reads at tab size in dark mode. Same shape
+    // and size as the saved icon. save_off_red colours just its thin label
+    // slot, which shrinks below a pixel at tab / list size and reads as the
+    // same grey floppy as a saved document.
+    // Cached per background (tabs redraw often); cleared in -_recalcIsDark.
+    NSImage *cached = dark ? _unsavedIconDark : _unsavedIconLight;
+    if (cached) return cached;
+    NSString *base = dark ? @"icons/dark/toolbar" : @"icons/light/toolbar";
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"save_off" ofType:@"png"
+                                               inDirectory:[base stringByAppendingPathComponent:@"regular"]];
+    NSImage *glyph = path ? [[NSImage alloc] initWithContentsOfFile:path] : nil;
+    NSImage *icon;
+    if (glyph) {
+        NSColor *tint = unsavedTintForDark(dark);
+        icon = [NSImage imageWithSize:glyph.size flipped:NO drawingHandler:^BOOL(NSRect r) {
+            // The Fluent stroke is 1/24 of the glyph; growing it ~0.3/24 on
+            // each side gives ~1.6x the saved icon's weight.
+            CGFloat d = r.size.width * 0.013;
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dy = -1; dy <= 1; dy++) {
+                    [glyph drawInRect:NSOffsetRect(r, dx * d, dy * d) fromRect:NSZeroRect
+                            operation:NSCompositingOperationSourceOver fraction:1.0];
+                }
+            }
+            [tint setFill];
+            NSRectFillUsingOperation(r, NSCompositingOperationSourceAtop);
+            return YES;
+        }];
+    } else {
+        NSString *red = [[NSBundle mainBundle] pathForResource:@"save_off_red" ofType:@"png"
+                                                  inDirectory:[base stringByAppendingPathComponent:@"regular"]];
+        icon = red ? [[NSImage alloc] initWithContentsOfFile:red] : nil;
+    }
+    if (dark) _unsavedIconDark = icon; else _unsavedIconLight = icon;
+    return icon;
+}
+
+- (nullable NSImage *)unsavedDocumentIcon {
+    return [self unsavedDocumentIconForDarkBackground:_cachedIsDark];
 }
 
 - (NSColor *)dividerDark {
