@@ -2,6 +2,7 @@
 #import "NppPaths.h"
 #import "PreferencesWindowController.h"
 #import "NppLocalizer.h"
+#import "NppThemeManager.h"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MARK: - NPPStyleEntry
@@ -76,6 +77,11 @@ static NSString *hexFromColor(NSColor *c) {
 static NSString *const kNSDefaultsStyleKey  = @"NPPStyleOverrides";
 static NSString *const kNSDefaultsThemeKey  = @"NPPActiveTheme";
 static NSString *const kDefaultThemeName    = @"Default (stylers.xml)";
+// Remembered theme per appearance (#366, #370). The active theme (NPPActiveTheme)
+// follows whichever of these matches NppThemeManager.isDark.
+static NSString *const kNSDefaultsLightThemeKey = @"NPPLightTheme";
+static NSString *const kNSDefaultsDarkThemeKey  = @"NPPDarkTheme";
+static NSString *const kDefaultDarkThemeName    = @"DarkModeDefault";
 
 /// Mapping: theme/model lexer ID aliases.
 /// Some theme XML files use "c" while the model uses "cpp"; merge into "cpp".
@@ -101,6 +107,22 @@ static NSString *modelLexerID(NSString *themeID) {
     static dispatch_once_t once;
     dispatch_once(&once, ^{ s = [NPPStyleStore new]; });
     return s;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        // Single owner of "editor theme follows appearance". Fires for Auto
+        // (system flip) and for explicit Light/Dark changes in Preferences.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_darkModeChanged:)
+                   name:NPPDarkModeChangedNotification object:nil];
+    }
+    return self;
+}
+
+- (void)_darkModeChanged:(NSNotification *)n {
+    [self syncThemeWithAppearance];
 }
 
 // ── XML parsing ──────────────────────────────────────────────────────────────
@@ -431,6 +453,10 @@ static NSString *_userThemesDir(void) {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:overrides forKey:kNSDefaultsStyleKey];
     [ud setObject:themeName forKey:kNSDefaultsThemeKey];
+    // Remember this theme for the current appearance (#366) so the next
+    // light/dark flip restores it instead of reverting to the default.
+    [ud setObject:themeName forKey:[NppThemeManager shared].isDark ? kNSDefaultsDarkThemeKey
+                                                                   : kNSDefaultsLightThemeKey];
 
     // Legacy keys for backward compat
     [ud setObject:[@"#" stringByAppendingString:hexFromColor(self.globalFg)] forKey:kPrefStyleFg];
@@ -440,6 +466,61 @@ static NSString *_userThemesDir(void) {
 
     // Write changes back to the XML file (selective update, not full rewrite).
     [self _writeOverridesToXML:overrides themeName:themeName];
+}
+
+// ── Light / dark theme slots ──────────────────────────────────────────────────
+
+- (NSString *)themeNameForDarkAppearance:(BOOL)dark {
+    NSString *name = [[NSUserDefaults standardUserDefaults]
+        stringForKey:dark ? kNSDefaultsDarkThemeKey : kNSDefaultsLightThemeKey];
+    return name.length ? name : (dark ? kDefaultDarkThemeName : kDefaultThemeName);
+}
+
+/// YES if the theme's Default Style background is dark (luminance < 0.5).
+- (BOOL)_themeIsDark:(NSString *)themeName {
+    NPPLexer *g = nil;
+    for (NPPLexer *lex in [self lexersForTheme:themeName])
+        if ([lex.lexerID isEqualToString:@"global"]) { g = lex; break; }
+    NPPStyleEntry *e = [g styleForID:32] ?: [g styleForName:@"Default Style"];
+    NSColor *bg = [e.bgColor colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (!bg) return NO;
+    CGFloat lum = 0.2126 * bg.redComponent + 0.7152 * bg.greenComponent + 0.0722 * bg.blueComponent;
+    return lum < 0.5;
+}
+
+/// One-time migration for builds that kept a single NPPActiveTheme. The goal is
+/// that the first launch after upgrading looks unchanged, except for the #370
+/// state (Auto mode with a theme that does not suit the system appearance,
+/// typically the stale light Default while macOS is dark):
+///  - explicit Light/Dark, or a theme whose brightness matches the current
+///    appearance: seed the current appearance's slot with it (no visual change);
+///  - Auto with a mismatched theme: file it under the slot it suits, so the
+///    current appearance gets its default (fixes #370) and the theme returns
+///    on the next flip.
+/// The other slot keeps its default.
+- (void)_seedAppearanceSlotsIfNeeded {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:kNSDefaultsLightThemeKey] || [ud objectForKey:kNSDefaultsDarkThemeKey]) return;
+    NSString *active = [ud stringForKey:kNSDefaultsThemeKey];
+    if (!active.length || ![self.availableThemeNames containsObject:active]) return;
+
+    NppThemeManager *tm = [NppThemeManager shared];
+    BOOL themeDark = [self _themeIsDark:active];
+    BOOL slotDark = (tm.mode != NppDarkModeAuto || themeDark == tm.isDark) ? tm.isDark : themeDark;
+    [ud setObject:active forKey:slotDark ? kNSDefaultsDarkThemeKey : kNSDefaultsLightThemeKey];
+}
+
+- (void)syncThemeWithAppearance {
+    if (!_lexers.count) [self loadFromDefaults];
+    [self _seedAppearanceSlotsIfNeeded];
+
+    BOOL dark = [NppThemeManager shared].isDark;
+    NSString *target = [self themeNameForDarkAppearance:dark];
+    if (![self.availableThemeNames containsObject:target])  // theme file removed
+        target = dark ? kDefaultDarkThemeName : kDefaultThemeName;
+    if ([_activeThemeName isEqualToString:target]) return;
+
+    [self commitLexers:[self lexersForTheme:target] themeName:target];
 }
 
 /// Selectively update changed style attributes in the theme/stylers XML file.
@@ -650,8 +731,22 @@ static NSString *_userThemesDir(void) {
     if (self) {
         [self _buildUI];
         _selectedStyleID = -1;
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_appearanceChanged:)
+                   name:NPPDarkModeChangedNotification object:nil];
     }
     return self;
+}
+
+/// Light/dark flip while the window is open: the snapshot taken on open belongs
+/// to the old appearance's theme slot. Drop unsaved edits, let the store switch
+/// to the new slot's theme, then re-snapshot so Save writes the theme being
+/// shown into the current slot and Cancel never restores a pre-flip theme.
+- (void)_appearanceChanged:(NSNotification *)n {
+    if (!self.window.isVisible) return;
+    [self _restoreCancelSnapshot];
+    [[NPPStyleStore sharedStore] syncThemeWithAppearance];
+    [self _loadFromStore];
 }
 
 // ── UI construction ───────────────────────────────────────────────────────────
@@ -1163,7 +1258,13 @@ static NSString *_userThemesDir(void) {
 }
 
 - (void)_cancel:(id)sender {
-    // Restore state that was active when window was opened
+    [self _restoreCancelSnapshot];
+    [self.window close];
+}
+
+/// Restore the store state that was active when the window was opened (or
+/// last re-snapshotted after an appearance flip).
+- (void)_restoreCancelSnapshot {
     if (_cancelBackup) {
         [NPPStyleStore sharedStore].activeThemeName = _cancelTheme ?: kDefaultThemeName;
         // Roll the Global override flags back to their snapshot before
@@ -1179,7 +1280,6 @@ static NSString *_userThemesDir(void) {
         [d setBool:_backupOverrideUnderline forKey:kPrefGlobalOverrideEnableUnderline];
         [[NPPStyleStore sharedStore] previewLexers:_cancelBackup];
     }
-    [self.window close];
 }
 
 // ── Import NPP theme XML ──────────────────────────────────────────────────────
@@ -1248,6 +1348,13 @@ static NSString *_userThemesDir(void) {
 
 - (void)showWindow:(id)sender {
     [super showWindow:sender];
+    [self _loadFromStore];
+    [self.window center];
+}
+
+/// Snapshot the live store (for Cancel) and rebuild the working copy and popups
+/// from the active theme. Called on open and after an appearance flip.
+- (void)_loadFromStore {
     NPPStyleStore *store = [NPPStyleStore sharedStore];
     if (!store.allLexers.count) [store loadFromDefaults];
 
@@ -1319,8 +1426,6 @@ static NSString *_userThemesDir(void) {
         [_langPopup selectItemAtIndex:0];
         [self _selectLangAtIndex:0];
     }
-
-    [self.window center];
 }
 
 @end

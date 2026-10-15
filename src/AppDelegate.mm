@@ -178,6 +178,11 @@ static void NppRecoveryDone(void) {
     // Apply the user's saved language to the freshly-built English menu.
     [[NppLocalizer shared] autoLoad];
 
+    // Pick the editor theme for the current appearance before any EditorView
+    // is built (#370). NPPDarkModeChangedNotification only fires on a change,
+    // so an app launched in dark mode otherwise kept the light theme.
+    [[NPPStyleStore sharedStore] syncThemeWithAppearance];
+
     // Create the primary window
     self.mainWindowController = [[MainWindowController alloc] init];
     [_windowControllers addObject:self.mainWindowController];
