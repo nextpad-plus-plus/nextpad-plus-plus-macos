@@ -88,7 +88,6 @@ extern NSString *const kPrefDisableTextDragDrop; // BOOL, default NO
 extern NSString *const kPrefMonoFontFind;        // BOOL, default NO
 extern NSString *const kPrefConfirmReplaceAll;   // BOOL, default YES
 extern NSString *const kPrefReplaceAndStop;      // BOOL, default NO
-extern NSString *const kPrefUseBoostRegex;       // BOOL, default NO (opt-in Boost.Regex backend)
 extern NSString *const kPrefSmartHiliteCase;     // BOOL, default NO
 extern NSString *const kPrefSmartHiliteWord;     // BOOL, default NO
 extern NSString *const kPrefDateTimeReverse;     // BOOL, default NO
