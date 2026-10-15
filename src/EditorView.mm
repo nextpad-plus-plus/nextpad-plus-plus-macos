@@ -4,6 +4,7 @@
 #import "NppLangsManager.h"
 #import "UserDefineLangManager.h"
 #import "NppBuiltinLanguages.h"
+#import "NppKeywordSlots.h"
 #import "NppPluginManager.h"
 #import "PreferencesWindowController.h"
 #import "SearchEngine.h"   // #166 Phase 1: replay Windows Find/Replace (type-3) macros
@@ -31,6 +32,8 @@ NSNotificationName const EditorViewZoomDidChangeNotification  = @"EditorViewZoom
 // Forward-declare Lexilla's CreateLexer (statically linked)
 namespace Scintilla { struct ILexer5; }
 extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
+
+static NSString *stylerKeywordSignature(NSString *lang);  // defined with applyKeywords:
 
 /// Returns YES if the named theme belongs to the explicit "dark fold margin" list.
 /// These themes get fold-margin bg = Default Style background; all others get #f2f2f2.
@@ -301,6 +304,12 @@ static NSUInteger nppLargeFileThreshold(void) {
 
     // Git gutter state
     BOOL               _gitGutterEnabled;
+
+    // Lexer substyles (applyKeywords:): "substyleN" → allocated style ID for
+    // the current language's own styler rows, and the styler user-defined
+    // keywords last fed, so a Style Configurator keyword edit re-feeds lists.
+    NSDictionary<NSString *, NSNumber *> *_substyleIDs;
+    NSString          *_appliedStylerKeywords;
 
     // Hex view
 }
@@ -1626,6 +1635,12 @@ static NSColor *nppColorFromHex(NSString *hex) {
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {
+            // A Style Configurator edit to user-defined keywords arrives
+            // through this same path; refeed the lists only when they changed
+            // (a colour drag fires many previews, and PHP's lists are large).
+            if (![stylerKeywordSignature(_currentLanguage.lowercaseString)
+                    isEqualToString:_appliedStylerKeywords ?: @""])
+                [self applyKeywords:_currentLanguage];
             [self applyLexerColors:_currentLanguage];
         }
     }
@@ -2722,76 +2737,136 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 
 #pragma mark - Keywords
 
+/// User-defined keywords the Style Configurator holds for `group` in the
+/// `styler` lexer (the WordsStyle text of the row whose keywordClass is
+/// `group`). Windows' makeStyle() keeps the last such row; so does this.
+/// Reads that language's own styler (C keywords from "c", not "cpp"); the
+/// aliasing lookup is only a fallback for a stylers.xml without it.
+static NSString *stylerUserKeywords(NSString *styler, NSString *group) {
+    if (!styler.length) return nil;
+    NPPStyleStore *store = [NPPStyleStore sharedStore];
+    NSArray<NPPStyleEntry *> *styles = [store stylesForExactLexer:styler] ?: [store stylesForLexer:styler];
+    NSString *words = nil;
+    for (NPPStyleEntry *e in styles) {
+        if (e.keywords.length && [e.keywordClass isEqualToString:group]) words = e.keywords;
+    }
+    return words;
+}
+
+/// Windows concatToBuildKeywordList(): user-defined words, a space, then the
+/// langs.xml list.
+static NSString *joinKeywordLists(NSString *user, NSString *def) {
+    if (!user.length) return def;
+    if (!def.length) return user;
+    return [NSString stringWithFormat:@"%@ %@", user, def];
+}
+
+/// Every styler user-defined keyword list applyKeywords: reads for `lang`.
+/// A change means the Style Configurator edited keywords and the lists need
+/// feeding again.
+static NSString *stylerKeywordSignature(NSString *lang) {
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";  // as applyKeywords:
+    NSMutableString *sig = [NSMutableString string];
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        [sig appendFormat:@"%@\n", stylerUserKeywords(styler, @(slots[i].group)) ?: @""];
+    }
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            [sig appendFormat:@"%@\n", stylerUserKeywords(src, group) ?: @""];
+        }
+    }
+    return sig;
+}
+
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
-
-    // Some languages share lexers — map to the canonical language for keyword lookup.
-    // c, objc, swift all use the cpp lexer; javascript.js uses javascript.
-    NSString *kwLang = lang;
-    if ([@[@"c", @"objc"] containsObject:lang]) kwLang = @"cpp";
-    if ([lang isEqualToString:@"javascript.js"]) kwLang = @"javascript";
+    // Legacy "javascript" tabs (L_JS_EMBEDDED) read the javascript.js lists, so
+    // treat them as javascript.js for the own-list check below.
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";
 
     NppLangsManager *lm = [NppLangsManager shared];
     BOOL fed = NO;
 
-    // Keyword class names → Scintilla SCI_SETKEYWORDS index.
-    // The mapping follows the most common pattern used by Scintilla lexers:
-    // instre1→0, type1→1, instre2→2, type2→3, type3→4, type4→5, type5→6, type6→7, type7→8
-    static NSDictionary<NSString *, NSNumber *> *kwClassToIndex;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        kwClassToIndex = @{
-            @"instre1": @0, @"type1": @1, @"instre2": @2,
-            @"type2": @3, @"type3": @4, @"type4": @5,
-            @"type5": @6, @"type6": @7, @"type7": @8,
-        };
-    });
-
-    // Issue #28 — LexHTML's WordListSet uses bespoke slot semantics that
-    // diverge from the universal `instre1=0` convention. The slot layout
-    // (htmlWordListDesc[] in lexilla/lexers/LexHTML.cxx) is:
-    //   0 = HTML elements & attributes (lowercased)
-    //   1 = JavaScript keywords
-    //   2 = VBScript keywords
-    //   3 = Python keywords
-    //   4 = PHP keywords
-    //   5 = SGML/DTD keywords
-    // langs.xml exposes each language's keywords under `instre1` (and HTML
-    // also under `instre2` for DTD), so without an override:
-    //   • PHP keywords land in slot 0 → never matched as SCE_HPHP_WORD
-    //   • ASP/VB keywords land in slot 0 → never matched as SCE_HB_WORD
-    //   • HTML's instre2 (DTD) lands in slot 2 (VBScript) → never matched
-    //   • XML's instre1 (DTD) lands in slot 0 → never matched
-    // All other 127 Lexilla lexers follow `slot 0 = primary keywords`, so the
-    // generic mapping is correct for them. The override only triggers for
-    // LexHTML-family languages.
-    NSDictionary<NSString *, NSNumber *> *idxOverride = nil;
-    if ([kwLang isEqualToString:@"php"]) {
-        idxOverride = @{ @"instre1": @4 };               // PHP keywords
-    } else if ([kwLang isEqualToString:@"asp"]) {
-        idxOverride = @{ @"instre1": @2 };               // VBScript keywords
-    } else if ([kwLang isEqualToString:@"html"]) {
-        idxOverride = @{ @"instre2": @5 };               // SGML/DTD; instre1 already correct (HTML tags → slot 0)
-    } else if ([kwLang isEqualToString:@"xml"]) {
-        idxOverride = @{ @"instre1": @5 };               // SGML/DTD
-    }
-
-    // Feed keywords from langs.xml for all keyword classes
-    for (NSString *kwClass in kwClassToIndex) {
-        NSString *kw = [lm keywordsForLanguage:kwLang keywordClass:kwClass];
+    // Feed langs.xml keyword groups into the lexer's word list slots the way
+    // Windows Notepad++ does. The group-to-slot table (generic LIST_n masks
+    // plus the bespoke C++/JS/ObjC/TCL/JSON/XML/HTML setters) lives in
+    // NppKeywordSlots.mm. Some slots read another language's list: doxygen
+    // tags come from cpp's type2, and HTML/PHP/ASP/JSP all load the HTML,
+    // embedded JavaScript, VBScript and PHP lists into LexHTML's slots.
+    // Several entries may target one slot; their words are merged (deduped).
+    // Only the language's own lists count as "fed": a lone cross-language
+    // list such as cpp's doxygen tags must not suppress the fallback below.
+    // Each entry contributes its styler's user-defined keywords (Style
+    // Configurator) followed by the langs.xml group, like Windows'
+    // concatToBuildKeywordList().
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        NSString *group = @(slots[i].group);
+        NSString *kw = joinKeywordLists(stylerUserKeywords(styler, group),
+                                        [lm keywordsForLanguage:src keywordClass:group]);
+        // Every slot in the table is sent, empty ones as "": on a live
+        // refresh (same lexer, Style Configurator keywords cleared or
+        // cancelled) that is what removes the old words.
+        NSMutableOrderedSet *set = words[@(slots[i].slot)];
+        if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
         if (!kw.length) continue;
-        NSNumber *ov = idxOverride[kwClass];
-        NSInteger idx = ov ? ov.integerValue : kwClassToIndex[kwClass].integerValue;
-        const char *utf8 = kw.UTF8String;
-        [sci message:SCI_SETKEYWORDS wParam:(uptr_t)idx lParam:(sptr_t)utf8];
-        fed = YES;
+        for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
+            if (w.length) [set addObject:w];
+        if ([src isEqualToString:lang]) fed = YES;
     }
+    for (NSNumber *slot in words) {
+        NSString *kw = [words[slot].array componentsJoinedByString:@" "];
+        [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
+    }
+
+    // Substyles (Windows populateSubStyleKeywords()): allocate each base's
+    // substyles in Windows' order, then feed the substyleN groups to them with
+    // SCI_SETIDENTIFIERS. The lexer is fresh after setLanguage:, but this also
+    // runs again on a Style Configurator keyword edit, so free first; the
+    // reallocation hands out the same IDs.
+    [sci message:SCI_FREESUBSTYLES];
+    NSMutableDictionary<NSString *, NSNumber *> *substyleIDs = [NSMutableDictionary new];
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        sptr_t first = [sci message:SCI_ALLOCATESUBSTYLES
+                             wParam:(uptr_t)bases[i].baseStyle
+                             lParam:(sptr_t)bases[i].count];
+        if (first < 0) continue;  // lexer has no substyles for this base
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            NSString *words = joinKeywordLists(stylerUserKeywords(src, group),
+                                               [lm keywordsForLanguage:src keywordClass:group]);
+            // Sent even when empty, which clears a substyle on a live refresh.
+            [sci message:SCI_SETIDENTIFIERS wParam:(uptr_t)(first + k)
+                  lParam:(sptr_t)(words.UTF8String ?: "")];
+            // applyLexerColors: puts this language's own substyle rows on
+            // the IDs actually allocated.
+            if ([src isEqualToString:lang]) substyleIDs[group] = @(first + k);
+        }
+    }
+    _substyleIDs = [substyleIDs copy];
+    _appliedStylerKeywords = stylerKeywordSignature(lang);
 
     if (fed) return;
 
-    // Hardcoded fallback for the 4 languages that had keywords before langs.xml
-    if ([kwLang isEqualToString:@"cpp"]) {
+    // Hardcoded fallback, used only when langs.xml supplied nothing (e.g. it
+    // failed to load). Every list here is primary keywords, so slot 0.
+    if ([@[@"c", @"cpp", @"objc"] containsObject:lang]) {
         const char *kw = "alignas alignof and and_eq asm auto bitand bitor bool break case catch char "
             "char8_t char16_t char32_t class compl concept const consteval constexpr constinit "
             "const_cast continue co_await co_return co_yield decltype default delete do double "
@@ -2802,18 +2877,18 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
             "typedef typeid typename union unsigned using virtual void volatile wchar_t while "
             "xor xor_eq";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"python"]) {
+    } else if ([lang isEqualToString:@"python"]) {
         const char *kw = "False None True and as assert async await break class continue def del "
             "elif else except finally for from global if import in is lambda nonlocal not or "
             "pass raise return try while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"javascript"]) {
+    } else if ([@[@"javascript", @"javascript.js"] containsObject:lang]) {
         const char *kw = "async await break case catch class const continue debugger default "
             "delete do else export extends false finally for from function if import in "
             "instanceof let new null of return static super switch this throw true try typeof "
             "undefined var void while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"sql"]) {
+    } else if ([lang isEqualToString:@"sql"]) {
         const char *kw = "add all alter and any as asc authorization backup begin between by "
             "cascade case check close clustered coalesce column commit compute constraint "
             "contains containstable continue convert create cross current current_date "
@@ -2905,6 +2980,13 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
 
     for (NPPStyleEntry *e in styles) {
         int sid = e.styleID;
+        // Substyle rows (keywordClass substyleN) go on the ID applyKeywords:
+        // allocated. stylers.xml numbers them to match Lexilla's allocation
+        // order, so this only differs if a stylers.xml was edited by hand.
+        if ([e.keywordClass hasPrefix:@"substyle"]) {
+            NSNumber *allocated = _substyleIDs[e.keywordClass];
+            if (allocated) sid = allocated.intValue;
+        }
 
         // fg
         if (ovFg && gov) {
