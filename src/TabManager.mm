@@ -1,5 +1,6 @@
 #import "TabManager.h"
 #import "EditorView.h"
+#import "PreferencesWindowController.h"
 
 // ── NppDropView ──────────────────────────────────────────────────────────────
 @implementation NppDropView
@@ -198,7 +199,12 @@
 
 - (void)tabBar:(NppTabBar *)bar didCloseTabAtIndex:(NSInteger)index {
     // NPP behavior: can't close the last tab when it's already clean and untitled
-    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) return;
+    // unless "Exit on close the last tab" is enabled, in which case we allow
+    // the close so the app can quit.
+    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab])
+            return;
+    }
     [self closeEditor:_editors[index]];
 }
 
@@ -296,8 +302,18 @@
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
 
-    // Always keep at least one tab
+    // Always keep at least one tab — unless "Exit on close the last tab" is
+    // enabled and the delegate handles the exit (e.g. by closing the window).
     if (_editors.count == 0) {
+        BOOL exitOnLast = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab];
+        if (exitOnLast &&
+            [_delegate respondsToSelector:@selector(tabManagerShouldExitOnLastTabClose:)] &&
+            [_delegate tabManagerShouldExitOnLastTabClose:self]) {
+            // Delegate took over (will close the window / quit the app).
+            // Still notify didCloseEditor so observers can update.
+            [_delegate tabManager:self didCloseEditor:editor];
+            return;
+        }
         [self addNewTab];
         return;
     }

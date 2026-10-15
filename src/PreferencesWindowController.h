@@ -44,6 +44,7 @@ extern NSString *const kPrefTabCloseButton;      // BOOL, default YES
 extern NSString *const kPrefDoubleClickTabClose; // BOOL, default NO
 extern NSString *const kPrefTabBarWrap;          // BOOL, default NO
 extern NSString *const kPrefHideTabBar;          // BOOL, default NO — hide the tab bar entirely
+extern NSString *const kPrefExitOnCloseLastTab;  // BOOL, default NO — quit when the last tab is closed
 extern NSString *const kPrefVirtualSpace;        // BOOL, default NO
 extern NSString *const kPrefColumnSel2MultiEdit; // BOOL, default YES — column selection becomes multi-edit on Backspace/arrows
 extern NSString *const kPrefScrollBeyondLastLine;// BOOL, default NO
