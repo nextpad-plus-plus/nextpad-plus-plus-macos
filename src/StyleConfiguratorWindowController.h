@@ -33,6 +33,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Parse the bundled XML and apply any saved overrides.  Call once at launch.
 - (void)loadFromDefaults;
 
+/// One-shot launch migration: older builds shipped the Windows default editor
+/// font (Courier New 10) in stylers.model.xml, and the user's stylers.xml is a
+/// copy of it. If that copy still has the untouched old default, switch it to
+/// the Mac default (Menlo 12). Call before any editor reads the style store.
++ (void)migrateLegacyDefaultEditorFont;
+
 /// Return all style entries for a lexer (resolved = theme + user override).
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID;
 

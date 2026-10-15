@@ -753,8 +753,12 @@ void readConfigXML(void) {
                 [ud setInteger:v.integerValue forKey:kPrefEOLType];
             if ((v = [el attributeForName:@"zoom"].stringValue))
                 [ud setInteger:v.integerValue forKey:kPrefZoomLevel];
-            if ((v = [el attributeForName:@"smoothFont"].stringValue))
-                [ud setInteger:v.integerValue forKey:kPrefFontQuality];
+            if ((v = [el attributeForName:@"smoothFont"].stringValue)) {
+                // SC_EFF_QUALITY_* is 0-3; anything else (hand-edited file)
+                // falls back to the default rather than an unlisted value.
+                NSInteger q = v.integerValue;
+                [ud setInteger:(q >= 0 && q <= 3) ? q : 3 forKey:kPrefFontQuality];
+            }
             if ((v = [el attributeForName:@"paddingLeft"].stringValue))
                 [ud setInteger:v.integerValue forKey:kPrefPaddingLeft];
             if ((v = [el attributeForName:@"paddingRight"].stringValue))

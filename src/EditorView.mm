@@ -1487,6 +1487,19 @@ static NSColor *nppColorFromHex(NSString *hex) {
                            alpha:1.0];
 }
 
+// Font name to hand to SCI_STYLESETFONT. Scintilla's Cocoa backend resolves
+// the name through CoreText, which substitutes Helvetica (proportional) for a
+// font that is not installed, so Scintilla's own Monaco fallback never fires.
+// Windows-origin styles (Consolas, DejaVu Sans Mono, Source Code Pro in user
+// stylers.xml or theme copies) would otherwise render proportional. Fall back
+// to Menlo, the Mac default editor font, when the name does not resolve.
+static NSString *nppEditorFontName(NSString *name) {
+    if (!name.length) return name;
+    if ([NSFont fontWithName:name size:12]) return name;
+    if ([[NSFontManager sharedFontManager] availableMembersOfFontFamily:name].count) return name;
+    return @"Menlo";
+}
+
 - (void)applyThemeColors {
     NPPStyleStore *store = [NPPStyleStore sharedStore];
     NSString *fontName = store.globalFontName;
@@ -1515,6 +1528,7 @@ static NSColor *nppColorFromHex(NSString *hex) {
     if (gov && [_ud boolForKey:kPrefGlobalOverrideEnableItalic])    defItalic    = gov.italic;
     if (gov && [_ud boolForKey:kPrefGlobalOverrideEnableUnderline]) defUnderline = gov.underline;
 
+    fontName = nppEditorFontName(fontName);
     const char *fontNameUTF8 = fontName.UTF8String;
     [sci message:SCI_STYLESETFONT wParam:STYLE_DEFAULT lParam:(sptr_t)fontNameUTF8];
     [sci message:SCI_STYLESETSIZEFRACTIONAL wParam:STYLE_DEFAULT lParam:(sptr_t)(fontSize * 100)];
@@ -1726,7 +1740,7 @@ static NSColor *nppColorFromHex(NSString *hex) {
     if (gov && [_ud boolForKey:kPrefGlobalOverrideEnableItalic])    defItalic    = gov.italic;
     if (gov && [_ud boolForKey:kPrefGlobalOverrideEnableUnderline]) defUnderline = gov.underline;
 
-    [sci message:SCI_STYLESETFONT wParam:STYLE_DEFAULT lParam:(sptr_t)fontName.UTF8String];
+    [sci message:SCI_STYLESETFONT wParam:STYLE_DEFAULT lParam:(sptr_t)nppEditorFontName(fontName).UTF8String];
     [sci message:SCI_STYLESETSIZEFRACTIONAL wParam:STYLE_DEFAULT lParam:(sptr_t)(fontSize * 100)];
     [sci setColorProperty:SCI_STYLESETFORE parameter:STYLE_DEFAULT value:fg];
     [sci setColorProperty:SCI_STYLESETBACK parameter:STYLE_DEFAULT value:bg];
@@ -2926,9 +2940,9 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
         // font name
         if (ovFont && gov) {
             if (gov.fontName.length > 0)
-                [sci message:SCI_STYLESETFONT wParam:sid lParam:(sptr_t)gov.fontName.UTF8String];
+                [sci message:SCI_STYLESETFONT wParam:sid lParam:(sptr_t)nppEditorFontName(gov.fontName).UTF8String];
         } else if (e.fontName.length > 0) {
-            [sci message:SCI_STYLESETFONT wParam:sid lParam:(sptr_t)e.fontName.UTF8String];
+            [sci message:SCI_STYLESETFONT wParam:sid lParam:(sptr_t)nppEditorFontName(e.fontName).UTF8String];
         }
 
         // font size
