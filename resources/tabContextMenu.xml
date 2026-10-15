@@ -58,6 +58,7 @@ Special built-in commands (no MenuEntryName needed):
 		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Apply Color 3"/>
 		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Apply Color 4"/>
 		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Apply Color 5"/>
+		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Custom Color"/>
 		<Item FolderName="Apply Color to Tab" MenuEntryName="View" MenuItemName="Remove Color"/>
 	</TabContextMenu>
 </NotepadPlus>
