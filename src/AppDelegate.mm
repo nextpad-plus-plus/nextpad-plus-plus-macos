@@ -492,7 +492,7 @@ static void NppRecoveryDone(void) {
 
     if (lastEditor) {
         if (cli.language.length) [lastEditor setLanguage:cli.language];
-        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName];
+        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName preferUDL:YES];
         if (cli.readOnly) [lastEditor.scintillaView message:SCI_SETREADONLY wParam:1 lParam:0];
         if (cli.monitorFiles) lastEditor.monitoringMode = YES;
 
