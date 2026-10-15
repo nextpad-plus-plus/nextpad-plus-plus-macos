@@ -142,6 +142,7 @@ set(APP_SRCS
     src/NppPluginManager.mm
     src/PluginsAdminWindowController.mm
     src/NppBuiltinLanguages.mm
+    src/NppKeywordSlots.mm
 )
 
 set(APP_HEADERS
@@ -183,6 +184,7 @@ set(APP_HEADERS
     src/NppPluginInterfaceMac.h
     src/PluginsAdminWindowController.h
     src/NppBuiltinLanguages.h
+    src/NppKeywordSlots.h
 )
 
 add_executable(NotepadPlusPlusMac MACOSX_BUNDLE ${APP_SRCS} ${APP_HEADERS})
