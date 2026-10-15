@@ -1989,6 +1989,7 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
     TabManager       *_tabManager;
     FindReplacePanel *_findPanel;
     NSView           *_statusBar;
+    NSLayoutConstraint *_statusHeight;
     NSTextField      *_statusLeft;
     NSTextField      *_statusRight;
     NSTextField      *_gitBranchLabel;
@@ -4241,7 +4242,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         [_statusBar.leadingAnchor constraintEqualToAnchor:content.leadingAnchor],
         [_statusBar.trailingAnchor constraintEqualToAnchor:content.trailingAnchor],
         [_statusBar.bottomAnchor constraintEqualToAnchor:content.bottomAnchor],
-        [_statusBar.heightAnchor constraintEqualToConstant:22],
+        (_statusHeight = [_statusBar.heightAnchor constraintEqualToConstant:22]),
     ]];
 
     // Collapse secondary views and side panel initially, then restore saved panel state
@@ -11398,6 +11399,12 @@ static NSString *languageDisplayName(NSString *langCode) {
 }
 
 - (void)updateStatusBar {
+    CGFloat statusSize = MAX(9.0, MIN(32.0, 11.0 + [self currentEditor].zoomLevel));
+    for (NSTextField *label in @[_statusLeft, _statusRight, _gitBranchLabel]) {
+        label.font = [NSFont monospacedDigitSystemFontOfSize:statusSize weight:NSFontWeightRegular];
+        label.textColor = NSColor.labelColor;
+    }
+    _statusHeight.constant = MAX(22.0, ceil(statusSize + 10.0));
     EditorView *ed = [self currentEditor];
     if (!ed) { _statusLeft.stringValue = _statusRight.stringValue = @""; return; }
     sptr_t docLength = [ed.scintillaView message:SCI_GETLENGTH wParam:0 lParam:0];

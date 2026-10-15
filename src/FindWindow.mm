@@ -991,10 +991,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             totalFilesScanned:&scannedCount];
 
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
+                          options:opts filesSearched:scannedCount];
+            [self->_delegate findWindowShowSearchResultsPanel:self];
             if (results.count) {
-                [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
-                              options:opts filesSearched:scannedCount];
-                [self->_delegate findWindowShowSearchResultsPanel:self];
                 NSInteger totalHits = 0;
                 for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
                 [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Find in Files: %ld hit(s) in %ld file(s)."],
@@ -1126,10 +1126,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             totalFilesScanned:&scannedCount];
 
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
+                          options:opts filesSearched:scannedCount];
+            [self->_delegate findWindowShowSearchResultsPanel:self];
             if (results.count) {
-                [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
-                              options:opts filesSearched:scannedCount];
-                [self->_delegate findWindowShowSearchResultsPanel:self];
                 NSInteger totalHits = 0;
                 for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
                 [self _showStatus:[NSString stringWithFormat:
