@@ -29,6 +29,11 @@ static const CGFloat kLeftM     = 30;    // left margin for checkboxes
 static const CGFloat kLabelR    = 140;   // right edge of "Find what:" label
 static const CGFloat kFieldL    = 145;   // left edge of combo boxes
 static const CGFloat kFieldR    = 410;   // right edge of combo boxes (from left)
+// Directory row (Find in Files): the "..." and "<<" buttons sit inside the
+// combo column, so the row's right edge lines up with the combos above it.
+static const CGFloat kDirBtnW   = 30;    // width of "..." / "<<"
+static const CGFloat kDirBtnGap = 4;     // gap before each of them
+static const CGFloat kDirFieldR = kFieldR - 2 * (kDirBtnW + kDirBtnGap); // directory combo right edge
 // Button width: computed in +initialize so "Find All in All Opened" fits on one line
 // and "Documents" wraps to the next line.
 static CGFloat kBtnW = 200;
@@ -74,7 +79,19 @@ static const CGFloat kChkH      = 20;    // checkbox height
     NSTextField *_statusLabel;
 
     FindWindowTab _currentTab;
-    BOOL _cancelSearch;
+
+    // Find All / Replace buttons on the Find in Files and Find in Projects
+    // tabs. While a background run is in flight the button that started it
+    // becomes "Cancel" and the other three are disabled.
+    NSButton *_fifFindBtn, *_fifReplaceBtn, *_fipFindBtn, *_fipReplaceBtn;
+
+    // The in-flight Find/Replace in Files or Projects run (nil when idle).
+    // One token per run so a late cancel can never hit the next search; the
+    // worker thread polls it between files. Only touched on the main thread.
+    NPPCancelToken *_searchToken;
+    NSButton *_runButton;
+    NSString *_runButtonTitle;
+    SEL _runButtonAction;
 
     // Issue #143 — Transparency controls, one set per tab (indices match
     // FindWindowTab: 0=Find 1=Replace 2=FiF 3=FiP 4=Mark). Kept in sync via
@@ -613,19 +630,26 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Find what:"]),    _findCombo,      H - 30, kLabelR, kFieldL, kFieldR);
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Replace with:"]), _replaceCombo,   H - 62, kLabelR, kFieldL, kFieldR);
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Filters:"]),      _filtersCombo,   H - 94, kLabelR, kFieldL, kFieldR);
-    _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Directory:"]),    _directoryCombo, H -126, kLabelR, kFieldL, kFieldR - 70);
+    _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Directory:"]),    _directoryCombo, H -126, kLabelR, kFieldL, kDirFieldR);
 
-    // Browse & fill buttons next to directory
+    // Browse & fill buttons next to directory: same frame height and Y as the
+    // combo so they are vertically centred on it, and the "<<" button ends at
+    // kFieldR like the combos above. (They used to sit 5 pt lower and the
+    // "..." button overlapped the combo's right end.)
     NSButton *browseBtn = _mkBtn(@"...", @selector(_browseDir:), self);
-    browseBtn.frame = NSMakeRect(kFieldR - 78, H - 131, 30, 24);
+    browseBtn.translatesAutoresizingMaskIntoConstraints = YES;
+    browseBtn.frame = NSMakeRect(kDirFieldR + kDirBtnGap, H - 126, kDirBtnW, 24);
     [v addSubview:browseBtn];
     NSButton *fillBtn = _mkBtn(@"<<", @selector(_fillDirFromDoc:), self);
-    fillBtn.frame = NSMakeRect(kFieldR - 45, H - 131, 30, 24);
+    fillBtn.translatesAutoresizingMaskIntoConstraints = YES;
+    fillBtn.frame = NSMakeRect(kFieldR - kDirBtnW, H - 126, kDirBtnW, 24);
     [v addSubview:fillBtn];
 
     // Buttons
-    _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Find All"],         @selector(_findInFiles:), self),    H - 34);
-    _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Replace in Files"], @selector(_replaceInFiles:), self), H - 66);
+    _fifFindBtn    = _mkBtn([[NppLocalizer shared] translate:@"Find All"],         @selector(_findInFiles:), self);
+    _fifReplaceBtn = _mkBtn([[NppLocalizer shared] translate:@"Replace in Files"], @selector(_replaceInFiles:), self);
+    _placeBtn(v, _fifFindBtn,    H - 34);
+    _placeBtn(v, _fifReplaceBtn, H - 66);
     _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Close"],            @selector(_close:), self),          H - 98);
 
     // Left options
@@ -663,8 +687,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     _placeFieldRow(v, _mkLabel([[NppLocalizer shared] translate:@"Filters:"]),      _filtersCombo, H - 94, kLabelR, kFieldL, kFieldR);
 
     // Buttons
-    _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Find All"],            @selector(_findInProjects:), self),    H - 34);
-    _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Replace in Projects"], @selector(_replaceInProjects:), self), H - 66);
+    _fipFindBtn    = _mkBtn([[NppLocalizer shared] translate:@"Find All"],            @selector(_findInProjects:), self);
+    _fipReplaceBtn = _mkBtn([[NppLocalizer shared] translate:@"Replace in Projects"], @selector(_replaceInProjects:), self);
+    _placeBtn(v, _fipFindBtn,    H - 34);
+    _placeBtn(v, _fipReplaceBtn, H - 66);
     _placeBtn(v, _mkBtn([[NppLocalizer shared] translate:@"Close"],               @selector(_close:), self),             H - 98);
 
     // Left options
@@ -778,7 +804,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     }
     if (tab == FindWindowTabFindInFiles) {
         [tv addSubview:_directoryCombo];
-        _directoryCombo.frame = NSMakeRect(kFieldL, H - 126, kFieldR - kFieldL - 70, 24);
+        _directoryCombo.frame = NSMakeRect(kFieldL, H - 126, kDirFieldR - kFieldL, 24);
     }
 
     // Point _fr* to the correct tab's checkboxes for Find/Replace
@@ -797,11 +823,12 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 
 #pragma mark - Status
 
+// Blue = found / informational, red = not found / error (Windows NPP's
+// meaning). System colours, so both stay legible in Dark Mode; the old fixed
+// dark blue was unreadable on the dark window background.
 - (void)_showStatus:(NSString *)msg found:(BOOL)found {
     _statusLabel.stringValue = msg;
-    _statusLabel.textColor = found
-        ? [NSColor colorWithRed:0 green:0 blue:0.7 alpha:1]
-        : [NSColor colorWithRed:0.8 green:0 blue:0 alpha:1];
+    _statusLabel.textColor = found ? [NSColor systemBlueColor] : [NSColor systemRedColor];
 }
 
 - (void)_showReplaceWriteFailures:(NSArray<NSString *> *)failures {
@@ -966,42 +993,221 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
                 found:(total > 0)];
 }
 
+#pragma mark - Background runs (Find/Replace in Files and Projects)
+
+// Find in Files used to have a _cancelSearch flag that nothing ever set, so a
+// search over a huge tree could only be stopped by quitting. Now the button
+// that started the run turns into "Cancel" (Esc does the same), and the
+// worker stops between files and reports what it found so far.
+
+/// Start a cancellable background run from `button`. Returns nil if a run is
+/// already in flight (the buttons are disabled then, but a stray action can
+/// still arrive).
+- (nullable NPPCancelToken *)_beginBackgroundRunFromButton:(NSButton *)button {
+    if (_searchToken) return nil;
+    _searchToken = [[NPPCancelToken alloc] init];
+    _runButton = button;
+    _runButtonTitle = button.title;
+    _runButtonAction = button.action;
+    button.title = [[NppLocalizer shared] translate:@"Cancel"];
+    button.action = @selector(_cancelBackgroundRun:);
+    [self _setRunButtonsEnabled:NO except:button];
+    return _searchToken;
+}
+
+/// Enable or disable the Find All / Replace buttons of the Find in Files and
+/// Find in Projects tabs, leaving `except` (may be nil) as it is.
+- (void)_setRunButtonsEnabled:(BOOL)enabled except:(nullable NSButton *)except {
+    NSButton *runButtons[] = { _fifFindBtn, _fifReplaceBtn, _fipFindBtn, _fipReplaceBtn };
+    for (NSButton *b : runButtons)
+        if (b != except) b.enabled = enabled;
+}
+
+/// Restore the buttons once `token`'s run has finished.
+- (void)_endBackgroundRun:(NPPCancelToken *)token {
+    if (token != _searchToken) return;
+    _searchToken = nil;
+    _runButton.title = _runButtonTitle;
+    _runButton.action = _runButtonAction;
+    _runButton = nil;
+    _runButtonTitle = nil;
+    [self _setRunButtonsEnabled:YES except:nil];
+}
+
+- (void)_cancelBackgroundRun:(id)sender {
+    if (!_searchToken || _searchToken.isCancelled) return;
+    [_searchToken cancel];
+    // Nothing more to click until the worker winds down; _endBackgroundRun:
+    // restores the title and re-enables it.
+    _runButton.enabled = NO;
+    [self _showStatus:[[NppLocalizer shared] translate:@"Cancelling..."] found:YES];
+}
+
+/// Progress callback (already on the main thread). Dropped once the run has
+/// been cancelled or has finished, so a late update can't overwrite the
+/// "Cancelling..." or final status line.
+- (void)_showProgressHits:(NSInteger)hits file:(NSString *)file token:(NPPCancelToken *)token {
+    if (token != _searchToken || token.isCancelled) return;
+    [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Searching... %ld hit(s) — %@"],
+        (long)hits, file.lastPathComponent] found:YES];
+}
+
+/// Shared tail of Find in Files / Find in Projects: show (possibly partial)
+/// results and the status line. Formats are already translated.
+- (void)_finishFindRun:(NSArray<NPPFileResults *> *)results
+         filesSearched:(NSInteger)scannedCount
+               options:(NPPFindOptions *)opts
+             cancelled:(BOOL)cancelled
+            doneFormat:(NSString *)doneFormat
+       cancelledFormat:(NSString *)cancelledFormat
+              zeroHits:(NSString *)zeroHits {
+    NSInteger totalHits = 0;
+    for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
+    if (results.count) {
+        [_delegate findWindow:self showResults:results forSearchText:opts.searchText
+                      options:opts filesSearched:scannedCount];
+        [_delegate findWindowShowSearchResultsPanel:self];
+    }
+    if (cancelled) {
+        [self _showStatus:[NSString stringWithFormat:cancelledFormat, (long)totalHits, (long)results.count]
+                    found:NO];
+    } else if (results.count) {
+        [self _showStatus:[NSString stringWithFormat:doneFormat, (long)totalHits, (long)results.count]
+                    found:YES];
+    } else {
+        [self _showStatus:zeroHits found:NO];
+    }
+}
+
+/// Background half of Replace in Files / Replace in Projects: rewrite every
+/// file that had hits, stopping between files on cancel. Runs off the main
+/// thread; problems are returned as raw records for the main thread to format.
++ (void)_replaceInResults:(NSArray<NPPFileResults *> *)results
+                  options:(NPPFindOptions *)opts
+                    token:(NPPCancelToken *)token
+        isOpenAndModified:(BOOL (^)(NSString *path))isOpenAndModified
+             replacements:(NSInteger *)totalReplacements
+             changedFiles:(NSInteger *)changedFiles
+                 problems:(NSMutableArray<NSDictionary *> *)problems {
+    for (NPPFileResults *fr in results) {
+        if (token.isCancelled) break;
+        // Per-file pool: decode + replace + encode temporaries are several
+        // times the file size; don't let them pile up across the whole run.
+        @autoreleasepool {
+            NSInteger count = 0;
+            NSStringEncoding enc = 0;
+            NSError *writeError = nil;
+            NPPReplaceFileStatus st = [SearchEngine replaceAllInFile:fr.filePath
+                                                             options:opts
+                                                    replacementCount:&count
+                                                            encoding:&enc
+                                                   isOpenAndModified:isOpenAndModified
+                                                               error:&writeError];
+            if (st == NPPReplaceFileReplaced) {
+                *totalReplacements += count;
+                (*changedFiles)++;
+            } else if (st == NPPReplaceFileUnrepresentable || st == NPPReplaceFileDecodeNotClean
+                       || st == NPPReplaceFileChangedOnDisk || st == NPPReplaceFileOpenModified
+                       || st == NPPReplaceFileWriteFailed) {
+                NSMutableDictionary *p = [@{ @"path": fr.filePath, @"status": @(st), @"encoding": @(enc) } mutableCopy];
+                if (writeError.localizedDescription) p[@"error"] = writeError.localizedDescription;
+                [problems addObject:p];
+            }
+        }
+    }
+}
+
+/// Check passed to +[SearchEngine replaceAllInFile:...], which calls it on
+/// the main thread right before committing a file: YES when the file is open
+/// in a tab with unsaved changes. Rewriting it underneath the tab would leave
+/// the user choosing between their edits and the replacement, so skip it.
+- (BOOL (^)(NSString *path))_unsavedEditorCheck {
+    __weak FindWindow *weakSelf = self;
+    return ^BOOL(NSString *path) {
+        FindWindow *strongSelf = weakSelf;
+        if (!strongSelf) return NO;
+        NSString *want = path.stringByResolvingSymlinksInPath.stringByStandardizingPath;
+        for (EditorView *ed in [strongSelf->_delegate allOpenEditors]) {
+            if (!ed.isModified || !ed.filePath) continue;
+            if ([ed.filePath.stringByResolvingSymlinksInPath.stringByStandardizingPath isEqualToString:want])
+                return YES;
+        }
+        return NO;
+    };
+}
+
+/// Main-thread tail of Replace in Files / Replace in Projects.
+- (void)_finishReplaceRun:(NSInteger)totalReplacements
+             changedFiles:(NSInteger)changedFiles
+                 problems:(NSArray<NSDictionary *> *)problems
+                cancelled:(BOOL)cancelled
+               doneFormat:(NSString *)doneFormat
+          cancelledFormat:(NSString *)cancelledFormat {
+    NppLocalizer *loc = [NppLocalizer shared];
+    NSString *fmt = cancelled ? cancelledFormat : doneFormat;
+    [self _showStatus:[NSString stringWithFormat:fmt, (long)totalReplacements, (long)changedFiles]
+                found:(!cancelled && totalReplacements > 0)];
+
+    NSMutableArray<NSString *> *failures = [NSMutableArray array];
+    for (NSDictionary *p in problems) {
+        NSString *reason;
+        NPPReplaceFileStatus st = (NPPReplaceFileStatus)[p[@"status"] integerValue];
+        if (st == NPPReplaceFileChangedOnDisk) {
+            // Reuses the existing "\"%@\" changed on disk" string, which
+            // already names the file.
+            [failures addObject:[NSString stringWithFormat:
+                [loc translate:@"\"%@\" changed on disk"], p[@"path"]]];
+            continue;
+        }
+        if (st == NPPReplaceFileUnrepresentable) {
+            NSStringEncoding enc = (NSStringEncoding)[p[@"encoding"] unsignedIntegerValue];
+            NSString *encName = [NSString localizedNameOfStringEncoding:enc] ?: @"?";
+            reason = [NSString stringWithFormat:
+                [loc translate:@"skipped, the result cannot be saved in the file's encoding (%@) without data loss"],
+                encName];
+        } else if (st == NPPReplaceFileOpenModified) {
+            reason = [loc translate:@"skipped, the file has unsaved changes in an open tab"];
+        } else if (st == NPPReplaceFileDecodeNotClean) {
+            reason = [loc translate:@"skipped, the file did not decode cleanly, so rewriting it could change other bytes"];
+        } else {
+            reason = p[@"error"] ?: [loc translate:@"Unknown write error"];
+        }
+        [failures addObject:[NSString stringWithFormat:@"%@: %@", p[@"path"], reason]];
+    }
+    [self _showReplaceWriteFailures:failures];
+}
+
 #pragma mark - Actions: Find in Files
 
 - (void)_findInFiles:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length || !opts.directory.length) return;
+    NPPCancelToken *token = [self _beginBackgroundRunFromButton:_fifFindBtn];
+    if (!token) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_filtersCombo key:kHistoryFilter];
     [self _addToHistory:_directoryCombo key:kHistoryDir];
-    _cancelSearch = NO;
-    [self _showStatus:[[NppLocalizer shared] translate:@"Searching..."] found:YES];
+    NppLocalizer *loc = [NppLocalizer shared];
+    [self _showStatus:[loc translate:@"Searching..."] found:YES];
+    NSString *doneFmt      = [loc translate:@"Find in Files: %ld hit(s) in %ld file(s)."];
+    NSString *cancelledFmt = [loc translate:@"Find in Files cancelled: %ld hit(s) in %ld file(s)."];
+    NSString *zeroHits     = [loc translate:@"Find in Files: 0 hits."];
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSInteger scannedCount = 0;
         NSArray<NPPFileResults *> *results = [SearchEngine findInDirectory:opts.directory
             options:opts
             progressBlock:^(NSString *file, NSInteger hits) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Searching... %ld hit(s) — %@"],
-                        (long)hits, file.lastPathComponent] found:YES];
-                });
+                [self _showProgressHits:hits file:file token:token];
             }
-            cancelFlag:&self->_cancelSearch
+            cancelToken:token
             totalFilesScanned:&scannedCount];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (results.count) {
-                [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
-                              options:opts filesSearched:scannedCount];
-                [self->_delegate findWindowShowSearchResultsPanel:self];
-                NSInteger totalHits = 0;
-                for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
-                [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Find in Files: %ld hit(s) in %ld file(s)."],
-                    (long)totalHits, (long)results.count] found:YES];
-            } else {
-                [self _showStatus:[[NppLocalizer shared] translate:@"Find in Files: 0 hits."] found:NO];
-            }
+            [self _endBackgroundRun:token];
+            [self _finishFindRun:results filesSearched:scannedCount options:opts
+                       cancelled:token.isCancelled
+                      doneFormat:doneFmt cancelledFormat:cancelledFmt zeroHits:zeroHits];
         });
     });
 }
@@ -1009,6 +1215,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replaceInFiles:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     if (!opts.searchText.length || !opts.directory.length) return;
+    if (_searchToken) return;
     NSAlert *alert = [[NSAlert alloc] init];
     alert.messageText = [[NppLocalizer shared] translate:@"Replace in Files"];
     alert.informativeText = [NSString stringWithFormat:
@@ -1018,45 +1225,35 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [alert addButtonWithTitle:[[NppLocalizer shared] translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
 
+    NPPCancelToken *token = [self _beginBackgroundRunFromButton:_fifReplaceBtn];
+    if (!token) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     [self _addToHistory:_filtersCombo key:kHistoryFilter];
     [self _addToHistory:_directoryCombo key:kHistoryDir];
-    [self _showStatus:[[NppLocalizer shared] translate:@"Replacing in files..."] found:YES];
+    NppLocalizer *loc = [NppLocalizer shared];
+    [self _showStatus:[loc translate:@"Replacing in files..."] found:YES];
+    NSString *doneFmt      = [loc translate:@"Replace in Files: %ld replacement(s) in %ld file(s)."];
+    NSString *cancelledFmt = [loc translate:@"Replace in Files cancelled: %ld replacement(s) in %ld file(s)."];
 
+    BOOL (^isOpenAndModified)(NSString *) = [self _unsavedEditorCheck];
+
+    // Search and rewrite both run off the main thread so the Cancel button
+    // stays live; files already rewritten when Cancel lands stay rewritten.
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSArray<NPPFileResults *> *results = [SearchEngine findInDirectory:opts.directory
-            options:opts progressBlock:nil cancelFlag:NULL totalFilesScanned:NULL];
-        __block NSInteger totalReplacements = 0;
+            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL];
+        NSInteger totalReplacements = 0, changedFiles = 0;
+        NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
+        [FindWindow _replaceInResults:results options:opts token:token
+                    isOpenAndModified:isOpenAndModified
+                         replacements:&totalReplacements changedFiles:&changedFiles
+                             problems:problems];
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSInteger changedFiles = 0;
-            NSMutableArray<NSString *> *writeFailures = [NSMutableArray array];
-            for (NPPFileResults *fr in results) {
-                NSString *content = [NSString stringWithContentsOfFile:fr.filePath
-                                                             encoding:NSUTF8StringEncoding error:nil];
-                if (!content) continue;
-                NSInteger replacementCount = 0;
-                NSString *replaced = [SearchEngine stringByReplacingAllInString:content
-                                                                         options:opts
-                                                                replacementCount:&replacementCount];
-                // A replacement can be a no-op ("foo" -> "foo", regex (foo) -> \1).
-                // Comparing the text as well as the count keeps those files from
-                // being rewritten, which would bump their mtime for no reason.
-                if (replacementCount > 0 && ![replaced isEqualToString:content]) {
-                    NSError *writeError = nil;
-                    if ([replaced writeToFile:fr.filePath atomically:YES
-                                     encoding:NSUTF8StringEncoding error:&writeError]) {
-                        totalReplacements += replacementCount;
-                        changedFiles++;
-                    } else {
-                        [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
-                            fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
-                    }
-                }
-            }
-            [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Replace in Files: %ld replacement(s) in %ld file(s)."],
-                (long)totalReplacements, (long)changedFiles] found:(totalReplacements > 0)];
-            [self _showReplaceWriteFailures:writeFailures];
+            [self _endBackgroundRun:token];
+            [self _finishReplaceRun:totalReplacements changedFiles:changedFiles problems:problems
+                          cancelled:token.isCancelled
+                         doneFormat:doneFmt cancelledFormat:cancelledFmt];
         });
     });
 }
@@ -1066,7 +1263,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_findInProjects:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     NppLocalizer *loc = [NppLocalizer shared];
-    if (!opts.searchText.length) return;
+    if (!opts.searchText.length || _searchToken) return;
 
     // Validate: Project Panel must be open
     ProjectPanel *pp = [_delegate projectPanel];
@@ -1106,38 +1303,30 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
         return;
     }
 
+    NPPCancelToken *token = [self _beginBackgroundRunFromButton:_fipFindBtn];
+    if (!token) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_filtersCombo key:kHistoryFilter];
-    _cancelSearch = NO;
     [self _showStatus:[loc translate:@"Searching..."] found:YES];
+    NSString *doneFmt      = [loc translate:@"Find in Projects: %ld hit(s) in %ld file(s)."];
+    NSString *cancelledFmt = [loc translate:@"Find in Projects cancelled: %ld hit(s) in %ld file(s)."];
+    NSString *zeroHits     = [loc translate:@"Find in Projects: 0 hits."];
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSInteger scannedCount = 0;
         NSArray<NPPFileResults *> *results = [SearchEngine findInFilePaths:allPaths
             options:opts
             progressBlock:^(NSString *file, NSInteger hits) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self _showStatus:[NSString stringWithFormat:
-                        [[NppLocalizer shared] translate:@"Searching... %ld hit(s) — %@"],
-                        (long)hits, file.lastPathComponent] found:YES];
-                });
+                [self _showProgressHits:hits file:file token:token];
             }
-            cancelFlag:&self->_cancelSearch
+            cancelToken:token
             totalFilesScanned:&scannedCount];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (results.count) {
-                [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
-                              options:opts filesSearched:scannedCount];
-                [self->_delegate findWindowShowSearchResultsPanel:self];
-                NSInteger totalHits = 0;
-                for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
-                [self _showStatus:[NSString stringWithFormat:
-                    [[NppLocalizer shared] translate:@"Find in Projects: %ld hit(s) in %ld file(s)."],
-                    (long)totalHits, (long)results.count] found:YES];
-            } else {
-                [self _showStatus:[[NppLocalizer shared] translate:@"Find in Projects: 0 hits."] found:NO];
-            }
+            [self _endBackgroundRun:token];
+            [self _finishFindRun:results filesSearched:scannedCount options:opts
+                       cancelled:token.isCancelled
+                      doneFormat:doneFmt cancelledFormat:cancelledFmt zeroHits:zeroHits];
         });
     });
 }
@@ -1145,7 +1334,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
 - (void)_replaceInProjects:(id)sender {
     NPPFindOptions *opts = [self currentOptions];
     NppLocalizer *loc = [NppLocalizer shared];
-    if (!opts.searchText.length) return;
+    if (!opts.searchText.length || _searchToken) return;
 
     ProjectPanel *pp = [_delegate projectPanel];
     if (!pp) {
@@ -1182,45 +1371,30 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     [alert addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if ([alert runModal] != NSAlertFirstButtonReturn) return;
 
+    NPPCancelToken *token = [self _beginBackgroundRunFromButton:_fipReplaceBtn];
+    if (!token) return;
     [self _addToHistory:_findCombo key:kHistoryFind];
     [self _addToHistory:_replaceCombo key:kHistoryReplace];
     [self _addToHistory:_filtersCombo key:kHistoryFilter];
     [self _showStatus:[loc translate:@"Replacing in files..."] found:YES];
+    NSString *doneFmt      = [loc translate:@"Replace in Projects: %ld replacement(s) in %ld file(s)."];
+    NSString *cancelledFmt = [loc translate:@"Replace in Projects cancelled: %ld replacement(s) in %ld file(s)."];
+    BOOL (^isOpenAndModified)(NSString *) = [self _unsavedEditorCheck];
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSArray<NPPFileResults *> *results = [SearchEngine findInFilePaths:allPaths
-            options:opts progressBlock:nil cancelFlag:NULL totalFilesScanned:NULL];
-        __block NSInteger totalReplacements = 0;
+            options:opts progressBlock:nil cancelToken:token totalFilesScanned:NULL];
+        NSInteger totalReplacements = 0, changedFiles = 0;
+        NSMutableArray<NSDictionary *> *problems = [NSMutableArray array];
+        [FindWindow _replaceInResults:results options:opts token:token
+                    isOpenAndModified:isOpenAndModified
+                         replacements:&totalReplacements changedFiles:&changedFiles
+                             problems:problems];
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSInteger changedFiles = 0;
-            NSMutableArray<NSString *> *writeFailures = [NSMutableArray array];
-            for (NPPFileResults *fr in results) {
-                NSString *content = [NSString stringWithContentsOfFile:fr.filePath
-                                                             encoding:NSUTF8StringEncoding error:nil];
-                if (!content) continue;
-                NSInteger replacementCount = 0;
-                NSString *replaced = [SearchEngine stringByReplacingAllInString:content
-                                                                         options:opts
-                                                                replacementCount:&replacementCount];
-                // A replacement can be a no-op ("foo" -> "foo", regex (foo) -> \1).
-                // Comparing the text as well as the count keeps those files from
-                // being rewritten, which would bump their mtime for no reason.
-                if (replacementCount > 0 && ![replaced isEqualToString:content]) {
-                    NSError *writeError = nil;
-                    if ([replaced writeToFile:fr.filePath atomically:YES
-                                     encoding:NSUTF8StringEncoding error:&writeError]) {
-                        totalReplacements += replacementCount;
-                        changedFiles++;
-                    } else {
-                        [writeFailures addObject:[NSString stringWithFormat:@"%@: %@",
-                            fr.filePath, writeError.localizedDescription ?: @"Unknown write error"]];
-                    }
-                }
-            }
-            [self _showStatus:[NSString stringWithFormat:
-                [[NppLocalizer shared] translate:@"Replace in Projects: %ld replacement(s) in %ld file(s)."],
-                (long)totalReplacements, (long)changedFiles] found:(totalReplacements > 0)];
-            [self _showReplaceWriteFailures:writeFailures];
+            [self _endBackgroundRun:token];
+            [self _finishReplaceRun:totalReplacements changedFiles:changedFiles problems:problems
+                          cancelled:token.isCancelled
+                         doneFormat:doneFmt cancelledFormat:cancelledFmt];
         });
     });
 }
@@ -1326,7 +1500,7 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
        textView:(NSTextView *)textView
 doCommandBySelector:(SEL)commandSelector {
     if (commandSelector == @selector(cancelOperation:)) {
-        [self _close:nil];
+        [self cancelOperation:nil];
         return YES;
     }
     return NO;
@@ -1405,8 +1579,15 @@ doCommandBySelector:(SEL)commandSelector {
 
 // Escape closes the window. cancelOperation: bubbles up the responder chain
 // even when focus is in a field editor, which is why we use it instead of
-// catching 0x1B in keyDown:.
+// catching 0x1B in keyDown:. While a Find/Replace in Files run is in flight
+// and its tab is the one showing, Escape cancels the run instead; a second
+// Escape then closes. On any other tab Escape still closes (#348).
 - (void)cancelOperation:(id)sender {
+    if (_searchToken && !_searchToken.isCancelled
+        && _runButton.superview == _views[_currentTab]) {
+        [self _cancelBackgroundRun:nil];
+        return;
+    }
     [self _close:nil];
 }
 
