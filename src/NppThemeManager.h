@@ -109,6 +109,23 @@ typedef struct {
 @property (nonatomic, readonly) NSColor *panelBackground;
 @property (nonatomic, readonly) NSColor *statusBarBackground;
 
+// ── Surfaces painted with the editor theme ───────────────────────────────────
+// The editor theme (NPPStyleStore) is independent of the chrome dark-mode
+// state: a light theme can sit under dark chrome and vice versa. Views whose
+// body is painted with a theme colour should key off that colour, not -isDark.
+
+/// Aqua or DarkAqua, whichever matches the brightness of `background`. Pin a
+/// view to it so native parts (scrollers, headers) match the theme behind them.
++ (NSAppearance *)appearanceForBackground:(NSColor *)background;
+
+/// Document Map viewport highlight drawn over a map painted with `background`.
+/// `themeColor` is the theme's "Document map" foreground (the Windows view-zone
+/// focus colour); nil or a colour with too little contrast against the
+/// background falls back to orange on light backgrounds and white on dark.
+/// The alpha matches Windows' 50/255 view-zone transparency.
+- (NSColor *)documentMapViewportColorOnBackground:(NSColor *)background
+                                       themeColor:(nullable NSColor *)themeColor;
+
 // ── Icon Paths ───────────────────────────────────────────────────────────────
 
 /// Returns the toolbar icon directory: "icons/standard/toolbar" or "icons/dark/toolbar/regular"
