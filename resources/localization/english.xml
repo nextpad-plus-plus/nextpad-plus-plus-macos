@@ -1929,6 +1929,9 @@ You can re-activate this dialog in Preferences later."/>
 				<Item id="90469" name="Trim Trailing Space and Save"/>
 				<Item id="90470" name="All plugin buttons are hidden, so the Plugins capsule is not shown in the toolbar."/>
 				<Item id="90471" name="not loaded"/>
+				<Item id="90480" name="Could not save user defined language: %@"/>
+				<Item id="90481" name="A user defined language with this name already exists: %@"/>
+				<Item id="90482" name="This file is read-only: %@"/>
 				<Item id="90500" name="%@ (recovered)"/>
 			</MacStrings>
 		</Dialog>

@@ -2158,6 +2158,11 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
         [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_shortcutsChanged:)
                    name:NPPShortcutsChangedNotification object:nil];
+        // UDL dialog saved / renamed / created / removed a UDL: refresh the
+        // Language menu entries and the status bar's language name.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_userDefineLangsChanged:)
+                   name:UserDefineLangsDidChangeNotification object:nil];
         // (scroll sync uses a timer, not notifications)
         [self rebuildRecentFilesMenu];
         [self rebuildUDLLanguageMenu];
@@ -8207,6 +8212,14 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // a UDL is now active.
     ed.currentLanguage = udlName;
     [self updateStatusBar];
+}
+
+- (void)_userDefineLangsChanged:(NSNotification *)n {
+    [self rebuildUDLLanguageMenu];
+    // Deferred: editors observe the same notification and may run after
+    // this one, so the status bar must read their language once they have
+    // followed a rename or removal.
+    dispatch_async(dispatch_get_main_queue(), ^{ [self updateStatusBar]; });
 }
 
 /// Populate the Language menu with all loaded UDL names.

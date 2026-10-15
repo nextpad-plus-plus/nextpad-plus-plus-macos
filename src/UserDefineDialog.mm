@@ -155,6 +155,11 @@ static void addFoldFields(NSBox *box, NSScrollView **oO, NSScrollView **oM, NSSc
     NSScrollView *_dO[8], *_dE[8], *_dC[8];
 
     UserDefinedLang *_cur;
+    // Form state as last loaded or saved (see _formState). _commitEdits
+    // compares against it so an untouched UDL is never rewritten, and only
+    // the keyword lists that actually changed are re-encoded.
+    NSDictionary *_snapshot;
+    BOOL _stylesDirty;   // a Styler dialog edit is not yet on disk
 }
 
 + (instancetype)sharedController {
@@ -174,15 +179,26 @@ static void addFoldFields(NSBox *box, NSScrollView **oO, NSScrollView **oM, NSSc
     if (self) {
         w.delegate = self;
         [self _buildUI];
+        // Quitting with the dialog open (or hidden by the main window closing)
+        // never sends windowWillClose:, so flush pending edits here too.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_appWillTerminate:)
+                   name:NSApplicationWillTerminateNotification object:nil];
     }
     return self;
 }
 
 - (void)showWithLanguage:(nullable NSString *)n {
+    // The window may have been hidden (orderOut) with edits still in the form.
+    // If saving them fails, show the form as it is rather than reloading it.
+    if (![self _commitEdits]) { [self showWindow:nil]; return; }
+    NSString *keep = n ?: _cur.name;
     [self showWindow:nil]; [self _rebuildPopup];
-    if (n) [_langPopup selectItemWithTitle:n];
+    if (keep) [_langPopup selectItemWithTitle:keep];
     [self _load];
 }
+
+- (void)_appWillTerminate:(NSNotification *)n { [self _commitEditsReloading:NO]; }
 
 #pragma mark — Main layout
 
@@ -588,12 +604,19 @@ static void addFoldFields(NSBox *box, NSScrollView **oO, NSScrollView **oM, NSSc
         }
     }
 
-    if (!targetStyle) {
+    BOOL isNew = (targetStyle == nil);
+    if (isNew) {
         targetStyle = [@{@"name":styleName, @"fgColor":@"000000",
                           @"bgColor":@"FFFFFF", @"fontStyle":@"0"} mutableCopy];
     }
 
-    [UDLStylerDialog runForStyle:targetStyle enableNesting:enableNesting parentWindow:self.window];
+    if (![UDLStylerDialog runForStyle:targetStyle enableNesting:enableNesting parentWindow:self.window])
+        return;
+    // A style missing from the file is added to the UDL so the edit is kept.
+    if (isNew) _cur.styles = [(_cur.styles ?: @[]) arrayByAddingObject:targetStyle];
+    // Styler OK is an explicit commit: save and re-apply to open editors now.
+    _stylesDirty = YES;
+    [self _commitEdits];
 }
 
 #pragma mark — Comments / Delimiters decode & encode
@@ -608,60 +631,64 @@ static NSArray<NSString *> *decodeFields(NSString *raw, int fieldCount) {
 
     if (!raw.length) return result;
 
-    const char *s = raw.UTF8String;
-    size_t len = strlen(s);
-    int curField = -1;
-    NSMutableString *curVal = [NSMutableString string];
+    // Works on UTF-16 units, not UTF-8 bytes, so non-ASCII delimiters survive.
+    NSCharacterSet *ws = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSUInteger len = raw.length;
+    __block NSUInteger valStart = 0;
+    __block int curField = -1;
 
-    size_t i = 0;
-    while (i < len) {
-        // Check for a 2-digit prefix at a word boundary (start or after space)
-        BOOL atBoundary = (i == 0) || (s[i - 1] == ' ');
-        if (atBoundary && i + 1 < len && s[i] >= '0' && s[i] <= '9' && s[i+1] >= '0' && s[i+1] <= '9') {
-            int newField = (s[i] - '0') * 10 + (s[i+1] - '0');
-            if (newField < fieldCount) {
-                // Save previous field value
-                if (curField >= 0 && curField < fieldCount) {
-                    NSString *trimmed = [curVal stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-                    if (trimmed.length) {
-                        if (((NSString *)result[curField]).length)
-                            result[curField] = [NSString stringWithFormat:@"%@ %@", result[curField], trimmed];
-                        else
-                            result[curField] = trimmed;
-                    }
-                }
-                curField = newField;
-                [curVal setString:@""];
-                i += 2; // skip the 2-digit prefix
-                continue;
-            }
-        }
-        [curVal appendFormat:@"%c", s[i]];
-        i++;
+    void (^flush)(NSUInteger) = ^(NSUInteger end) {
+        if (curField < 0 || curField >= fieldCount) return;
+        NSString *trimmed = [[raw substringWithRange:NSMakeRange(valStart, end - valStart)]
+                             stringByTrimmingCharactersInSet:ws];
+        if (!trimmed.length) return;
+        if (((NSString *)result[curField]).length)
+            result[curField] = [NSString stringWithFormat:@"%@ %@", result[curField], trimmed];
+        else
+            result[curField] = trimmed;
+    };
+
+    for (NSUInteger i = 0; i + 1 < len; i++) {
+        // A 2-digit prefix at a word boundary (start or after whitespace)
+        BOOL atBoundary = (i == 0) || [ws characterIsMember:[raw characterAtIndex:i - 1]];
+        unichar c0 = [raw characterAtIndex:i], c1 = [raw characterAtIndex:i + 1];
+        if (!atBoundary || c0 < '0' || c0 > '9' || c1 < '0' || c1 > '9') continue;
+        int newField = (c0 - '0') * 10 + (c1 - '0');
+        if (newField >= fieldCount) continue;
+        flush(i);
+        curField = newField;
+        i += 1;              // skip the 2-digit prefix
+        valStart = i + 1;
     }
-    // Save last field
-    if (curField >= 0 && curField < fieldCount) {
-        NSString *trimmed = [curVal stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if (trimmed.length) {
-            if (((NSString *)result[curField]).length)
-                result[curField] = [NSString stringWithFormat:@"%@ %@", result[curField], trimmed];
-            else
-                result[curField] = trimmed;
-        }
-    }
+    flush(len);
     return result;
 }
 
 /// Encode an array of field values back into prefix-encoded format.
-/// Inverse of decodeFields. Empty slots emit bare prefix (e.g. "01 02")
-/// to preserve the Windows NPP on-disk format.
+/// Inverse of decodeFields. Port of Windows CommentStyleDialog::convertTo:
+/// every word gets its field prefix ("03``` 03` 03~~~") except inside a
+/// "((...))" group, and an empty slot emits the bare prefix ("01 02").
+/// LexUser's GenerateVector only reads prefixed words, so a field like
+/// "![ [" must be written "00![ 00[" or its second word is lost.
 static NSString *encodeFields(NSArray<NSString *> *fields) {
     NSMutableString *out = [NSMutableString string];
+    NSCharacterSet *ws = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     for (int i = 0; i < (int)fields.count; i++) {
-        NSString *val = fields[i];
+        NSString *prefix = [NSString stringWithFormat:@"%02d", i];
         if (out.length) [out appendString:@" "];
-        [out appendFormat:@"%02d", i];
-        if (val.length) [out appendString:val];
+        [out appendString:prefix];
+        BOOL first = YES, inGroup = NO;
+        for (NSString *w in [fields[i] componentsSeparatedByCharactersInSet:ws]) {
+            if (!w.length) continue;
+            if (!first) {
+                [out appendString:@" "];
+                if (!inGroup) [out appendString:prefix];
+            }
+            [out appendString:w];
+            if (!inGroup && [w hasPrefix:@"(("]) inGroup = YES;
+            if (inGroup && [w hasSuffix:@"))"]) inGroup = NO;
+            first = NO;
+        }
     }
     return out;
 }
@@ -674,10 +701,21 @@ static NSString *encodeFields(NSArray<NSString *> *fields) {
     for (UserDefinedLang *u in [UserDefineLangManager shared].allLanguages)
         [_langPopup addItemWithTitle:u.name];
 }
-- (void)_langChanged:(id)s { [self _load]; }
+- (void)_langChanged:(id)s {
+    // _cur is still the previously selected UDL: save its edits before
+    // the form is refilled with the new one. If that fails, stay on it so
+    // the edits are not discarded.
+    if (![self _commitEdits]) {
+        if (_cur.name) [_langPopup selectItemWithTitle:_cur.name];
+        return;
+    }
+    [self _load];
+}
 - (void)_load {
     _cur = [[UserDefineLangManager shared] languageNamed:_langPopup.selectedItem.title];
+    _stylesDirty = NO;
     if (_cur) [self _fill];
+    _snapshot = _cur ? [self _formState] : nil;
 }
 - (void)_fill {
     UserDefinedLang *L = _cur; NSDictionary *kw = L.keywordLists;
@@ -723,15 +761,57 @@ static NSString *encodeFields(NSArray<NSString *> *fields) {
     }
 }
 
-#pragma mark — Save current form state back to XML
+#pragma mark — In-place XML patching
 
-/// Collect all form fields and write the UDL XML file.
+// UDL files are patched as raw text rather than re-serialised through
+// NSXMLDocument, so comments, the prolog, indentation and entity forms such
+// as &#x000D;&#x000A; survive (be64746). Every edit is scoped to the one
+// <UserLang name="..."> block being saved, so a multi-language container
+// (legacy userDefineLang.xml) only has that block touched.
+
 /// XML-escape a string for safe embedding in element content.
 static NSString *xmlEscape(NSString *s) {
     NSMutableString *r = [s mutableCopy];
     [r replaceOccurrencesOfString:@"&" withString:@"&amp;" options:0 range:NSMakeRange(0, r.length)];
     [r replaceOccurrencesOfString:@"<" withString:@"&lt;" options:0 range:NSMakeRange(0, r.length)];
     [r replaceOccurrencesOfString:@">" withString:@"&gt;" options:0 range:NSMakeRange(0, r.length)];
+    return r;
+}
+
+/// XML-escape a string for an attribute value. Both quote characters are
+/// escaped, so the result is safe whichever quote the existing attribute
+/// uses (name='Bob&apos;s', not name='Bob's').
+static NSString *xmlAttrEscape(NSString *s) {
+    return [[xmlEscape(s ?: @"") stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"]
+            stringByReplacingOccurrencesOfString:@"'" withString:@"&apos;"];
+}
+
+/// Decode the predefined and numeric entity references in raw XML text.
+static NSString *xmlUnescape(NSString *s) {
+    if ([s rangeOfString:@"&"].location == NSNotFound) return s;
+    NSMutableString *r = [NSMutableString string];
+    NSUInteger i = 0, n = s.length;
+    while (i < n) {
+        unichar c = [s characterAtIndex:i];
+        if (c == '&') {
+            NSRange semi = [s rangeOfString:@";" options:0 range:NSMakeRange(i, MIN(n - i, (NSUInteger)12))];
+            if (semi.location != NSNotFound) {
+                NSString *ent = [s substringWithRange:NSMakeRange(i + 1, semi.location - i - 1)];
+                NSString *rep = @{@"lt":@"<", @"gt":@">", @"amp":@"&", @"quot":@"\"", @"apos":@"'"}[ent];
+                if (!rep && [ent hasPrefix:@"#"] && ent.length > 1) {
+                    unsigned int v = 0;
+                    if ([ent characterAtIndex:1] == 'x' || [ent characterAtIndex:1] == 'X')
+                        [[NSScanner scannerWithString:[ent substringFromIndex:2]] scanHexInt:&v];
+                    else
+                        v = (unsigned int)[ent substringFromIndex:1].intValue;
+                    if (v) rep = [[NSString alloc] initWithBytes:&v length:4 encoding:NSUTF32LittleEndianStringEncoding];
+                }
+                if (rep) { [r appendString:rep]; i = semi.location + 1; continue; }
+            }
+        }
+        [r appendFormat:@"%C", c];
+        i++;
+    }
     return r;
 }
 
@@ -744,219 +824,622 @@ static NSString *nlToEntity(NSString *s) {
     return r;
 }
 
-/// Get text from a scrollview's textview, with newline→entity and XML escaping.
-static NSString *getTextEscaped(NSScrollView *sv) {
-    NSString *raw = ((NSTextView *)sv.documentView).string ?: @"";
-    return xmlEscape(nlToEntity(raw));
+static BOOL isXMLSpace(unichar c) { return c == ' ' || c == '\t' || c == '\r' || c == '\n'; }
+
+/// Raw (still escaped) value of `attr` inside the start tag at `tagR`;
+/// nil when the tag has no such attribute. `valR` receives its range.
+static NSString *attrValue(NSString *x, NSRange tagR, NSString *attr, NSRange *valR) {
+    NSString *pat = [NSString stringWithFormat:@"\\s%@\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')",
+                     [NSRegularExpression escapedPatternForString:attr]];
+    NSRegularExpression *re = [NSRegularExpression regularExpressionWithPattern:pat options:0 error:nil];
+    NSTextCheckingResult *m = [re firstMatchInString:x options:0 range:tagR];
+    if (!m) return nil;
+    NSRange vr = [m rangeAtIndex:1];
+    if (vr.location == NSNotFound) vr = [m rangeAtIndex:2];
+    if (valR) *valR = vr;
+    return [x substringWithRange:vr];
 }
 
-- (void)_saveToXML {
-    if (!_cur || !_cur.xmlPath) return;
+static BOOL hasAt(NSString *x, NSUInteger loc, NSString *s) {
+    return loc + s.length <= x.length &&
+           [x compare:s options:NSLiteralSearch range:NSMakeRange(loc, s.length)] == NSOrderedSame;
+}
 
-    // Read the original file as raw text to preserve comments, prolog, entities, indentation.
-    NSString *original = [NSString stringWithContentsOfFile:_cur.xmlPath
-                                                  encoding:NSUTF8StringEncoding error:nil];
-    if (!original) {
-        // Try Windows-1252 for files from Windows NPP
-        original = [NSString stringWithContentsOfFile:_cur.xmlPath
-                                             encoding:NSWindowsCP1252StringEncoding error:nil];
+/// When a comment, CDATA section, processing instruction or DOCTYPE starts
+/// at `loc`, the index just past its end (x.length if unterminated);
+/// NSNotFound otherwise. Tag searches skip these spans, so a commented-out
+/// <UserLang> or </Keywords> is never matched.
+static NSUInteger skipMarkup(NSString *x, NSUInteger loc) {
+    NSString *close = hasAt(x, loc, @"<!--") ? @"-->"
+                    : hasAt(x, loc, @"<![CDATA[") ? @"]]>"
+                    : hasAt(x, loc, @"<?") ? @"?>"
+                    : hasAt(x, loc, @"<!") ? @">" : nil;
+    if (!close) return NSNotFound;
+    NSRange r = [x rangeOfString:close options:NSLiteralSearch range:NSMakeRange(loc + 2, x.length - loc - 2)];
+    return r.location == NSNotFound ? x.length : NSMaxRange(r);
+}
+
+/// Next `<...` at or after `pos` (before `end`) that is not inside a
+/// comment/CDATA/PI; NSNotFound when there is none.
+static NSUInteger nextTagOpen(NSString *x, NSUInteger pos, NSUInteger end) {
+    while (pos < end) {
+        NSRange r = [x rangeOfString:@"<" options:NSLiteralSearch range:NSMakeRange(pos, end - pos)];
+        if (r.location == NSNotFound) return NSNotFound;
+        NSUInteger skip = skipMarkup(x, r.location);
+        if (skip == NSNotFound) return r.location;
+        pos = skip;
     }
-    if (!original) return;
+    return NSNotFound;
+}
 
-    NSMutableString *x = [original mutableCopy];
+/// Range of the first start tag `<tag ...>` within `scope` (closing `>`
+/// included) whose `attr` decodes to `val`, or the first one at all when
+/// `attr` is nil. location is NSNotFound when there is none.
+static NSRange findStartTag(NSString *x, NSString *tag, NSRange scope,
+                            NSString *attr, NSString *val, BOOL caseInsensitive) {
+    NSString *open = [@"<" stringByAppendingString:tag];
+    NSUInteger pos = scope.location, end = MIN(NSMaxRange(scope), x.length);
+    while (pos < end) {
+        NSUInteger lt = nextTagOpen(x, pos, end);
+        if (lt == NSNotFound) break;
+        if (!hasAt(x, lt, open)) { pos = lt + 1; continue; }
+        NSRange r = NSMakeRange(lt, open.length);
+        NSUInteger k = NSMaxRange(r);
+        if (k >= x.length) break;
+        unichar c = [x characterAtIndex:k];
+        if (c != '>' && c != '/' && !isXMLSpace(c)) { pos = k; continue; } // <KeywordLists vs <Keywords
+        // Quote-aware scan to the end of the start tag
+        unichar q = 0;
+        for (; k < x.length; k++) {
+            unichar d = [x characterAtIndex:k];
+            if (q) { if (d == q) q = 0; }
+            else if (d == '"' || d == '\'') q = d;
+            else if (d == '>') break;
+        }
+        if (k >= x.length) break;
+        NSRange tagR = NSMakeRange(r.location, k + 1 - r.location);
+        if (!attr) return tagR;
+        NSString *v = attrValue(x, tagR, attr, NULL);
+        if (v) {
+            v = xmlUnescape(v);
+            if (caseInsensitive ? [v caseInsensitiveCompare:val] == NSOrderedSame : [v isEqualToString:val])
+                return tagR;
+        }
+        pos = NSMaxRange(tagR);
+    }
+    return NSMakeRange(NSNotFound, 0);
+}
 
-    // Helper: replace content of an XML element found by attribute
-    // e.g. <Keywords name="Comments">OLD</Keywords> → <Keywords name="Comments">NEW</Keywords>
-    void (^replaceContent)(NSString *tag, NSString *attrName, NSString *attrVal, NSString *newContent) =
-        ^(NSString *tag, NSString *attrName, NSString *attrVal, NSString *newContent) {
-            // Find opening tag with attribute
-            NSString *search = [NSString stringWithFormat:@"%@=\"%@\"", attrName, attrVal];
-            NSRange attrRange = [x rangeOfString:search];
-            if (attrRange.location == NSNotFound) return;
-            // Find the closing > of the opening tag
-            NSRange gtRange = [x rangeOfString:@">" options:0
-                                         range:NSMakeRange(attrRange.location, x.length - attrRange.location)];
-            if (gtRange.location == NSNotFound) return;
-            NSUInteger contentStart = gtRange.location + 1;
-            // Find the closing tag
-            NSString *closeTag = [NSString stringWithFormat:@"</%@>", tag];
-            NSRange closeRange = [x rangeOfString:closeTag options:0
-                                            range:NSMakeRange(contentStart, x.length - contentStart)];
-            if (closeRange.location == NSNotFound) return;
-            // Replace content between > and </Tag>
-            NSRange contentRange = NSMakeRange(contentStart, closeRange.location - contentStart);
-            [x replaceCharactersInRange:contentRange withString:newContent];
-        };
+/// Like findStartTag but returns the LAST match. Used for <UserLang>:
+/// UserDefineLangManager keeps the last block when a file repeats a
+/// name, so the writer must patch that same one.
+static NSRange findLastStartTag(NSString *x, NSString *tag, NSString *attr, NSString *val) {
+    NSRange last = NSMakeRange(NSNotFound, 0);
+    for (NSRange r = findStartTag(x, tag, NSMakeRange(0, x.length), attr, val, NO);
+         r.location != NSNotFound;
+         r = findStartTag(x, tag, NSMakeRange(NSMaxRange(r), x.length - NSMaxRange(r)), attr, val, NO))
+        last = r;
+    return last;
+}
 
-    // Helper: set an attribute value on an element
-    void (^setAttr)(NSString *elemSearch, NSString *attrName, NSString *attrVal) =
-        ^(NSString *elemSearch, NSString *attrName, NSString *attrVal) {
-            NSRange elemRange = [x rangeOfString:elemSearch];
-            if (elemRange.location == NSNotFound) return;
-            // Find the attribute within this element
-            NSString *attrSearch = [NSString stringWithFormat:@"%@=\"", attrName];
-            NSRange searchArea = NSMakeRange(elemRange.location, MIN((NSUInteger)500, x.length - elemRange.location));
-            NSRange attrStart = [x rangeOfString:attrSearch options:0 range:searchArea];
-            if (attrStart.location == NSNotFound) return;
-            NSUInteger valStart = attrStart.location + attrStart.length;
-            NSRange closeQuote = [x rangeOfString:@"\"" options:0
-                                            range:NSMakeRange(valStart, x.length - valStart)];
-            if (closeQuote.location == NSNotFound) return;
-            NSRange valRange = NSMakeRange(valStart, closeQuote.location - valStart);
-            [x replaceCharactersInRange:valRange withString:attrVal];
-        };
+/// Set `attr` on the start tag at `tagR` (inserting it when missing). An
+/// attribute that already decodes to `value` is left byte-for-byte alone.
+static void setAttr(NSMutableString *x, NSRange tagR, NSString *attr, NSString *value) {
+    if (tagR.location == NSNotFound) return;
+    NSRange vr;
+    NSString *cur = attrValue(x, tagR, attr, &vr);
+    if (cur) {
+        if (![xmlUnescape(cur) isEqualToString:value])
+            [x replaceCharactersInRange:vr withString:xmlAttrEscape(value)];
+        return;
+    }
+    NSUInteger ins = NSMaxRange(tagR) - 1;                       // at '>'
+    if (ins > tagR.location && [x characterAtIndex:ins - 1] == '/') ins--;
+    while (ins > tagR.location && isXMLSpace([x characterAtIndex:ins - 1])) ins--;
+    [x insertString:[NSString stringWithFormat:@" %@=\"%@\"", attr, xmlAttrEscape(value)] atIndex:ins];
+}
 
-    // ── Update UserLang attributes ──────────────────────────────────────────
-    setAttr(@"<UserLang ", @"name", _cur.name);
-    setAttr(@"<UserLang ", @"ext", _extField.stringValue ?: @"");
+/// Content range of the element whose start tag is at `tagR`. A
+/// self-closing element is first expanded to <tag ...></tag>.
+static NSRange elementContent(NSMutableString *x, NSRange tagR, NSString *tag) {
+    if (tagR.location == NSNotFound) return tagR;
+    NSUInteger gt = NSMaxRange(tagR) - 1;
+    if (gt > tagR.location && [x characterAtIndex:gt - 1] == '/') {
+        NSUInteger from = gt - 1;   // "/>", plus any whitespace before it
+        while (from > tagR.location && isXMLSpace([x characterAtIndex:from - 1])) from--;
+        [x replaceCharactersInRange:NSMakeRange(from, gt + 1 - from)
+                         withString:[NSString stringWithFormat:@"></%@>", tag]];
+        return NSMakeRange(from + 1, 0);
+    }
+    NSUInteger start = NSMaxRange(tagR);
+    NSString *close = [NSString stringWithFormat:@"</%@>", tag];
+    for (NSUInteger pos = start, lt; (lt = nextTagOpen(x, pos, x.length)) != NSNotFound; pos = lt + 1)
+        if (hasAt(x, lt, close)) return NSMakeRange(start, lt - start);
+    return NSMakeRange(NSNotFound, 0);
+}
 
-    // ── Update Settings ─────────────────────────────────────────────────────
-    BOOL ic = (_ignoreCaseCheck.state == NSControlStateValueOn);
-    BOOL fc = (_foldCompactCheck.state == NSControlStateValueOn);
-    BOOL afc = (_foldCmtCheck.state == NSControlStateValueOn);
-    int lcp = (_radioBOL.state == NSControlStateValueOn) ? 1 : (_radioWS.state == NSControlStateValueOn) ? 2 : 0;
-    int dec = (_decComma.state == NSControlStateValueOn) ? 1 : (_decBoth.state == NSControlStateValueOn) ? 2 : 0;
+/// Start tag of the `<tag attr="val">` child inside `parent` (a content
+/// range), appended as an empty element when missing. When the parent's
+/// closing tag sits on its own line the new child gets its own line,
+/// indented one level deeper.
+static NSRange ensureChild(NSMutableString *x, NSRange parent, NSString *tag,
+                           NSString *attr, NSString *val, BOOL caseInsensitive) {
+    if (parent.location == NSNotFound) return parent;
+    NSRange r = findStartTag(x, tag, parent, attr, val, caseInsensitive);
+    if (r.location != NSNotFound) return r;
 
-    setAttr(@"<Global ", @"caseIgnored", ic ? @"yes" : @"no");
-    setAttr(@"<Global ", @"allowFoldOfComments", afc ? @"yes" : @"no");
-    setAttr(@"<Global ", @"foldCompact", fc ? @"yes" : @"no");
-    setAttr(@"<Global ", @"forcePureLC", [@(lcp) stringValue]);
-    setAttr(@"<Global ", @"decimalSeparator", [@(dec) stringValue]);
+    NSString *elem = attr
+        ? [NSString stringWithFormat:@"<%@ %@=\"%@\" />", tag, attr, xmlAttrEscape(val)]
+        : [NSString stringWithFormat:@"<%@ />", tag];
+    NSUInteger end = NSMaxRange(parent), ls = end;
+    while (ls > parent.location && ([x characterAtIndex:ls - 1] == ' ' || [x characterAtIndex:ls - 1] == '\t')) ls--;
+    if (ls > parent.location && [x characterAtIndex:ls - 1] == '\n') {
+        NSString *nl = [x rangeOfString:@"\r\n"].location != NSNotFound ? @"\r\n" : @"\n";
+        NSString *indent = [x substringWithRange:NSMakeRange(ls, end - ls)];
+        [x insertString:[NSString stringWithFormat:@"%@    %@%@", indent, elem, nl] atIndex:ls];
+        return NSMakeRange(ls + indent.length + 4, elem.length);
+    }
+    [x insertString:elem atIndex:end];
+    return NSMakeRange(end, elem.length);
+}
 
+/// Apply `u` to the raw text of a UDL file, editing only the
+/// <UserLang name="matchName"> block: UserLang name/ext, Settings/Global,
+/// Settings/Prefix, the Keywords lists in `kwChanges` (raw text, replaced
+/// whole) and every WordsStyle attribute in u.styles. Anything the dialog
+/// does not edit (udlVersion, darkModeTheme, unknown attributes, comments)
+/// is kept as is. Returns nil when the block is not found.
+static NSString *UDLPatchedXML(NSString *xml, NSString *matchName, UserDefinedLang *u,
+                               NSDictionary<NSString *, NSString *> *kwChanges) {
+    NSMutableString *x = [xml mutableCopy];
+    // Ranges move with every edit, so each step re-locates from the top.
+    NSRange (^langTag)(void) = ^NSRange { return findLastStartTag(x, @"UserLang", @"name", matchName); };
+    if (langTag().location == NSNotFound) return nil;
+    NSRange (^section)(NSString *) = ^NSRange(NSString *tag) {
+        NSRange body = elementContent(x, langTag(), @"UserLang");
+        return elementContent(x, ensureChild(x, body, tag, nil, nil, NO), tag);
+    };
+    NSRange (^global)(void) = ^NSRange { return ensureChild(x, section(@"Settings"), @"Global", nil, nil, NO); };
+    NSRange (^prefix)(void) = ^NSRange { return ensureChild(x, section(@"Settings"), @"Prefix", nil, nil, NO); };
+
+    setAttr(x, global(), @"caseIgnored",         u.caseIgnored ? @"yes" : @"no");
+    setAttr(x, global(), @"allowFoldOfComments", u.allowFoldOfComments ? @"yes" : @"no");
+    setAttr(x, global(), @"foldCompact",         u.foldCompact ? @"yes" : @"no");
+    setAttr(x, global(), @"forcePureLC",         [@(u.forcePureLC) stringValue]);
+    setAttr(x, global(), @"decimalSeparator",    [@(u.decimalSeparator) stringValue]);
     for (int i = 0; i < 8; i++) {
-        BOOL pf = (_kwPfx[i].state == NSControlStateValueOn);
-        setAttr(@"<Prefix", [NSString stringWithFormat:@"Keywords%d", i+1], pf ? @"yes" : @"no");
+        BOOL pf = i < (int)u.isPrefix.count && u.isPrefix[i].boolValue;
+        setAttr(x, prefix(), [NSString stringWithFormat:@"Keywords%d", i + 1], pf ? @"yes" : @"no");
     }
 
-    // ── Update KeywordLists (content replacement) ───────────────────────────
-    // Comments: encode 5 fields
-    NSArray *cmtVals = @[getTextEscaped(_clOpen), getTextEscaped(_clCont), getTextEscaped(_clClose),
-                         getTextEscaped(_bcOpen), getTextEscaped(_bcClose)];
-    replaceContent(@"Keywords", @"name", @"Comments", encodeFields(cmtVals));
-
-    // Number fields
-    NSArray *numNames = @[@"Numbers, prefix1", @"Numbers, prefix2",
-                          @"Numbers, extras1", @"Numbers, extras2",
-                          @"Numbers, suffix1", @"Numbers, suffix2", @"Numbers, range"];
-    NSArray *numFields = @[_nP1, _nP2, _nE1, _nE2, _nS1, _nS2, _nR];
-    for (int i = 0; i < 7; i++)
-        replaceContent(@"Keywords", @"name", numNames[i], getTextEscaped(numFields[i]));
-
-    // Operators
-    replaceContent(@"Keywords", @"name", @"Operators1", getTextEscaped(_op1));
-    replaceContent(@"Keywords", @"name", @"Operators2", getTextEscaped(_op2));
-
-    // Folders
-    NSArray *foldNames = @[@"Folders in code1, open", @"Folders in code1, middle", @"Folders in code1, close",
-                           @"Folders in code2, open", @"Folders in code2, middle", @"Folders in code2, close",
-                           @"Folders in comment, open", @"Folders in comment, middle", @"Folders in comment, close"];
-    NSArray *foldFields = @[_c1Open, _c1Mid, _c1Close, _c2Open, _c2Mid, _c2Close, _cfOpen, _cfMid, _cfClose];
-    for (int i = 0; i < 9; i++)
-        replaceContent(@"Keywords", @"name", foldNames[i], getTextEscaped(foldFields[i]));
-
-    // Keywords 1-8
-    for (int i = 0; i < 8; i++)
-        replaceContent(@"Keywords", @"name",
-                       [NSString stringWithFormat:@"Keywords%d", i+1],
-                       getTextEscaped(_kwArea[i]));
-
-    // Delimiters: encode 24 fields
-    NSMutableArray *delimVals = [NSMutableArray arrayWithCapacity:24];
-    for (int i = 0; i < 8; i++) {
-        [delimVals addObject:getTextEscaped(_dO[i])];
-        [delimVals addObject:getTextEscaped(_dE[i])];
-        [delimVals addObject:getTextEscaped(_dC[i])];
+    for (NSString *name in [kwChanges.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        NSRange t = ensureChild(x, section(@"KeywordLists"), @"Keywords", @"name", name, NO);
+        NSRange c = elementContent(x, t, @"Keywords");
+        if (c.location != NSNotFound)
+            [x replaceCharactersInRange:c withString:nlToEntity(xmlEscape(kwChanges[name]))];
     }
-    replaceContent(@"Keywords", @"name", @"Delimiters", encodeFields(delimVals));
 
-    // ── Update Styles (attribute-level updates) ─────────────────────────────
-    for (NSDictionary *style in _cur.styles) {
-        NSString *styleName = style[@"name"];
-        if (!styleName) continue;
-        NSString *elemSearch = [NSString stringWithFormat:@"name=\"%@\"", styleName];
-        for (NSString *key in style) {
-            if ([key isEqualToString:@"name"]) continue;
-            setAttr(elemSearch, key, style[key]);
+    // Known WordsStyle attributes in Windows order, then any others.
+    NSArray *order = @[@"fgColor", @"bgColor", @"colorStyle", @"fontName", @"fontStyle", @"fontSize", @"nesting"];
+    for (NSDictionary *style in u.styles) {
+        NSString *sn = style[@"name"];
+        if (!sn.length) continue;
+        NSMutableArray *keys = [NSMutableArray array];
+        for (NSString *k in order) if (style[k]) [keys addObject:k];
+        for (NSString *k in [style.allKeys sortedArrayUsingSelector:@selector(compare:)])
+            if (![k isEqualToString:@"name"] && ![order containsObject:k]) [keys addObject:k];
+        for (NSString *k in keys) {
+            NSRange t = ensureChild(x, section(@"Styles"), @"WordsStyle", @"name", sn, YES);
+            setAttr(x, t, k, [style[k] description]);
         }
     }
 
-    // Write back
-    NSError *err;
-    [x writeToFile:_cur.xmlPath atomically:YES encoding:NSUTF8StringEncoding error:&err];
-    if (err) NSLog(@"UDL save error: %@", err);
+    // The block is located by its old name, so the name goes last.
+    setAttr(x, langTag(), @"ext", u.extensions ?: @"");
+    setAttr(x, langTag(), @"name", u.name);
+    return x;
 }
 
-/// Called when the window is about to close.
-/// No auto-save — user must explicitly use Save or Save As.
+/// Text for a new standalone file holding just the `name` block of `xml`.
+/// A single-language file is kept whole so its header comment survives.
+/// The caller writes the result as UTF-8 (see UDLEncodedData).
+static NSString *UDLStandaloneXML(NSString *xml, NSString *name) {
+    NSMutableString *x = [xml mutableCopy];
+    NSUInteger count = 0;
+    for (NSRange r = findStartTag(x, @"UserLang", NSMakeRange(0, x.length), nil, nil, NO);
+         r.location != NSNotFound;
+         r = findStartTag(x, @"UserLang", NSMakeRange(NSMaxRange(r), x.length - NSMaxRange(r)), nil, nil, NO))
+        count++;
+    if (count <= 1) return xml;
+    NSRange t = findLastStartTag(x, @"UserLang", @"name", name);
+    NSRange c = elementContent(x, t, @"UserLang");
+    if (c.location == NSNotFound) return nil;
+    NSUInteger end = NSMaxRange(c) + @"</UserLang>".length;
+    return [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<NotepadPlus>\n    %@\n</NotepadPlus>\n",
+            [x substringWithRange:NSMakeRange(t.location, end - t.location)]];
+}
+
+#pragma mark — File encoding
+
+// Files are read and written in the encoding their <?xml encoding="..."?>
+// declaration names (UTF-8 when there is none), which is what NSXMLDocument
+// uses when UserDefineLangManager loads them.
+
+/// Range of the encoding name inside a leading <?xml ...?> declaration.
+static NSRange xmlDeclEncodingRange(NSString *s) {
+    NSRange head = NSMakeRange(0, MIN(s.length, (NSUInteger)512));
+    NSRange decl = [s rangeOfString:@"<?xml" options:NSLiteralSearch range:head];
+    if (decl.location == NSNotFound || decl.location > 8) return NSMakeRange(NSNotFound, 0); // BOM at most
+    NSRange endR = [s rangeOfString:@"?>" options:NSLiteralSearch range:NSMakeRange(decl.location, NSMaxRange(head) - decl.location)];
+    if (endR.location == NSNotFound) return endR;
+    NSRegularExpression *re = [NSRegularExpression
+        regularExpressionWithPattern:@"\\sencoding\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')" options:0 error:nil];
+    NSTextCheckingResult *m = [re firstMatchInString:s options:0
+                                               range:NSMakeRange(decl.location, endR.location - decl.location)];
+    if (!m) return NSMakeRange(NSNotFound, 0);
+    NSRange vr = [m rangeAtIndex:1];
+    return vr.location != NSNotFound ? vr : [m rangeAtIndex:2];
+}
+
+/// The encoding `data` declares: UTF-16 in the byte order of its BOM when
+/// it has one, else the <?xml encoding="..."?> name, else UTF-8. The BOM's
+/// order is returned explicitly (not NSUTF16StringEncoding, which writes
+/// host order) so a big-endian file is written back big-endian; the BOM is
+/// then kept in the decoded text as U+FEFF and written back unchanged.
+static NSStringEncoding UDLDeclaredEncoding(NSData *data) {
+    const unsigned char *b = (const unsigned char *)data.bytes;
+    if (data.length >= 2 && b[0] == 0xFE && b[1] == 0xFF) return NSUTF16BigEndianStringEncoding;
+    if (data.length >= 2 && b[0] == 0xFF && b[1] == 0xFE) return NSUTF16LittleEndianStringEncoding;
+    // Latin-1 maps every byte, so the ASCII prolog is readable whatever follows.
+    NSString *head = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, MIN(data.length, (NSUInteger)512))]
+                                           encoding:NSISOLatin1StringEncoding];
+    NSRange r = xmlDeclEncodingRange(head);
+    if (r.location == NSNotFound) return NSUTF8StringEncoding;
+    CFStringEncoding cf = CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)[head substringWithRange:r]);
+    if (cf == kCFStringEncodingInvalidId) return NSUTF8StringEncoding;
+    NSStringEncoding enc = CFStringConvertEncodingToNSStringEncoding(cf);
+    return enc == kCFStringEncodingInvalidId ? NSUTF8StringEncoding : enc;
+}
+
+static BOOL isUnicodeEncoding(NSStringEncoding enc) {
+    return enc == NSUTF8StringEncoding || enc == NSUTF16StringEncoding ||
+           enc == NSUTF16LittleEndianStringEncoding || enc == NSUTF16BigEndianStringEncoding;
+}
+
+/// `s` with every character `enc` cannot hold written as a &#xNNNN;
+/// reference. Only edited values can contain such characters (the rest of
+/// the text was decoded from `enc`), and references are valid there.
+static NSString *encodableText(NSString *s, NSStringEncoding enc) {
+    if ([s canBeConvertedToEncoding:enc]) return s;
+    NSMutableString *r = [NSMutableString stringWithCapacity:s.length];
+    [s enumerateSubstringsInRange:NSMakeRange(0, s.length)
+                          options:NSStringEnumerationByComposedCharacterSequences
+                       usingBlock:^(NSString *ch, NSRange sr, NSRange er, BOOL *stop) {
+        if ([ch canBeConvertedToEncoding:enc]) { [r appendString:ch]; return; }
+        NSData *u32 = [ch dataUsingEncoding:NSUTF32LittleEndianStringEncoding];
+        const uint32_t *cp = (const uint32_t *)u32.bytes;
+        for (NSUInteger i = 0; i < u32.length / 4; i++) {
+            NSString *one = [[NSString alloc] initWithBytes:&cp[i] length:4 encoding:NSUTF32LittleEndianStringEncoding];
+            if ([one canBeConvertedToEncoding:enc]) [r appendString:one];
+            else [r appendFormat:@"&#x%X;", cp[i]];
+        }
+    }];
+    return r;
+}
+
+/// `text` with its <?xml encoding="..."?> (if any) naming UTF-8.
+static NSString *UDLWithUTF8Declaration(NSString *text) {
+    NSRange r = xmlDeclEncodingRange(text);
+    if (r.location == NSNotFound || [[text substringWithRange:r] caseInsensitiveCompare:@"UTF-8"] == NSOrderedSame)
+        return text;
+    return [text stringByReplacingCharactersInRange:r withString:@"UTF-8"];
+}
+
+/// Bytes for `text` in `enc`. Characters `enc` lacks become numeric
+/// references; should that still fail, the text is written as UTF-8 and
+/// its declaration rewritten to match, so the bytes never contradict it.
+static NSData *UDLEncodedData(NSString *text, NSStringEncoding enc) {
+    NSData *d = nil;
+    if (!isUnicodeEncoding(enc)) d = [encodableText(text, enc) dataUsingEncoding:enc allowLossyConversion:NO];
+    else d = [text dataUsingEncoding:enc allowLossyConversion:NO];
+    if (d) return d;
+    return [UDLWithUTF8Declaration(text) dataUsingEncoding:NSUTF8StringEncoding];
+}
+
+#pragma mark — File locations
+
+/// `p` with symlinks resolved, so a bundle or user-dir prefix check holds
+/// whether paths come via /tmp or /private/tmp, and a symlinked UDL file
+/// is written through to its target instead of being replaced.
+static NSString *resolvedPath(NSString *p) {
+    return [NSURL fileURLWithPath:p].URLByResolvingSymlinksInPath.path ?: p;
+}
+
+static BOOL pathIsInside(NSString *p, NSString *dir) {
+    NSString *d = resolvedPath(dir);
+    if (![d hasSuffix:@"/"]) d = [d stringByAppendingString:@"/"];
+    return [resolvedPath(p) hasPrefix:d];
+}
+
+/// YES for the read-only UDLs shipped inside the app bundle: edits to those
+/// are written to a copy in the user userDefineLangs dir, which overrides
+/// the bundled file by name on the next loadAll.
+static BOOL isBundledUDLPath(NSString *p) {
+    return p.length && pathIsInside(p, NSBundle.mainBundle.bundlePath);
+}
+
+#pragma mark — Save current form state back to XML
+
+/// Plain (unprefixed) keyword lists and the text views that edit them.
+- (NSDictionary<NSString *, NSScrollView *> *)_plainListViews {
+    NSMutableDictionary *m = [@{
+        @"Numbers, prefix1": _nP1, @"Numbers, prefix2": _nP2,
+        @"Numbers, extras1": _nE1, @"Numbers, extras2": _nE2,
+        @"Numbers, suffix1": _nS1, @"Numbers, suffix2": _nS2, @"Numbers, range": _nR,
+        @"Operators1": _op1, @"Operators2": _op2,
+        @"Folders in code1, open": _c1Open, @"Folders in code1, middle": _c1Mid, @"Folders in code1, close": _c1Close,
+        @"Folders in code2, open": _c2Open, @"Folders in code2, middle": _c2Mid, @"Folders in code2, close": _c2Close,
+        @"Folders in comment, open": _cfOpen, @"Folders in comment, middle": _cfMid, @"Folders in comment, close": _cfClose,
+    } mutableCopy];
+    for (int i = 0; i < 8; i++) m[[NSString stringWithFormat:@"Keywords%d", i + 1]] = _kwArea[i];
+    return m;
+}
+
+/// Every editable control's value. Plain lists are keyed by their
+/// Keywords name; the prefix-encoded Comments/Delimiters lists are kept as
+/// their decoded field arrays so an untouched list is never re-encoded.
+- (NSDictionary *)_formState {
+    NSMutableDictionary *s = [NSMutableDictionary dictionary];
+    s[@"ext"] = [_extField.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] ?: @"";
+    s[@"caseIgnored"] = @(_ignoreCaseCheck.state == NSControlStateValueOn);
+    s[@"foldCompact"] = @(_foldCompactCheck.state == NSControlStateValueOn);
+    s[@"allowFoldOfComments"] = @(_foldCmtCheck.state == NSControlStateValueOn);
+    s[@"forcePureLC"] = @((_radioBOL.state == NSControlStateValueOn) ? 1 : (_radioWS.state == NSControlStateValueOn) ? 2 : 0);
+    s[@"decimalSeparator"] = @((_decComma.state == NSControlStateValueOn) ? 1 : (_decBoth.state == NSControlStateValueOn) ? 2 : 0);
+    NSMutableArray *pfx = [NSMutableArray array];
+    for (int i = 0; i < 8; i++) [pfx addObject:@(_kwPfx[i].state == NSControlStateValueOn)];
+    s[@"prefix"] = pfx;
+
+    NSDictionary *views = [self _plainListViews];
+    for (NSString *k in views) s[k] = getText(views[k]);
+    s[@"Comments"] = @[getText(_clOpen), getText(_clCont), getText(_clClose), getText(_bcOpen), getText(_bcClose)];
+    NSMutableArray *d = [NSMutableArray arrayWithCapacity:24];
+    for (int i = 0; i < 8; i++) { [d addObject:getText(_dO[i])]; [d addObject:getText(_dE[i])]; [d addObject:getText(_dC[i])]; }
+    s[@"Delimiters"] = d;
+    return s;
+}
+
+/// A new UDL object holding _cur with the form state `st` applied and the
+/// name `name`. `outKw` receives the keyword lists that changed since the
+/// last load/save, already encoded for disk; only those are rewritten.
+- (UserDefinedLang *)_editedLangNamed:(NSString *)name state:(NSDictionary *)st
+                       keywordChanges:(NSDictionary<NSString *, NSString *> **)outKw {
+    UserDefinedLang *u = [[UserDefinedLang alloc] init];
+    u.name = name;
+    u.extensions = st[@"ext"];
+    u.caseIgnored = [st[@"caseIgnored"] boolValue];
+    u.foldCompact = [st[@"foldCompact"] boolValue];
+    u.allowFoldOfComments = [st[@"allowFoldOfComments"] boolValue];
+    u.forcePureLC = [st[@"forcePureLC"] intValue];
+    u.decimalSeparator = [st[@"decimalSeparator"] intValue];
+    u.isPrefix = st[@"prefix"];
+    u.isDarkModeTheme = _cur.isDarkModeTheme;
+    u.xmlPath = _cur.xmlPath;
+    u.styles = _cur.styles ?: @[];
+
+    NSMutableDictionary *changes = [NSMutableDictionary dictionary];
+    for (NSString *k in [self _plainListViews])
+        if (![st[k] isEqual:_snapshot[k]]) changes[k] = st[k];
+    for (NSString *k in @[@"Comments", @"Delimiters"])
+        if (![st[k] isEqual:_snapshot[k]]) changes[k] = encodeFields(st[k]);
+    NSMutableDictionary *kw = [_cur.keywordLists mutableCopy] ?: [NSMutableDictionary dictionary];
+    [kw addEntriesFromDictionary:changes];
+    u.keywordLists = kw;
+    if (outKw) *outKw = changes;
+    return u;
+}
+
+/// Write `u` into `dest`, starting from the text of `src` and patching the
+/// block currently named `matchName`. In place, the file keeps the encoding
+/// its declaration names; a new file is standalone UTF-8. Tells the user
+/// and returns NO on failure.
+- (BOOL)_writeLang:(UserDefinedLang *)u matching:(NSString *)matchName
+    keywordChanges:(NSDictionary *)kw from:(NSString *)src to:(NSString *)dest {
+    NSData *data = src ? [NSData dataWithContentsOfFile:src] : nil;
+    NSStringEncoding enc = data ? UDLDeclaredEncoding(data) : NSUTF8StringEncoding;
+    NSString *text = data ? [[NSString alloc] initWithData:data encoding:enc] : nil;
+    if (data && !text) {
+        // Bytes contradict the declaration: an undeclared ANSI file from
+        // Windows NPP. Read it as Windows-1252 and write valid UTF-8.
+        text = [[NSString alloc] initWithData:data encoding:NSWindowsCP1252StringEncoding];
+        enc = NSUTF8StringEncoding;
+    }
+    if (text && ![dest isEqualToString:resolvedPath(src)]) {
+        text = UDLStandaloneXML(text, matchName);
+        enc = NSUTF8StringEncoding;
+    }
+    NSString *out = text ? UDLPatchedXML(text, matchName, u, kw) : nil;
+    if (out && enc == NSUTF8StringEncoding) out = UDLWithUTF8Declaration(out);
+    NSData *bytes = out ? UDLEncodedData(out, enc) : nil;
+
+    NSError *err = nil;
+    BOOL ok = bytes && [bytes writeToFile:dest options:NSDataWritingAtomic error:&err];
+    if (!ok) {
+        NSLog(@"UDL save error (%@ -> %@): %@", src, dest, err);
+        [self _alertSaveFailed:u.name detail:err.localizedDescription ?: dest];
+    }
+    return ok;
+}
+
+- (void)_alertSaveFailed:(NSString *)name detail:(NSString *)detail {
+    NppLocalizer *loc = [NppLocalizer shared];
+    NSAlert *a = [[NSAlert alloc] init];
+    a.messageText = [NSString stringWithFormat:[loc translate:@"Could not save user defined language: %@"], name];
+    a.informativeText = detail;
+    [a addButtonWithTitle:[loc translate:@"OK"]];
+    [a runModal];
+}
+
+/// Where an edit to the UDL file `src` is written: the file itself
+/// (through any symlink) when writable, or a new user-dir file named for
+/// `nm` when it ships in the app bundle. Any other read-only file is an
+/// error (nil, after telling the user): a copy would pile up "Name (N)"
+/// files in the user dir, and would not even override the legacy
+/// userDefineLang.xml, which loads after the user dir.
+- (nullable NSString *)_writeTargetFor:(NSString *)src name:(NSString *)nm {
+    if (isBundledUDLPath(src)) return [self _newUserPathForName:nm];
+    NSString *real = src.length ? resolvedPath(src) : nil;
+    if (real && [[NSFileManager defaultManager] isWritableFileAtPath:real]) return real;
+    [self _alertSaveFailed:nm detail:[NSString stringWithFormat:
+        [[NppLocalizer shared] translate:@"This file is read-only: %@"], src ?: @""]];
+    return nil;
+}
+
+/// YES, after telling the user, when `nm` already names a UDL.
+- (BOOL)_nameTaken:(NSString *)nm {
+    if (![[UserDefineLangManager shared] languageNamed:nm]) return NO;
+    NppLocalizer *loc = [NppLocalizer shared];
+    NSAlert *a = [[NSAlert alloc] init];
+    a.messageText = [NSString stringWithFormat:
+        [loc translate:@"A user defined language with this name already exists: %@"], nm];
+    [a addButtonWithTitle:[loc translate:@"OK"]];
+    [a runModal];
+    return YES;
+}
+
+/// A fresh file path in the user userDefineLangs dir for a UDL named `nm`.
+- (NSString *)_newUserPathForName:(NSString *)nm {
+    NSString *base = [[nm stringByReplacingOccurrencesOfString:@"/" withString:@"_"]
+                      stringByReplacingOccurrencesOfString:@":" withString:@"_"];
+    NSString *dir = [UserDefineLangManager userUDLDirectory];
+    NSString *p = [dir stringByAppendingPathComponent:[base stringByAppendingString:@".udl.xml"]];
+    for (int i = 2; [[NSFileManager defaultManager] fileExistsAtPath:p]; i++)
+        p = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ (%d).udl.xml", base, i]];
+    return p;
+}
+
+/// Reload every UDL from disk, re-point _cur at `name`, and tell open
+/// editors and the Language menu. Editors showing `oldName` (a rename)
+/// move to `name`.
+- (void)_reloadAndNotify:(NSString *)name oldName:(nullable NSString *)oldName {
+    UserDefineLangManager *mgr = [UserDefineLangManager shared];
+    [mgr loadAll];
+    _cur = name ? [mgr languageNamed:name] : nil;
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    if (name) info[@"name"] = name;
+    if (oldName) info[@"oldName"] = oldName;
+    [[NSNotificationCenter defaultCenter] postNotificationName:UserDefineLangsDidChangeNotification
+                                                        object:self userInfo:info];
+}
+
+/// Save the form's edits to the current UDL, if anything changed since it
+/// was loaded or last saved, and re-apply it to open editors. Windows NPP
+/// applies UDL edits live; here they are committed when the dialog closes,
+/// the selected language changes, a Styler edit is confirmed, or before
+/// Export / Create / Import. A bundled UDL is never written in place.
+- (BOOL)_commitEdits { return [self _commitEditsReloading:YES]; }
+
+/// `reload` NO skips the reload and editor re-apply (used at app quit,
+/// where relexing every open buffer would be wasted work).
+- (BOOL)_commitEditsReloading:(BOOL)reload {
+    if (!_cur) return YES;
+    NSDictionary *st = [self _formState];
+    if (!_stylesDirty && [st isEqualToDictionary:_snapshot]) return YES;
+
+    NSString *name = _cur.name, *src = _cur.xmlPath;
+    NSDictionary *kw = nil;
+    UserDefinedLang *u = [self _editedLangNamed:name state:st keywordChanges:&kw];
+    NSString *dest = [self _writeTargetFor:src name:name];
+    if (!dest || ![self _writeLang:u matching:name keywordChanges:kw from:src to:dest]) return NO;
+
+    _snapshot = st;
+    _stylesDirty = NO;
+    if (reload) [self _reloadAndNotify:name oldName:nil];
+    return YES;
+}
+
+/// Called when the window is about to close: save pending edits.
 - (void)windowWillClose:(NSNotification *)notification {
-    // Reload the manager so the lexer picks up any changes saved by the user
+    [self _commitEdits];
+    // Reload so in-memory Styler state matches what is on disk
     [[UserDefineLangManager shared] loadAll];
+    _cur = [[UserDefineLangManager shared] languageNamed:_cur.name ?: @""];
 }
 
 #pragma mark — CRUD
 
 - (void)_createNew:(id)s {
+    if (![self _commitEdits]) return;   // keep the unsaved edits in the form
     NppLocalizer *loc = [NppLocalizer shared];
     NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Create New Language"]; a.informativeText=[loc translate:@"Enter a name:"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.placeholderString=[loc translate:@"Language name"];
     a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Create"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if(!nm.length||[[UserDefineLangManager shared]languageNamed:nm])return;
-    [self _writeBlank:nm]; [[UserDefineLangManager shared]loadAll]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
+    if(!nm.length||[self _nameTaken:nm])return;
+    [self _writeBlank:nm]; [self _reloadAndNotify:nm oldName:nil]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
 }
 - (void)_writeBlank:(NSString *)nm {
-    NSMutableString *x=[NSMutableString stringWithFormat:@"<NotepadPlus>\n<UserLang name=\"%@\" ext=\"\" udlVersion=\"2.1\">\n<Settings><Global caseIgnored=\"no\" allowFoldOfComments=\"no\" foldCompact=\"no\" forcePureLC=\"0\" decimalSeparator=\"0\"/><Prefix Keywords1=\"no\" Keywords2=\"no\" Keywords3=\"no\" Keywords4=\"no\" Keywords5=\"no\" Keywords6=\"no\" Keywords7=\"no\" Keywords8=\"no\"/></Settings>\n<KeywordLists>\n",nm];
+    NSMutableString *x=[NSMutableString stringWithFormat:@"<NotepadPlus>\n<UserLang name=\"%@\" ext=\"\" udlVersion=\"2.1\">\n<Settings><Global caseIgnored=\"no\" allowFoldOfComments=\"no\" foldCompact=\"no\" forcePureLC=\"0\" decimalSeparator=\"0\"/><Prefix Keywords1=\"no\" Keywords2=\"no\" Keywords3=\"no\" Keywords4=\"no\" Keywords5=\"no\" Keywords6=\"no\" Keywords7=\"no\" Keywords8=\"no\"/></Settings>\n<KeywordLists>\n",xmlAttrEscape(nm)];
     for(NSString *k in @[@"Comments",@"Numbers, prefix1",@"Numbers, prefix2",@"Numbers, extras1",@"Numbers, extras2",@"Numbers, suffix1",@"Numbers, suffix2",@"Numbers, range",@"Operators1",@"Operators2",@"Folders in code1, open",@"Folders in code1, middle",@"Folders in code1, close",@"Folders in code2, open",@"Folders in code2, middle",@"Folders in code2, close",@"Folders in comment, open",@"Folders in comment, middle",@"Folders in comment, close",@"Keywords1",@"Keywords2",@"Keywords3",@"Keywords4",@"Keywords5",@"Keywords6",@"Keywords7",@"Keywords8",@"Delimiters"])
         [x appendFormat:@"<Keywords name=\"%@\"></Keywords>\n",k];
     [x appendString:@"</KeywordLists>\n<Styles>\n"];
     for(NSString *s in @[@"DEFAULT",@"COMMENTS",@"LINE COMMENTS",@"NUMBERS",@"KEYWORDS1",@"KEYWORDS2",@"KEYWORDS3",@"KEYWORDS4",@"KEYWORDS5",@"KEYWORDS6",@"KEYWORDS7",@"KEYWORDS8",@"OPERATORS",@"FOLDER IN CODE1",@"FOLDER IN CODE2",@"FOLDER IN COMMENT",@"DELIMITERS1",@"DELIMITERS2",@"DELIMITERS3",@"DELIMITERS4",@"DELIMITERS5",@"DELIMITERS6",@"DELIMITERS7",@"DELIMITERS8"])
         [x appendFormat:@"<WordsStyle name=\"%@\" fgColor=\"000000\" bgColor=\"FFFFFF\" fontStyle=\"0\"/>\n",s];
     [x appendString:@"</Styles>\n</UserLang>\n</NotepadPlus>\n"];
-    NSString *p=[[UserDefineLangManager userUDLDirectory]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.udl.xml",nm]];
-    [x writeToFile:p atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    [x writeToFile:[self _newUserPathForName:nm] atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
+/// Write the current UDL, including unsaved form edits, as a new UDL named
+/// `nm` in the user dir. The original keeps its last saved state.
 - (void)_saveAs:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Save As"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.stringValue=_cur.name;
     a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Save"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if(!nm.length||[nm isEqualToString:_cur.name])return;
-    NSString *d=[[UserDefineLangManager userUDLDirectory]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.udl.xml",nm]];
-    [[NSFileManager defaultManager]copyItemAtPath:_cur.xmlPath toPath:d error:nil];
-    NSString *c=[NSString stringWithContentsOfFile:d encoding:NSUTF8StringEncoding error:nil];
-    c=[c stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"name=\"%@\"",_cur.name] withString:[NSString stringWithFormat:@"name=\"%@\"",nm]];
-    [c writeToFile:d atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    [[UserDefineLangManager shared]loadAll]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
+    if(!nm.length||[nm isEqualToString:_cur.name]||[self _nameTaken:nm])return;
+    NSDictionary *kw = nil;
+    UserDefinedLang *u = [self _editedLangNamed:nm state:[self _formState] keywordChanges:&kw];
+    if (![self _writeLang:u matching:_cur.name keywordChanges:kw from:_cur.xmlPath to:[self _newUserPathForName:nm]]) return;
+    [self _reloadAndNotify:nm oldName:nil]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
 }
 - (void)_remove:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init];
     a.messageText=[NSString stringWithFormat:@"%@ \"%@\"?", [loc translate:@"Remove"], _cur.name];
     [a addButtonWithTitle:[loc translate:@"Remove"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033"; a.buttons.firstObject.hasDestructiveAction=YES;
     if([a runModal]!=NSAlertFirstButtonReturn)return;
-    [[UserDefineLangManager shared]deleteLanguage:_cur]; _cur=nil; [self _rebuildPopup]; [self _load];
+    NSString *nm = _cur.name;
+    if (![[UserDefineLangManager shared]deleteLanguage:_cur]) return;
+    // Reload: removing a user override brings the bundled original back.
+    [self _reloadAndNotify:nm oldName:nil]; _cur=nil; [self _rebuildPopup]; [self _load];
 }
+/// Rename the current UDL, saving unsaved form edits in the same write. A
+/// bundled UDL cannot be rewritten: the renamed copy goes to the user dir
+/// and the shipped original stays available under its old name.
 - (void)_rename:(id)s {
     if(!_cur)return; NppLocalizer *loc = [NppLocalizer shared]; NSAlert *a=[[NSAlert alloc]init]; a.messageText=[loc translate:@"Rename"];
     NSTextField *inp=[[NSTextField alloc]initWithFrame:NSMakeRect(0,0,250,24)]; inp.stringValue=_cur.name;
     a.accessoryView=inp; [a addButtonWithTitle:[loc translate:@"Rename"]]; [a addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     if([a runModal]!=NSAlertFirstButtonReturn)return;
     NSString *nm=[inp.stringValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if(!nm.length||[nm isEqualToString:_cur.name])return;
-    NSString *c=[NSString stringWithContentsOfFile:_cur.xmlPath encoding:NSUTF8StringEncoding error:nil];
-    c=[c stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"name=\"%@\"",_cur.name] withString:[NSString stringWithFormat:@"name=\"%@\"",nm]];
-    [c writeToFile:_cur.xmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    [[UserDefineLangManager shared]loadAll]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
+    if(!nm.length||[nm isEqualToString:_cur.name]||[self _nameTaken:nm])return;
+    NSString *old = _cur.name, *src = _cur.xmlPath;
+    NSDictionary *kw = nil;
+    UserDefinedLang *u = [self _editedLangNamed:nm state:[self _formState] keywordChanges:&kw];
+    NSString *dest = [self _writeTargetFor:src name:nm];
+    if (!dest || ![self _writeLang:u matching:old keywordChanges:kw from:src to:dest]) return;
+    [self _reloadAndNotify:nm oldName:old]; [self _rebuildPopup]; [_langPopup selectItemWithTitle:nm]; [self _load];
 }
 - (void)_import:(id)s {
+    if (![self _commitEdits]) return;   // keep the unsaved edits in the form
     NSOpenPanel *p=[NSOpenPanel openPanel]; p.allowedContentTypes=@[[UTType typeWithFilenameExtension:@"xml"]];
     if([p runModal]!=NSModalResponseOK)return;
     UserDefinedLang *u=[[UserDefineLangManager shared]importFromPath:p.URL.path];
-    if(u){[self _rebuildPopup];[_langPopup selectItemWithTitle:u.name];[self _load];}
+    if(u){NSString *nm=u.name; [self _reloadAndNotify:nm oldName:nil]; [self _rebuildPopup];[_langPopup selectItemWithTitle:nm];[self _load];}
 }
 - (void)_export:(id)s {
-    if(!_cur)return; NSSavePanel *p=[NSSavePanel savePanel]; p.allowedContentTypes=@[[UTType typeWithFilenameExtension:@"xml"]];
+    // Export copies the file on disk, so save pending edits into it first.
+    if(!_cur||![self _commitEdits])return; NSSavePanel *p=[NSSavePanel savePanel]; p.allowedContentTypes=@[[UTType typeWithFilenameExtension:@"xml"]];
     p.nameFieldStringValue=[NSString stringWithFormat:@"%@.udl.xml",_cur.name];
     if([p runModal]==NSModalResponseOK)[[UserDefineLangManager shared]exportLanguage:_cur toPath:p.URL.path];
 }
