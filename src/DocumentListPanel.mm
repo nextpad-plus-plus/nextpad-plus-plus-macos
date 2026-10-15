@@ -371,15 +371,24 @@ static void _docFields(EditorView *ed, NSString **outName,
 }
 
 // Maps a panel row (which may be sorted) back to the tab manager's index.
-- (void)_selectEditorAtRow:(NSInteger)row {
+// Returns NO when the row's editor is no longer in this window (e.g. its tab
+// was dragged to another window before the list refreshed); the list is
+// then reloaded and nothing is selected, so no command lands on the wrong
+// document.
+- (BOOL)_selectEditorAtRow:(NSInteger)row {
+    if (row < 0 || row >= (NSInteger)_items.count) return NO;
     EditorView *ed = _items[row];
     // Let the delegate activate it in whichever view owns it (primary or split).
     if ([self.delegate respondsToSelector:@selector(documentListPanel:activateEditor:)] &&
         [self.delegate documentListPanel:self activateEditor:ed])
-        return;
+        return YES;
     NSUInteger tabIdx = [_tabManager.allEditors indexOfObject:ed];
-    if (tabIdx != NSNotFound)
+    if (tabIdx != NSNotFound) {
         [_tabManager selectTabAtIndex:(NSInteger)tabIdx];
+        return YES;
+    }
+    [self reloadData];
+    return NO;
 }
 
 // ── Context menus ─────────────────────────────────────────────────────────────
@@ -389,8 +398,9 @@ static void _docFields(EditorView *ed, NSString **outName,
         // Right-click selects the row's editor first so the tab context
         // menu's commands (which act on the current document) target it —
         // matching how right-clicking a tab behaves.
-        [self _selectEditorAtRow:row];
-        return [_tabManager.tabBar buildTabContextMenu];
+        if ([self _selectEditorAtRow:row])
+            return [_tabManager.tabBar buildTabContextMenu];
+        return nil;   // stale row: no menu rather than one acting on another document
     }
     return [self _emptyAreaMenu];
 }

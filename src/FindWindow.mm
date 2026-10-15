@@ -101,6 +101,10 @@ static FindWindow *_sharedInstance = nil;
     return _sharedInstance;
 }
 
++ (instancetype)existingWindow {
+    return _sharedInstance;
+}
+
 - (instancetype)init {
     NSWindow *win = [[NSWindow alloc]
         initWithContentRect:NSMakeRect(0, 0, kWinW, 355)
