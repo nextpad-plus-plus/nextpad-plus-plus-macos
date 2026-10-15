@@ -1,5 +1,6 @@
 #import "StyleConfiguratorWindowController.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "PreferencesWindowController.h"
 #import "NppLocalizer.h"
 
@@ -321,12 +322,24 @@ static NSString *_userThemesDir(void) {
     }
 }
 
+/// Merge newer stylers.model.xml entries into the user's copy of a theme that
+/// is becoming the active one. Notepad++ does this for the active theme only,
+/// so previews (lexersForTheme) never touch theme files. Returns YES when the
+/// file changed.
+- (BOOL)_updateUserThemeFromModel:(NSString *)themeName {
+    if (!themeName.length || [themeName isEqualToString:kDefaultThemeName]) return NO;
+    NSString *userPath = [_userThemesDir() stringByAppendingPathComponent:
+                          [themeName stringByAppendingPathExtension:@"xml"]];
+    return NppUpdateUserThemeFromModel(userPath);
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 - (void)loadFromDefaults {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *savedTheme = [ud stringForKey:kNSDefaultsThemeKey] ?: kDefaultThemeName;
     _activeThemeName = savedTheme;
+    [self _updateUserThemeFromModel:savedTheme];
 
     // Load theme (model + XML merge)
     NSMutableArray<NPPLexer *> *base = [[self lexersForTheme:savedTheme] mutableCopy];
@@ -440,6 +453,18 @@ static NSString *_userThemesDir(void) {
 
     // Write changes back to the XML file (selective update, not full rewrite).
     [self _writeOverridesToXML:overrides themeName:themeName];
+
+    // The committed theme is the active one: give it newer model entries. This
+    // runs on every commit, because a Style Configurator preview has already
+    // set _activeThemeName, so "did the theme change" cannot be told here; the
+    // updater checks each path once per run, so repeat commits cost nothing.
+    // The overrides above were taken against the file as it was, and the merge
+    // only adds what was missing, so reload the merged file with them.
+    if ([self _updateUserThemeFromModel:themeName]) {
+        NSMutableArray<NPPLexer *> *merged = [[self lexersForTheme:themeName] mutableCopy];
+        [self _applyUserOverrides:overrides to:merged];
+        [self previewLexers:merged];
+    }
 }
 
 /// Selectively update changed style attributes in the theme/stylers XML file.

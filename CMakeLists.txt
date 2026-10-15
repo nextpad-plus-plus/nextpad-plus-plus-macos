@@ -105,6 +105,7 @@ set(APP_SRCS
     src/ShortcutMapperWindowController.mm
     src/NppLocalizer.mm
     src/NppLangsManager.mm
+    src/NppModelXmlMerge.mm
     src/AppDelegate.mm
     src/MainWindowController.mm
     src/TahoeToolbarConfig.mm
