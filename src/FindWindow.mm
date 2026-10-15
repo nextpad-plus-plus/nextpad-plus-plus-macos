@@ -2,6 +2,7 @@
 #import "EditorView.h"
 #import "SearchResultsPanel.h"
 #import "ProjectPanel.h"
+#import "NppScintillaIDs.h"
 #import "NppLocalizer.h"
 #import "PreferencesWindowController.h"
 #import <objc/runtime.h>
@@ -1241,9 +1242,9 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     EditorView *ed = [_delegate currentEditor];
     if (!ed) return;
     ScintillaView *sci = ed.scintillaView;
-    [sci message:SCI_SETINDICATORCURRENT wParam:31];
+    [sci message:SCI_SETINDICATORCURRENT wParam:kFindMarkIndicator];
     [sci message:SCI_INDICATORCLEARRANGE wParam:0 lParam:[sci message:SCI_GETLENGTH]];
-    [sci message:SCI_MARKERDELETEALL wParam:20];
+    [sci message:SCI_MARKERDELETEALL wParam:kBookmarkMarker];
     [self _showStatus:[[NppLocalizer shared] translate:@"All marks cleared."] found:YES];
 }
 
@@ -1255,10 +1256,10 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
     NSMutableString *copied = [NSMutableString string];
     sptr_t pos = 0;
     while (pos < docLen) {
-        sptr_t start = [sci message:SCI_INDICATORSTART wParam:31 lParam:pos];
-        sptr_t val   = [sci message:SCI_INDICATORVALUEAT wParam:31 lParam:start];
-        if (val == 0) { pos = [sci message:SCI_INDICATOREND wParam:31 lParam:start]; continue; }
-        sptr_t end   = [sci message:SCI_INDICATOREND wParam:31 lParam:start];
+        sptr_t start = [sci message:SCI_INDICATORSTART wParam:kFindMarkIndicator lParam:pos];
+        sptr_t val   = [sci message:SCI_INDICATORVALUEAT wParam:kFindMarkIndicator lParam:start];
+        if (val == 0) { pos = [sci message:SCI_INDICATOREND wParam:kFindMarkIndicator lParam:start]; continue; }
+        sptr_t end   = [sci message:SCI_INDICATOREND wParam:kFindMarkIndicator lParam:start];
         if (end <= start) break;
         sptr_t len = end - start;
         char *buf = (char *)calloc(len + 1, 1);

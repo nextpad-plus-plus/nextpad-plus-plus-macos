@@ -15,6 +15,7 @@
 
 #include "Scintilla.h"
 #include "NppPluginInterfaceMac.h"
+#include "NppScintillaIDs.h"
 
 NSNotificationName const NppPluginsDidLoadNotification = @"NppPluginsDidLoadNotification";
 
@@ -30,6 +31,10 @@ NSNotificationName const NppPluginsDidLoadNotification = @"NppPluginsDidLoadNoti
 // ID Allocator — hands out non-overlapping integer ranges
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Hands out IDs from [start, limit): limit itself is never returned.
+// Fails when count <= 0, outStart is null, or the request would run past
+// limit, matching Windows NPP's IDAllocator. On failure *outStart is not
+// written; the NPPM_ALLOCATE* handlers decide what the caller sees.
 class IDAllocator {
 public:
     IDAllocator() : _start(0), _current(0), _limit(0) {}
@@ -37,7 +42,7 @@ public:
         : _start(start), _current(start), _limit(limit) {}
 
     bool allocate(int count, int *outStart) {
-        if (_current + count > _limit)
+        if (count <= 0 || !outStart || count > _limit - _current)
             return false;
         *outStart = _current;
         _current += count;
@@ -171,11 +176,13 @@ static const uintptr_t kHandleScintillaSub   = 0x5343490B;  // "SCI\v"
 - (instancetype)init {
     self = [super init];
     if (self) {
-        // ID ranges matching Windows NPP resource.h
-        _cmdIDAlloc     = IDAllocator(23000, 24999);
-        _markerAlloc    = IDAllocator(1, 15);
-        _indicatorAlloc = IDAllocator(9, 20);
-        _nextPluginCmdBase = 22000;  // ID_PLUGINS_CMD
+        // Ranges are [first, limit) and must stay clear of every host-owned
+        // marker/indicator; see NppScintillaIDs.h for the full map and the
+        // compile-time overlap checks.
+        _cmdIDAlloc     = IDAllocator(kPluginDynamicCmdIDFirst, kPluginDynamicCmdIDLimit);
+        _markerAlloc    = IDAllocator(kPluginMarkerFirst, kPluginMarkerLimit);
+        _indicatorAlloc = IDAllocator(kPluginIndicatorFirst, kPluginIndicatorLimit);
+        _nextPluginCmdBase = kPluginCmdIDFirst;  // ID_PLUGINS_CMD
         _shutdownFired = NO;
 
         _panelRegistry   = [NSMutableDictionary dictionary];
@@ -318,11 +325,26 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
         return NO;
     }
 
-    // Assign command IDs to each FuncItem
+    // Assign command IDs to each FuncItem. The static range stops below
+    // kPluginDynamicCmdIDFirst so it can never collide with IDs handed out
+    // by NPPM_ALLOCATECMDID. Once it is exhausted, remaining items keep
+    // _cmdID 0 and get no menu entry. The plugin itself stays loaded:
+    // setInfo has already run, so it may own timers or blocks that would
+    // dangle if the dylib were unmapped now.
+    int nbDropped = 0;
     for (int i = 0; i < nbFunc; i++) {
-        if (funcItems[i]._pFunc) {
+        if (!funcItems[i]._pFunc) continue;
+        if (_nextPluginCmdBase < kPluginCmdIDLimit) {
             funcItems[i]._cmdID = _nextPluginCmdBase++;
+        } else {
+            funcItems[i]._cmdID = 0;
+            nbDropped++;
         }
+    }
+    if (nbDropped > 0) {
+        NSLog(@"[Plugins] %@: plugin command IDs %d-%d exhausted; %d of its "
+              @"commands get no menu item.", moduleName,
+              kPluginCmdIDFirst, kPluginCmdIDLimit - 1, nbDropped);
     }
 
     // Store plugin info
@@ -464,6 +486,8 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
                 [submenu addItem:[NSMenuItem separatorItem]];
                 continue;
             }
+            // No cmdID assigned (static range exhausted at load time).
+            if (fi->_cmdID == 0) continue;
 
             NSString *title = [NSString stringWithUTF8String:fi->_itemName];
             NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:title
@@ -506,6 +530,7 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
         for (int i = 0; i < pi->nbFuncItems; i++) {
             struct FuncItem *fi = &pi->funcItems[i];
             if (!fi->_pFunc) continue; // skip separators
+            if (fi->_cmdID == 0) continue; // no cmdID assigned
             NSString *actionName = [NSString stringWithUTF8String:fi->_itemName];
             BOOL hasIcon = [toolbarCmdIDs containsObject:@(fi->_cmdID)];
             [actions addObject:@{
@@ -520,6 +545,7 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
 }
 
 - (void)runPluginCommandWithID:(int)cmdID {
+    if (cmdID == 0) return;  // separators and items without an assigned cmdID
     for (auto &pi : _plugins) {
         for (int i = 0; i < pi->nbFuncItems; i++) {
             if (pi->funcItems[i]._cmdID == cmdID && pi->funcItems[i]._pFunc) {
@@ -1151,27 +1177,49 @@ static intptr_t _npp_run_on_main(intptr_t (^block)(void)) {
         }
 
         // ── ID allocation ───────────────────────────────────────────
+        // wParam = count, lParam = int* receiving the first ID. Returns
+        // FALSE if the range can't satisfy the request. On failure, as on
+        // Windows (PluginsManager.cpp), CMDID and MARKER set *lParam to 0
+        // and INDICATOR leaves it untouched. Ranges are documented in
+        // NppScintillaIDs.h.
         case NPPM_ALLOCATECMDID: {
             int count = (int)wParam;
             int *start = (int *)lParam;
-            return _cmdIDAlloc.allocate(count, start) ? TRUE : FALSE;
+            if (!start) return FALSE;
+            if (_cmdIDAlloc.allocate(count, start)) return TRUE;
+            *start = 0;
+            NSLog(@"[Plugins] NPPM_ALLOCATECMDID(%d) refused: range %d-%d exhausted "
+                  @"or invalid request.", count,
+                  kPluginDynamicCmdIDFirst, kPluginDynamicCmdIDLimit - 1);
+            return FALSE;
         }
 
         case NPPM_ALLOCATEMARKER: {
             int count = (int)wParam;
             int *start = (int *)lParam;
-            return _markerAlloc.allocate(count, start) ? TRUE : FALSE;
+            if (!start) return FALSE;
+            if (_markerAlloc.allocate(count, start)) return TRUE;
+            *start = 0;
+            NSLog(@"[Plugins] NPPM_ALLOCATEMARKER(%d) refused: range %d-%d exhausted "
+                  @"or invalid request.", count,
+                  kPluginMarkerFirst, kPluginMarkerLimit - 1);
+            return FALSE;
         }
 
         case NPPM_ALLOCATEINDICATOR: {
             int count = (int)wParam;
             int *start = (int *)lParam;
-            return _indicatorAlloc.allocate(count, start) ? TRUE : FALSE;
+            if (_indicatorAlloc.allocate(count, start)) return TRUE;
+            NSLog(@"[Plugins] NPPM_ALLOCATEINDICATOR(%d) refused: range %d-%d exhausted "
+                  @"or invalid request.", count,
+                  kPluginIndicatorFirst, kPluginIndicatorLimit - 1);
+            return FALSE;
         }
 
         case NPPM_GETBOOKMARKID: {
-            // Scintilla bookmark marker ID (same as Windows NPP default)
-            return 24;  // MARK_BOOKMARK in NPP
+            // The marker the host actually uses for bookmarks, so plugins
+            // can read/set them with SCI_MARKER*.
+            return kBookmarkMarker;
         }
 
         // ── Dark mode ──────────────────────────────────────────────
@@ -1234,6 +1282,7 @@ static intptr_t _npp_run_on_main(intptr_t (^block)(void)) {
             // for icon lookup and re-loads icons on theme change. This handler
             // just hands it the strings.
             int cmdID = (int)wParam;
+            if (cmdID == 0) return 0;  // separator or a FuncItem left without an ID
 
             std::string pluginDirName;
             std::string funcItemName;

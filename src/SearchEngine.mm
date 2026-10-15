@@ -1,5 +1,6 @@
 #import "SearchEngine.h"
 #import "Scintilla.h"
+#import "NppScintillaIDs.h"
 // EMPTYMATCH_* / SKIPCRLFASONE flag constants — matches Windows
 // boostregex/BoostRegexSearch.h. Consumed by regex/NppRegexSearch.cxx (our
 // SCI_OWNREGEX implementation).
@@ -497,14 +498,13 @@ static NSString *nppRegexReplacement(NSString *replacement,
     int flags = [self scintillaFlagsForOptions:opts];
     if (opts.searchType == NPPSearchRegex) flags |= kRegexEmptyFlagsLoopOp;
 
-    // Mark indicator slot: use indicator 31 for "Find Mark Style"
-    static const int kFindMarkIndicator = 31;
+    // Mark indicator slot: kFindMarkIndicator (31) for "Find Mark Style"
 
     if (opts.doPurge) {
         [sci message:SCI_SETINDICATORCURRENT wParam:kFindMarkIndicator];
         [sci message:SCI_INDICATORCLEARRANGE wParam:0 lParam:[sci message:SCI_GETLENGTH]];
         if (opts.doBookmarkLine) {
-            [sci message:SCI_MARKERDELETEALL wParam:20]; // bookmark marker 20
+            [sci message:SCI_MARKERDELETEALL wParam:kBookmarkMarker];
         }
     }
 
@@ -529,7 +529,7 @@ static NSString *nppRegexReplacement(NSString *replacement,
 
         if (opts.doBookmarkLine) {
             sptr_t line = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)found];
-            [sci message:SCI_MARKERADD wParam:(uptr_t)line lParam:20]; // bookmark marker
+            [sci message:SCI_MARKERADD wParam:(uptr_t)line lParam:kBookmarkMarker];
         }
 
         pos = end > found ? end : found + 1;
