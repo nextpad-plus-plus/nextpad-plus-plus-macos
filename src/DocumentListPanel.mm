@@ -75,6 +75,7 @@ static void _docFields(EditorView *ed, NSString **outName,
     BOOL          _showPath;
     NSString     *_sortKey;        // nil → tab order; else "name"/"ext"/"path"
     BOOL          _sortAscending;
+    BOOL          _bgIsDark;       // theme background is dark (icon set choice)
 }
 
 - (instancetype)initWithTabManager:(TabManager *)tabManager {
@@ -158,12 +159,29 @@ static void _docFields(EditorView *ed, NSString **outName,
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_themeChanged:)
                name:@"NPPPreferencesChanged" object:nil];
+    // A dark-mode toggle changes the window appearance without posting
+    // NPPPreferencesChanged; re-apply so the table appearance stays pinned
+    // to the theme background rather than the new chrome appearance.
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self selector:@selector(_themeChanged:)
+               name:NPPDarkModeChangedNotification object:nil];
 }
 
 - (void)_applyTheme {
     NSColor *bg = [[NPPStyleStore sharedStore] globalBg];
     _scrollView.backgroundColor = bg;
     _tableView.backgroundColor  = bg;
+
+    // The body is painted with the editor theme background, which need not
+    // match the chrome (dark title bar over a light theme, or the reverse).
+    // Without an explicit appearance the table inherits the window's, so in
+    // dark chrome over a light theme the header draws white-on-white and the
+    // unfocused selection draws a dark-mode grey under theme-black text.
+    // Pin the scroll view (header, table, scrollers) to the theme brightness,
+    // as Character / Folder as Workspace / Project panels do.
+    _bgIsDark = [NppThemeManager isDarkColor:bg];
+    _scrollView.appearance = [NppThemeManager appearanceForBackground:bg];
+
     [_tableView reloadData];   // refresh cell text colors + floppy icons
 }
 
@@ -253,7 +271,7 @@ static void _docFields(EditorView *ed, NSString **outName,
     [cv addSubview:iv];
     cv.imageView = iv;
 
-    NSTextField *tf = [NSTextField labelWithString:@""];
+    NSTextField *tf = [NppThemedLabel labelWithString:@""];
     tf.translatesAutoresizingMaskIntoConstraints = NO;
     tf.lineBreakMode = NSLineBreakByTruncatingTail;
     [cv addSubview:tf];
@@ -285,7 +303,7 @@ static void _docFields(EditorView *ed, NSString **outName,
     NSTableCellView *cv = [[NSTableCellView alloc] init];
     cv.identifier = @"DocTextCell";
 
-    NSTextField *tf = [NSTextField labelWithString:@""];
+    NSTextField *tf = [NppThemedLabel labelWithString:@""];
     tf.translatesAutoresizingMaskIntoConstraints = NO;
     tf.lineBreakMode = NSLineBreakByTruncatingTail;
     [cv addSubview:tf];
@@ -299,6 +317,13 @@ static void _docFields(EditorView *ed, NSString **outName,
     return cv;
 }
 
+- (void)_setTextColor:(NSColor *)c ofCell:(NSTableCellView *)cv {
+    if ([cv.textField isKindOfClass:[NppThemedLabel class]])
+        ((NppThemedLabel *)cv.textField).themeTextColor = c;
+    else
+        cv.textField.textColor = c;
+}
+
 - (nullable NSView *)tableView:(NSTableView *)tableView
             viewForTableColumn:(nullable NSTableColumn *)tableColumn
                            row:(NSInteger)row {
@@ -310,7 +335,8 @@ static void _docFields(EditorView *ed, NSString **outName,
     NSColor  *fg      = [[NPPStyleStore sharedStore] globalFg];
     // The row tint is semi-transparent (50%), blending toward the theme
     // background, so the theme foreground keeps good contrast over it in both
-    // light and dark mode — no special text color needed.
+    // light and dark mode. An emphasized (accent) selection swaps to the
+    // selected-text color inside NppThemedLabel.
     NSColor  *textColor = fg;
     NSFont   *font    = [NSFont systemFontOfSize:_panelFontSize];
     NSString *fullTip = ed.filePath ?: ed.displayName;
@@ -327,11 +353,14 @@ static void _docFields(EditorView *ed, NSString **outName,
             ((_NppDocNameCell *)cv).iconH.constant = iconSz;
         }
         cv.toolTip = fullTip;
+        // Icon set follows the theme background the floppy sits on, not the
+        // chrome: dark-chrome icons are pale and wash out on a light theme.
         cv.imageView.image = [[NppThemeManager shared]
-            toolbarIconNamed:(ed.isModified ? @"saveFileRed" : @"saveFile")];
+            toolbarIconNamed:(ed.isModified ? @"saveFileRed" : @"saveFile")
+           forDarkBackground:_bgIsDark];
         cv.textField.stringValue = name;
-        cv.textField.textColor   = textColor;
         cv.textField.font        = font;
+        [self _setTextColor:textColor ofCell:cv];
         return cv;
     }
 
@@ -339,8 +368,8 @@ static void _docFields(EditorView *ed, NSString **outName,
     if (!cv) cv = [self _makeTextCell];
     cv.toolTip = fullTip;
     cv.textField.stringValue = [colId isEqualToString:@"ext"] ? ext : path;
-    cv.textField.textColor   = textColor;
     cv.textField.font        = font;
+    [self _setTextColor:textColor ofCell:cv];
     return cv;
 }
 

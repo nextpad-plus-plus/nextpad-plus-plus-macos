@@ -233,6 +233,10 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
     NSColor *fg = [[NPPStyleStore sharedStore] globalFg];
     _scrollView.backgroundColor = bg;
     _tableView.backgroundColor  = bg;
+    // The list is painted with the theme background while the header row
+    // above it sits on the chrome, so pin only the list's appearance to the
+    // theme (selection fill, scroller) and leave the header on the chrome.
+    _scrollView.appearance = [NppThemeManager appearanceForBackground:bg];
     _branchLabel.textColor      = fg;
     _noRepoLabel.textColor      = [NSColor secondaryLabelColor];
     [self _refreshToolbarIcons];
@@ -519,13 +523,16 @@ static NSString * const kLastRepoRootKey = @"GitPanelLastRepoRoot";
     } else {
         NSTextField *label = [tv makeViewWithIdentifier:@"path" owner:nil];
         if (!label) {
-            label = [NSTextField labelWithString:@""];
+            label = [NppThemedLabel labelWithString:@""];
             label.identifier = @"path";
             label.lineBreakMode = NSLineBreakByTruncatingMiddle;
             label.font = [NSFont monospacedSystemFontOfSize:11 weight:NSFontWeightRegular];
         }
         label.stringValue = item.path;
-        label.textColor = fg;
+        if ([label isKindOfClass:[NppThemedLabel class]])
+            ((NppThemedLabel *)label).themeTextColor = fg;
+        else
+            label.textColor = fg;
         label.font = [NSFont monospacedSystemFontOfSize:_panelFontSize weight:NSFontWeightRegular];
         return label;
     }

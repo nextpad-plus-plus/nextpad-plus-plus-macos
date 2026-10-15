@@ -150,6 +150,7 @@ static NSImage *_FTLoadToolbarIcon(NSString *iconName, CGFloat size) {
     NSButton                  *_unfoldAllButton;
     NSButton                  *_foldAllButton;
     NSButton                  *_locateButton;
+    BOOL                       _bgIsDark;   // theme background is dark (tree icon set)
 
     // Filter — case-insensitive substring against lastPathComponent. nil/empty
     // means no filter. When non-nil, children are eagerly loaded so the
@@ -313,7 +314,7 @@ static _FTPanelButton *_panelBtn(NSString *iconName, NSString *tip, id target, S
 
 - (void)_applyTheme {
     NSColor *bg = [[NPPStyleStore sharedStore] globalBg];
-    CGFloat brightness = bg.brightnessComponent;
+    _bgIsDark = [NppThemeManager isDarkColor:bg];
 
     // Theme only the tree/scroll area. The panel background itself (and
     // therefore the toolbar row) is left at system default so it matches
@@ -324,10 +325,11 @@ static _FTPanelButton *_panelBtn(NSString *iconName, NSString *tip, id target, S
 
     [self _refreshToolbarIcons];
 
-    // Match disclosure-triangle (arrow) color to background: dark bg → DarkAqua appearance
-    // so arrows are drawn white; light bg → Aqua so arrows are drawn dark.
-    _outlineView.appearance = [NSAppearance appearanceNamed:
-        brightness < 0.5 ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
+    // Match disclosure-triangle (arrow) color, selection fill and scrollers to
+    // the theme background: dark bg → DarkAqua so arrows are drawn white;
+    // light bg → Aqua so arrows are drawn dark. Set on the scroll view so both
+    // scrollers follow too (they otherwise inherit the chrome appearance).
+    _scrollView.appearance = [NppThemeManager appearanceForBackground:bg];
 
     // Reload so every visible cell picks up the new text color immediately.
     [_outlineView reloadData];
@@ -427,8 +429,11 @@ static _FTPanelButton *_panelBtn(NSString *iconName, NSString *tip, id target, S
 }
 
 - (NSImage *)_treeviewIcon:(NSString *)name {
+    // Folder icons sit on the theme background, so pick the icon set from it
+    // (not the chrome): the standard set is drawn for a light background.
+    NSString *subdir = _bgIsDark ? @"icons/dark/panels/treeview" : kTreeviewSubdir;
     NSURL *url = [[NSBundle mainBundle] URLForResource:name withExtension:@"png"
-                                          subdirectory:kTreeviewSubdir];
+                                          subdirectory:subdir];
     NSImage *img = url ? [[NSImage alloc] initWithContentsOfURL:url] : nil;
     if (img) img.size = NSMakeSize(16, 16);
     return img;
@@ -940,7 +945,7 @@ static _FTPanelButton *_panelBtn(NSString *iconName, NSString *tip, id target, S
         iv.imageFrameStyle = NSImageFrameNone;
         iv.imageScaling = NSImageScaleProportionallyUpOrDown;
         cell.imageView = iv;
-        NSTextField *tf = [NSTextField labelWithString:@""];
+        NSTextField *tf = [NppThemedLabel labelWithString:@""];
         tf.translatesAutoresizingMaskIntoConstraints = NO;
         tf.lineBreakMode = NSLineBreakByTruncatingMiddle;
         tf.font = [NSFont systemFontOfSize:_panelFontSize];
@@ -957,7 +962,10 @@ static _FTPanelButton *_panelBtn(NSString *iconName, NSString *tip, id target, S
     }
 
     cell.textField.stringValue = ft.url.lastPathComponent ?: @"";
-    cell.textField.textColor   = [[NPPStyleStore sharedStore] globalFg];
+    if ([cell.textField isKindOfClass:[NppThemedLabel class]])
+        ((NppThemedLabel *)cell.textField).themeTextColor = [[NPPStyleStore sharedStore] globalFg];
+    else
+        cell.textField.textColor = [[NPPStyleStore sharedStore] globalFg];
     cell.textField.font = [NSFont systemFontOfSize:_panelFontSize];
 
     NSImage *icon = nil;
