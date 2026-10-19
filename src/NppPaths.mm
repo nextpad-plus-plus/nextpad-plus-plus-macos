@@ -3,6 +3,13 @@
 
 #import "NppPaths.h"
 
+static NSString *sConfigOverride;
+static BOOL sConfigInitialized;
+void NppSetConfigDirOverride(NSString *directory) {
+    NSCAssert(!sConfigInitialized, @"Set the configuration directory before loading configuration");
+    sConfigOverride = [directory.stringByExpandingTildeInPath stringByStandardizingPath];
+}
+
 NSString *NppLegacyConfigDir(void) {
     return [NSHomeDirectory() stringByAppendingPathComponent:@".nextpad++"];
 }
@@ -90,8 +97,11 @@ NSString *NppConfigDir(void) {
     static NSString *dir;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        dir = NppComputeConfigDir();
-        NppMigrateLegacyIfNeeded(dir);
+        sConfigInitialized = YES;
+        NSString *environmentOverride = NSProcessInfo.processInfo.environment[@"NEXTPAD_SETTINGS_DIR"];
+        NSString *override = sConfigOverride.length ? sConfigOverride : environmentOverride;
+        dir = override.length ? [override.stringByExpandingTildeInPath stringByStandardizingPath] : NppComputeConfigDir();
+        if (!override.length) NppMigrateLegacyIfNeeded(dir);
         [[NSFileManager defaultManager] createDirectoryAtPath:dir
                                   withIntermediateDirectories:YES
                                                    attributes:nil

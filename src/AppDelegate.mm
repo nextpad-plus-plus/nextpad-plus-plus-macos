@@ -1,3 +1,4 @@
+#include <vector>
 #import "AppDelegate.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
@@ -97,7 +98,25 @@ static void NppRecoveryDone(void) {
     return self;
 }
 
+- (void)_forwardedCommandLine:(NSNotification *)notification {
+    NSArray *args=notification.userInfo[@"arguments"];
+    if (![args isKindOfClass:NSArray.class] || !args.count) return;
+    for (id arg in args) if (![arg isKindOfClass:NSString.class]) return;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        std::vector<const char *> argv;
+        for (NSString *arg in args) argv.push_back(arg.UTF8String);
+        NppCommandLineParams *cli=[[NppCommandLineParams alloc] initWithArgc:(int)argv.size() argv:argv.data()];
+        MainWindowController *mwc=[self _activeWindowController];
+        [self _openFilesFromCLI:cli inController:mwc];
+        [mwc bringWindowForward];
+    });
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self selector:@selector(_forwardedCommandLine:)
+        name:[NSBundle.mainBundle.bundleIdentifier stringByAppendingString:@".OpenCommandLine"]
+        object:[NSString stringWithFormat:@"%d",getpid()]];
+
     // Disable the macOS press-and-hold accent picker so key repeat works in the editor.
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ApplePressAndHoldEnabled"];
 

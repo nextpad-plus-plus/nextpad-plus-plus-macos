@@ -41,7 +41,7 @@ extern NSString *const NPPTahoeToolbarConfigChanged;
 
 /// Parse the file into the model. Returns nil if the file does not exist (the
 /// caller then materializes defaults). Malformed entries are skipped gracefully.
-+ (nullable NSArray<NSDictionary *> *)load;
++ (nullable NSArray<NSDictionary *> *)loadConfiguration;
 
 /// Serialize the model to the file (with a commented schema header). YES on success.
 + (BOOL)saveModel:(NSArray<NSDictionary *> *)model;

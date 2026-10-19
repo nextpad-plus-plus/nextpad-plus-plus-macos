@@ -60,7 +60,7 @@ static NSDictionary<NSString *, NSString *> *sDisplayNames = nil;
 
 #pragma mark - Load
 
-+ (nullable NSArray<NSDictionary *> *)load {
++ (nullable NSArray<NSDictionary *> *)loadConfiguration {
     NSString *path = [self filePath];
     if (![[NSFileManager defaultManager] fileExistsAtPath:path]) return nil;
 

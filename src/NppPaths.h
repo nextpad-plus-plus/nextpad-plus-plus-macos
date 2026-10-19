@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// The directory is created if it does not exist. The first call after upgrading
 /// from a build that used ~/.nextpad++ migrates that legacy folder here.
 FOUNDATION_EXPORT NSString *NppConfigDir(void);
+/// Set before the first NppConfigDir call (CLI -settingsDir and isolated test profiles).
+FOUNDATION_EXPORT void NppSetConfigDirOverride(NSString *directory);
 
 /// Convenience: NppConfigDir() joined with a relative subpath, e.g.
 /// NppConfigSubpath(@"plugins") or NppConfigSubpath(@"shortcuts.xml").

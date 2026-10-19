@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import "NppApplication.h"
+#import "NppPaths.h"
 #import "AppDelegate.h"
 #import "NppCommandLineParams.h"
 
@@ -46,10 +47,32 @@ int main(int argc, const char *argv[]) {
         // Parse command line arguments before NSApplication starts
         NppCommandLineParams *cliParams = [[NppCommandLineParams alloc] initWithArgc:argc argv:argv];
 
+        if (cliParams.settingsDir.length) NppSetConfigDirOverride(cliParams.settingsDir);
+
         // --help: print usage to stdout and exit immediately (no GUI)
         if (cliParams.showHelp) {
             printHelp(argv[0]);
             return 0;
+        }
+
+        // A direct executable invocation (including Homebrew's binary link) must
+        // deliver files and flags to the running app, just like Finder opens.
+        NSString *bundleID=NSBundle.mainBundle.bundleIdentifier;
+        if (!cliParams.multiInstance && !cliParams.settingsDir.length && bundleID.length) {
+            for (NSRunningApplication *running in [NSRunningApplication runningApplicationsWithBundleIdentifier:bundleID]) {
+                if (running.processIdentifier==getpid()) continue;
+                NSMutableArray *args=[NSMutableArray new];
+                for (int i=0;i<argc;i++) {
+                    NSString *arg=[NSString stringWithUTF8String:argv[i]];
+                    if (i && ![arg hasPrefix:@"-"] && !arg.isAbsolutePath)
+                        arg=[NSFileManager.defaultManager.currentDirectoryPath stringByAppendingPathComponent:arg];
+                    [args addObject:arg];
+                }
+                [[NSDistributedNotificationCenter defaultCenter] postNotificationName:[bundleID stringByAppendingString:@".OpenCommandLine"]
+                    object:[NSString stringWithFormat:@"%d",running.processIdentifier] userInfo:@{@"arguments":args} deliverImmediately:YES];
+                [running activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+                return 0;
+            }
         }
 
         // -loadingTime: record start time

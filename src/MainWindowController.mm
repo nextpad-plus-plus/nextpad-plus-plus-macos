@@ -2985,7 +2985,7 @@ static NSDictionary<NSString *, NSString *> *_tahoeButtonDisplayNames(void) {
     [TahoeToolbarConfig setDefaultBuiltinGroups:_tahoeDefaultBuiltinGroupDicts()];
     [TahoeToolbarConfig setButtonDisplayNames:_tahoeButtonDisplayNames()];
 
-    NSArray<NSDictionary *> *model = [TahoeToolbarConfig load];
+    NSArray<NSDictionary *> *model = [TahoeToolbarConfig loadConfiguration];
     if (!model) {
         // First Tahoe use (or after Reset): defaults + current plugins, persisted.
         NSMutableArray *m = [_tahoeDefaultBuiltinGroupDicts() mutableCopy];
@@ -10386,7 +10386,7 @@ static NSString *_makeCLIScriptForApp(NSString *appPath) {
          "    # `open --args` is silently dropped when the app is already\n"
          "    # running. Files ride behind --args so a fresh instance gets\n"
          "    # them too.\n"
-         "    open -a \"$APP\" --args \"${flags[@]}\" \"${files[@]}\"\n"
+         "    open -na \"$APP\" --args \"${flags[@]}\" \"${files[@]}\"\n"
          "elif [ ${#files[@]} -gt 0 ]; then\n"
          "    # Files only: pass them as `open` document arguments so an\n"
          "    # already-running instance opens them via application:openFiles:.\n"

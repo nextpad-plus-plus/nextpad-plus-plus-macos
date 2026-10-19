@@ -29,7 +29,7 @@
     for (NSUInteger i = 0; i < args.count; i++) {
         NSString *a = args[i];
         // Skip macOS system args that start with -NS, -Apple, or -psn_
-        if ([a hasPrefix:@"-NS"] || [a hasPrefix:@"-Apple"] || [a hasPrefix:@"-psn_"])
+        if ([a hasPrefix:@"-psn_"])
             continue;
         // Some system args take a value as next arg (e.g. -NSDocumentRevisionsDebugMode YES)
         if ([a hasPrefix:@"-NS"] || [a hasPrefix:@"-Apple"]) {

@@ -1042,7 +1042,7 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 // can be re-surfaced); the Plugins group's universe comes from the file (the host
 // materializes all live plugins into it).
 - (void)_buildTahoeEditGroups {
-    NSArray<NSDictionary *> *loaded   = [TahoeToolbarConfig load];
+    NSArray<NSDictionary *> *loaded   = [TahoeToolbarConfig loadConfiguration];
     NSArray<NSDictionary *> *defaults = [TahoeToolbarConfig defaultBuiltinGroups];
 
     NSMutableDictionary<NSString *, NSDictionary *> *loadedByLabel = [NSMutableDictionary dictionary];
