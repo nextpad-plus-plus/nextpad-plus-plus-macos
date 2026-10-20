@@ -10,7 +10,7 @@
 #define SCFIND_REGEXP_SKIPCRLFASONE			   0x08000000
 
 #ifdef SCI_OWNREGEX
-extern std::string g_exceptionMessage;
+extern thread_local std::string g_exceptionMessage;
 #endif
 
 #endif

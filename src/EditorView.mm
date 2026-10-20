@@ -1,4 +1,5 @@
 #import "EditorView.h"
+#import "NppTextEncoding.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
 #import "NppLangsManager.h"
@@ -251,18 +252,10 @@ static NSStringEncoding canonicalCJKEncoding(NSStringEncoding ns) {
     }
 }
 
-// Files larger than the threshold get a warning + large-file mode (no syntax,
-// no undo, plus per-feature gates from Performance prefs). When the user has
-// disabled "Enable Large File Restriction" entirely, returns SIZE_MAX so no
-// file ever crosses the threshold.
-static NSUInteger nppLargeFileThreshold(void) {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if (![ud boolForKey:kPrefLargeFileEnabled]) return NSUIntegerMax;
-    NSInteger mb = [ud integerForKey:kPrefLargeFileSizeMB];
-    if (mb < 1)    mb = 1;
-    if (mb > 2046) mb = 2046;
-    return (NSUInteger)mb * 1024UL * 1024UL;
-}
+// Files larger than the threshold (NppLargeFileThreshold, NppTextEncoding.h)
+// get a warning + large-file mode (no syntax, no undo, plus per-feature gates
+// from Performance prefs). Find in Files skips the charset detector above the
+// same size.
 
 @implementation EditorView {
     BOOL    _isModified;
@@ -416,7 +409,7 @@ static NSUInteger nppLargeFileThreshold(void) {
     NSUInteger fileSize = 0;
     if (attrs) fileSize = (NSUInteger)[attrs[NSFileSize] unsignedLongLongValue];
 
-    BOOL large = (fileSize > nppLargeFileThreshold());
+    BOOL large = (fileSize > NppLargeFileThreshold());
     if (large) {
         // The 2 GB suppress-warning toggle silences the dialog ONLY for files
         // ≥2 GB — smaller large files still prompt the user, since the prompt
@@ -541,38 +534,24 @@ static NSUInteger nppLargeFileThreshold(void) {
             enc = NSISOLatin1StringEncoding;
             utf8Data = rawData;
         } else {
-            // Small non-UTF-8: first ask macOS's heuristic charset detector — it
-            // covers the CJK encodings the old Win-1252/Latin-1 fallback turned into
-            // mojibake (GBK/GB18030, Big5, Shift-JIS, EUC, …). We only trust a result
-            // that decoded *without* lossy substitution; anything else falls through
-            // to the unchanged Win-1252/Latin-1 path, so Western files never regress.
-            NSString *detected = nil;
-            BOOL detLossy = NO;
-            NSStringEncoding guess = [NSString stringEncodingForData:rawData
-                                                    encodingOptions:nil
-                                                    convertedString:&detected
-                                                usedLossyConversion:&detLossy];
-            if (detected && guess != 0 && !detLossy && guess != NSUTF8StringEncoding) {
-                NSStringEncoding canon = canonicalCJKEncoding(guess);
-                enc = canon ?: guess;
-                utf8Data = [detected dataUsingEncoding:NSUTF8StringEncoding];
-            }
-
-            if (!utf8Data) {
-                // Fallback: try Win-1252, then Latin-1 (cheap walk on small files).
-                NSStringEncoding win1252 = nppEnc(kCFStringEncodingWindowsLatin1);
-                NSString *content = [[NSString alloc] initWithData:rawData encoding:win1252];
-                if (content) {
-                    enc = win1252;
-                    utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                } else {
-                    content = [[NSString alloc] initWithData:rawData
-                                                    encoding:NSISOLatin1StringEncoding];
-                    if (content) {
-                        enc = NSISOLatin1StringEncoding;
-                        utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                    }
-                }
+            // Small non-UTF-8: shared legacy detection (NppTextEncoding) so the
+            // editor and Find/Replace in Files decode a file the same way. The
+            // detector covers the CJK encodings the old Win-1252/Latin-1
+            // fallback turned into mojibake (GBK/GB18030, Big5, Shift-JIS,
+            // EUC, ...); otherwise Win-1252, then Latin-1. The editor runs the
+            // detector over the whole (small) file. A detector result whose
+            // UTF-8 conversion fails is vetoed so Win-1252/Latin-1 get a turn.
+            __block NSData *detectedUTF8 = nil;
+            NSStringEncoding legacyEnc = 0;
+            NSString *content = NppDecodeLegacyText(rawData, NppDetectorWholeData, &legacyEnc,
+                                                    ^BOOL(NSString *text) {
+                detectedUTF8 = [text dataUsingEncoding:NSUTF8StringEncoding];
+                return detectedUTF8 != nil;
+            });
+            if (content) {
+                NSStringEncoding canon = canonicalCJKEncoding(legacyEnc);
+                enc = canon ?: legacyEnc;
+                utf8Data = detectedUTF8 ?: [content dataUsingEncoding:NSUTF8StringEncoding];
             }
         }
     }
@@ -4441,8 +4420,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)line];
     if (startPos >= endPos) return NO;
 
-    // Use std::regex (CXX11REGEX) so the `|` alternations in `expr` actually
-    // work — Scintilla's POSIX RESearch treats `|` as a literal pipe.
+    // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the `|`
+    // alternations in `expr` work. (SCFIND_CXX11REGEX is ignored there.)
     [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
     [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 
@@ -4618,8 +4597,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
         sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)prevLine];
 
         if (startPos < endPos) {
-            // Use std::regex (CXX11REGEX) so the `(#|$)` alternation works —
-            // POSIX RESearch would match the parens/pipe literally.
+            // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the
+            // `(#|$)` alternation works. (SCFIND_CXX11REGEX is ignored there.)
             [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
             [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 
