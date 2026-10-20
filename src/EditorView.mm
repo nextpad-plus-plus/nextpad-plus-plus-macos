@@ -1,3 +1,4 @@
+#import "NppCommandDispatch.h"
 #import "EditorView.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
@@ -4131,49 +4132,7 @@ static NSRegularExpression *nppClickableSchemeRegex(NSString *schemes) {
 // the selector string in sParam). Only the common, macro-relevant commands are
 // mapped; unmapped ids are logged and skipped. Each selector below is verified
 // against MenuBuilder.mm.
-static NSString *_winMacroCmdSelector(long long idm) {
-    static NSDictionary<NSNumber *, NSString *> *map;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        map = @{
-            // ── File (IDM_FILE = 41000) ──
-            @41001: @"newDocument:",          // IDM_FILE_NEW
-            @41002: @"openDocument:",         // IDM_FILE_OPEN
-            @41003: @"closeCurrentTab:",      // IDM_FILE_CLOSE
-            @41004: @"closeAllTabs:",         // IDM_FILE_CLOSEALL
-            @41006: @"saveDocument:",         // IDM_FILE_SAVE
-            @41007: @"saveAllDocuments:",     // IDM_FILE_SAVEALL
-            @41008: @"saveDocumentAs:",       // IDM_FILE_SAVEAS
-            @41010: @"printDocument:",        // IDM_FILE_PRINT
-            @41014: @"reloadFromDisk:",       // IDM_FILE_RELOAD
-            // ── Edit (IDM_EDIT = 42000) ──
-            @42001: @"cut:",                  // IDM_EDIT_CUT
-            @42002: @"copy:",                 // IDM_EDIT_COPY
-            @42003: @"undo:",                 // IDM_EDIT_UNDO
-            @42004: @"redo:",                 // IDM_EDIT_REDO
-            @42005: @"paste:",                // IDM_EDIT_PASTE
-            @42006: @"delete:",               // IDM_EDIT_DELETE
-            @42007: @"selectAll:",            // IDM_EDIT_SELECTALL
-            @42010: @"duplicateLine:",        // IDM_EDIT_DUP_LINE
-            @42014: @"moveLineUp:",           // IDM_EDIT_LINE_UP
-            @42015: @"moveLineDown:",         // IDM_EDIT_LINE_DOWN
-            @42016: @"convertToUppercase:",   // IDM_EDIT_UPPERCASE
-            @42017: @"convertToLowercase:",   // IDM_EDIT_LOWERCASE
-            @42022: @"toggleLineComment:",    // IDM_EDIT_BLOCK_COMMENT (Ctrl+Q line toggle)
-            @42023: @"addBlockComment:",      // IDM_EDIT_STREAM_COMMENT (Ctrl+Shift+Q)
-            @42024: @"trimTrailingWhitespace:",// IDM_EDIT_TRIMTRAILING
-            @42047: @"removeBlockComment:",   // IDM_EDIT_STREAM_UNCOMMENT
-            // ── Search (IDM_SEARCH = 43000) ──
-            @43002: @"findNext:",             // IDM_SEARCH_FINDNEXT
-            @43010: @"findPrevious:",         // IDM_SEARCH_FINDPREV
-            // ── Format / EOL (IDM_FORMAT = 45000) ──
-            @45001: @"setEOLCRLF:",           // IDM_FORMAT_TODOS
-            @45002: @"setEOLLF:",             // IDM_FORMAT_TOUNIX
-            @45003: @"setEOLCR:",             // IDM_FORMAT_TOMAC
-        };
-    });
-    return map[@(idm)];
-}
+static NSString *_winMacroCmdSelector(long long idm) { return NppSelectorForCommand(idm); }
 
 #pragma mark - Find/Replace macro replay (#166 — Windows mtSavedSnR / type 3)
 

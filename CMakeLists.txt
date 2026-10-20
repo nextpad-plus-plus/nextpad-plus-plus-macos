@@ -139,6 +139,7 @@ set(APP_SRCS
     src/UserDefineLangManager.mm
     src/UserDefineDialog.mm
     src/UDLStylerDialog.mm
+    src/NppCommandDispatch.mm
     src/NppPluginManager.mm
     src/PluginsAdminWindowController.mm
     src/NppBuiltinLanguages.mm

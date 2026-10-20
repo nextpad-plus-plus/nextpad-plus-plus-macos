@@ -1,3 +1,5 @@
+#import "NppCommandDispatch.h"
+#import "ShortcutMapperWindowController.h"
 #import "NppPluginManager.h"
 #import "NppPaths.h"
 #import "MainWindowController.h"
@@ -470,6 +472,10 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
                                                         action:@selector(pluginMenuAction:)
                                                  keyEquivalent:@""];
             mi.tag = fi->_cmdID;
+            if (fi->_pShKey) {
+                ShortcutKey *key=fi->_pShKey;
+                NppApplyShortcutToMenuItem(mi,key->_key,key->_isCmd,key->_isCtrl,key->_isAlt,key->_isShift);
+            }
             mi.target = self;
 
             if (fi->_init2Check)
@@ -1197,17 +1203,8 @@ static intptr_t _npp_run_on_main(intptr_t (^block)(void)) {
             MainWindowController *mwc = _mwc;
             if (!mwc) return 0;
 
-            SEL action = nil;
-            switch (idm) {
-                case 41001: action = @selector(newDocument:);    break; // IDM_FILE_NEW
-                case 41002: action = @selector(openDocument:);   break; // IDM_FILE_OPEN
-                case 41006: action = @selector(saveDocument:);   break; // IDM_FILE_SAVE
-                case 41003: action = @selector(closeCurrentTab:); break; // IDM_FILE_CLOSE
-                case 41004: action = @selector(closeAllTabs:);   break; // IDM_FILE_CLOSEALL — used by SessionMgr to swap sessions
-                default:
-                    NSLog(@"[Plugins] Unhandled NPPM_MENUCOMMAND IDM=%d", idm);
-                    return 0;
-            }
+            NSString *name=NppSelectorForCommand(idm);
+            SEL action=name.length?NSSelectorFromString(name):nullptr;
             if (action && [mwc respondsToSelector:action]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     // Use performSelector for action methods defined in .mm only
