@@ -1,3 +1,4 @@
+#import "NppAPICompletion.h"
 #import "EditorView.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
@@ -301,6 +302,9 @@ static NSUInteger nppLargeFileThreshold(void) {
 
     // Git gutter state
     BOOL               _gitGutterEnabled;
+
+    NSString *_apiCallName;
+    NSUInteger _apiOverload;
 
     // Hex view
 }
@@ -4673,7 +4677,7 @@ static NSSet<NSString *> *_cLikeLanguages() {
     }
 
     // Function parameters hint: auto-trigger after typing '('
-    if (ch == '(' && [[NSUserDefaults standardUserDefaults] boolForKey:kPrefFuncParamsHint]) {
+    if ((ch == '(' || ch == ',' || ch == ')' || [_scintillaView message:SCI_CALLTIPACTIVE]) && [[NSUserDefaults standardUserDefaults] boolForKey:kPrefFuncParamsHint]) {
         [self triggerFunctionParametersHint:nil];
     }
 
@@ -4758,6 +4762,10 @@ static NSSet<NSString *> *_cLikeLanguages() {
     }
 
     switch (notification->nmhdr.code) {
+        case SCN_CALLTIPCLICK:
+            if (notification->position == 1) [self showFunctionParametersPreviousHint:nil];
+            else if (notification->position == 2) [self showFunctionParametersNextHint:nil];
+            break;
         case SCN_MODIFIED:
             if (notification->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 _isModified = YES;
@@ -6121,7 +6129,11 @@ static const unsigned int kSCI_GetBidirectional = 2708;
         if (word.length > prefix.length && [word hasPrefix:prefix])
             [wordSet addObject:word];
     }
+    NppAPICompletion *api = [NppAPICompletion completionForLanguage:_currentLanguage];
+    [wordSet addObjectsFromArray:[api wordsWithPrefix:prefix]];
     [wordSet removeObject:prefix];
+    [sci message:SCI_AUTOCSETIGNORECASE wParam:api.ignoreCase];
+    [sci message:SCI_AUTOCSETORDER wParam:SC_ORDER_PERFORMSORT];
     if (!wordSet.count) { if (beep) NSBeep(); return; }
 
     NSArray<NSString *> *sorted = [wordSet.allObjects
@@ -6132,72 +6144,83 @@ static const unsigned int kSCI_GetBidirectional = 2708;
 }
 
 - (void)triggerFunctionParametersHint:(id)sender {
-    // Show a calltip for the function name preceding the nearest open paren
     ScintillaView *sci = _scintillaView;
+    NppAPICompletion *api = [NppAPICompletion completionForLanguage:_currentLanguage];
+    if (!api.startFunc.length || !api.stopFunc.length) return;
     sptr_t pos = [sci message:SCI_GETCURRENTPOS];
-    // Scan back for the most recent '('
-    sptr_t scan = pos - 1;
-    while (scan >= 0 && (int)[sci message:SCI_GETCHARAT wParam:(uptr_t)scan] != '(') scan--;
-    if (scan < 0) { NSBeep(); return; }
-    sptr_t nameEnd   = scan;
-    sptr_t nameStart = [sci message:SCI_WORDSTARTPOSITION wParam:(uptr_t)nameEnd lParam:1];
-    if (nameStart >= nameEnd) { NSBeep(); return; }
-    sptr_t nameLen = nameEnd - nameStart;
-    char *buf = (char *)calloc((size_t)(nameLen + 1), 1);
-    Sci_TextRangeFull tr = { {(Sci_Position)nameStart, (Sci_Position)nameEnd}, buf };
+    sptr_t first = MAX(0, pos - 65536);
+    first = [sci message:SCI_POSITIONFROMLINE wParam:[sci message:SCI_LINEFROMPOSITION wParam:first]];
+    std::vector<char> bytes((size_t)(pos - first) + 1);
+    Sci_TextRangeFull tr = {{first, pos}, bytes.data()};
     [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
-    NSString *funcName = [NSString stringWithUTF8String:buf] ?: @"";
-    free(buf);
-    if (!funcName.length) { NSBeep(); return; }
-    NSString *tip = [NSString stringWithFormat:@"%@( ... )", funcName];
-    [sci message:SCI_CALLTIPSHOW wParam:(uptr_t)nameStart lParam:(sptr_t)tip.UTF8String];
+    struct Call { char close; sptr_t start, end; NSUInteger parameter; };
+    std::vector<Call> calls;
+    char quote = 0; bool lineComment = false, blockComment = false;
+    const char open = (char)[api.startFunc characterAtIndex:0];
+    const char close = (char)[api.stopFunc characterAtIndex:0];
+    const char separator = api.paramSeparator.length ? (char)[api.paramSeparator characterAtIndex:0] : ',';
+    auto wordChar = [&](unsigned char c) { return c >= 128 || isalnum(c) || c == '_' ||
+        [api.additionalWordChars rangeOfString:[NSString stringWithFormat:@"%c", c]].location != NSNotFound; };
+    for (sptr_t i = 0; i < pos - first; i++) {
+        char c = bytes[i], next = bytes[i + 1];
+        if (lineComment) { if (c == '\n' || c == '\r') lineComment = false; continue; }
+        if (blockComment) { if (c == '*' && next == '/') { blockComment = false; i++; } continue; }
+        if (quote) { if (c == '\\') i++; else if (c == quote) quote = 0; continue; }
+        if (c == '/' && next == '/') { lineComment = true; i++; continue; }
+        if (c == '/' && next == '*') { blockComment = true; i++; continue; }
+        if (c == 0x27 || c == '"' || c == '`') { quote = c; continue; }
+        if (c == open || c == '[' || c == '{') {
+            sptr_t end = i, start = i;
+            if (c == open) {
+                while (end > 0 && isspace((unsigned char)bytes[end-1])) end--;
+                start = end;
+                while (start > 0 && wordChar((unsigned char)bytes[start-1])) start--;
+            }
+            calls.push_back({c == '[' ? ']' : c == '{' ? '}' : close, start, end, 0});
+        } else if (!calls.empty() && c == calls.back().close) calls.pop_back();
+        else if (!calls.empty() && c == separator) calls.back().parameter++;
+    }
+    for (auto it = calls.rbegin(); it != calls.rend(); ++it) {
+        if (it->start == it->end) continue;
+        NSString *name = [[NSString alloc] initWithBytes:bytes.data()+it->start length:it->end-it->start encoding:NSUTF8StringEncoding];
+        if (![api overloadsForFunction:name].count) continue;
+        if (![_apiCallName isEqualToString:name]) { _apiCallName = name; _apiOverload = 0; }
+        NSRange highlight;
+        NSString *tip = [api signatureForFunction:name overload:_apiOverload parameter:it->parameter highlight:&highlight];
+        [sci message:SCI_CALLTIPSHOW wParam:first+it->start lParam:(sptr_t)tip.UTF8String];
+        [sci message:SCI_CALLTIPSETHLT wParam:highlight.location lParam:NSMaxRange(highlight)];
+        return;
+    }
+    [sci message:SCI_CALLTIPCANCEL];
 }
 
 - (void)triggerFunctionCompletion:(id)sender {
-    // Show autocomplete using words already in the document (approximates function-name completion).
-    // A full implementation would load per-language API files; this provides useful behaviour without them.
-    [self triggerWordCompletion:sender];
+    ScintillaView *sci = _scintillaView;
+    sptr_t pos = [sci message:SCI_GETCURRENTPOS];
+    sptr_t start = [sci message:SCI_WORDSTARTPOSITION wParam:pos lParam:1];
+    std::vector<char> bytes((size_t)(pos-start)+1);
+    Sci_TextRangeFull tr = {{start,pos},bytes.data()};
+    [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+    NSString *prefix = [NSString stringWithUTF8String:bytes.data()] ?: @"";
+    NppAPICompletion *api = [NppAPICompletion completionForLanguage:_currentLanguage];
+    NSArray *words = [api wordsWithPrefix:prefix];
+    if (!words.count) { [sci message:SCI_AUTOCCANCEL]; return; }
+    NSString *list = [words componentsJoinedByString:@"\n"];
+    [sci message:SCI_AUTOCSETSEPARATOR wParam:'\n'];
+    [sci message:SCI_AUTOCSETIGNORECASE wParam:api.ignoreCase];
+    [sci message:SCI_AUTOCSETORDER wParam:SC_ORDER_PERFORMSORT];
+    [sci message:SCI_AUTOCSHOW wParam:pos-start lParam:(sptr_t)list.UTF8String];
 }
 
 - (void)showFunctionParametersPreviousHint:(id)sender {
-    // Navigate to the previous enclosing function call and show its calltip.
-    ScintillaView *sci = _scintillaView;
-    if ([sci message:SCI_CALLTIPACTIVE]) [sci message:SCI_CALLTIPCANCEL];
-    sptr_t pos = [sci message:SCI_GETCURRENTPOS];
-    int depth = 0;
-    sptr_t scan = pos - 1;
-    while (scan > 0) {
-        char ch = (char)[sci message:SCI_GETCHARAT wParam:(uptr_t)scan];
-        if (ch == ')') { depth++; scan--; continue; }
-        if (ch == '(' && depth > 0) { depth--; scan--; continue; }
-        if (ch == '(') {
-            // Found enclosing '(' — move cursor just inside and show calltip
-            [sci message:SCI_GOTOPOS wParam:(uptr_t)(scan + 1)];
-            [self triggerFunctionParametersHint:sender];
-            return;
-        }
-        scan--;
-    }
-    NSBeep();
+    NppAPICompletion *api = [NppAPICompletion completionForLanguage:_currentLanguage];
+    NSUInteger count = [api overloadsForFunction:_apiCallName ?: @""].count;
+    if (count) _apiOverload = (_apiOverload + count - 1) % count;
+    [self triggerFunctionParametersHint:sender];
 }
-
 - (void)showFunctionParametersNextHint:(id)sender {
-    // Navigate forward to the next function call '(' and show its calltip.
-    ScintillaView *sci = _scintillaView;
-    if ([sci message:SCI_CALLTIPACTIVE]) [sci message:SCI_CALLTIPCANCEL];
-    sptr_t pos = [sci message:SCI_GETCURRENTPOS];
-    sptr_t len = [sci message:SCI_GETLENGTH];
-    sptr_t scan = pos;
-    while (scan < len) {
-        char ch = (char)[sci message:SCI_GETCHARAT wParam:(uptr_t)scan];
-        if (ch == '(') {
-            [sci message:SCI_GOTOPOS wParam:(uptr_t)(scan + 1)];
-            [self triggerFunctionParametersHint:sender];
-            return;
-        }
-        scan++;
-    }
-    NSBeep();
+    _apiOverload++;
+    [self triggerFunctionParametersHint:sender];
 }
 
 - (void)triggerPathCompletion:(id)sender {
