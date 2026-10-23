@@ -5037,13 +5037,11 @@ static NSSet<NSString *> *_cLikeLanguages() {
 #pragma mark - Case Conversion
 
 - (void)convertToUppercase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    [self replaceSelectionWith:sel.uppercaseString];
+    [_scintillaView message:SCI_UPPERCASE];
 }
 
 - (void)convertToLowercase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    [self replaceSelectionWith:sel.lowercaseString];
+    [_scintillaView message:SCI_LOWERCASE];
 }
 
 - (void)convertToProperCase:(id)sender {
