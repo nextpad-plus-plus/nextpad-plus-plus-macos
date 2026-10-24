@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// delegate handled the exit; return NO (or leave unimplemented) to fall
 /// back to the default behaviour of opening a fresh untitled tab.
 - (BOOL)tabManagerShouldExitOnLastTabClose:(id)tabManager;
+/// Sent just before a tab is closed for good (not when it is moved to another
+/// view), while the editor still holds its document and view state.
+- (void)tabManager:(id)tabManager willCloseEditor:(EditorView *)editor;
 @end
 
 /// Manages the custom tab bar and the set of open editor views.
