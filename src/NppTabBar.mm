@@ -32,7 +32,9 @@ static const CGFloat kArrowBtnW    = 14.0;  // width of each scroll-arrow button
 static NSColor *tabBarBgColor()    { return TM.tabBarBackground; }
 static NSColor *activeTabColor()   { return TM.activeTabFill; }
 static NSColor *accentColor()      { return TM.accentStripe; }
-// Per-tab color palette (same for light/dark)
+/// Maps preset color identifiers (0–4) to fixed palette NSColors.
+/// Returns nil for colorId 5 (custom color is stored directly on _NppTabItem.customColor)
+/// and colorId -1 (uncolored tab, which falls back to theme default accent).
 static NSColor *tabColorForId(NSInteger colorId) {
     switch (colorId) {
         case 0: return [NSColor colorWithRed:0xFC/255.0 green:0xE3/255.0 blue:0x86/255.0 alpha:1]; // Yellow
@@ -138,7 +140,8 @@ static NSImage *toolbarIcon(NSString *name) {
 @property (nonatomic) BOOL isSelected;
 @property (nonatomic) BOOL isModified;
 @property (nonatomic) BOOL isPinned;
-@property (nonatomic) NSInteger colorId;  // -1 = default orange, 0–4 = color 1–5
+@property (nonatomic) NSInteger colorId;  // -1 = default orange, 0–4 = preset, 5 = custom
+@property (nonatomic, strong, nullable) NSColor *customColor; // used when colorId == 5
 @property (nonatomic, weak) id target;
 @property (nonatomic) SEL selectAction;
 @property (nonatomic) SEL closeAction;
@@ -222,8 +225,13 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         // is painted as a full-tab TRANSLUCENT vertical gradient instead of the
         // Classic 3px accent stripe; uncolored tabs stay neutral/flat. The Classic
         // branch below is left byte-for-byte unchanged.
-        NSColor *base = tabColorForId(_colorId);          // nil when no custom color assigned
-        if (!base && _isSelected) base = accentColor();   // default active tab → Classic orange accent gradient
+        //
+        // Per-tab color resolution:
+        // - colorId == 5: Custom color picked by user, resolved from self.customColor.
+        // - colorId 0-4: One of the 5 built-in NPP preset palette colors (tabColorForId).
+        // - base == nil and active: falls back to the default Tahoe accent color gradient.
+        NSColor *base = (_colorId == 5) ? _customColor : tabColorForId(_colorId);
+        if (!base && _isSelected) base = accentColor();   // default active tab → accent gradient
         [NSGraphicsContext saveGraphicsState];
         [tabPath addClip];
         if (base) {
@@ -257,7 +265,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         // Tahoe: a soft border only a few tones darker than the tab itself — for a
         // colored tab a slightly stronger shade of its own color; for an uncolored
         // tab a faint dark outline. (Classic keeps the grey tabBorder, untouched.)
-        NSColor *bbase = tabColorForId(_colorId);
+        NSColor *bbase = (_colorId == 5) ? _customColor : tabColorForId(_colorId);
         if (!bbase && _isSelected) bbase = accentColor();
         NSColor *bcol = bbase ? [bbase colorWithAlphaComponent:0.6]
                               : [NSColor colorWithWhite:0.0 alpha:0.12];
@@ -274,7 +282,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     // Tahoe shows the per-tab color as a full-tab translucent tint (Fill above),
     // so the stripe is suppressed there.
     if (!TM.usesGlassMaterials) {
-        NSColor *stripe = tabColorForId(_colorId) ?: accentColor();
+        NSColor *stripe = ((_colorId == 5) ? _customColor : tabColorForId(_colorId)) ?: accentColor();
         if (_isSelected || _colorId >= 0) {
             [NSGraphicsContext saveGraphicsState];
             [tabPath addClip];
@@ -660,17 +668,36 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     [self relayout];
 }
 
+/// Assigns a preset color ID (0–4) or removes color (-1). Releases any assigned custom color.
 - (void)setTabColorAtIndex:(NSInteger)index colorId:(NSInteger)colorId {
     if (index < 0 || index >= (NSInteger)_items.count) return;
     _items[index].colorId = colorId;
+    if (colorId != 5) _items[index].customColor = nil;
     [_items[index] setNeedsDisplay:YES];
 }
 
+/// Returns the color ID for the tab at index (-1 = uncolored, 0–4 = preset, 5 = custom).
 - (NSInteger)tabColorAtIndex:(NSInteger)index {
     if (index < 0 || index >= (NSInteger)_items.count) return -1;
     return _items[index].colorId;
 }
 
+/// Assigns an arbitrary custom color to the tab at index, setting its colorId to 5.
+- (void)setTabCustomColor:(NSColor *)color atIndex:(NSInteger)index {
+    if (index < 0 || index >= (NSInteger)_items.count) return;
+    _items[index].colorId     = 5;
+    _items[index].customColor = color;
+    [_items[index] setNeedsDisplay:YES];
+}
+
+/// Returns the custom color of the tab at index if colorId == 5, or nil otherwise.
+- (nullable NSColor *)tabCustomColorAtIndex:(NSInteger)index {
+    if (index < 0 || index >= (NSInteger)_items.count) return nil;
+    if (_items[index].colorId != 5) return nil;
+    return _items[index].customColor;
+}
+
+/// Returns the static palette color for preset IDs (0–4), or nil for custom (5) / uncolored (-1) tabs.
 + (nullable NSColor *)tabFillColorForId:(NSInteger)colorId {
     return tabColorForId(colorId);
 }
@@ -1560,6 +1587,40 @@ static NSMenu *_buildTabContextMenuFromXML(NSString *xmlPath) {
             [folders[folderName] addItem:ctxItem];
         } else {
             [contextMenu addItem:ctxItem];
+        }
+    }
+
+    // Ensure "Apply Color to Tab" submenu always includes "Custom Color…",
+    // even if an older or user-customized tabContextMenu.xml was loaded without it.
+    NSMenu *colorMenu = folders[@"Apply Color to Tab"];
+    if (colorMenu) {
+        BOOL hasCustom = NO;
+        for (NSMenuItem *mi in colorMenu.itemArray) {
+            if (mi.action == @selector(applyTabCustomColor:)) {
+                hasCustom = YES;
+                break;
+            }
+        }
+        if (!hasCustom) {
+            NSMenuItem *customItem = [[NSMenuItem alloc] initWithTitle:@"Custom Color"
+                                                                action:@selector(applyTabCustomColor:)
+                                                         keyEquivalent:@""];
+            NSImage *wheelImg = [NSImage imageWithSystemSymbolName:@"paintpalette"
+                                          accessibilityDescription:nil];
+            if (wheelImg) customItem.image = wheelImg;
+
+            NSInteger removeIdx = -1;
+            for (NSInteger i = 0; i < colorMenu.numberOfItems; i++) {
+                if ([colorMenu itemAtIndex:i].action == @selector(removeTabColor:)) {
+                    removeIdx = i;
+                    break;
+                }
+            }
+            if (removeIdx >= 0) {
+                [colorMenu insertItem:customItem atIndex:removeIdx];
+            } else {
+                [colorMenu addItem:customItem];
+            }
         }
     }
 
