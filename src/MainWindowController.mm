@@ -10961,7 +10961,7 @@ static int64_t _sysctlInt(const char *name) {
     [info appendFormat:@"C++ Standard: %ld\n", (long)__cplusplus];
     [info appendFormat:@"macOS Deployment Target: %s\n",
         [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"LSMinimumSystemVersion"] UTF8String] ?: "11.0"];
-    [info appendString:@"Scintilla/Lexilla included: 5.6.0/5.4.7\n"];
+    [info appendString:@"Scintilla/Lexilla included: 5.6.6/5.5.3\n"];
     [info appendFormat:@"Bundle ID: %@\n", [[NSBundle mainBundle] bundleIdentifier] ?: @"n/a"];
     [info appendFormat:@"Path: %@\n", [[NSBundle mainBundle] executablePath]];
     [info appendFormat:@"Bundle Path: %@\n", [[NSBundle mainBundle] bundlePath]];

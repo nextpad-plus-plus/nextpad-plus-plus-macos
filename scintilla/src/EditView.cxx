@@ -14,6 +14,7 @@
 #include <cmath>
 
 #include <stdexcept>
+#include <utility>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -66,6 +67,7 @@
 #include "MarginView.h"
 #include "EditView.h"
 #include "ElapsedPeriod.h"
+#include "RunThreads.h"
 
 using namespace Scintilla;
 using namespace Scintilla::Internal;
@@ -352,7 +354,7 @@ void LayoutSegments(IPositionCache *pCache,
 				XYPOSITION representationWidth = 0.0;
 				// Tab is a special case of representation, taking a variable amount of space
 				// which will be filled in later.
-				if (ll->chars[ts.start] != '\t') {
+				if (ll->chars[ts.start] != '\t' || vstyle.tabDrawMode == TabDrawMode::ControlChar) {
 					representationWidth = vstyle.controlCharWidth;
 					if (representationWidth <= 0.0) {
 						assert(ts.representation->stringRep.length() <= Representation::maxLength);
@@ -494,25 +496,13 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 			std::atomic<uint32_t> nextIndex = 0;
 
 			const bool textUnicode = CpUtf8 == model.pdoc->dbcsCodePage;
-			const bool multiThreaded = threads > 1;
-			const bool multiThreadedContext = multiThreaded || callerMultiThreaded;
+			const bool multiThreadedContext = (threads > 1) || callerMultiThreaded;
 			IPositionCache *pCache = posCache.get();
 
 			// If only 1 thread needed then use the main thread, else spin up multiple
-			const std::launch policy = (multiThreaded) ? std::launch::async : std::launch::deferred;
-
-			std::vector<std::future<void>> futures;
-			for (size_t th = 0; th < threads; th++) {
-				// Find relative positions of everything except for tabs
-				std::future<void> fut = std::async(policy,
-					[pCache, surface, &vstyle, &ll, &segments, &nextIndex, textUnicode, multiThreadedContext]() {
-					LayoutSegments(pCache, surface, vstyle, ll, segments, nextIndex, textUnicode, multiThreadedContext);
+			RunThreads(threads, [pCache, surface, &vstyle, ll, &segments, &nextIndex, textUnicode, multiThreadedContext]() {
+				LayoutSegments(pCache, surface, vstyle, ll, segments, nextIndex, textUnicode, multiThreadedContext);
 				});
-				futures.push_back(std::move(fut));
-			}
-			for (const std::future<void> &f : futures) {
-				f.wait();
-			}
 		}
 
 		// Accumulate absolute positions from relative positions within segments and expand tabs
@@ -522,7 +512,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 		for (const TextSegment &ts : segments) {
 			if (vstyle.styles[ll->styles[ts.start]].visible &&
 				ts.representation &&
-				(ll->chars[ts.start] == '\t')) {
+				ll->chars[ts.start] == '\t' && vstyle.tabDrawMode != TabDrawMode::ControlChar) {
 				// Simple visible tab, go to next tab stop
 				const XYPOSITION startTab = ll->positions[ts.start];
 				const XYPOSITION nextTab = NextTabstopPos(line, startTab, vstyle.tabWidth);
@@ -610,7 +600,7 @@ void EditView::UpdateBidiData(const EditModel &model, const ViewStyle &vstyle, L
 			const Representation *repr = model.reprs->RepresentationFromCharacter(std::string_view(&ll->chars[charsInLine], charWidth));
 
 			ll->bidiData->widthReprs[charsInLine] = 0.0f;
-			if (repr && ll->chars[charsInLine] != '\t') {
+			if (repr && (ll->chars[charsInLine] != '\t' || vstyle.tabDrawMode == TabDrawMode::ControlChar)) {
 				ll->bidiData->widthReprs[charsInLine] = ll->positions[charsInLine + charWidth] - ll->positions[charsInLine];
 			}
 			if (charWidth > 1) {
@@ -822,7 +812,7 @@ Sci::Position EditView::StartEndDisplayLine(Surface *surface, const EditModel &m
 		const Sci::Position posLineStart = model.pdoc->LineStart(line);
 		LayoutLine(model, surface, vs, ll.get(), model.wrapWidth);
 		const Sci::Position posInLine = pos - posLineStart;
-		if (posInLine <= ll->maxLineLength) {
+		if (posInLine <= ll->numCharsInLine) {
 			for (int subLine = 0; subLine < ll->lines; subLine++) {
 				if ((posInLine >= ll->LineStart(subLine)) &&
 				    (posInLine <= ll->LineStart(subLine + 1)) &&
@@ -1302,6 +1292,7 @@ void EditView::DrawEOLAnnotationText(Surface *surface, const EditModel &model, c
 		// it may be double drawing. This is to allow stadiums with
 		// curved or angled ends to have the area outside in the correct
 		// background colour.
+		surface->FillRectangleAligned(rcSegment, Fill(textBack));
 		FillLineRemainder(surface, model, vsDraw, ll, line, rcLine, rcSegment.right, subLine);
 	}
 
@@ -1362,7 +1353,7 @@ void EditView::DrawEOLAnnotationText(Surface *surface, const EditModel &model, c
 namespace {
 
 constexpr bool AnnotationBoxedOrIndented(AnnotationVisible annotationVisible) noexcept {
-	return annotationVisible == AnnotationVisible::Boxed || annotationVisible == AnnotationVisible::Indented;
+	return AnyOf(annotationVisible, AnnotationVisible::Boxed, AnnotationVisible::Indented);
 }
 
 }
@@ -1697,7 +1688,7 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 			ColourRGBA textBack = TextBackground(model, vsDraw, ll, background, inSelection,
 				inHotspot, ll->styles[i], i);
 			if (ts.representation) {
-				if (ll->chars[i] == '\t') {
+				if (ll->chars[i] == '\t' && vsDraw.tabDrawMode != TabDrawMode::ControlChar) {
 					// Tab display
 					if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation)) {
 						textBack = vsDraw.ElementColourForced(Element::WhiteSpaceBack).Opaque();
@@ -1706,21 +1697,27 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 					// Blob display
 					inIndentation = false;
 				}
-				surface->FillRectangleAligned(rcSegment, Fill(textBack));
-			} else {
+			}
+			surface->FillRectangleAligned(rcSegment, Fill(textBack));
+			if (!ts.representation) {
 				// Normal text display
-				surface->FillRectangleAligned(rcSegment, Fill(textBack));
 				if (vsDraw.viewWhitespace != WhiteSpace::Invisible) {
-					for (int cpos = 0; cpos <= i - ts.start; cpos++) {
-						if (ll->chars[cpos + ts.start] == ' ') {
+					for (int cpos = 0; cpos <= i - ts.start; ) {
+						int countSpaces = 0;
+						while ((countSpaces <= i - ts.start - cpos) && (ll->chars[cpos + ts.start + countSpaces] == ' ')) {
+							countSpaces++;
+						}
+						if (countSpaces) {
 							if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation)) {
 								const PRectangle rcSpace = Intersection(rcLine,
-									ll->SpanByte(cpos + ts.start).Offset(horizontalOffset));
+									ll->Span(cpos + ts.start, cpos + ts.start + countSpaces).Offset(horizontalOffset));
 								surface->FillRectangleAligned(rcSpace,
 									vsDraw.ElementColourForced(Element::WhiteSpaceBack).Opaque());
 							}
+							cpos += countSpaces;
 						} else {
 							inIndentation = false;
+							cpos++;
 						}
 					}
 				}
@@ -2202,7 +2199,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 			}
 			ColourRGBA textBack = TextBackground(model, vsDraw, ll, background, inSelection, inHotspot, styleMain, i);
 			if (ts.representation) {
-				if (ll->chars[i] == '\t') {
+				if (ll->chars[i] == '\t' && vsDraw.tabDrawMode != TabDrawMode::ControlChar) {
 					// Tab display
 					if (phasesDraw == PhasesDraw::One) {
 						if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation))
@@ -2334,7 +2331,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 
 void EditView::DrawIndentGuidesOverEmpty(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 	Sci::Line line, int xStart, PRectangle rcLine, int subLine, Sci::Line lineVisible) {
-	if ((vsDraw.viewIndentationGuides == IndentView::LookForward || vsDraw.viewIndentationGuides == IndentView::LookBoth)
+	if (AnyOf(vsDraw.viewIndentationGuides, IndentView::LookForward, IndentView::LookBoth)
 		&& (subLine == 0)) {
 		const Sci::Position posLineStart = model.pdoc->LineStart(line);
 		int indentSpace = model.pdoc->GetLineIndentation(line);
@@ -2556,14 +2553,14 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, const V
 		for (;;) {
 			int yposScreen = screenLinePaintFirst * vsDraw.lineHeight;
 			int ypos = bufferedDraw ? 0 : yposScreen;
-			Sci::Line visibleLine = model.TopLineOfMain() + screenLinePaintFirst;
-			while (visibleLine < model.pcs->LinesDisplayed() && yposScreen < rcArea.bottom) {
+			Sci::Line lineVisible = model.TopLineOfMain() + screenLinePaintFirst;
+			while (lineVisible < model.pcs->LinesDisplayed() && yposScreen < rcArea.bottom) {
 
-				const Sci::Line lineDoc = model.pcs->DocFromDisplay(visibleLine);
+				const Sci::Line lineDoc = model.pcs->DocFromDisplay(lineVisible);
 				// Only visible lines should be handled by the code within the loop
 				PLATFORM_ASSERT(model.pcs->GetVisible(lineDoc));
 				const Sci::Line lineStartSet = model.pcs->DisplayFromDoc(lineDoc);
-				const int subLine = static_cast<int>(visibleLine - lineStartSet);
+				const int subLine = static_cast<int>(lineVisible - lineStartSet);
 
 				// Copy this line and its styles from the document into local arrays
 				// and determine the x position at which each character starts.
@@ -2605,7 +2602,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, const V
 						surface->FillRectangleAligned(rcSpacer, Fill(vsDraw.styles[StyleDefault].back));
 					}
 
-					DrawLine(surface, model, vsDraw, ll.get(), lineDoc, visibleLine, xOrigin, rcLine, subLine, phase);
+					DrawLine(surface, model, vsDraw, ll.get(), lineDoc, lineVisible, xOrigin, rcLine, subLine, phase);
 #if defined(TIME_PAINTING)
 					durPaint += ep.Duration(true);
 #endif
@@ -2640,7 +2637,7 @@ void EditView::PaintText(Surface *surfaceWindow, const EditModel &model, const V
 				}
 
 				yposScreen += vsDraw.lineHeight;
-				visibleLine++;
+				lineVisible++;
 			}
 
 			if (phase >= DrawPhase::carets) {
@@ -2735,7 +2732,7 @@ Sci::Position EditView::FormatRange(bool draw, CharacterRangeFull chrg, Rectangl
 		} else if (colourMode == PrintOption::BlackOnWhite) {
 			it->fore = black;
 			it->back = white;
-		} else if (colourMode == PrintOption::ColourOnWhite || colourMode == PrintOption::ColourOnWhiteDefaultBG) {
+		} else if (AnyOf(colourMode, PrintOption::ColourOnWhite, PrintOption::ColourOnWhiteDefaultBG)) {
 			it->back = white;
 		}
 	}
@@ -2787,7 +2784,7 @@ Sci::Position EditView::FormatRange(bool draw, CharacterRangeFull chrg, Rectangl
 	Sci::Line lineDoc = linePrintStart;
 
 	Sci::Position nPrintPos = chrg.cpMin;
-	int visibleLine = 0;
+	int lineVisible = 0;
 	int widthPrint = rc.right - rc.left - vsPrint.fixedColumnWidth;
 	if (printParameters.wrapState == Wrap::None)
 		widthPrint = LineLayout::wrapWidthInfinite;
@@ -2816,23 +2813,23 @@ Sci::Position EditView::FormatRange(bool draw, CharacterRangeFull chrg, Rectangl
 		// When document line is wrapped over multiple display lines, find where
 		// to start printing from to ensure a particular position is on the first
 		// line of the page.
-		if (visibleLine == 0) {
+		if (lineVisible == 0) {
 			const Sci::Position startWithinLine = nPrintPos -
 				model.pdoc->LineStart(lineDoc);
 			for (int iwl = 0; iwl < ll.lines - 1; iwl++) {
 				if (ll.LineStart(iwl) <= startWithinLine && ll.LineStart(iwl + 1) >= startWithinLine) {
-					visibleLine = -iwl;
+					lineVisible = -iwl;
 				}
 			}
 
 			if (ll.lines > 1 && startWithinLine >= ll.LineStart(ll.lines - 1)) {
-				visibleLine = -(ll.lines - 1);
+				lineVisible = -(ll.lines - 1);
 			}
 		}
 
 		if (draw && lineNumberWidth &&
 			(ypos + vsPrint.lineHeight <= rc.bottom) &&
-			(visibleLine >= 0)) {
+			(lineVisible >= 0)) {
 			const std::string number = std::to_string(lineDoc + 1) + lineNumberPrintSpace;
 			PRectangle rcNumber = rcLine;
 			rcNumber.right = rcNumber.left + lineNumberWidth;
@@ -2851,15 +2848,15 @@ Sci::Position EditView::FormatRange(bool draw, CharacterRangeFull chrg, Rectangl
 
 		for (int iwl = 0; iwl < ll.lines; iwl++) {
 			if (ypos + vsPrint.lineHeight <= rc.bottom) {
-				if (visibleLine >= 0) {
+				if (lineVisible >= 0) {
 					if (draw) {
 						rcLine.top = static_cast<XYPOSITION>(ypos);
 						rcLine.bottom = static_cast<XYPOSITION>(ypos + vsPrint.lineHeight);
-						DrawLine(surface, model, vsPrint, &ll, lineDoc, visibleLine, xOrigin, rcLine, iwl, DrawPhase::all);
+						DrawLine(surface, model, vsPrint, &ll, lineDoc, lineVisible, xOrigin, rcLine, iwl, DrawPhase::all);
 					}
 					ypos += vsPrint.lineHeight;
 				}
-				visibleLine++;
+				lineVisible++;
 				if (iwl == ll.lines - 1)
 					nPrintPos = model.pdoc->LineStart(lineDoc + 1);
 				else
