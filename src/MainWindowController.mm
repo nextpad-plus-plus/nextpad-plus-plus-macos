@@ -1985,6 +1985,17 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
 - (void)menuNeedsUpdate:(NSMenu *)menu { [self.owner _populatePluginOverflowMenu:menu]; }
 @end
 
+// Named session compatibility with the independently submitted UDL/tab-colour PRs.
+@interface EditorView (NamedSessionUDL)
+- (BOOL)currentLanguageIsUDL;
+- (void)setLanguage:(NSString *)language preferUDL:(BOOL)preferUDL;
+@end
+@interface NppTabBar (NamedSessionColors)
+- (nullable NSColor *)tabCustomColorAtIndex:(NSInteger)index;
+- (void)setTabCustomColor:(NSColor *)color atIndex:(NSInteger)index;
+@end
+static constexpr int kNamedSessionBookmarkMarker=20;
+
 @implementation MainWindowController {
     TabManager       *_tabManager;
     FindReplacePanel *_findPanel;
@@ -4922,39 +4933,148 @@ static void removeMacroFromShortcutsXML(NSString *name) {
     [xmlData writeToFile:path options:NSDataWritingAtomic error:nil];
 }
 
+- (NSDictionary *)_namedSessionStateForEditor:(EditorView *)ed {
+    ScintillaView *sci = ed.scintillaView;
+    NSMutableDictionary *info = [@{@"filePath":ed.filePath ?: @"", @"language":ed.currentLanguage ?: @"",
+        @"languageIsUDL":@([ed respondsToSelector:@selector(currentLanguageIsUDL)] && ed.currentLanguageIsUDL), @"eolMode":@([sci message:SCI_GETEOLMODE]),
+        @"firstVisibleLine":@([sci message:SCI_GETFIRSTVISIBLELINE]), @"xOffset":@([sci message:SCI_GETXOFFSET]),
+        @"selMode":@([sci message:SCI_GETSELECTIONMODE]), @"mainSelection":@([sci message:SCI_GETMAINSELECTION])} mutableCopy];
+    NSMutableArray *selections = [NSMutableArray new], *marks = [NSMutableArray new], *folds = [NSMutableArray new];
+    for (sptr_t i=0; i<[sci message:SCI_GETSELECTIONS]; i++)
+        [selections addObject:@{@"anchor":@([sci message:SCI_GETSELECTIONNANCHOR wParam:i]),
+            @"caret":@([sci message:SCI_GETSELECTIONNCARET wParam:i]),
+            @"anchorVS":@([sci message:SCI_GETSELECTIONNANCHORVIRTUALSPACE wParam:i]),
+            @"caretVS":@([sci message:SCI_GETSELECTIONNCARETVIRTUALSPACE wParam:i])}];
+    for (sptr_t line=0; (line=[sci message:SCI_MARKERNEXT wParam:line lParam:1<<kNamedSessionBookmarkMarker])>=0; line++) [marks addObject:@(line)];
+    for (sptr_t line=0; (line=[sci message:SCI_CONTRACTEDFOLDNEXT wParam:line])>=0; line++) [folds addObject:@(line)];
+    info[@"rectAnchor"]=@([sci message:SCI_GETRECTANGULARSELECTIONANCHOR]);
+    info[@"rectCaret"]=@([sci message:SCI_GETRECTANGULARSELECTIONCARET]);
+    info[@"rectAnchorVS"]=@([sci message:SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE]);
+    info[@"rectCaretVS"]=@([sci message:SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE]);
+    info[@"documentID"]=[NSString stringWithFormat:@"%lld",(long long)[sci message:SCI_GETDOCPOINTER]];
+    info[@"displayName"]=ed.displayName ?: @"untitled";
+    info[@"encoding"]=[ed valueForKey:@"fileEncoding"];
+    info[@"hasBOM"]=@(ed.hasBOM);
+    info[@"modified"]=@(ed.isModified);
+    if(ed.isModified || !ed.filePath.length) info[@"content"]=[sci.string dataUsingEncoding:NSUTF8StringEncoding] ?: NSData.data;
+    info[@"selections"]=selections; info[@"bookmarks"]=marks; info[@"folds"]=folds;
+    return info;
+}
+
+- (void)_applyNamedSessionState:(NSDictionary *)info editor:(EditorView *)ed {
+    if ([info[@"language"] isKindOfClass:NSString.class]) {
+        if ([ed respondsToSelector:@selector(setLanguage:preferUDL:)])
+            [ed setLanguage:info[@"language"] preferUDL:[info[@"languageIsUDL"] boolValue]];
+        else [ed setLanguage:info[@"language"]];
+    }
+    if(info[@"encoding"] && ([[ed valueForKey:@"fileEncoding"] unsignedIntegerValue]!=[info[@"encoding"] unsignedIntegerValue] || ed.hasBOM!=[info[@"hasBOM"] boolValue]))
+        [ed setFileEncoding:[info[@"encoding"] unsignedIntegerValue] hasBOM:[info[@"hasBOM"] boolValue]];
+    ScintillaView *sci=ed.scintillaView;
+    if (info[@"eolMode"]) [sci message:SCI_SETEOLMODE wParam:MAX(0,MIN(2,[info[@"eolMode"] integerValue]))];
+    [sci message:SCI_MARKERDELETEALL wParam:kNamedSessionBookmarkMarker];
+    sptr_t lines=[sci message:SCI_GETLINECOUNT], length=[sci message:SCI_GETLENGTH];
+    for (NSNumber *line in info[@"bookmarks"]) if (line.longLongValue>=0 && line.longLongValue<lines)
+        [sci message:SCI_MARKERADD wParam:line.longLongValue lParam:kNamedSessionBookmarkMarker];
+    [sci message:SCI_COLOURISE wParam:0 lParam:-1];
+    [sci message:SCI_FOLDALL wParam:SC_FOLDACTION_EXPAND];
+    for (NSNumber *line in info[@"folds"]) if (line.longLongValue>=0 && line.longLongValue<lines)
+        [sci message:SCI_FOLDLINE wParam:line.longLongValue lParam:SC_FOLDACTION_CONTRACT];
+    NSArray *selections=info[@"selections"];
+    if ([selections isKindOfClass:NSArray.class] && selections.count) {
+        NSUInteger i=0;
+        [sci message:SCI_CLEARSELECTIONS];
+        for (NSDictionary *selection in selections) {
+            sptr_t anchor=MAX(0,MIN(length,[selection[@"anchor"] longLongValue]));
+            sptr_t caret=MAX(0,MIN(length,[selection[@"caret"] longLongValue]));
+            [sci message:i?SCI_ADDSELECTION:SCI_SETSELECTION wParam:caret lParam:anchor];
+            [sci message:SCI_SETSELECTIONNANCHORVIRTUALSPACE wParam:i lParam:[selection[@"anchorVS"] longLongValue]];
+            [sci message:SCI_SETSELECTIONNCARETVIRTUALSPACE wParam:i lParam:[selection[@"caretVS"] longLongValue]];
+            i++;
+        }
+        [sci message:SCI_SETMAINSELECTION wParam:MIN(i-1,[info[@"mainSelection"] unsignedIntegerValue])];
+        [sci message:SCI_SETSELECTIONMODE wParam:[info[@"selMode"] integerValue]];
+        if([info[@"selMode"] integerValue]==SC_SEL_RECTANGLE && info[@"rectAnchor"]) {
+            [sci message:SCI_SETRECTANGULARSELECTIONANCHOR wParam:MIN(length,[info[@"rectAnchor"] unsignedIntegerValue])];
+            [sci message:SCI_SETRECTANGULARSELECTIONCARET wParam:MIN(length,[info[@"rectCaret"] unsignedIntegerValue])];
+            [sci message:SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE wParam:[info[@"rectAnchorVS"] unsignedIntegerValue]];
+            [sci message:SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE wParam:[info[@"rectCaretVS"] unsignedIntegerValue]];
+        }
+    } else if (info[@"cursorLine"]) [ed goToLineNumber:[info[@"cursorLine"] integerValue]];
+    [sci message:SCI_SETFIRSTVISIBLELINE wParam:MAX(0,[info[@"firstVisibleLine"] longLongValue])];
+    [sci message:SCI_SETXOFFSET wParam:MAX(0,[info[@"xOffset"] longLongValue])];
+}
+
 - (void)loadSessionFromPath:(NSString *)path {
-    NSDictionary *session = [NSDictionary dictionaryWithContentsOfFile:path];
-    NSArray<NSDictionary *> *tabs = session[@"tabs"];
-    if (!tabs.count) {
-        NSAlert *a = [[NSAlert alloc] init];
-        a.messageText = [[NppLocalizer shared] translate:@"Empty Session"];
-        a.informativeText = [[NppLocalizer shared] translate:@"The selected session file contains no tabs."];
-        [a runModal];
-        return;
-    }
-    NSFileManager *fm = [NSFileManager defaultManager];
+    NSDictionary *session=[NSDictionary dictionaryWithContentsOfFile:path];
+    NSArray *tabs=session[@"tabs"];
+    if (![tabs isKindOfClass:NSArray.class]) return;
+    EditorView *selected=nil;
+    NSMutableDictionary<NSString *,EditorView *> *restored=[NSMutableDictionary new];
     for (NSDictionary *info in tabs) {
-        NSString *filePath = info[@"filePath"];
-        if (filePath && [fm fileExistsAtPath:filePath])
-            [self openFileAtPath:filePath];
+        if(![info isKindOfClass:NSDictionary.class]) continue;
+        NSString *file=[info[@"filePath"] isKindOfClass:NSString.class]?info[@"filePath"]:@"";
+        NSData *content=[info[@"content"] isKindOfClass:NSData.class]?info[@"content"]:nil;
+        BOOL onDisk=file.length && [[NSFileManager defaultManager] fileExistsAtPath:file];
+        if(!onDisk && !content) continue;
+        TabManager *mgr=[info[@"view"] isEqual:@"V"]?_subTabManagerV:[info[@"view"] isEqual:@"H"]?_subTabManagerH:_tabManager;
+        NSString *documentID=[info[@"documentID"] isKindOfClass:NSString.class]?info[@"documentID"]:nil;
+        EditorView *source=documentID?restored[documentID]:nil,*ed=nil;
+        if(source) {
+            if([mgr.allEditors containsObject:source]) ed=source;
+            else { ed=[mgr addNewTab]; [ed shareDocumentFrom:source]; }
+        } else {
+            for(EditorView *candidate in mgr.allEditors) if(file.length && [candidate.filePath isEqual:file]) { ed=candidate;break; }
+            // Never replace a different unsaved buffer with an older snapshot.
+            BOOL conflict=ed.isModified && content && ![[ed.scintillaView.string dataUsingEncoding:NSUTF8StringEncoding] isEqual:content];
+            if(conflict) ed=nil;
+            if(!ed) ed=onDisk && !conflict?[mgr openFileAtPath:file]:[mgr addNewTab];
+            if(!ed) continue;
+            if(!ed.filePath.length) ed.customTabName=info[@"displayName"] ?: file.lastPathComponent;
+            if(content && ![[ed.scintillaView.string dataUsingEncoding:NSUTF8StringEncoding] isEqual:content]) {
+                [ed.scintillaView message:SCI_CLEARALL];
+                [ed.scintillaView message:SCI_ADDTEXT wParam:content.length lParam:(sptr_t)content.bytes];
+                [ed markAsModified];
+            }
+            if(documentID) restored[documentID]=ed;
+        }
+        [self _applyNamedSessionState:info editor:ed];
+        NSInteger idx=[mgr.allEditors indexOfObject:ed];
+        if (info[@"tabColorId"]) [mgr.tabBar setTabColorAtIndex:idx colorId:[info[@"tabColorId"] integerValue]];
+        NSArray *rgb=info[@"tabCustomColor"];
+        if([rgb isKindOfClass:NSArray.class] && rgb.count==4 && [mgr.tabBar respondsToSelector:@selector(setTabCustomColor:atIndex:)])
+            [mgr.tabBar setTabCustomColor:[NSColor colorWithSRGBRed:[rgb[0] doubleValue] green:[rgb[1] doubleValue] blue:[rgb[2] doubleValue] alpha:[rgb[3] doubleValue]] atIndex:idx];
+        if (info[@"pinned"] && [mgr.tabBar isTabPinnedAtIndex:idx] != [info[@"pinned"] boolValue]) [mgr.tabBar pinTabAtIndex:idx toggle:YES];
+        if ([info[@"paneSelected"] boolValue] || [info[@"selected"] boolValue]) [mgr selectTabAtIndex:idx];
+        if ([info[@"selected"] boolValue]) selected=ed;
+        if (mgr==_subTabManagerV) [self _ensureVerticalViewVisible];
+        if (mgr==_subTabManagerH) [self _ensureHorizontalViewVisible];
+        [mgr refreshAllTabTitles];
     }
+    if (selected) [self.window makeFirstResponder:selected.scintillaView];
+    [self updateStatusBar];
 }
 
 - (void)saveSessionToPath:(NSString *)path {
-    NSMutableArray *tabs = [NSMutableArray array];
-    for (EditorView *ed in _tabManager.allEditors) {
-        if (!ed.filePath) continue;
-        NSMutableDictionary *info = [NSMutableDictionary dictionary];
-        info[@"filePath"] = ed.filePath;
-        if (ed.currentLanguage.length) info[@"language"] = ed.currentLanguage;
-        info[@"cursorLine"] = @(ed.cursorLine);
+    NSMutableArray *tabs=[NSMutableArray new];
+    for (TabManager *mgr in [self sessionTabManagers]) for (EditorView *ed in mgr.allEditors) {
+        NSMutableDictionary *info=[[self _namedSessionStateForEditor:ed] mutableCopy];
+        info[@"view"]=mgr==_subTabManagerV?@"V":mgr==_subTabManagerH?@"H":@"main";
+        info[@"selected"]=@(ed==[self currentEditor]);
+        info[@"paneSelected"]=@(ed==mgr.currentEditor);
+        NSUInteger idx=[mgr.allEditors indexOfObject:ed];
+        info[@"tabColorId"]=@([mgr.tabBar tabColorAtIndex:idx]);
+        if([mgr.tabBar respondsToSelector:@selector(tabCustomColorAtIndex:)]) {
+            NSColor *rgb=[[mgr.tabBar tabCustomColorAtIndex:idx] colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+            if(rgb) info[@"tabCustomColor"]=@[@(rgb.redComponent),@(rgb.greenComponent),@(rgb.blueComponent),@(rgb.alphaComponent)];
+        }
+        info[@"pinned"]=@([mgr.tabBar isTabPinnedAtIndex:idx]);
         [tabs addObject:info];
     }
-    NSDictionary *session = @{
-        @"tabs": tabs,
-        @"selectedIndex": @(_tabManager.tabBar.selectedIndex)
-    };
-    [session writeToFile:path atomically:YES];
+    NSError *error=nil;
+    NSData *data=[NSPropertyListSerialization dataWithPropertyList:@{@"version":@3,@"tabs":tabs} format:NSPropertyListXMLFormat_v1_0 options:0 error:&error];
+    if (!data || ![data writeToFile:path options:NSDataWritingAtomic error:&error]) {
+        NSAlert *alert=[NSAlert alertWithError:error]; [alert runModal];
+    }
 }
 
 - (void)loadSession:(id)sender {
