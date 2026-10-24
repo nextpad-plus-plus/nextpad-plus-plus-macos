@@ -25,6 +25,15 @@
 /// Create and show a new editor window. Returns the new controller.
 - (MainWindowController *)openNewWindow;
 
+/// As -openNewWindow, with the window placed at `frame` (screen coordinates)
+/// instead of offset from the primary window. Used by tab tear-off.
+- (nonnull MainWindowController *)openNewWindowWithFrame:(NSRect)frame;
+
+/// Called by a closing window while another stays open. If it was the primary
+/// window, the next open window becomes primary (and the plugin host), so
+/// plugins and file-open fallbacks never address a closed window.
+- (void)windowControllerWillClose:(nonnull MainWindowController *)mwc;
+
 /// Check GitHub for a newer release. If userInitiated is YES, shows alert even if up-to-date.
 - (void)checkForUpdateUserInitiated:(BOOL)userInitiated;
 

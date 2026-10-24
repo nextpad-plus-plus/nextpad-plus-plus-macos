@@ -14,6 +14,28 @@ NS_ASSUME_NONNULL_BEGIN
 /// a new untitled tab in the tab manager that owns `bar`. Optional — bars
 /// with no implementer simply don't react to the gesture.
 - (void)tabBarDidRequestNewTab:(NppTabBar *)bar;
+
+// ── Dragging a tab off the bar ──
+// A drag that leaves the bar (vertically past a small band, or out of its
+// window) detaches the tab. Released over another visible NppTabBar, the tab
+// is offered to that bar; released anywhere else, the delegate decides what
+// happens. A delegate that implements neither of the did… methods keeps every
+// drag inside the bar. `copy` is YES when Option is held at release (Ctrl on
+// Windows): the tab is cloned rather than moved.
+
+/// Whether releasing the tab at `screenPoint`, away from every tab bar, would
+/// do anything. Only used to dim the dragged tab. Defaults to YES.
+- (BOOL)tabBar:(NppTabBar *)bar canReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy;
+/// The tab was released away from every tab bar. `screenPoint` is the pointer
+/// position in screen coordinates. Returns NO when nothing happened; the tab
+/// is then selected, as after a plain click.
+- (BOOL)tabBar:(NppTabBar *)bar didReleaseTabAtIndex:(NSInteger)index
+     atScreenPoint:(NSPoint)screenPoint copy:(BOOL)copy;
+/// The tab was released over `target` (another bar, possibly in another
+/// window) at insertion slot `targetIndex` (0…target.tabCount).
+- (void)tabBar:(NppTabBar *)bar didDropTabAtIndex:(NSInteger)index
+      onTabBar:(NppTabBar *)target atIndex:(NSInteger)targetIndex copy:(BOOL)copy;
 @end
 
 /// Left-aligned tab bar styled after Nextpad++.
@@ -24,6 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSInteger tabCount;
 
 - (void)addTabWithTitle:(NSString *)title modified:(BOOL)modified;
+/// Insert a tab at `index` (clamped to 0…tabCount). The selection stays on
+/// the tab that was selected.
+- (void)insertTabWithTitle:(NSString *)title modified:(BOOL)modified atIndex:(NSInteger)index;
 - (void)removeTabAtIndex:(NSInteger)index;
 - (void)setTitle:(NSString *)title modified:(BOOL)modified atIndex:(NSInteger)index;
 - (void)selectTabAtIndex:(NSInteger)index;
