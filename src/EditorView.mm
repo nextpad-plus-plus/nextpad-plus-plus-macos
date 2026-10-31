@@ -304,6 +304,9 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     BOOL    _isRecordingMacro;
     NSMutableArray<NSDictionary *> *_macroActions;
     NSInteger _untitledIndex;   // unique number for untitled tabs (1-based)
+    BOOL      _selectionHighlightsDirty; // real text/configuration changes, not indicator updates
+    BOOL      _braceStylesDirty;
+    NSTimer  *_braceHighlightTimer;
     sptr_t    _lastBracePos;    // cached: last brace position highlighted (-1 = none)
     sptr_t    _lastMatchPos;    // cached: last matching brace position (-1 = none)
 
@@ -327,6 +330,10 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     // Git gutter state
     BOOL               _gitGutterEnabled;
 
+    // Defer link analysis until viewport changes settle, outside painting.
+    NSTimer *_clickableLinkTimer;
+    BOOL _clickableLinksNeedUpdate;
+
     // Hex view
 }
 
@@ -336,6 +343,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
         _fileEncoding = NSUTF8StringEncoding;
         _currentLanguage = @"";
         _untitledIndex = ++_untitledCounter;
+        _selectionHighlightsDirty = YES;
+        _braceStylesDirty = YES;
         _lastBracePos = INVALID_POSITION;
         _lastMatchPos = INVALID_POSITION;
         _spellTag = [NSSpellChecker uniqueSpellDocumentTag];
@@ -392,9 +401,15 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_fileMonitorTimer invalidate];
+    [_clickableLinkTimer invalidate];
+    [_braceHighlightTimer invalidate];
 }
 
 - (void)prepareForClose {
+    [_braceHighlightTimer invalidate];
+    _braceHighlightTimer = nil;
+    [_clickableLinkTimer invalidate];
+    _clickableLinkTimer = nil;
     [_fileMonitorTimer invalidate];
     _fileMonitorTimer = nil;
     [_spellTimer invalidate];
@@ -1204,6 +1219,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 #pragma mark - Language / Lexer
 
 - (void)setLanguage:(NSString *)languageName {
+    _selectionHighlightsDirty = YES;
+    _braceStylesDirty = YES;
     _currentLanguage = [languageName copy];
 
     // Reset all styles to STYLE_DEFAULT before switching language.
@@ -2709,12 +2726,15 @@ int NppScintillaDefaultKeyCombos(int sciID, int *combos, int maxCombos) {
         ScintillaView *s = _scintillaView;
         [s message:SCI_SETINDICATORCURRENT wParam:kClickableLinkIndicator];
         [s message:SCI_INDICATORCLEARRANGE wParam:0 lParam:[s message:SCI_GETLENGTH]];
+        [self _configureClickableLinkIndicator];
         [self updateClickableLinks];
     }
 
     // Issue #149 — apply line-spacing multiplier here too (idempotent with the
     // applyThemeColors call). Covers pref changes that don't change the theme.
     [self applyLineSpacingFromDefaults];
+    [self updateBraceHighlight];
+    [self updateSmartHighlight];
 }
 
 // Cached at first read so subsequent loads don't have to round-trip through
@@ -3836,7 +3856,23 @@ static const int kHistoryMask = (1 << SC_MARKNUM_HISTORY_MODIFIED);
 //   - Highlights the matched pair via STYLE_BRACELIGHT (red bold)
 // Fold block highlighting (red ⊞/⊟ symbols and connecting lines for the enclosing block)
 // is handled automatically by SCI_MARKERENABLEHIGHLIGHT — no manual marker work needed.
+// Lexer byte styles may change for every newly exposed viewport. Recheck once
+// scrolling/lexing settles instead of scanning for an unmatched brace in paint.
+- (void)_scheduleBraceHighlight {
+    [_braceHighlightTimer invalidate];
+    __weak EditorView *weakSelf = self;
+    _braceHighlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.08 repeats:NO
+        block:^(NSTimer *timer) {
+            EditorView *editor = weakSelf;
+            if (!editor) return;
+            editor->_braceHighlightTimer = nil;
+            [editor updateBraceHighlight];
+        }];
+}
+
 - (void)updateBraceHighlight {
+    [_braceHighlightTimer invalidate];
+    _braceHighlightTimer = nil;
     // Performance pref — skip brace match for large files unless explicitly allowed.
     if (_largeFileMode &&
         ![[NSUserDefaults standardUserDefaults] boolForKey:kPrefLargeFileAllowBraceMatch]) return;
@@ -3981,13 +4017,31 @@ static NSRegularExpression *nppClickableSchemeRegex(NSString *schemes) {
     [sci message:SCI_INDICSETOUTLINEALPHA wParam:kClickableLinkIndicator lParam:120];
 }
 
-// Re-mark clickable-link ranges within the currently visible viewport. Cheap:
-// only the on-screen byte range is scanned (mirrors Windows NPP addHotSpot).
+// SCN_UPDATEUI can arrive inside Scintilla's paint callback. Link detection
+// is comparatively expensive and must not invalidate styles or scan text there.
+// Restart a short timer so trackpad momentum refreshes links once it settles.
+- (void)_scheduleClickableLinks {
+    _clickableLinksNeedUpdate = NO;
+    [_clickableLinkTimer invalidate];
+    __weak EditorView *weakSelf = self;
+    _clickableLinkTimer = [NSTimer scheduledTimerWithTimeInterval:0.08 repeats:NO
+        block:^(NSTimer *timer) {
+            EditorView *editor = weakSelf;
+            if (!editor) return;
+            editor->_clickableLinkTimer = nil;
+            [editor updateClickableLinks];
+        }];
+}
+
+// Re-mark links only in the visible byte range, without changing their styles.
+// Indicator style setters invalidate layout and can reset a partial-line scroll
+// position during painting; configure appearance only when preferences change.
 - (void)updateClickableLinks {
+    [_clickableLinkTimer invalidate];
+    _clickableLinkTimer = nil;
+    _clickableLinksNeedUpdate = NO;
     ScintillaView *sci = _scintillaView;
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-
-    [self _configureClickableLinkIndicator];
 
     // Visible byte range — fold/wrap-aware via SCI_DOCLINEFROMVISIBLE.
     sptr_t firstVisible  = [sci message:SCI_GETFIRSTVISIBLELINE];
@@ -4800,7 +4854,11 @@ static NSSet<NSString *> *_cLikeLanguages() {
 
     switch (notification->nmhdr.code) {
         case SCN_MODIFIED:
+            if (notification->modificationType & SC_MOD_CHANGESTYLE)
+                _braceStylesDirty = YES;
             if (notification->modificationType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+                _clickableLinksNeedUpdate = YES;
+                _selectionHighlightsDirty = YES;
                 _isModified = YES;
                 // Sync clone sibling's modified state (shared document).
                 if (_cloneSibling) _cloneSibling->_isModified = YES;
@@ -4854,18 +4912,30 @@ static NSSet<NSString *> *_cLikeLanguages() {
                 [_macroActions addObject:action];
             }
             break;
-        case SCN_UPDATEUI:
-            [self updateBraceHighlight];
-            [self updateSmartHighlight];
-            // Re-mark links only when content or the viewport changed — a
-            // bare cursor move (selection-only) can't change link positions.
-            if (notification->updated & (SC_UPDATE_CONTENT | SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL))
-                [self updateClickableLinks];
+        case SCN_UPDATEUI: {
+            // Indicator/lexer updates also carry SC_UPDATE_CONTENT. Only real
+            // text edits or selection changes require a whole-document word scan.
+            BOOL selectionOrTextChanged = _selectionHighlightsDirty ||
+                (notification->updated & SC_UPDATE_SELECTION);
+            BOOL braceChanged = selectionOrTextChanged || _braceStylesDirty;
+            // Clear before applying indicators: they can produce new notifications.
+            _selectionHighlightsDirty = NO;
+            _braceStylesDirty = NO;
+            if (selectionOrTextChanged) [self updateBraceHighlight];
+            else if (braceChanged) [self _scheduleBraceHighlight];
+            if (selectionOrTextChanged) [self updateSmartHighlight];
+            // Do not scan links inside painting. Indicator-only notifications
+            // are not text edits and must not schedule another scan of their own.
+            if (_clickableLinksNeedUpdate ||
+                (notification->updated & (SC_UPDATE_V_SCROLL | SC_UPDATE_H_SCROLL)))
+                [self _scheduleClickableLinks];
             if (_spellCheckEnabled) [self _scheduleSpellCheck];
             [[NSNotificationCenter defaultCenter]
                 postNotificationName:EditorViewCursorDidMoveNotification
-                              object:self];
+                              object:self
+                            userInfo:@{@"viewportOnly": @(!selectionOrTextChanged)}];
             break;
+        }
         case SCN_FOCUSIN:
             [[NSNotificationCenter defaultCenter]
                 postNotificationName:EditorViewDidGainFocusNotification
