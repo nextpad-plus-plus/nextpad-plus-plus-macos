@@ -1,3 +1,10 @@
+/* Run from the repository root in a macOS GUI session (no visible window):
+   cmake -S . -B build
+   cmake --build build --target scintilla
+   clang++ -std=c++17 -fobjc-arc -O2 -I scintilla/cocoa -I scintilla/include tests/cocoa/MarginClippingProbe.mm build/libscintilla.a -framework Cocoa -framework QuartzCore -o build/MarginClippingProbe
+   build/MarginClippingProbe
+   Paths assume the Unix Makefiles or Ninja CMake layout.
+*/
 #import <Cocoa/Cocoa.h>
 #import "ScintillaView.h"
 #import "Scintilla.h"
