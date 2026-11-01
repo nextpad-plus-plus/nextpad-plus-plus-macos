@@ -125,6 +125,7 @@ set(APP_SRCS
     src/DocumentMapPanel.mm
     src/ProjectPanel.mm
     src/SearchEngine.mm
+    src/NppTextEncoding.mm
     src/NPPBatchRunner.mm
     src/NPPBatchDialog.mm
     src/SearchResultsPanel.mm
@@ -167,6 +168,7 @@ set(APP_HEADERS
     src/DocumentMapPanel.h
     src/ProjectPanel.h
     src/SearchEngine.h
+    src/NppTextEncoding.h
     src/SearchResultsPanel.h
     src/FindWindow.h
     src/StyleConfiguratorWindowController.h
