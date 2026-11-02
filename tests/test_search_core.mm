@@ -530,6 +530,17 @@ int main() {
                   st == NPPReplaceFileReplaced && count == 1
                   && [readFile(@"edge/empty.txt") isEqualToData:[@"filled" dataUsingEncoding:NSUTF8StringEncoding]],
                   [NSString stringWithFormat:@"status=%ld", (long)st]);
+
+            // A captured NUL in valid UTF-8 is written back whole.
+            writeData(@"edge/nul.txt", bytes("a\0b\n", 4));
+            o = options(@"(a\\x00b)", NPPSearchRegex);
+            o.replaceText = @"<\\1>";
+            st = [NPPSearchCore replaceAllInFile:pathFor(@"edge/nul.txt") options:o replacementCount:&count
+                                        encoding:&enc isOpenAndModified:nil error:nil];
+            check(@"replace in files: captured NUL written back",
+                  st == NPPReplaceFileReplaced && count == 1
+                  && [readFile(@"edge/nul.txt") isEqualToData:bytes("<a\0b>\n", 6)],
+                  [NSString stringWithFormat:@"status=%ld bytes=%@", (long)st, readFile(@"edge/nul.txt")]);
         }
 
         // ---- Results model --------------------------------------------------------

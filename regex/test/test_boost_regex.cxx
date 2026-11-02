@@ -163,8 +163,11 @@ int main() {
         Sci::Position len = 0;
         Sci::Position p = e.find("(\\w+) (\\w+)", 0, (Sci::Position)t.size(), 0, &len);
         bool found = (p == 0 && len == 10);
-        Sci::Position subLen = 0;
-        const char *sub = e.re->SubstituteByPosition(&e.doc, "\\2, \\1", &subLen);
+        // *length is the format's length on input (as Editor::ReplaceTarget
+        // passes it) and the result's length on output.
+        const std::string fmt = "\\2, \\1";
+        Sci::Position subLen = (Sci::Position)fmt.size();
+        const char *sub = e.re->SubstituteByPosition(&e.doc, fmt.c_str(), &subLen);
         std::string got = sub ? std::string(sub, subLen) : "<null>";
         check("substitute backrefs \\2, \\1", found && got == "Smith, John",
               "got='" + got + "'");

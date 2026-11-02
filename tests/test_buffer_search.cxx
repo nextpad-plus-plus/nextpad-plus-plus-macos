@@ -72,6 +72,7 @@ static std::string esc(const std::string &s) {
         if (c == '\n') out += "\\n";
         else if (c == '\r') out += "\\r";
         else if (c == '\t') out += "\\t";
+        else if (c == '\0') out += "\\0";
         else out += c;
     }
     return "'" + out + "'";
@@ -277,6 +278,17 @@ int main() {
             total += (int)NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
         }
         check("one BufferSearch over several buffers", total == 4, std::to_string(total));
+    }
+
+    // ---- Captured NULs survive the replacement format -------------------------
+    {
+        const std::string nul("a\0b", 3);
+        checkReplace("\\1 keeps a captured NUL", nul, "(a\\x00b)", kRegexCase, "\\1", nul);
+        checkReplace("$0 keeps a captured NUL", "x" + nul + "y", "a\\x00b", kRegexCase, "[$0]",
+                     "x[" + nul + "]y");
+        const std::string wide("\xC3\xA9\0\xF0\x9F\x98\x80", 7);   // "é", NUL, "😀"
+        checkReplace("captured NUL between multi-byte characters", wide, "(.)\\x00(.)", kRegexCase,
+                     "$2\\x00$1", std::string("\xF0\x9F\x98\x80\0\xC3\xA9", 7));
     }
 
     printf("\n%s (%d failure%s)\n", g_fail ? "FAILURES" : "ALL PASS", g_fail, g_fail == 1 ? "" : "s");
