@@ -447,6 +447,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _isModified = source->_isModified;
     _dirtyFromBackup = source->_dirtyFromBackup;
     _largeFileMode = source->_largeFileMode;
+    _loadedFileDate = source->_loadedFileDate;
+    _loadedFileSize = source->_loadedFileSize;
     if (source.currentLanguage.length)
         [self setLanguage:source.currentLanguage preferUDL:source.currentLanguageIsUDL];
 
@@ -715,6 +717,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     // Record mtime from the stat we already performed at the top of this method.
     _lastKnownModDate = attrs[NSFileModificationDate];
+    _loadedFileDate   = attrs[NSFileModificationDate];
+    _loadedFileSize   = [attrs[NSFileSize] unsignedLongLongValue];
 
     // Start (or restart) polling for external changes.
     // First tick deferred 3s so it coalesces with the TCC grant from the file read above.
@@ -853,8 +857,14 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     // Record the mtime we just wrote so the polling timer won't mistake our own
     // write for an external change (this is what the old _savingSuppressed flag tried
     // to do, but FSEvents notification timing made it unreliable).
-    _lastKnownModDate = [[NSFileManager defaultManager]
-                         attributesOfItemAtPath:path error:nil][NSFileModificationDate];
+    NSDictionary *savedAttrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+    _lastKnownModDate = savedAttrs[NSFileModificationDate];
+    _loadedFileDate   = savedAttrs[NSFileModificationDate];
+    _loadedFileSize   = [savedAttrs[NSFileSize] unsignedLongLongValue];
+    if (_cloneSibling) {
+        _cloneSibling->_loadedFileDate = _loadedFileDate;
+        _cloneSibling->_loadedFileSize = _loadedFileSize;
+    }
 
     // Re-detect the language when Save As / rename changes what the name
     // maps to (its extension, or a whole-name UDL ext= entry such as
@@ -1378,8 +1388,11 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 - (BOOL)reloadWithEncoding:(NSStringEncoding)enc hasBOM:(BOOL)bom error:(NSError **)error {
     if (!_filePath) return NO;
 
+    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:_filePath error:nil];
     NSData *rawData = [NSData dataWithContentsOfFile:_filePath options:0 error:error];
     if (!rawData) return NO;
+    _loadedFileDate = attrs[NSFileModificationDate];
+    _loadedFileSize = [attrs[NSFileSize] unsignedLongLongValue];
 
     NSData *textData = rawData;
     // Strip BOM bytes if present

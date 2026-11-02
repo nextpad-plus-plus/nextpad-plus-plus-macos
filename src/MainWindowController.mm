@@ -5186,6 +5186,7 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
     entry[@"filePath"]         = path;
     entry[@"view"]             = mgr == _subTabManagerV ? @"V" : mgr == _subTabManagerH ? @"H" : @"main";
     entry[@"language"]         = ed.currentLanguage ?: @"";
+    entry[@"languageIsUDL"]    = @(ed.currentLanguageIsUDL);
     entry[@"startPos"]         = @([sci message:SCI_GETANCHOR]);
     entry[@"endPos"]           = @([sci message:SCI_GETCURRENTPOS]);
     entry[@"selMode"]          = @([sci message:SCI_GETSELECTIONMODE]);
@@ -5193,14 +5194,15 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
     entry[@"xOffset"]          = @([sci message:SCI_GETXOFFSET]);
     // Only a buffer that matches the disk says how to read the file. With unsaved
     // changes being discarded, a Set/Convert encoding may describe bytes that were
-    // never written. The file's date and size let the restore tell whether those
-    // bytes are still the ones on disk.
-    NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
-    if (!ed.isModified && !ed.largeFileMode && attrs.fileModificationDate) {
+    // never written. A clean buffer can still hold an older version too, when a
+    // change on disk was ignored, so the date and size are the ones the last
+    // load or save saw, not a fresh stat: the restore reapplies the encoding
+    // only while those exact bytes are still on disk.
+    if (!ed.isModified && !ed.largeFileMode && ed.loadedFileDate) {
         entry[@"encoding"] = @(ed.fileEncoding);
         entry[@"hasBOM"]   = @(ed.hasBOM);
-        entry[@"fileDate"] = attrs.fileModificationDate;
-        entry[@"fileSize"] = @(attrs.fileSize);
+        entry[@"fileDate"] = ed.loadedFileDate;
+        entry[@"fileSize"] = @(ed.loadedFileSize);
     }
 
     [self _forgetClosedFile:path];
@@ -5218,44 +5220,51 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
 
 /// Record every tab of this window as it closes. A clone pair is recorded once,
 /// from the view met first (primary before secondary), and the active tab goes
-/// last so it is the first to come back.
+/// last so it is the first to come back. When the active tab is a clone, its
+/// pair is held back as a whole and recorded last through whichever member is
+/// met first, so a secondary active clone still comes back in the primary view.
 - (void)_recordClosedTabsOfWindow {
     EditorView *active = [self currentEditor];
-    TabManager *activeMgr = nil;
-    NSMapTable<EditorView *, TabManager *> *recorded = [NSMapTable strongToStrongObjectsMapTable];
+    EditorView *lastEd = nil;
+    TabManager *lastMgr = nil;
+    NSMutableSet<EditorView *> *recorded = [NSMutableSet set];
     for (TabManager *mgr in [self sessionTabManagers]) {
         for (EditorView *ed in mgr.allEditors) {
-            if (ed == active) { activeMgr = mgr; continue; }
-            if (ed.cloneSibling && ([recorded objectForKey:ed.cloneSibling] || ed.cloneSibling == active)) continue;
+            if (active && (ed == active || ed == active.cloneSibling)) {
+                if (!lastEd) { lastEd = ed; lastMgr = mgr; }
+                continue;
+            }
+            if (ed.cloneSibling && [recorded containsObject:ed.cloneSibling]) continue;
             [self _recordClosedEditor:ed inManager:mgr];
-            [recorded setObject:mgr forKey:ed];
+            [recorded addObject:ed];
         }
     }
-    if (!activeMgr) return;
-    TabManager *siblingMgr = active.cloneSibling ? [recorded objectForKey:active.cloneSibling] : nil;
-    if (siblingMgr) [self _recordClosedEditor:active.cloneSibling inManager:siblingMgr];
-    else            [self _recordClosedEditor:active inManager:activeMgr];
+    if (lastEd) [self _recordClosedEditor:lastEd inManager:lastMgr];
 }
 
-/// Paths of every file open in a live window.
-- (NSSet<NSString *> *)_openFilePaths {
-    NSMutableSet<NSString *> *paths = [NSMutableSet set];
-    for (MainWindowController *mwc in [self _sessionContributingControllers])
-        for (TabManager *mgr in [mwc sessionTabManagers])
-            for (EditorView *ed in mgr.allEditors)
-                if (ed.filePath) [paths addObject:ed.filePath];
-    return paths;
+/// Bring forward a tab already showing `path` in a live window, preferring this
+/// window and, within a window, its active tab. Returns NO when none is open.
+/// (#410: a closed file that is open again elsewhere, e.g. the other copy of a
+/// file open in two windows, is focused rather than opened a second time.)
+- (BOOL)_focusOpenFileAtPath:(NSString *)path {
+    for (MainWindowController *mwc in [self _sessionContributingControllers]) {
+        EditorView *match = [[mwc currentEditor].filePath isEqualToString:path] ? [mwc currentEditor] : nil;
+        for (TabManager *mgr in [mwc sessionTabManagers]) {
+            for (EditorView *ed in mgr.allEditors) {
+                if (match ? ed != match : ![ed.filePath isEqualToString:path]) continue;
+                [mwc bringWindowForward];
+                [mgr selectTabAtIndex:(NSInteger)[mgr.allEditors indexOfObject:ed]];
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 /// Menu validation runs often, so no disk access here: an entry whose file has
-/// gone is skipped when the command runs.
+/// gone is skipped when the command runs, and one that is open again is focused.
 - (BOOL)_hasRestorableClosedFile {
-    NSArray<NSDictionary *> *stack = closedFileStack();
-    if (stack.count == 0) return NO;
-    NSSet<NSString *> *open = [self _openFilePaths];
-    for (NSDictionary *e in stack)
-        if (![open containsObject:e[@"filePath"]]) return YES;
-    return NO;
+    return closedFileStack().count > 0;
 }
 
 - (void)_applyClosedFileState:(NSDictionary *)entry toEditor:(EditorView *)ed {
@@ -5272,8 +5281,15 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
         (enc.unsignedIntegerValue != ed.fileEncoding || bom != ed.hasBOM))
         [ed reloadWithEncoding:enc.unsignedIntegerValue hasBOM:bom error:nil];
 
+    // The UDL flag tells a UDL from a built-in of the same name, as in the
+    // session restore. A file that grew past the large-file threshold while
+    // closed was loaded as plain text on purpose: its old language would install
+    // a lexer and colourise the whole document.
     NSString *lang = entry[@"language"];
-    if (lang && ![lang isEqualToString:ed.currentLanguage ?: @""]) [ed setLanguage:lang];
+    BOOL langIsUDL = [entry[@"languageIsUDL"] boolValue];
+    if (lang && !ed.largeFileMode &&
+        (![lang isEqualToString:ed.currentLanguage ?: @""] || langIsUDL != ed.currentLanguageIsUDL))
+        [ed setLanguage:lang preferUDL:langIsUDL];
 
     // Same order as the session restore: selection, then scroll, so the saved
     // first visible line wins over the scroll ENSUREVISIBLE causes. Clamped in
@@ -5282,10 +5298,19 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
     sptr_t docLen = [sci message:SCI_GETLENGTH];
     sptr_t anchor = MAX((sptr_t)0, MIN((sptr_t)[entry[@"startPos"] longLongValue], docLen));
     sptr_t caret  = MAX((sptr_t)0, MIN((sptr_t)[entry[@"endPos"] longLongValue],   docLen));
-    NSInteger selMode = [entry[@"selMode"] integerValue];
-    if (selMode > 0)
-        [sci message:SCI_SETSELECTIONMODE wParam:(uptr_t)selMode];
     [sci message:SCI_SETSEL wParam:(uptr_t)anchor lParam:caret];
+    // SCI_SETSEL always leaves a stream selection, so the mode goes on after
+    // it. SCI_CHANGESELECTIONMODE, unlike SCI_SETSELECTIONMODE, does not turn
+    // on extend-on-move (Windows clears that with SCI_CANCEL). Lines mode
+    // re-applies the range itself; a rectangular or thin selection takes the
+    // range as its corners and is laid out across its lines once a corner is
+    // set again.
+    NSInteger selMode = [entry[@"selMode"] integerValue];
+    if (selMode > 0) {
+        [sci message:SCI_CHANGESELECTIONMODE wParam:(uptr_t)selMode];
+        if (selMode == SC_SEL_RECTANGLE || selMode == SC_SEL_THIN)
+            [sci message:SCI_SETANCHOR wParam:(uptr_t)anchor];
+    }
     sptr_t caretLine = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)caret];
     [sci message:SCI_ENSUREVISIBLEENFORCEPOLICY wParam:(uptr_t)caretLine];
     [sci message:SCI_SETXOFFSET wParam:(uptr_t)[entry[@"xOffset"] longLongValue]];
@@ -5293,17 +5318,16 @@ static NSMutableArray<NSDictionary *> *closedFileStack(void) {
 }
 
 /// File > Restore Recent Closed File: reopen the most recently closed file tab
-/// with its view state. Entries whose file is gone or already open are dropped
-/// on the way.
+/// with its view state. A file that is open again is focused instead, and
+/// entries whose file is gone are dropped on the way.
 - (void)restoreRecentClosedFile:(id)sender {
     NSMutableArray<NSDictionary *> *stack = closedFileStack();
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSSet<NSString *> *open = [self _openFilePaths];
     while (stack.count) {
         NSDictionary *entry = stack.lastObject;
         [stack removeLastObject];
         NSString *path = entry[@"filePath"];
-        if ([open containsObject:path]) continue;
+        if ([self _focusOpenFileAtPath:path]) return;
         BOOL isDir = NO;
         if (![fm fileExistsAtPath:path isDirectory:&isDir] || isDir) continue;
 
