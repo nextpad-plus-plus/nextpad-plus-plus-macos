@@ -5104,6 +5104,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
             for (NSInteger i = 0; i < (NSInteger)eds.count; i++) {
                 NSString *have = eds[i].filePath;
                 if (!have || ![have.stringByStandardizingPath isEqualToString:want]) continue;
+                [mwc _revealPane:mgr];   // it may sit in a collapsed split pane
                 [mgr selectTabAtIndex:i];
                 if (mwc != self) [mwc bringWindowForward];
                 return eds[i];
@@ -6410,6 +6411,13 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     }
 }
 
+/// Open `pane` if it is one of this window's split panes and is collapsed,
+/// so a tab selected there can be seen.
+- (void)_revealPane:(TabManager *)pane {
+    if (pane == _subTabManagerV)      [self _ensureVerticalViewVisible];
+    else if (pane == _subTabManagerH) [self _ensureHorizontalViewVisible];
+}
+
 // Move the same EditorView object (no content copy, no save prompt).
 // If the editor is already in the secondary pane, move it back to primary.
 - (void)_moveEditor:(EditorView *)ed toVertical:(BOOL)vertical {
@@ -6449,6 +6457,19 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 /// The Scintilla document `ed` shows (shared by an editor and its clone).
 static sptr_t NppDocumentOf(EditorView *ed) {
     return ed ? [ed.scintillaView message:SCI_GETDOCPOINTER] : 0;
+}
+
+/// `ed` is closing for good. As -[TabManager removeEditor:] does, give its
+/// backup to a clone sibling that stays open and has none of its own yet;
+/// otherwise delete it.
+static void NppReleaseBackupOfClosingEditor(EditorView *ed) {
+    EditorView *sibling = ed.cloneSibling;
+    if (sibling && ed.backupFilePath.length && !sibling.backupFilePath.length) {
+        sibling.backupFilePath = ed.backupFilePath;
+        ed.backupFilePath = nil;
+    } else {
+        [ed discardBackup];
+    }
 }
 
 // Clone: share the same Scintilla document in the other view.
@@ -6709,6 +6730,7 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
     NSArray<EditorView *> *existing = dst.allEditors;
     for (NSUInteger i = 0; i < existing.count; i++) {
         if (NppDocumentOf(existing[i]) == doc) {
+            [dstMWC _revealPane:dst];   // e.g. a clone in a collapsed split pane
             [dst selectTabAtIndex:(NSInteger)i];
             if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
             return;
@@ -6729,8 +6751,7 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
     [dst selectTabAtIndex:want];
     [dst refreshCurrentTabTitle];
 
-    if (dst == dstMWC->_subTabManagerV)      [dstMWC _ensureVerticalViewVisible];
-    else if (dst == dstMWC->_subTabManagerH) [dstMWC _ensureHorizontalViewVisible];
+    [dstMWC _revealPane:dst];
     if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
     [dstMWC updateTitle];
     [dstMWC updateStatusBar];
@@ -6817,6 +6838,17 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
             if (NppDocumentOf(there[i]) != doc) continue;
             [dst selectTabAtIndex:(NSInteger)i];
             if (dstMWC != self) [dstMWC.window makeKeyAndOrderFront:nil];
+            EditorView *shown = src.currentEditor;
+            if (shown && shown != ed) {
+                // A background tab: drop it the way a move does, which keeps
+                // the source pane on the tab it shows (-removeEditor: would
+                // select the neighbour), then release it as a close would.
+                [src evictEditor:ed];
+                NppReleaseBackupOfClosingEditor(ed);
+                [ed prepareForClose];
+                [self _settleAfterEditorLeft:src];
+                return;
+            }
             _closingIntoClone = YES;
             [src removeEditor:ed];
             _closingIntoClone = NO;
@@ -6845,8 +6877,7 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
     }
 
     // A split pane receiving the tab must be open to show it.
-    if (dst == dstMWC->_subTabManagerV)      [dstMWC _ensureVerticalViewVisible];
-    else if (dst == dstMWC->_subTabManagerH) [dstMWC _ensureHorizontalViewVisible];
+    [dstMWC _revealPane:dst];
 
     if (dstMWC != self) {
         [dstMWC updateTitle];
@@ -8175,8 +8206,8 @@ typedef NS_ENUM(NSInteger, NppTabDrop) {
 }
 
 - (void)gitPanel:(GitPanel *)panel diffFileAtPath:(NSString *)path {
-    [self openFileAtPath:path];
-    [[self currentEditor] applyGitDiffHighlights];
+    // The file may be open in another window: highlight the editor shown.
+    [[self openFileAtPath:path] applyGitDiffHighlights];
 }
 
 - (void)gitPanelDidRequestClose:(GitPanel *)panel {
@@ -11723,6 +11754,20 @@ static int64_t _sysctlInt(const char *name) {
             if (mwc != self && !mwc.windowHasClosed) { survivor = mwc; break; }
     }
     if (survivor) {
+        // This window's documents are closed for good (-windowShouldClose:
+        // already settled their unsaved changes). Release them as closing a
+        // tab does: their file-monitor timers would otherwise keep them alive,
+        // and a clone whose sibling lives on in another window must unlink, or
+        // that tab would later close without a save prompt. The sibling takes
+        // over the backup if it has none yet.
+        if (![(AppDelegate *)appDel isTerminating]) {
+            for (TabManager *mgr in [self sessionTabManagers]) {
+                for (EditorView *ed in mgr.allEditors) {
+                    if (ed.cloneSibling) NppReleaseBackupOfClosingEditor(ed);
+                    [ed prepareForClose];
+                }
+            }
+        }
         FindWindow *fw = [FindWindow sharedWindow];
         if (fw.delegate == (id)self) fw.delegate = survivor;
         [(AppDelegate *)appDel windowControllerWillClose:self];
