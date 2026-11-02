@@ -1,6 +1,7 @@
 #import "SearchEngine.h"
 #import "Scintilla.h"
 #import "NppScintillaIDs.h"
+#include "BoostRegexSearch.h"   // SCFIND_REGEXP_EMPTYMATCH_*
 #include <string>
 #include <vector>
 #include "../regex/NppSearchLoops.h"
@@ -18,7 +19,19 @@ public:
 
     NppSearch::Pos Find(NppSearch::Pos start, NppSearch::Pos end, NppSearch::Pos *matchEnd) override {
         [_sci message:SCI_SETTARGETRANGE wParam:(uptr_t)start lParam:end];
-        const sptr_t found = [_sci message:SCI_SEARCHINTARGET wParam:_needleLength lParam:(sptr_t)_needle];
+        sptr_t found;
+        if (_beginScan) {
+            // First Find of a loop: allow an empty match at the range start
+            // even if a Find Next or an earlier loop ended there.
+            _beginScan = false;
+            const sptr_t flags = [_sci message:SCI_GETSEARCHFLAGS];
+            [_sci message:SCI_SETSEARCHFLAGS
+                   wParam:(uptr_t)(flags | (sptr_t)(unsigned)SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART)];
+            found = [_sci message:SCI_SEARCHINTARGET wParam:_needleLength lParam:(sptr_t)_needle];
+            [_sci message:SCI_SETSEARCHFLAGS wParam:(uptr_t)flags];
+        } else {
+            found = [_sci message:SCI_SEARCHINTARGET wParam:_needleLength lParam:(sptr_t)_needle];
+        }
         if (found < 0) {
             // The Boost backend returns -2 for a regex_error (bad pattern, or
             // its complexity limit while matching) and -3 for other failures.
@@ -28,6 +41,8 @@ public:
         *matchEnd = [_sci message:SCI_GETTARGETEND];
         return found;
     }
+
+    void BeginScan() override { _beginScan = true; }
 
     NppSearch::Pos Replace(NppSearch::Pos start, NppSearch::Pos end) override {
         [_sci message:SCI_SETTARGETRANGE wParam:(uptr_t)start lParam:end];
@@ -44,6 +59,7 @@ private:
     size_t _needleLength;
     const char *_replacement;
     bool _regexReplace;
+    bool _beginScan = false;
 };
 
 } // namespace

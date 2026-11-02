@@ -70,6 +70,7 @@ public:
 
     // Target
     Pos Find(Pos start, Pos end, Pos *matchEnd) override;
+    void BeginScan() override { beginScan = true; }
     Pos Replace(Pos start, Pos end) override;
 
 private:
@@ -79,6 +80,7 @@ private:
     std::string replacement;
     int searchFlags = 0;
     bool regexReplace = false;
+    bool beginScan = false;
     Status status = Status::Ok;
     std::string errorMessage;
 };

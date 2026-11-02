@@ -531,6 +531,18 @@ int main() {
                   && [readFile(@"edge/empty.txt") isEqualToData:[@"filled" dataUsingEncoding:NSUTF8StringEncoding]],
                   [NSString stringWithFormat:@"status=%ld", (long)st]);
 
+            // Consecutive empty files share one Document in Find in Files:
+            // each must still get its ^$ hit.
+            writeData(@"edge/empty2.txt", [NSData data]);
+            writeData(@"edge/empty3.txt", [NSData data]);
+            [fm removeItemAtPath:pathFor(@"edge/empty.txt") error:nil];
+            writeData(@"edge/empty.txt", [NSData data]);
+            found = [NPPSearchCore findInDirectory:pathFor(@"edge") options:options(@"^$", NPPSearchRegex)
+                                     progressBlock:nil cancelToken:nil totalFilesScanned:&scanned regexError:NULL];
+            check(@"consecutive empty files: ^$ hits each", found.count == 3 && scanned == 3,
+                  [NSString stringWithFormat:@"files with hits=%lu scanned=%ld",
+                                             (unsigned long)found.count, (long)scanned]);
+
             // A captured NUL in valid UTF-8 is written back whole.
             writeData(@"edge/nul.txt", bytes("a\0b\n", 4));
             o = options(@"(a\\x00b)", NPPSearchRegex);

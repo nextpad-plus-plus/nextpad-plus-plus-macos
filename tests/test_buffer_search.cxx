@@ -291,6 +291,52 @@ int main() {
                      "$2\\x00$1", std::string("\xF0\x9F\x98\x80\0\xC3\xA9", 7));
     }
 
+    // ---- Each scan starts fresh: no continuation state from an earlier one -------
+    {
+        // Count ^$ twice on one empty Document.
+        BufferSearch s;
+        s.SetSearch("^$", kRegexCase, "", true);
+        s.SetText("", 0);
+        const Pos first = NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
+        const Pos second = NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
+        check("^$ counted twice on an empty buffer", first == 1 && second == 1,
+              std::to_string(first) + "," + std::to_string(second));
+
+        // Consecutive empty files through one BufferSearch, as Find in Files
+        // does (SetText of each file, then SetText("") to free it).
+        int hits = 0;
+        for (const std::string t : {"", "", "x", "", ""}) {
+            s.SetText(t.data(), t.size());
+            hits += (int)NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
+            s.SetText("", 0);
+        }
+        check("^$ in consecutive empty buffers", hits == 4, std::to_string(hits));
+
+        // A non-empty match deleted by the next SetText leaves the backend's
+        // continuation point at 0, where the next empty buffer's match is.
+        s.SetSearch("x|^$", kRegexCase, "", true);
+        hits = 0;
+        for (const std::string t : {"x", ""}) {
+            s.SetText(t.data(), t.size());
+            hits += (int)NppSearch::ForEachMatch(s, 0, s.Length(), [](Pos, Pos) { return true; });
+            s.SetText("", 0);
+        }
+        check("x|^$ over 'x' then an empty buffer", hits == 2, std::to_string(hits));
+
+        // Replace All for ^ right after a Find Next found the empty match at 0
+        // (Find Next uses EMPTYMATCH_ALL, Replace All NOTAFTERMATCH).
+        BufferSearch r;
+        r.SetText("abc", 3);
+        r.SetSearch("^", SCFIND_REGEXP | SCFIND_MATCHCASE | SCFIND_REGEXP_EMPTYMATCH_ALL
+                         | SCFIND_REGEXP_SKIPCRLFASONE, "> ", true);
+        Pos end = -1;
+        const Pos at = r.Find(0, r.Length(), &end);
+        r.SetSearch("^", kRegexCase, "> ", true);
+        const Pos n = NppSearch::ReplaceAll(r, 0, r.Length());
+        check("Replace All ^ after Find Next on 'abc'", at == 0 && end == 0 && n == 1 && r.Text() == "> abc",
+              "n=" + std::to_string(n) + " got " + esc(r.Text()));
+    }
+
     printf("\n%s (%d failure%s)\n", g_fail ? "FAILURES" : "ALL PASS", g_fail, g_fail == 1 ? "" : "s");
     return g_fail ? 1 : 0;
 }

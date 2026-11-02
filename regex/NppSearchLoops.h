@@ -26,6 +26,10 @@ public:
     /// *matchEnd, or returns a negative value when nothing matched (or the
     /// pattern is invalid).
     virtual Pos Find(Pos start, Pos end, Pos *matchEnd) = 0;
+    /// The next Find starts a new scan: it may return an empty match at its
+    /// start position even if an earlier search on the same document ended
+    /// there (SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART for that one Find).
+    virtual void BeginScan() = 0;
     /// Replace [start, end), the match Find just returned, with the replacement
     /// text (expanded against that match in regex mode). Returns the number of
     /// bytes inserted.
@@ -42,6 +46,13 @@ public:
 // one ";" on every line, the last empty one included, and `x*` finds the three
 // empty matches in "ab". If a backend ever returned the same empty match
 // twice, the loops stop instead of spinning.
+//
+// The backend keeps the last match per Document across calls, so the first
+// Find of a loop would otherwise be taken as continuing whatever searched
+// that Document before: an earlier Count, a Find Next, or the previous file
+// in a Find in Files run that reuses one Document. Each loop therefore calls
+// BeginScan() first, which allows an empty match at the start of its range;
+// later iterations keep NOTAFTERMATCH.
 
 /// Visit every match in [start, end) from left to right, the way Find All,
 /// Count and Mark All walk a document. onMatch(matchStart, matchEnd) returns
@@ -51,6 +62,7 @@ inline Pos ForEachMatch(Target &target, Pos start, Pos end, OnMatch &&onMatch) {
     Pos count = 0;
     Pos pos = start;
     Pos lastEmpty = -1;
+    target.BeginScan();
     for (;;) {
         Pos matchEnd = 0;
         const Pos found = target.Find(pos, end, &matchEnd);
@@ -77,6 +89,7 @@ inline Pos ReplaceAll(Target &target, Pos start, Pos end,
     Pos count = 0;
     Pos pos = start;
     Pos lastEmpty = -1;
+    target.BeginScan();
     for (;;) {
         if (shouldStop && (count & 0xFF) == 0xFF && shouldStop()) break;
         Pos matchEnd = 0;

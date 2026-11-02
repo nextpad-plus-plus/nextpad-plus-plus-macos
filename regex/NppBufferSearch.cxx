@@ -119,8 +119,13 @@ Pos BufferSearch::Find(Pos start, Pos end, Pos *matchEnd) {
     // As Editor::SearchInTarget: *length is the needle length on input and the
     // match length on output.
     Sci::Position length = static_cast<Sci::Position>(needle.size());
+    int flags = searchFlags;
+    if (beginScan) {
+        flags |= SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART;
+        beginScan = false;
+    }
     const Sci::Position found = impl->doc.FindText(start, end, needle.c_str(),
-                                                   static_cast<FindOption>(searchFlags), &length);
+                                                   static_cast<FindOption>(flags), &length);
     if (found >= 0) {
         *matchEnd = found + length;
         return found;
