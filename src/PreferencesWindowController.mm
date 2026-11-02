@@ -6,10 +6,6 @@
 #import "StyleConfiguratorWindowController.h"
 #import "TahoeToolbarConfig.h"
 
-// Defined in regex/RegexBackendSelect.cxx — selects the Boost.Regex backend over
-// the default per-line std::regex one. Mirrored from kPrefUseBoostRegex.
-extern "C" bool gNppUseBoostRegex;
-
 // ── NSUserDefaults keys (mirrors NPP settings) ────────────────────────────────
 NSString *const kPrefTabWidth           = @"tabWidth";
 NSString *const kPrefUseTabs            = @"useTabs";
@@ -41,6 +37,7 @@ NSString *const kPrefTabCloseButton      = @"tabCloseButton";
 NSString *const kPrefDoubleClickTabClose = @"doubleClickTabClose";
 NSString *const kPrefTabBarWrap          = @"tabBarWrap";
 NSString *const kPrefHideTabBar          = @"hideTabBar";
+NSString *const kPrefExitOnCloseLastTab  = @"exitOnCloseLastTab";
 NSString *const kPrefVirtualSpace        = @"virtualSpace";
 NSString *const kPrefColumnSel2MultiEdit = @"columnSel2MultiEdit";
 NSString *const kPrefScrollBeyondLastLine= @"scrollBeyondLastLine";
@@ -88,7 +85,6 @@ NSString *const kPrefDisableTextDragDrop = @"disableTextDragDrop";
 NSString *const kPrefMonoFontFind        = @"monoFontFind";
 NSString *const kPrefConfirmReplaceAll   = @"confirmReplaceAll";
 NSString *const kPrefReplaceAndStop      = @"replaceAndStop";
-NSString *const kPrefUseBoostRegex       = @"useBoostRegex";
 NSString *const kPrefSmartHiliteCase     = @"smartHiliteCase";
 NSString *const kPrefSmartHiliteWord     = @"smartHiliteWord";
 NSString *const kPrefDateTimeReverse     = @"dateTimeReverse";
@@ -203,7 +199,7 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefStyleNumber:        @"#098658",
         kPrefStylePreproc:       @"#800080",
         kPrefStyleFontName:      @"Menlo",
-        kPrefStyleFontSize:      @11,
+        kPrefStyleFontSize:      @12,
         kPrefAutoCompleteEnable:   @YES,
         kPrefAutoCompleteMinChars: @1,
         kPrefAutoCloseBrackets:    @YES,
@@ -217,12 +213,13 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefDoubleClickTabClose:  @NO,
         kPrefTabBarWrap:           @NO,
         kPrefHideTabBar:           @NO,
+        kPrefExitOnCloseLastTab:   @NO,
         kPrefVirtualSpace:         @NO,
         kPrefColumnSel2MultiEdit:  @YES,
         kPrefScrollBeyondLastLine: @NO,
         kPrefScrollSpeedGain:      @1.0,
         kPrefCaretBlinkRate:       @500,
-        kPrefFontQuality:          @3,   // 0=default 1=none 2=antialiased 3=LCD
+        kPrefFontQuality:          @3,   // SC_EFF_QUALITY_*: 0=default 1=none 2=antialiased 3=LCD; on Cocoa 3 = system font smoothing (AppKit's look)
         kPrefLineHeightMultiplier: @1.0, // 1.0 = no extra spacing (current behavior)
         kPrefGlobalOverrideEnableFg:        @NO,
         kPrefGlobalOverrideEnableBg:        @NO,
@@ -233,7 +230,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefGlobalOverrideEnableUnderline: @NO,
         kPrefCopyLineNoSelection:  @YES,
         kPrefSmartHighlight:       @YES,
-        kPrefUseBoostRegex:        @NO,   // off = current per-line std::regex backend
         kPrefFillFindWithSelection:@YES,
         kPrefFuncParamsHint:       @NO,
         kPrefFindTransparencyEnabled: @YES,  // matches Windows default
@@ -298,9 +294,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         [ud setBool:YES forKey:kPrefUseTabs];
         [ud setBool:YES forKey:@"_useTabsDefaultApplied"];
     }
-    // Sync the regex-backend selector flag from the saved/default preference at
-    // startup (registerDefaults above makes boolForKey valid immediately).
-    gNppUseBoostRegex = [ud boolForKey:kPrefUseBoostRegex];
 }
 
 + (instancetype)sharedController {
@@ -1270,9 +1263,26 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     NSTextField *fqLabel = [NSTextField labelWithString:[loc translate:@"Font rendering:"]];
     fqLabel.frame = NSMakeRect(20, y, 120, 20);
     [v addSubview:fqLabel];
-    NSPopUpButton *fqPopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(150, y-2, 180, 26) pullsDown:NO];
-    [fqPopup addItemsWithTitles:@[[loc translate:@"Default"], [loc translate:@"None"], [loc translate:@"Antialiased"], [loc translate:@"LCD Optimized"]]];
-    [fqPopup selectItemAtIndex:[ud integerForKey:kPrefFontQuality]];
+    // Item tags are the stored SC_EFF_QUALITY_* values (config.xml smoothFont
+    // keeps the Windows numbering). Labels describe what Scintilla's Cocoa
+    // backend does with each value: macOS has no subpixel (LCD) rendering, so
+    // value 3 only enables system font smoothing, which is how AppKit draws
+    // text by default. 0 and 2 draw thinner, unsmoothed glyphs (2 also snaps glyphs to whole pixels).
+    NSPopUpButton *fqPopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(150, y-2, 240, 26) pullsDown:NO];
+    NSArray *fqItems = @[@[@"Smoothed (macOS standard)", @3],
+                         @[@"Unsmoothed", @0],
+                         @[@"Unsmoothed, whole-pixel spacing", @2],
+                         @[@"None", @1]];
+    for (NSArray *fq in fqItems) {
+        [fqPopup addItemWithTitle:[loc translate:fq[0]]];
+        fqPopup.lastItem.tag = [fq[1] integerValue];
+    }
+    if (![fqPopup selectItemWithTag:[ud integerForKey:kPrefFontQuality]]) {
+        // Out-of-range stored value: show and store the default so the popup
+        // matches what Scintilla renders.
+        [fqPopup selectItemWithTag:3];
+        [ud setInteger:3 forKey:kPrefFontQuality];
+    }
     fqPopup.tag = 705; fqPopup.target = self; fqPopup.action = @selector(prefChanged:);
     [v addSubview:fqPopup];
 
@@ -1722,6 +1732,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         @[[loc translate:@"Double-click to close tab"],        @801, kPrefDoubleClickTabClose],
         @[[loc translate:@"Wrap tabs to multiple lines"],      @803, kPrefTabBarWrap],
         @[[loc translate:@"Hide tab bar"],                     @804, kPrefHideTabBar],
+        @[[loc translate:@"Exit on close the last tab"],        @805, kPrefExitOnCloseLastTab],
     ];
     for (NSArray *def in checks) {
         NSButton *chk = [NSButton checkboxWithTitle:def[0] target:self action:@selector(prefChanged:)];
@@ -1867,18 +1878,9 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
                 ? NSControlStateValueOn : NSControlStateValueOff];
         }
     }
+    // Posts NPPDarkModeChangedNotification; NPPStyleStore then switches the
+    // editor to the theme remembered for the resulting appearance.
     [NppThemeManager shared].mode = (NppDarkModeOption)mode;
-
-    // Switch theme to match dark/light mode
-    NPPStyleStore *store = [NPPStyleStore sharedStore];
-    BOOL effectiveDark = (mode == NppDarkModeDark) ||
-        (mode == NppDarkModeAuto && [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:
-            @[NSAppearanceNameDarkAqua]] != nil);
-    NSString *targetTheme = effectiveDark ? @"DarkModeDefault" : @"Default (stylers.xml)";
-    if (![store.activeThemeName isEqualToString:targetTheme]) {
-        NSArray *lexers = [store lexersForTheme:targetTheme];
-        [store commitLexers:lexers themeName:targetTheme];
-    }
 }
 
 #pragma mark - New Document Page
@@ -2023,7 +2025,6 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         @[[loc translate:@"Use monospaced font in Find dialog"],      @1004, kPrefMonoFontFind],
         @[[loc translate:@"Confirm Replace All in open documents"],   @1005, kPrefConfirmReplaceAll],
         @[[loc translate:@"Replace: don't move to next occurrence"],  @1006, kPrefReplaceAndStop],
-        @[[loc translate:@"Use Boost Regex mode (multi-line; restart to apply)"], @1008, kPrefUseBoostRegex],
     ];
     for (NSArray *def in checks) {
         NSButton *chk = [NSButton checkboxWithTitle:def[0] target:self action:@selector(prefChanged:)];
@@ -2516,7 +2517,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 702: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefVirtualSpace]; break;
         case 703: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefScrollBeyondLastLine]; break;
         case 704: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefCaretBlinkRate]; break;
-        case 705: [ud setInteger:[(NSPopUpButton *)sender indexOfSelectedItem] forKey:kPrefFontQuality]; break;
+        case 705: [ud setInteger:[(NSPopUpButton *)sender selectedTag] forKey:kPrefFontQuality]; break;
         case 706: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefCopyLineNoSelection]; break;
         // Tab Bar settings
         case 800: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefTabCloseButton]; break;
@@ -2524,6 +2525,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 802: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefTabMaxLabelWidth]; break;
         case 803: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefTabBarWrap]; break;
         case 804: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefHideTabBar]; break;
+        case 805: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefExitOnCloseLastTab]; break;
         // General
         case 900: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowFullPathInTitle]; break;
         // Searching
@@ -2535,15 +2537,6 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 1005: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefConfirmReplaceAll]; break;
         case 1006: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefReplaceAndStop]; break;
         case 1007: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefInSelThreshold]; break;
-        case 1008: {
-            BOOL on = [(NSButton *)sender state] == NSControlStateValueOn;
-            [ud setBool:on forKey:kPrefUseBoostRegex];
-            // New Documents (and any not-yet-searched ones) pick up the new engine
-            // immediately; already-searched Documents keep their cached backend
-            // until reopened — hence "restart to apply" in the label.
-            gNppUseBoostRegex = on;
-            break;
-        }
         // General
         case 901: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowStatusBar]; break;
         case 902: {

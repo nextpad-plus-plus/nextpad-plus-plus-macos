@@ -33,6 +33,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Parse the bundled XML and apply any saved overrides.  Call once at launch.
 - (void)loadFromDefaults;
 
+/// One-shot launch migration: older builds shipped the Windows default editor
+/// font (Courier New 10) in stylers.model.xml, and the user's stylers.xml is a
+/// copy of it. If that copy still has the untouched old default, switch it to
+/// the Mac default (Menlo 12). Call before any editor reads the style store.
++ (void)migrateLegacyDefaultEditorFont;
+
 /// Return all style entries for a lexer (resolved = theme + user override).
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID;
 
@@ -64,8 +70,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Update in-memory state + notify EditorViews (no NSUserDefaults write).
 - (void)previewLexers:(NSArray<NPPLexer *> *)lexers;
 
-/// Persist to NSUserDefaults + notify EditorViews.
+/// Persist to NSUserDefaults + notify EditorViews. Also records themeName as
+/// the remembered theme for the current light/dark appearance.
 - (void)commitLexers:(NSArray<NPPLexer *> *)lexers themeName:(NSString *)themeName;
+
+/// The remembered editor theme for the light or dark appearance
+/// (defaults: "Default (stylers.xml)" / "DarkModeDefault").
+- (NSString *)themeNameForDarkAppearance:(BOOL)dark;
+
+/// Switch the editor theme to the one remembered for the current appearance
+/// (NppThemeManager.isDark). No-op when it is already active. Called at launch
+/// and on NPPDarkModeChangedNotification.
+- (void)syncThemeWithAppearance;
 
 @end
 

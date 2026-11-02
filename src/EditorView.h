@@ -80,6 +80,11 @@ extern NSNotificationName const EditorViewZoomDidChangeNotification;
 // Current language name (e.g. "python"). Empty string = plain text.
 @property (nonatomic, copy) NSString *currentLanguage;
 
+// YES when currentLanguage names a User Defined Language rather than a
+// built-in one. A UDL may share a built-in's name (e.g. "Python"), so the
+// name alone does not say which is active.
+@property (nonatomic, readonly) BOOL currentLanguageIsUDL;
+
 // YES when in overwrite (OVR) mode, NO for normal insert (INS) mode.
 @property (nonatomic, readonly) BOOL isOverwriteMode;
 
@@ -129,7 +134,13 @@ extern NSNotificationName const EditorViewZoomDidChangeNotification;
 - (BOOL)writeCopyToPath:(NSString *)path error:(NSError **)error;
 
 /// Set the syntax language by name (e.g. "cpp", "python"). Pass "" for plain text.
+/// A built-in language wins over a UDL of the same name.
 - (void)setLanguage:(NSString *)languageName;
+
+/// As setLanguage:, but when preferUDL is YES a User Defined Language of
+/// that exact name wins over a built-in language of the same name (Language
+/// menu UDL entries, a UDL saved in the session, -udl= on the command line).
+- (void)setLanguage:(NSString *)languageName preferUDL:(BOOL)preferUDL;
 
 /// Change the save encoding without reloading content; marks buffer as modified.
 - (void)setFileEncoding:(NSStringEncoding)enc hasBOM:(BOOL)bom;

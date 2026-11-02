@@ -329,10 +329,45 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
                          : [NSColor colorWithRed:0xEC/255.0 green:0xEC/255.0 blue:0xEC/255.0 alpha:1];
 }
 
+// ── Surfaces painted with the editor theme ───────────────────────────────────
+
+// Theme colours may be in any colour space (calibrated, generic, catalog);
+// brightnessComponent raises on a non-RGB colour, so convert first.
+static BOOL _nppColorIsDark(NSColor *color) {
+    NSColor *rgb = [color colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    return rgb ? rgb.brightnessComponent < 0.5 : NO;
+}
+
++ (NSAppearance *)appearanceForBackground:(NSColor *)background {
+    return [NSAppearance appearanceNamed:_nppColorIsDark(background)
+                                         ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
+}
+
+- (NSColor *)documentMapViewportColorOnBackground:(NSColor *)background
+                                       themeColor:(nullable NSColor *)themeColor {
+    BOOL darkBg = _nppColorIsDark(background);
+    NSColor *focus = [themeColor colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    // DarkModeDefault ships a black focus colour, which vanishes on its own
+    // dark background; the same happens to a light focus colour on a light
+    // theme. Only keep the theme colour when it stands apart from the map.
+    if (!focus || _nppColorIsDark(focus) == darkBg) {
+        focus = darkBg ? [NSColor whiteColor]
+                       : [NSColor colorWithSRGBRed:1.0 green:0x80/255.0 blue:0.0 alpha:1];
+    }
+    return [focus colorWithAlphaComponent:50.0 / 255.0];
+}
+
 // ── Icon Paths ───────────────────────────────────────────────────────────────
 
+// The toolbar icon set for a light or dark background. Shared by the chrome
+// (-toolbarIconDir) and theme-background (-toolbarIconNamed:forDarkBackground:)
+// lookups so the two can't drift apart.
+static NSString *_toolbarIconDirForDark(BOOL dark) {
+    return dark ? @"icons/dark/toolbar/regular" : @"icons/light/toolbar/regular";
+}
+
 - (NSString *)toolbarIconDir {
-    return _cachedIsDark ? @"icons/dark/toolbar/regular" : @"icons/light/toolbar/regular";
+    return _toolbarIconDirForDark(_cachedIsDark);
 }
 
 - (NSString *)tabbarIconDir {
@@ -344,7 +379,12 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
 }
 
 - (nullable NSImage *)toolbarIconNamed:(NSString *)standardName {
-    NSString *dir = self.toolbarIconDir;
+    return [self toolbarIconNamed:standardName forDarkBackground:_cachedIsDark];
+}
+
+- (nullable NSImage *)toolbarIconNamed:(NSString *)standardName
+                     forDarkBackground:(BOOL)darkBackground {
+    NSString *dir = _toolbarIconDirForDark(darkBackground);
 
     // Both light and dark dirs use Fluent naming — always map.
     NSString *fileName = toolbarIconMapping()[standardName];
@@ -355,10 +395,77 @@ static NSDictionary<NSString *, NSString *> *toolbarIconMapping(void) {
     return path ? [[NSImage alloc] initWithContentsOfFile:path] : nil;
 }
 
++ (BOOL)isDarkColor:(NSColor *)color {
+    // Theme colors may be in any color space (calibrated, generic, catalog);
+    // brightnessComponent raises on a non-RGB color, so convert first.
+    NSColor *rgb = [color colorUsingColorSpace:NSColorSpace.sRGBColorSpace];
+    return rgb ? rgb.brightnessComponent < 0.5 : NO;
+}
+
++ (NSAppearance *)appearanceForBackground:(NSColor *)color {
+    return [NSAppearance appearanceNamed:
+        [self isDarkColor:color] ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
+}
+
 - (nullable NSImage *)tabbarIconNamed:(NSString *)name {
     NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"png"
                                                inDirectory:self.tabbarIconDir];
     return path ? [[NSImage alloc] initWithContentsOfFile:path] : nil;
 }
 
+@end
+
+// ── NppThemedLabel ───────────────────────────────────────────────────────────
+
+@interface _NppThemedLabelCell : NSTextFieldCell
+@property (nonatomic, strong, nullable) NSColor *themeTextColor;
+@end
+
+@implementation _NppThemedLabelCell
+- (BOOL)_isEditing {
+    NSView *cv = self.controlView;
+    return [cv isKindOfClass:[NSControl class]] && ((NSControl *)cv).currentEditor != nil;
+}
+- (void)_applyThemeTextColor {
+    if (!_themeTextColor) return;   // never themed: leave textColor alone
+    // While an inline rename is in progress the field editor draws its own
+    // background over the row, so the selected-text color would be white on
+    // white; keep the theme color then (editColumn: marks the cell Emphasized
+    // even when the row selection is not).
+    BOOL emphasized = self.backgroundStyle == NSBackgroundStyleEmphasized && ![self _isEditing];
+    self.textColor = emphasized ? NSColor.alternateSelectedControlTextColor : _themeTextColor;
+}
+- (NSText *)setUpFieldEditorAttributes:(NSText *)textObj {
+    textObj = [super setUpFieldEditorAttributes:textObj];
+    if (_themeTextColor) textObj.textColor = _themeTextColor;
+    return textObj;
+}
+- (void)endEditing:(NSText *)textObj {
+    [super endEditing:textObj];
+    [self _applyThemeTextColor];   // back to the row's selected/normal color
+}
+- (void)setThemeTextColor:(NSColor *)c {
+    _themeTextColor = c;
+    [self _applyThemeTextColor];
+}
+- (void)setBackgroundStyle:(NSBackgroundStyle)s {
+    [super setBackgroundStyle:s];
+    [self _applyThemeTextColor];
+}
+@end
+
+@implementation NppThemedLabel
++ (Class)cellClass { return [_NppThemedLabelCell class]; }
+- (nullable NSColor *)themeTextColor {
+    id c = self.cell;
+    return [c isKindOfClass:[_NppThemedLabelCell class]]
+        ? ((_NppThemedLabelCell *)c).themeTextColor : nil;
+}
+- (void)setThemeTextColor:(nullable NSColor *)c {
+    id cell = self.cell;
+    if ([cell isKindOfClass:[_NppThemedLabelCell class]])
+        ((_NppThemedLabelCell *)cell).themeTextColor = c;
+    else
+        self.textColor = c;
+}
 @end

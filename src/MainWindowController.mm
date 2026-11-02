@@ -11,6 +11,7 @@
 #import "FindWindow.h"
 #import "SearchResultsPanel.h"
 #import "SearchEngine.h"
+#import "NppScintillaIDs.h"
 #import "NPPBatchDialog.h"
 #import "MenuBuilder.h"
 #import "ColumnEditorPanel.h"
@@ -39,6 +40,7 @@
 #import "UserDefineLangManager.h"
 #import "UserDefineDialog.h"
 #import "NppThemeManager.h"
+#import "NppModelXmlMerge.h"
 #import "NppLocalizer.h"
 #import <objc/runtime.h>
 #include <sys/sysctl.h>
@@ -753,8 +755,12 @@ void readConfigXML(void) {
                 [ud setInteger:v.integerValue forKey:kPrefEOLType];
             if ((v = [el attributeForName:@"zoom"].stringValue))
                 [ud setInteger:v.integerValue forKey:kPrefZoomLevel];
-            if ((v = [el attributeForName:@"smoothFont"].stringValue))
-                [ud setInteger:v.integerValue forKey:kPrefFontQuality];
+            if ((v = [el attributeForName:@"smoothFont"].stringValue)) {
+                // SC_EFF_QUALITY_* is 0-3; anything else (hand-edited file)
+                // falls back to the default rather than an unlisted value.
+                NSInteger q = v.integerValue;
+                [ud setInteger:(q >= 0 && q <= 3) ? q : 3 forKey:kPrefFontQuality];
+            }
             if ((v = [el attributeForName:@"paddingLeft"].stringValue))
                 [ud setInteger:v.integerValue forKey:kPrefPaddingLeft];
             if ((v = [el attributeForName:@"paddingRight"].stringValue))
@@ -828,27 +834,9 @@ static void ensureNppDirs(void) {
         }
     }
 
-    // Copy langs.model.xml from bundle as langs.xml if user copy doesn't exist.
-    // User edits ~/Library/Application Support/Nextpad++/langs.xml to customize extensions, keywords, comment delimiters.
-    NSString *langsPath = [nppConfigDir() stringByAppendingPathComponent:@"langs.xml"];
-    if (![fm fileExistsAtPath:langsPath]) {
-        NSString *bundleCopy = [[NSBundle mainBundle] pathForResource:@"langs.model" ofType:@"xml"];
-        if (bundleCopy) {
-            [fm copyItemAtPath:bundleCopy toPath:langsPath error:nil];
-            NSLog(@"[Langs] Copied langs.model.xml as langs.xml to %@", nppConfigDir());
-        }
-    }
-
-    // Copy stylers.model.xml from bundle as stylers.xml if user copy doesn't exist.
-    // User edits ~/Library/Application Support/Nextpad++/stylers.xml to customize the Default theme styles.
-    NSString *stylersPath = [nppConfigDir() stringByAppendingPathComponent:@"stylers.xml"];
-    if (![fm fileExistsAtPath:stylersPath]) {
-        NSString *bundleCopy = [[NSBundle mainBundle] pathForResource:@"stylers.model" ofType:@"xml"];
-        if (bundleCopy) {
-            [fm copyItemAtPath:bundleCopy toPath:stylersPath error:nil];
-            NSLog(@"[Stylers] Copied stylers.model.xml as stylers.xml to %@", nppConfigDir());
-        }
-    }
+    // Copy langs.model.xml / stylers.model.xml from the bundle as langs.xml /
+    // stylers.xml if missing; merge newer model entries into existing copies.
+    NppInstallUserLangsAndStylers();
 
     // Create ~/Library/Application Support/Nextpad++/themes/ for user-installed themes (empty on first run).
     NSString *userThemesDir = [nppConfigDir() stringByAppendingPathComponent:@"themes"];
@@ -2158,6 +2146,11 @@ static void _nppTahoeRoundEditorCard(NSView *container, NSView *content) {
         [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_shortcutsChanged:)
                    name:NPPShortcutsChangedNotification object:nil];
+        // UDL dialog saved / renamed / created / removed a UDL: refresh the
+        // Language menu entries and the status bar's language name.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_userDefineLangsChanged:)
+                   name:UserDefineLangsDidChangeNotification object:nil];
         // (scroll sync uses a timer, not notifications)
         [self rebuildRecentFilesMenu];
         [self rebuildUDLLanguageMenu];
@@ -4410,6 +4403,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         }
 
         if (ed.currentLanguage.length) info[@"language"] = ed.currentLanguage;
+        if (ed.currentLanguageIsUDL) info[@"languageIsUDL"] = @YES;
 
         // ── Cursor, selection, scroll state (matches Windows NPP session format) ──
         ScintillaView *sci = ed.scintillaView;
@@ -4445,7 +4439,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         {
             NSMutableArray *marks = [NSMutableArray array];
             sptr_t line = 0;
-            while ((line = [sci message:SCI_MARKERNEXT wParam:(uptr_t)line lParam:(1 << 20)]) >= 0) {
+            while ((line = [sci message:SCI_MARKERNEXT wParam:(uptr_t)line lParam:(1 << kBookmarkMarker)]) >= 0) {
                 [marks addObject:@(line)];
                 line++; // advance past this line
             }
@@ -4630,7 +4624,19 @@ static BOOL groupHasTrailingSep(NSString *ident) {
                 ed.recoveredFromName = recoveredFrom;
             [ed markAsModified];
         }
-        if (lang.length) [ed setLanguage:lang];
+        if (lang.length) {
+            // languageIsUDL tells a UDL from a built-in of the same name;
+            // older sessions lack it and keep the name-based resolution.
+            [ed setLanguage:lang preferUDL:[info[@"languageIsUDL"] boolValue]];
+            // A saved light/dark UDL variant follows the current editor
+            // theme, as on a theme change (only for a UDL claiming the file).
+            if (ed.currentLanguageIsUDL) {
+                UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
+                UserDefinedLang *udl = [udlMgr languageNamed:lang];
+                UserDefinedLang *variant = udl ? [udlMgr variantOf:udl forFileName:ed.filePath.lastPathComponent] : nil;
+                if (variant && variant != udl) [ed setLanguage:variant.name preferUDL:YES];
+            }
+        }
         [_tabManager refreshCurrentTabTitle];
 
         ScintillaView *sci = ed.scintillaView;
@@ -4656,7 +4662,7 @@ static BOOL groupHasTrailingSep(NSString *ident) {
         // ── Restore bookmarks ──
         NSArray *bookmarks = info[@"bookmarks"];
         for (NSNumber *bkLine in bookmarks)
-            [sci message:SCI_MARKERADD wParam:(uptr_t)bkLine.longLongValue lParam:20]; // kBookmarkMarker=20
+            [sci message:SCI_MARKERADD wParam:(uptr_t)bkLine.longLongValue lParam:kBookmarkMarker];
 
         // ── Restore fold state (BEFORE caret so a saved caret on a header
         // line lands consistently with the display, and any later
@@ -4947,6 +4953,7 @@ static void removeMacroFromShortcutsXML(NSString *name) {
         NSMutableDictionary *info = [NSMutableDictionary dictionary];
         info[@"filePath"] = ed.filePath;
         if (ed.currentLanguage.length) info[@"language"] = ed.currentLanguage;
+        if (ed.currentLanguageIsUDL) info[@"languageIsUDL"] = @YES;
         info[@"cursorLine"] = @(ed.cursorLine);
         [tabs addObject:info];
     }
@@ -6879,16 +6886,18 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     // and top-level XML/YAML/KIXtart items walking up to the menu bar).
     if (action == @selector(setLanguageFromMenu:)) {
         NSString *langCode = [(NSMenuItem *)item representedObject];
+        // Built-in items (including "None (Normal Text)", whose code is
+        // the empty string) are never checked while a UDL is active.
         NSString *current  = ed.currentLanguage ?: @"";
-        [mi setState:[current isEqualToString:langCode]
-            ? NSControlStateValueOn : NSControlStateValueOff];
+        BOOL on = !ed.currentLanguageIsUDL && [current isEqualToString:langCode];
+        [mi setState:on ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
     }
     if (action == @selector(setUDLLanguageFromMenu:)) {
         NSString *udlName = [(NSMenuItem *)item representedObject];
         NSString *current = ed.currentLanguage ?: @"";
-        [mi setState:[current isEqualToString:udlName]
-            ? NSControlStateValueOn : NSControlStateValueOff];
+        BOOL on = ed.currentLanguageIsUDL && [current isEqualToString:udlName];
+        [mi setState:on ? NSControlStateValueOn : NSControlStateValueOff];
         return YES;
     }
 
@@ -8199,14 +8208,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (!udl) return;
     EditorView *ed = [self currentEditor];
     if (!ed) return;
-    [[UserDefineLangManager shared] applyLanguage:udl toScintillaView:ed.scintillaView];
-    // Keep the editor's currentLanguage in sync with what's actually lexing
-    // the buffer. Without this, validateUserInterfaceItem: for UDL items
-    // compares against a stale language name and the UDL checkmark never
-    // appears, and the Languages-menu parent-header refresh can't see that
-    // a UDL is now active.
-    ed.currentLanguage = udlName;
+    // setLanguage: routes UDLs to applyLanguage: after SCI_STYLECLEARALL and
+    // the global style colours, so the previous lexer's colours do not show
+    // through styles whose colorStyle leaves fg/bg transparent. It also keeps
+    // currentLanguage in sync (UDL menu checkmark) and notifies plugins.
+    [ed setLanguage:udlName preferUDL:YES];
     [self updateStatusBar];
+}
+
+- (void)_userDefineLangsChanged:(NSNotification *)n {
+    [self rebuildUDLLanguageMenu];
+    // Deferred: editors observe the same notification and may run after
+    // this one, so the status bar must read their language once they have
+    // followed a rename or removal.
+    dispatch_async(dispatch_get_main_queue(), ^{ [self updateStatusBar]; });
 }
 
 /// Populate the Language menu with all loaded UDL names.
@@ -8514,6 +8529,8 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     if (!_languagesMenu) return;
 
     EditorView *ed = [self currentEditor];
+    // Letter headers cover built-in languages only.
+    BOOL builtInActive = !ed.currentLanguageIsUDL;
     NSString *current = ed.currentLanguage ?: @"";
 
     for (NSMenuItem *topItem in _languagesMenu.itemArray) {
@@ -8526,7 +8543,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             if (child.action == @selector(setLanguageFromMenu:)) {
                 isLetterSubmenu = YES;
                 NSString *code = (NSString *)child.representedObject ?: @"";
-                if (code.length && [current isEqualToString:code]) {
+                if (builtInActive && code.length && [current isEqualToString:code]) {
                     anyMatch = YES;
                     break;
                 }
@@ -8617,6 +8634,20 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 - (void)tabManager:(id)tabManager didCloseEditor:(EditorView *)editor {
     [self updateTitle];
     if (_docListPanel) [_docListPanel reloadData];
+}
+
+- (BOOL)tabManagerShouldExitOnLastTabClose:(id)tabManager {
+    // Only exit when ALL tab managers across this window are empty. If a split
+    // view still holds tabs, don't quit — just let the empty pane remain.
+    for (TabManager *mgr in @[_tabManager, _subTabManagerH, _subTabManagerV]) {
+        if (mgr && mgr != (TabManager *)tabManager && mgr.allEditors.count > 0)
+            return NO;
+    }
+    // Every pane is empty. Close this window; if it is the last window,
+    // -applicationShouldTerminateAfterLastWindowClosed: returns YES and the
+    // app will quit automatically.
+    [self.window performClose:nil];
+    return YES;
 }
 
 #pragma mark - Cursor notification
@@ -9182,15 +9213,20 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     panel.title = [NSString stringWithFormat:@"Choose files for %@ hash", algo];
     if ([panel runModal] != NSModalResponseOK) return;
 
+    // Lines use the target document's own line ending so a CRLF/CR
+    // document doesn't end up with mixed EOLs.
+    EditorView *ed = [self currentEditor];
+    NSString *eolName = ed.eolName;
+    NSString *eol = [eolName isEqualToString:@"CRLF"] ? @"\r\n"
+                  : [eolName isEqualToString:@"CR"]   ? @"\r" : @"\n";
     NSMutableString *results = [NSMutableString string];
     for (NSURL *url in panel.URLs) {
         NSData *data = [NSData dataWithContentsOfURL:url];
-        if (!data) { [results appendFormat:@"Error reading %@\n", url.path]; continue; }
+        if (!data) { [results appendFormat:@"Error reading %@%@", url.path, eol]; continue; }
         NSString *hash = [EditorView hexHashForAlgorithm:algo data:data];
-        [results appendFormat:@"%@  %@\n", hash ?: @"(error)", url.path];
+        [results appendFormat:@"%@  %@%@", hash ?: @"(error)", url.path, eol];
     }
     if (!results.length) return;
-    EditorView *ed = [self currentEditor];
     if (ed) {
         const char *u = results.UTF8String;
         [ed.scintillaView message:SCI_APPENDTEXT wParam:(uptr_t)strlen(u) lParam:(sptr_t)u];
@@ -10706,16 +10742,9 @@ static BOOL _writeCLIScript(NSString *script, NSString *path, NSError **outErr) 
     if (![NppThemeManager shared].usesGlassMaterials)
         _statusBar.layer.backgroundColor = [NppThemeManager shared].statusBarBackground.CGColor;
 
-    // Auto mode: switch editor theme to match system appearance
-    if ([NppThemeManager shared].mode == NppDarkModeAuto) {
-        BOOL isDark = [NppThemeManager shared].isDark;
-        NSString *targetTheme = isDark ? @"DarkModeDefault" : @"Default (stylers.xml)";
-        NPPStyleStore *store = [NPPStyleStore sharedStore];
-        if (![store.activeThemeName isEqualToString:targetTheme]) {
-            NSArray *lexers = [store lexersForTheme:targetTheme];
-            [store commitLexers:lexers themeName:targetTheme];
-        }
-    }
+    // Editor theme: NPPStyleStore observes this notification itself (it is
+    // created at launch) and switches to the theme remembered for the new
+    // appearance.
 
     // Re-skin the toolbar (light/dark icon set + colorization).
     [self _reskinToolbarIcons];
