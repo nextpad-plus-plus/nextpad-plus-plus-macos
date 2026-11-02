@@ -17,6 +17,9 @@
 #include <optional>
 #include <map>
 #include <algorithm>
+#include <locale>
+#include <type_traits>
+#include <string>
 
 #include "Scintilla.h"
 #include "ScintillaTypes.h"
@@ -44,6 +47,14 @@
 #include "AnsiDocumentIterator.h"
 #include "BoostRegexSearch.h"
 
+// BOOST_REGEX_STANDALONE skips Boost.Config, which is what normally defines
+// BOOST_HAS_THREADS. Without it the regex traits cache (object_cache) has no
+// mutex, and Find in Files compiles regexes on a background queue while the
+// editor compiles its own on the main thread. CMake defines it too.
+#ifndef BOOST_HAS_THREADS
+#define BOOST_HAS_THREADS
+#endif
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
@@ -65,11 +76,7 @@ class BoostRegexSearch : public RegexSearchBase
 public:
 	BoostRegexSearch() {}
 
-	~BoostRegexSearch() override
-	{
-		delete[] _substituted;
-		_substituted = nullptr;
-	}
+	~BoostRegexSearch() override = default;
 
 	virtual Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char *regex,
 						bool caseSensitive, bool word, bool wordStart, Scintilla::FindOption sciSearchFlags, Sci::Position *lengthRet) override;
@@ -211,7 +218,7 @@ private:
 		EncodingDependent() : _lastCompileFlags(-1) {}
 		void compileRegex(const char *regex, const int compileFlags);
 		Match FindText(SearchParameters& search);
-		char *SubstituteByPosition(const char *text, Sci::Position *length);
+		std::string SubstituteByPosition(const char *text, Sci::Position length);
 	private:
 		Match FindTextForward(SearchParameters& search);
 		Match FindTextBackward(SearchParameters& search);
@@ -231,8 +238,6 @@ private:
 	class SearchParameters {
 	public:
 		Sci::Position nextCharacter(Sci::Position position) const;
-		bool isLineStart(Sci::Position position) const;
-		bool isLineEnd(Sci::Position position) const;
 
 		Document* _document;
 		const char *_regexString;
@@ -247,14 +252,15 @@ private:
 	};
 
 	static wchar_t *utf8ToWchar(const char *utf8);
-	static char    *wcharToUtf8(const wchar_t *w);
-	static char    *stringToCharPtr(const std::string& str);
-	static char    *stringToCharPtr(const std::wstring& str);
+	// Length-aware: a NUL captured from the document is text, not an end.
+	static std::string toUtf8(const std::string& str) { return str; }
+	static std::string toUtf8(const std::wstring& str);
+	template <class CharT> static std::basic_string<CharT> fromUtf8(std::string_view utf8);
 
 	EncodingDependent<char,    AnsiDocumentIterator> _ansi;
 	EncodingDependent<wchar_t, UTF8DocumentIterator> _utf8;
 
-	char *_substituted = nullptr;
+	std::string _substituted;
 
 	Match _lastMatch;
 	int _lastDirection = 0;
@@ -262,16 +268,26 @@ private:
 
 namespace Scintilla::Internal
 {
-// Named factory for the optional Boost.Regex backend. The single SCI_OWNREGEX
-// CreateRegexSearch() lives in RegexBackendSelect.cxx and dispatches here when
-// the "Use Boost Regex mode" preference is on.
+// Boost.Regex is the only regex engine (as on Windows Notepad++). The named
+// factory is kept for the headless test harnesses.
 RegexSearchBase *CreateBoostRegexSearch(CharClassify* /* charClassTable */)
 {
 	return new BoostRegexSearch();
 }
+
+#ifdef SCI_OWNREGEX
+// With SCI_OWNREGEX defined, Scintilla's built-in CreateRegexSearch() compiles
+// out and every Document gets this backend.
+RegexSearchBase *CreateRegexSearch(CharClassify *charClassTable)
+{
+	return CreateBoostRegexSearch(charClassTable);
+}
+#endif
 }
 
-std::string g_exceptionMessage;
+// Per thread: Find in Files searches its own Documents on a background queue
+// while the editor may search on the main thread.
+thread_local std::string g_exceptionMessage;
 
 /**
  * Find text in document, supporting both forward and backward
@@ -311,6 +327,10 @@ Sci::Position BoostRegexSearch::FindText(Document* doc, Sci::Position startPosit
 			regex_constants::ECMAScript
 			| (caseSensitive ? 0 : regex_constants::icase);
 		search._regexString = regexString;
+		// As on Windows (since 7.9.1): no match_not_bol/match_not_eol. The
+		// iterators carry the whole document (baseIterator), so ^ looks at the
+		// character before the range; $ also matches at the end of the range,
+		// e.g. "foo$" matches "foo" in "foobar" when a selection stops there.
 		search._boostRegexFlags =
 			((static_cast<int>(sciSearchFlags) & SCFIND_REGEXP_DOTMATCHESNL) ? regex_constants::match_default : regex_constants::match_not_dot_newline);
 
@@ -430,12 +450,34 @@ BoostRegexSearch::Match BoostRegexSearch::EncodingDependent<CharT, CharacterIter
 		return Match();
 }
 
+// The locale for the wchar_t (UTF-32) regexes. Windows' wchar_t ctype is
+// Unicode-aware; macOS's "C" locale only classifies ASCII, so without this \w,
+// \b and [[:alpha:]] would not see "é" or CJK as word characters and Match case
+// off would not fold "É" to "é". A UTF-8 locale gives the Unicode tables.
+static const std::locale &UnicodeRegexLocale()
+{
+	static const std::locale locale = [] {
+		for (const char *name : {"en_US.UTF-8", "C.UTF-8", "UTF-8"}) {
+			try {
+				return std::locale(name);
+			} catch (...) {
+			}
+		}
+		return std::locale::classic();
+	}();
+	return locale;
+}
+
 template <class CharT, class CharacterIterator>
 void BoostRegexSearch::EncodingDependent<CharT, CharacterIterator>::compileRegex(const char *regex, const int compileFlags)
 {
 	if (_lastCompileFlags != compileFlags || _lastRegexString != regex)
 	{
-		_regex = Regex(CharTPtr(regex), static_cast<regex_constants::syntax_option_type>(compileFlags));
+		Regex compiled;
+		if constexpr (std::is_same_v<CharT, wchar_t>)
+			compiled.imbue(UnicodeRegexLocale());
+		compiled.assign(static_cast<const CharT *>(CharTPtr(regex)), static_cast<regex_constants::syntax_option_type>(compileFlags));
+		_regex = compiled;
 		_lastRegexString = regex;
 		_lastCompileFlags = compileFlags;
 	}
@@ -449,33 +491,30 @@ Sci::Position BoostRegexSearch::SearchParameters::nextCharacter(Sci::Position po
 		return std::max(_document->NextPosition(position, 1), position + 1);
 }
 
-bool BoostRegexSearch::SearchParameters::isLineStart(Sci::Position position) const
-{
-	return (position == 0)
-		|| _document->CharAt(position-1) == '\n'
-		|| (_document->CharAt(position-1) == '\r' && _document->CharAt(position) != '\n');
-}
-
-bool BoostRegexSearch::SearchParameters::isLineEnd(Sci::Position position) const
-{
-	return (position == _document->Length())
-		|| _document->CharAt(position) == '\r'
-		|| (_document->CharAt(position) == '\n' && (position == 0 || _document->CharAt(position-1) != '\n'));
-}
-
+// *length is the length of text on input and of the result on output. Both
+// may contain NULs (e.g. "\\1" for a group that captured a NUL), so neither is
+// measured with strlen (Windows Notepad++ does, and truncates such a result).
 const char *BoostRegexSearch::SubstituteByPosition(Document* doc, const char *text, Sci::Position *length) {
-	delete[] _substituted;
 	_substituted = (doc->CodePage() == SC_CP_UTF8)
-		? _utf8.SubstituteByPosition(text, length)
-		: _ansi.SubstituteByPosition(text, length);
-	return _substituted;
+		? _utf8.SubstituteByPosition(text, *length)
+		: _ansi.SubstituteByPosition(text, *length);
+	*length = static_cast<Sci::Position>(_substituted.length());
+	return _substituted.c_str();
 }
 
 template <class CharT, class CharacterIterator>
-char *BoostRegexSearch::EncodingDependent<CharT, CharacterIterator>::SubstituteByPosition(const char *text, Sci::Position *length) {
-	char *substituted = stringToCharPtr(_match.format(static_cast<const CharT*>(CharTPtr(text)), boost::format_all));
-	*length = static_cast<int>(strlen(substituted));
-	return substituted;
+std::string BoostRegexSearch::EncodingDependent<CharT, CharacterIterator>::SubstituteByPosition(const char *text, Sci::Position length) {
+	const std::basic_string<CharT> format = fromUtf8<CharT>(std::string_view(text, static_cast<size_t>(std::max<Sci::Position>(length, 0))));
+	return toUtf8(_match.format(format, boost::format_all));
+}
+
+template <class CharT>
+std::basic_string<CharT> BoostRegexSearch::fromUtf8(std::string_view utf8)
+{
+	if constexpr (std::is_same_v<CharT, wchar_t>)
+		return WStringFromUTF8(utf8);
+	else
+		return std::string(utf8);
 }
 
 wchar_t *BoostRegexSearch::utf8ToWchar(const char *utf8)
@@ -490,30 +529,24 @@ wchar_t *BoostRegexSearch::utf8ToWchar(const char *utf8)
 	return w;
 }
 
-char *BoostRegexSearch::wcharToUtf8(const wchar_t *w)
+std::string BoostRegexSearch::toUtf8(const std::wstring& str)
 {
 	// UTF-32 (one code point per wchar_t) -> UTF-8. UTF8FromUTF32Character emits
 	// the correct 1–4 byte sequence per code point (including astral planes),
 	// which the UTF16-oriented UTF8Length/UTF8FromUTF16 would mis-size here.
+	// It NUL-terminates its output, so a NUL code point is appended directly.
 	std::string out;
-	for (const wchar_t *p = w; *p; ++p)
+	out.reserve(str.length());
+	for (const wchar_t ch : str)
 	{
+		if (ch == 0)
+		{
+			out += '\0';
+			continue;
+		}
 		char buf[UTF8MaxBytes + 1];
-		UTF8FromUTF32Character(static_cast<int>(*p), buf);
+		UTF8FromUTF32Character(static_cast<int>(ch), buf);
 		out += buf;
 	}
-	char *c = new char[out.length() + 1];
-	memcpy(c, out.c_str(), out.length() + 1);
-	return c;
-}
-
-char *BoostRegexSearch::stringToCharPtr(const std::string& str)
-{
-	char *charPtr = new char[str.length() + 1];
-	strcpy(charPtr, str.c_str());
-	return charPtr;
-}
-char *BoostRegexSearch::stringToCharPtr(const std::wstring& str)
-{
-	return wcharToUtf8(str.c_str());
+	return out;
 }
