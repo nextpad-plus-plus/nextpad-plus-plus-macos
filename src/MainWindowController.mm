@@ -4694,17 +4694,21 @@ static BOOL groupHasTrailingSep(NSString *ident) {
             sptr_t anchor = MAX((sptr_t)0, MIN((sptr_t)startPos.longLongValue, docLen));
             sptr_t caret  = MAX((sptr_t)0, MIN((sptr_t)endPos.longLongValue,   docLen));
             [sci message:SCI_SETSEL wParam:(uptr_t)anchor lParam:(sptr_t)caret];
-            // SCI_SETSEL always leaves a stream selection, so the saved mode
-            // goes on after it. SCI_CHANGESELECTIONMODE, unlike
-            // SCI_SETSELECTIONMODE, does not turn on extend-on-move, which
-            // would make arrow keys grow the selection. Lines mode re-applies
-            // the range itself; a rectangular or thin selection takes the
-            // range as its corners and is laid out once a corner is set again.
+            // SCI_SETSEL always leaves a stream selection and clears the
+            // rectangular corners, so the saved mode goes on after it.
+            // SCI_CHANGESELECTIONMODE, unlike SCI_SETSELECTIONMODE, does not
+            // turn on extend-on-move. Lines mode re-applies the range itself.
+            // Only rectangle mode takes the range as its corners, so a thin
+            // selection passes through it first; setting a corner again then
+            // lays the selection out across its lines.
             NSInteger selMode = [info[@"selMode"] integerValue];
-            if (selMode > 0) {
+            if (selMode == SC_SEL_RECTANGLE || selMode == SC_SEL_THIN) {
+                [sci message:SCI_CHANGESELECTIONMODE wParam:SC_SEL_RECTANGLE];
+                if (selMode == SC_SEL_THIN)
+                    [sci message:SCI_CHANGESELECTIONMODE wParam:SC_SEL_THIN];
+                [sci message:SCI_SETANCHOR wParam:(uptr_t)anchor];
+            } else if (selMode > 0) {
                 [sci message:SCI_CHANGESELECTIONMODE wParam:(uptr_t)selMode];
-                if (selMode == SC_SEL_RECTANGLE || selMode == SC_SEL_THIN)
-                    [sci message:SCI_SETANCHOR wParam:(uptr_t)anchor];
             }
             // If the caret line sits inside a still-collapsed fold,
             // expand the enclosing folds so the caret is reachable.
