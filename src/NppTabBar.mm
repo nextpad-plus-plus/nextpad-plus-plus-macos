@@ -921,6 +921,9 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         if (on && !setCursor)      { [[NSCursor dragCopyCursor] push]; setCursor = YES; }
         else if (!on && setCursor) { [NSCursor pop];                   setCursor = NO;  }
     };
+    // A clone is always created unpinned (after the destination's pinned
+    // tabs), so with Option held the slot follows the unpinned rule.
+    auto landsPinned = [&]() { return item.isPinned && !copy; };
     // While detached: fade the ghost when releasing here would do nothing
     // (over a toolbar or side panel, say, or the window's only tab over the
     // desktop), and show the copy cursor while Option is held.
@@ -951,7 +954,13 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
         if (nextEvent.type == NSEventTypeFlagsChanged) {
             // Option pressed or released without moving the pointer.
             copy = (nextEvent.modifierFlags & NSEventModifierFlagOption) != 0;
-            if (detached) updateDetachedFeedback();
+            if (detached) {
+                // The slot depends on Option for a pinned tab: re-place the marker.
+                dropBarIndex = dropBar ? [dropBar _insertionIndexForScreenPoint:screenPoint
+                                                                         pinned:landsPinned()] : -1;
+                [dropBar _setExternalDropIndex:dropBarIndex];
+                updateDetachedFeedback();
+            }
             continue;
         }
 
@@ -1033,7 +1042,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
                     if (bar != dropBar) [dropBar _setExternalDropIndex:-1];
                     dropBar = bar;
                     dropBarIndex = bar ? [bar _insertionIndexForScreenPoint:screenPoint
-                                                                     pinned:item.isPinned] : -1;
+                                                                     pinned:landsPinned()] : -1;
                     [dropBar _setExternalDropIndex:dropBarIndex];
                     updateDetachedFeedback();
                     continue;
@@ -1068,7 +1077,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
                 if (overBar != dropBar) [dropBar _setExternalDropIndex:-1];
                 dropBar = detached ? overBar : nil;
                 dropBarIndex = dropBar ? [dropBar _insertionIndexForScreenPoint:screenPoint
-                                                                         pinned:item.isPinned] : -1;
+                                                                         pinned:landsPinned()] : -1;
                 toIndex = detached ? fromIndex
                                    : [self _dropTargetIndexForContainerPoint:currentPoint fromIndex:fromIndex];
             }
