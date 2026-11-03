@@ -1,3 +1,4 @@
+#import "NppParserRegex.h"
 #import "FunctionListPanel.h"
 #import "NppPaths.h"
 #import "NppLocalizer.h"
@@ -524,81 +525,8 @@ static void _cacheParser(NSString *lang, NSDictionary *entry) {
 
 #pragma mark - XML-based function list parser engine
 
-/// Convert PCRE regex to ICU-compatible regex. Returns nil if unconvertible
-/// (e.g. uses (?(DEFINE)...) or (?&name) subroutines).
-static NSString *_pcreToICU(NSString *pcre) {
-    if (!pcre.length) return nil;
-
-    // Features that cannot be converted — bail out to hardcoded fallback
-    if ([pcre containsString:@"(?(DEFINE)"] || [pcre containsString:@"(?&"])
-        return nil;
-
-    NSMutableString *s = [pcre mutableCopy];
-
-    // \K (reset match start) — remove it; we'll match from the start and use nameExpr to extract
-    [s replaceOccurrencesOfString:@"\\K" withString:@""
-                          options:0 range:NSMakeRange(0, s.length)];
-
-    // \h (horizontal whitespace) → [\\t ]
-    [s replaceOccurrencesOfString:@"\\h" withString:@"[\\t\\x20]"
-                          options:0 range:NSMakeRange(0, s.length)];
-
-    // Named groups: (?'name'...) → (?<name>...)
-    {
-        NSRegularExpression *re = [NSRegularExpression
-            regularExpressionWithPattern:@"\\(\\?'(\\w+)'" options:0 error:nil];
-        if (re) {
-            NSString *replaced = [re stringByReplacingMatchesInString:s options:0
-                range:NSMakeRange(0, s.length) withTemplate:@"(?<$1>"];
-            s = [replaced mutableCopy];
-        }
-    }
-
-    // Named backrefs: \k'name' → \k<name>
-    {
-        NSRegularExpression *re = [NSRegularExpression
-            regularExpressionWithPattern:@"\\\\k'(\\w+)'" options:0 error:nil];
-        if (re) {
-            NSString *replaced = [re stringByReplacingMatchesInString:s options:0
-                range:NSMakeRange(0, s.length) withTemplate:@"\\k<$1>"];
-            s = [replaced mutableCopy];
-        }
-    }
-
-    // Scoped modifiers (?m-s:...) → strip the -s part (ICU doesn't support negated inline modifiers in groups)
-    // Replace (?m-s: with (?m: and (?-s: with (?:
-    {
-        NSRegularExpression *re = [NSRegularExpression
-            regularExpressionWithPattern:@"\\(\\?([a-z]*)-([a-z]+):" options:0 error:nil];
-        if (re) {
-            NSString *replaced = [re stringByReplacingMatchesInString:s options:0
-                range:NSMakeRange(0, s.length) withTemplate:@"(?$1:"];
-            s = [replaced mutableCopy];
-        }
-    }
-
-    // XML entities that might appear in attributes: &lt; &gt; &amp;
-    [s replaceOccurrencesOfString:@"&lt;" withString:@"<"
-                          options:0 range:NSMakeRange(0, s.length)];
-    [s replaceOccurrencesOfString:@"&gt;" withString:@">"
-                          options:0 range:NSMakeRange(0, s.length)];
-    [s replaceOccurrencesOfString:@"&amp;" withString:@"&"
-                          options:0 range:NSMakeRange(0, s.length)];
-
-    return s;
-}
-
-/// Try to compile an ICU regex from a PCRE pattern. Returns nil on failure.
-static NSRegularExpression *_compilePattern(NSString *pcre, NSRegularExpressionOptions opts) {
-    NSString *icu = _pcreToICU(pcre);
-    if (!icu) return nil;
-    NSError *err = nil;
-    NSRegularExpression *re = [NSRegularExpression regularExpressionWithPattern:icu options:opts error:&err];
-    if (err) {
-        NSLog(@"[FuncList] Regex compile failed: %@ — pattern: %.80s...", err.localizedDescription, icu.UTF8String);
-        return nil;
-    }
-    return re;
+static NppParserRegex *_compilePattern(NSString *pattern, NSRegularExpressionOptions opts) {
+    return [NppParserRegex regularExpressionWithPattern:pattern options:opts error:nil];
 }
 
 /// Parse raw XML bytes preserving newlines in attribute values.
@@ -764,7 +692,7 @@ static NSString *_extractName(NSString *matchedText, NSArray<_FLNode *> *nameExp
     for (_FLNode *ne in nameExprs) {
         NSString *pattern = [ne attr:@"expr"];
         if (!pattern.length) continue;
-        NSRegularExpression *re = _compilePattern(pattern, 0);
+        NppParserRegex *re = _compilePattern(pattern, 0);
         if (!re) continue;
         NSTextCheckingResult *m = [re firstMatchInString:result options:0
                                                    range:NSMakeRange(0, result.length)];
@@ -785,7 +713,7 @@ static NSString *_extractName(NSString *matchedText, NSArray<_FLNode *> *nameExp
 /// No string mutation — just tracks which byte ranges are comments.
 static NSIndexSet *_commentRanges(NSString *text, NSString *commentExpr) {
     if (!commentExpr.length) return nil;
-    NSRegularExpression *re = _compilePattern(commentExpr,
+    NppParserRegex *re = _compilePattern(commentExpr,
         NSRegularExpressionAnchorsMatchLines | NSRegularExpressionDotMatchesLineSeparators);
     if (!re) return nil;
 
@@ -809,7 +737,7 @@ static BOOL _isInComment(NSRange range, NSIndexSet *commentRanges) {
     // ── Load parser (cached) ──────────────────────────────────────────
     NSDictionary *cached = _cachedParserForLanguage(lang);
     _FLNode *parser = nil;
-    NSRegularExpression *commentRE = nil;
+    NppParserRegex *commentRE = nil;
 
     if (cached) {
         parser = cached[@"parser"];
@@ -851,7 +779,7 @@ static BOOL _isInComment(NSRange range, NSIndexSet *commentRanges) {
     // ── Process classRange elements ───────────────────────────────────
     for (_FLNode *crEl in classRangeEls) {
         NSString *crMainExpr = [crEl attr:@"mainExpr"];
-        NSRegularExpression *crRE = _compilePattern(crMainExpr,
+        NppParserRegex *crRE = _compilePattern(crMainExpr,
             NSRegularExpressionAnchorsMatchLines | NSRegularExpressionDotMatchesLineSeparators);
         if (!crRE) continue;
         didParse = YES;
@@ -877,7 +805,7 @@ static BOOL _isInComment(NSRange range, NSIndexSet *commentRanges) {
 
             for (_FLNode *funcEl in nestedFuncEls) {
                 NSString *funcMainExpr = [funcEl attr:@"mainExpr"];
-                NSRegularExpression *funcRE = _compilePattern(funcMainExpr,
+                NppParserRegex *funcRE = _compilePattern(funcMainExpr,
                     NSRegularExpressionAnchorsMatchLines);
                 if (!funcRE) continue;
 
@@ -908,7 +836,7 @@ static BOOL _isInComment(NSRange range, NSIndexSet *commentRanges) {
     // ── Process top-level function elements ───────────────────────────
     for (_FLNode *funcEl in topLevelFuncs) {
         NSString *funcMainExpr = [funcEl attr:@"mainExpr"];
-        NSRegularExpression *funcRE = _compilePattern(funcMainExpr,
+        NppParserRegex *funcRE = _compilePattern(funcMainExpr,
             NSRegularExpressionAnchorsMatchLines);
         if (!funcRE) continue;
         didParse = YES;
