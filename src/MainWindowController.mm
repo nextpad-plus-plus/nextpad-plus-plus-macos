@@ -8025,7 +8025,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             scrollLines = srcLine + _syncLineDelta - dstLine;
     }
 
-    if (_syncHorizontalScrolling) {
+    if (_syncHorizontalScrolling && (primaryIsSource ? priXChanged : secXChanged)) {
         sptr_t charW = [src message:SCI_TEXTWIDTH wParam:STYLE_DEFAULT lParam:(sptr_t)"P"];
         if (charW < 1) charW = 1;
         sptr_t srcCol = [src message:SCI_GETXOFFSET] / charW;
@@ -8653,6 +8653,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 #pragma mark - Cursor notification
 
 - (void)editorCursorMoved:(NSNotification *)note {
+    if ([note.userInfo[@"viewportOnly"] boolValue]) return;
     EditorView *ed = note.object;
     if (ed == [self currentEditor]) {
         [self updateStatusBar];

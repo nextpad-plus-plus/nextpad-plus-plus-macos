@@ -37,6 +37,8 @@
 typedef void(*SciNotifyFunc)(intptr_t windowid, unsigned int iMessage, uintptr_t wParam, uintptr_t lParam);
 
 extern NSString *const SCIUpdateUINotification;
+// Coalesced after per-view style definitions change, including direct calls.
+extern NSString *const SCIStyleChangedNotification;
 
 @protocol ScintillaNotificationProtocol
 - (void) notification: (SCNotification *) notification;

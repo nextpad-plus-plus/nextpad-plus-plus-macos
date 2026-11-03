@@ -44,6 +44,7 @@ static NSCursor *reverseArrowCursor;
 static NSCursor *waitCursor;
 
 NSString *const SCIUpdateUINotification = @"SCIUpdateUI";
+NSString *const SCIStyleChangedNotification = @"SCIStyleChanged";
 
 /**
  * Provide an NSCursor object that matches the Window::Cursor enumeration.
@@ -68,7 +69,63 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 	}
 }
 
-@implementation SCIScrollView
+@implementation SCIScrollView {
+	BOOL awaitingVerticalScrollDirection;
+	BOOL awaitingHorizontalScrollDirection;
+}
+
+- (void) scrollWheel: (NSEvent *) event {
+	const NSEventPhase phase = event.phase;
+	const NSEventPhase momentum = event.momentumPhase;
+	if ((phase & NSEventPhaseBegan) || (momentum & NSEventPhaseBegan)) {
+		awaitingVerticalScrollDirection = YES;
+		awaitingHorizontalScrollDirection = YES;
+	}
+	if (!event.hasPreciseScrollingDeltas ||
+		(phase & (NSEventPhaseEnded | NSEventPhaseCancelled | NSEventPhaseMayBegin)) ||
+		(momentum & (NSEventPhaseEnded | NSEventPhaseCancelled))) {
+		awaitingVerticalScrollDirection = NO;
+		awaitingHorizontalScrollDirection = NO;
+	}
+
+	// An elastic return can leave one axis just beyond a document edge and
+	// suppress momentum on the other axis. Check both the start of a touch
+	// sequence and its separate momentum sequence: directional jitter can
+	// create a fresh residue just before the fingers lift. Zero-delta starts
+	// wait for direction, and each direction is considered once per sequence.
+	// Preserve the active axis's native bounce and forward the original event.
+	const BOOL touchScroll = phase & (NSEventPhaseBegan | NSEventPhaseChanged);
+	const BOOL momentumScroll = momentum & (NSEventPhaseBegan | NSEventPhaseChanged);
+	if ((awaitingVerticalScrollDirection || awaitingHorizontalScrollDirection) &&
+		(touchScroll || momentumScroll)) {
+		const double deltaX = std::fabs(event.scrollingDeltaX);
+		const double deltaY = std::fabs(event.scrollingDeltaY);
+		// Diagonal momentum may be actively bouncing on both axes. Wait for
+		// a single-axis event before treating the other displacement as stale.
+		const BOOL settleX = awaitingVerticalScrollDirection && deltaY > deltaX &&
+			(touchScroll || deltaX == 0);
+		const BOOL settleY = awaitingHorizontalScrollDirection && deltaX > deltaY &&
+			(touchScroll || deltaY == 0);
+		if (settleX) awaitingVerticalScrollDirection = NO;
+		if (settleY) awaitingHorizontalScrollDirection = NO;
+		NSClipView *clip = self.contentView;
+		if ((settleX || settleY) && clip.documentView) {
+			const NSRect bounds = clip.bounds;
+			const NSRect constrained = [clip constrainBoundsRect:bounds];
+			NSPoint origin = bounds.origin;
+			if (settleX) origin.x = constrained.origin.x;
+			if (settleY) origin.y = constrained.origin.y;
+			if (!NSEqualPoints(origin, bounds.origin)) {
+				// Use actual limits (including insets/magnification), preserve
+				// the active axis, and forward the original event unchanged.
+				[clip scrollToPoint:origin];
+				[self reflectScrolledClipView:clip];
+			}
+		}
+	}
+	[super scrollWheel:event];
+}
+
 - (void) tile {
 	[super tile];
 
@@ -923,13 +980,14 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 //--------------------------------------------------------------------------------------------------
 
 /**
- * Ensure scrolling is aligned to whole lines instead of starting part-way through a line
+ * Keep discrete wheel clicks line-aligned, but preserve precise scrolling positions
  */
 - (NSRect) adjustScroll: (NSRect) proposedVisibleRect {
 	if (!mOwner)
 		return proposedVisibleRect;
 	NSRect rc = proposedVisibleRect;
-	// Snap to lines
+	// Only discrete wheel clicks snap to lines. NSScrollView already supplies
+	// smooth positions for precise gestures and their animation/momentum frames.
 	NSRect contentRect = self.bounds;
 	if ((rc.origin.y > 0) && (NSMaxY(rc) < contentRect.size.height)) {
 		// Only snap for positions inside the document - allow outside
@@ -944,13 +1002,10 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 		// and the scroll is silently dropped — slow wheel users see
 		// nothing happen.
 		//
-		// Trackpad / Magic Mouse precise deltas keep the existing
-		// snap-to-nearest-line so they don't become jumpy. Programmatic
-		// scrolls (Find Next, Goto Line, sync-scroll, …) and animation
-		// frames also fall through to the existing branch since their
-		// currentEvent is not a discrete wheel event. Overshoot at the
-		// document's top/bottom edges is preserved by the surrounding
-		// guard.
+		// Precise gestures and animation frames must retain the proposed Y.
+		// Rounding them to a full line repeats the same position for several
+		// frames, then jumps by a whole line even when drawing is fast.
+		// Programmatic line navigation already supplies line-aligned positions.
 		if (lineHeight > 0) {
 			NSEvent *cur = NSApp.currentEvent;
 			BOOL discreteWheel = cur.type == NSEventTypeScrollWheel
@@ -979,8 +1034,6 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 					}
 				}
 				rc.origin.y = snappedLines * lineHeight;
-			} else {
-				rc.origin.y = std::round(rc.origin.y / lineHeight) * lineHeight;
 			}
 		}
 	}

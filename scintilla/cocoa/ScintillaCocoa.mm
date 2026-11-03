@@ -899,6 +899,22 @@ bool SupportAnimatedFind() {
 sptr_t ScintillaCocoa::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	try {
 		switch (iMessage) {
+		case Message::StyleSetFore:
+		case Message::StyleSetBack:
+		case Message::StyleSetBold:
+		case Message::StyleSetWeight:
+		case Message::StyleSetItalic:
+		case Message::StyleResetDefault:
+		case Message::StyleClearAll: {
+			const sptr_t result = ScintillaBase::WndProc(iMessage, wParam, lParam);
+			// Observe definitions at the backend so plugin direct calls are covered.
+			// Deliver after the batch, never mirror map styles from inside painting.
+			NSNotification *note = [NSNotification notificationWithName:SCIStyleChangedNotification object:sciView];
+			[[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostASAP
+				coalesceMask:(NSNotificationCoalescingOnName | NSNotificationCoalescingOnSender) forModes:nil];
+			return result;
+		}
+
 		case Message::GetDirectFunction:
 			return reinterpret_cast<sptr_t>(DirectFunction);
 
@@ -2196,6 +2212,26 @@ void ScintillaCocoa::IdleTimerFired() {
  * @param gc The context we can use to paint.
  */
 bool ScintillaCocoa::Draw(NSRect rect, CGContextRef gc) {
+	// AppKit can request drawing above document Y=0 during elastic scrolling.
+	// Those pixels are background, not negative display lines. Passing them
+	// to PaintText can repeat line/caret backgrounds into the overscroll area.
+	if (NSMinY(rect) < 0) {
+		RefreshStyleData();
+		const ColourRGBA background = vs.styles[StyleDefault].back;
+		NSRect exposed = rect;
+		exposed.size.height = std::min<CGFloat>(0, NSMaxY(rect)) - NSMinY(rect);
+		CGContextSaveGState(gc);
+		CGContextSetRGBFillColor(gc, background.GetRedComponent(),
+			background.GetGreenComponent(), background.GetBlueComponent(),
+			background.GetAlphaComponent());
+		CGContextFillRect(gc, NSRectToCGRect(exposed));
+		CGContextRestoreGState(gc);
+		const CGFloat bottom = NSMaxY(rect);
+		if (bottom <= 0)
+			return true;
+		rect.origin.y = 0;
+		rect.size.height = bottom;
+	}
 	return SyncPaint(gc, NSRectToPRectangle(rect));
 }
 
