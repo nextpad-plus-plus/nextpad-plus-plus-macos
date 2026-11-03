@@ -672,7 +672,7 @@ static NSMenu *buildLanguageMenu() {
         SEL colorSels[] = {@selector(applyTabColor1:), @selector(applyTabColor2:),
                            @selector(applyTabColor3:), @selector(applyTabColor4:),
                            @selector(applyTabColor5:)};
-        // Color swatch RGB values matching the tab palette
+        // Preset palette color swatches matching the default tab color theme.
         NSArray *swatchColors = @[
             [NSColor colorWithRed:0xFC/255.0 green:0xE3/255.0 blue:0x86/255.0 alpha:1], // Yellow
             [NSColor colorWithRed:0xA9/255.0 green:0xF0/255.0 blue:0x8C/255.0 alpha:1], // Green
@@ -682,7 +682,7 @@ static NSMenu *buildLanguageMenu() {
         ];
         for (int i = 0; i < 5; i++) {
             NSMenuItem *ci = item(colorNames[i], colorSels[i], @"");
-            // Create a small colored square image as the menu item icon
+            // Generate a 12x12 bordered square swatch for the menu item icon.
             NSImage *swatch = [[NSImage alloc] initWithSize:NSMakeSize(12, 12)];
             [swatch lockFocus];
             [swatchColors[i] setFill];
@@ -693,6 +693,31 @@ static NSMenu *buildLanguageMenu() {
             ci.image = swatch;
             [tabViewMenu addItem:ci];
         }
+        // Custom tab color: opens NSColorPanel for arbitrary color selection.
+        NSMenuItem *customCI = item(@"Custom Color", @selector(applyTabCustomColor:), @"");
+
+        // Use system 'paintpalette' SF Symbol with a procedural gradient fallback.
+        NSImage *wheelImg = [NSImage imageWithSystemSymbolName:@"paintpalette"
+                                      accessibilityDescription:nil];
+        if (!wheelImg) {
+            wheelImg = [[NSImage alloc] initWithSize:NSMakeSize(12, 12)];
+            [wheelImg lockFocus];
+            NSArray *rainbowColors = @[
+                [NSColor colorWithRed:1 green:0   blue:0   alpha:1],
+                [NSColor colorWithRed:1 green:0.6 blue:0   alpha:1],
+                [NSColor colorWithRed:1 green:1   blue:0   alpha:1],
+                [NSColor colorWithRed:0 green:0.8 blue:0   alpha:1],
+                [NSColor colorWithRed:0 green:0.6 blue:1   alpha:1],
+                [NSColor colorWithRed:0.6 green:0 blue:1   alpha:1],
+            ];
+            NSGradient *g = [[NSGradient alloc] initWithColors:rainbowColors];
+            [g drawInRect:NSMakeRect(1, 1, 10, 10) angle:0];
+            [[NSColor grayColor] setStroke];
+            [NSBezierPath strokeRect:NSMakeRect(0.5, 0.5, 11, 11)];
+            [wheelImg unlockFocus];
+        }
+        customCI.image = wheelImg;
+        [tabViewMenu addItem:customCI];
         [tabViewMenu addItem:item(@"Remove Color", @selector(removeTabColor:), @"")];
     }
     [viewMenu addItem:withSubmenu(@"Tab", tabViewMenu)];
