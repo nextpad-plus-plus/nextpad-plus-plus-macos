@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "NppApplication.h"
 #import "MainWindowController.h"
 #import "MenuBuilder.h"
@@ -119,6 +120,10 @@ static void NppRecoveryDone(void) {
 
     // Apply saved shortcut overrides from shortcuts.xml <InternalCommands>
     [self _loadShortcutOverrides];
+
+    // Create langs.xml / stylers.xml, or merge new model entries into them,
+    // before anything reads them.
+    NppInstallUserLangsAndStylers();
 
     // Load built-in language definitions from langs.xml (keywords, extensions, comments).
     [[NppLangsManager shared] loadLangs];
@@ -501,7 +506,7 @@ static void NppRecoveryDone(void) {
 
     if (lastEditor) {
         if (cli.language.length) [lastEditor setLanguage:cli.language];
-        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName];
+        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName preferUDL:YES];
         if (cli.readOnly) [lastEditor.scintillaView message:SCI_SETREADONLY wParam:1 lParam:0];
         if (cli.monitorFiles) lastEditor.monitoringMode = YES;
 

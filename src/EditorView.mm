@@ -1,9 +1,11 @@
 #import "EditorView.h"
+#import "NppTextEncoding.h"
 #import "NppPaths.h"
 #import "NppApplication.h"
 #import "NppLangsManager.h"
 #import "UserDefineLangManager.h"
 #import "NppBuiltinLanguages.h"
+#import "NppKeywordSlots.h"
 #import "NppPluginManager.h"
 #import "PreferencesWindowController.h"
 #import "SearchEngine.h"   // #166 Phase 1: replay Windows Find/Replace (type-3) macros
@@ -156,10 +158,11 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
             // .md/.markdown intentionally NOT mapped here — markdown is no
             // longer a built-in language; the preinstalled Markdown UDL
             // (~/Library/Application Support/Nextpad++/userDefineLangs/markdown._preinstalled.udl.xml)
-            // claims these extensions and is resolved via the UDL fallback
-            // in loadFileAtPath:. Mapping them to "markdown" here would
-            // shadow that fallback and leave the file plain (issue #130
-            // follow-up to the Windows-table menu overhaul).
+            // claims these extensions; languageNameForFileName() checks
+            // UDLs first. Without that UDL (e.g. the user deleted it) a
+            // "markdown" mapping here would leave the file plain, as there
+            // is no built-in markdown lexer (issue #130 follow-up to the
+            // Windows-table menu overhaul).
             @"tex"  : @"latex",   @"latex": @"latex",
             @"yml"  : @"yaml",    @"yaml" : @"yaml",
             @"toml" : @"toml",
@@ -203,6 +206,20 @@ static NSDictionary<NSString *, NSString *> *extensionLanguageMap() {
         map = [m copy];
     });
     return map;
+}
+
+// Language for a file name (no directory). A User Defined Language whose
+// ext= list claims the extension (or the whole name, when it has a dot) wins
+// over the built-in map, as on Windows (Buffer::setFileName checks
+// getUserDefinedLangNameFromExt first), so a user's UDL for an extension a
+// built-in also claims takes effect. For a light/dark UDL pair the variant
+// matching the editor theme is picked. *isUDL says which kind the name is,
+// for setLanguage:preferUDL: (a UDL may share a built-in's name).
+static NSString *languageNameForFileName(NSString *fileName, BOOL *isUDL) {
+    UserDefinedLang *udl = [[UserDefineLangManager shared] languageForFileName:fileName ?: @""];
+    *isUDL = (udl.name.length > 0);
+    if (*isUDL) return udl.name;
+    return extensionLanguageMap()[fileName.pathExtension.lowercaseString] ?: @"";
 }
 
 // Mirrors NPP's per-buffer ID — gives each untitled tab a unique number ("new 1", "new 2" …)
@@ -252,18 +269,10 @@ static NSStringEncoding canonicalCJKEncoding(NSStringEncoding ns) {
     }
 }
 
-// Files larger than the threshold get a warning + large-file mode (no syntax,
-// no undo, plus per-feature gates from Performance prefs). When the user has
-// disabled "Enable Large File Restriction" entirely, returns SIZE_MAX so no
-// file ever crosses the threshold.
-static NSUInteger nppLargeFileThreshold(void) {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if (![ud boolForKey:kPrefLargeFileEnabled]) return NSUIntegerMax;
-    NSInteger mb = [ud integerForKey:kPrefLargeFileSizeMB];
-    if (mb < 1)    mb = 1;
-    if (mb > 2046) mb = 2046;
-    return (NSUInteger)mb * 1024UL * 1024UL;
-}
+// Files larger than the threshold (NppLargeFileThreshold, NppTextEncoding.h)
+// get a warning + large-file mode (no syntax, no undo, plus per-feature gates
+// from Performance prefs). Find in Files skips the charset detector above the
+// same size.
 
 // Scintilla's EOL mode is a per-document property and every new document
 // starts as SC_EOL_LF on macOS. New tabs take the "Default line ending" pref
@@ -392,10 +401,10 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 /// (removed), fall back to plain text like Windows (L_TEXT).
 - (void)_userDefineLangsChanged:(NSNotification *)n {
     NSString *name = n.userInfo[@"name"], *oldName = n.userInfo[@"oldName"];
-    if (!_currentLanguage.length || !name.length) return;
+    if (!_currentLanguageIsUDL || !_currentLanguage.length || !name.length) return;
     if (![_currentLanguage isEqualToString:(oldName ?: name)]) return;
     BOOL exists = [[UserDefineLangManager shared] languageNamed:name] != nil;
-    [self setLanguage:exists ? name : @""];
+    [self setLanguage:exists ? name : @"" preferUDL:YES];
 }
 
 - (void)dealloc {
@@ -454,7 +463,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _dirtyFromBackup = source->_dirtyFromBackup;
     _largeFileMode = source->_largeFileMode;
     if (source.currentLanguage.length)
-        [self setLanguage:source.currentLanguage];
+        [self setLanguage:source.currentLanguage preferUDL:source.currentLanguageIsUDL];
 
     // Establish bidirectional sibling link.
     self.cloneSibling = source;
@@ -470,7 +479,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     NSUInteger fileSize = 0;
     if (attrs) fileSize = (NSUInteger)[attrs[NSFileSize] unsignedLongLongValue];
 
-    BOOL large = (fileSize > nppLargeFileThreshold());
+    BOOL large = (fileSize > NppLargeFileThreshold());
     if (large) {
         // The 2 GB suppress-warning toggle silences the dialog ONLY for files
         // ≥2 GB — smaller large files still prompt the user, since the prompt
@@ -595,38 +604,24 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             enc = NSISOLatin1StringEncoding;
             utf8Data = rawData;
         } else {
-            // Small non-UTF-8: first ask macOS's heuristic charset detector — it
-            // covers the CJK encodings the old Win-1252/Latin-1 fallback turned into
-            // mojibake (GBK/GB18030, Big5, Shift-JIS, EUC, …). We only trust a result
-            // that decoded *without* lossy substitution; anything else falls through
-            // to the unchanged Win-1252/Latin-1 path, so Western files never regress.
-            NSString *detected = nil;
-            BOOL detLossy = NO;
-            NSStringEncoding guess = [NSString stringEncodingForData:rawData
-                                                    encodingOptions:nil
-                                                    convertedString:&detected
-                                                usedLossyConversion:&detLossy];
-            if (detected && guess != 0 && !detLossy && guess != NSUTF8StringEncoding) {
-                NSStringEncoding canon = canonicalCJKEncoding(guess);
-                enc = canon ?: guess;
-                utf8Data = [detected dataUsingEncoding:NSUTF8StringEncoding];
-            }
-
-            if (!utf8Data) {
-                // Fallback: try Win-1252, then Latin-1 (cheap walk on small files).
-                NSStringEncoding win1252 = nppEnc(kCFStringEncodingWindowsLatin1);
-                NSString *content = [[NSString alloc] initWithData:rawData encoding:win1252];
-                if (content) {
-                    enc = win1252;
-                    utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                } else {
-                    content = [[NSString alloc] initWithData:rawData
-                                                    encoding:NSISOLatin1StringEncoding];
-                    if (content) {
-                        enc = NSISOLatin1StringEncoding;
-                        utf8Data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                    }
-                }
+            // Small non-UTF-8: shared legacy detection (NppTextEncoding) so the
+            // editor and Find/Replace in Files decode a file the same way. The
+            // detector covers the CJK encodings the old Win-1252/Latin-1
+            // fallback turned into mojibake (GBK/GB18030, Big5, Shift-JIS,
+            // EUC, ...); otherwise Win-1252, then Latin-1. The editor runs the
+            // detector over the whole (small) file. A detector result whose
+            // UTF-8 conversion fails is vetoed so Win-1252/Latin-1 get a turn.
+            __block NSData *detectedUTF8 = nil;
+            NSStringEncoding legacyEnc = 0;
+            NSString *content = NppDecodeLegacyText(rawData, NppDetectorWholeData, &legacyEnc,
+                                                    ^BOOL(NSString *text) {
+                detectedUTF8 = [text dataUsingEncoding:NSUTF8StringEncoding];
+                return detectedUTF8 != nil;
+            });
+            if (content) {
+                NSStringEncoding canon = canonicalCJKEncoding(legacyEnc);
+                enc = canon ?: legacyEnc;
+                utf8Data = detectedUTF8 ?: [content dataUsingEncoding:NSUTF8StringEncoding];
             }
         }
     }
@@ -691,14 +686,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     _largeFileMode = large;
 
-    NSString *ext = path.pathExtension.lowercaseString;
-    NSString *lang = extensionLanguageMap()[ext] ?: @"";
-    // Issue #130 — built-in extensions take precedence; if none matches, fall
-    // back to a User Defined Language whose ext= list claims this extension.
-    if (!lang.length) {
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:ext];
-        if (udl) lang = udl.name;
-    }
+    BOOL langIsUDL = NO;
+    NSString *lang = languageNameForFileName(path.lastPathComponent, &langIsUDL);
     if (large) {
         // Syntax highlighting off (undo was already disabled before SCI_ADDTEXT
         // above — see "Pre-insert undo gate" comment).
@@ -711,7 +700,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             [_scintillaView message:SCI_SETWRAPMODE wParam:SC_WRAP_NONE];
         }
     } else {
-        [self setLanguage:lang];
+        [self setLanguage:lang preferUDL:langIsUDL];
         // Re-enable undo in case this tab was previously in large-file mode.
         [_scintillaView message:SCI_SETUNDOCOLLECTION wParam:1 lParam:0];
     }
@@ -882,16 +871,15 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     _lastKnownModDate = [[NSFileManager defaultManager]
                          attributesOfItemAtPath:path error:nil][NSFileModificationDate];
 
-    // Re-detect language if the file extension changed (e.g. Save As with new name)
-    NSString *oldExt = oldPath.pathExtension.lowercaseString ?: @"";
-    NSString *newExt = path.pathExtension.lowercaseString ?: @"";
-    if (![oldExt isEqualToString:newExt]) {
-        NSString *lang = extensionLanguageMap()[newExt] ?: @"";
-        if (!lang.length) {  // issue #130 — UDL extension fallback
-            UserDefinedLang *udl = [[UserDefineLangManager shared] languageForExtension:newExt];
-            if (udl) lang = udl.name;
-        }
-        [self setLanguage:lang];
+    // Re-detect the language when Save As / rename changes what the name
+    // maps to (its extension, or a whole-name UDL ext= entry such as
+    // "foo.conf"). A language picked by hand survives a rename that does not
+    // change the detected language.
+    BOOL oldIsUDL = NO, newIsUDL = NO;
+    NSString *oldDetected = languageNameForFileName(oldPath.lastPathComponent ?: @"", &oldIsUDL);
+    NSString *newDetected = languageNameForFileName(path.lastPathComponent, &newIsUDL);
+    if (![oldDetected isEqualToString:newDetected] || oldIsUDL != newIsUDL) {
+        [self setLanguage:newDetected preferUDL:newIsUDL];
     }
 
     // Issue #76 — DO NOT call updateGitDiffMarkers here unconditionally.
@@ -1219,9 +1207,14 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 #pragma mark - Language / Lexer
 
 - (void)setLanguage:(NSString *)languageName {
+    [self setLanguage:languageName preferUDL:NO];
+}
+
+- (void)setLanguage:(NSString *)languageName preferUDL:(BOOL)preferUDL {
     _selectionHighlightsDirty = YES;
     _braceStylesDirty = YES;
     _currentLanguage = [languageName copy];
+    _currentLanguageIsUDL = NO;
 
     // Reset all styles to STYLE_DEFAULT before switching language.
     // This prevents stale styles from a previous language from bleeding through.
@@ -1243,7 +1236,11 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
         return;
     }
 
-    NSString *lexerName = languageLexerNameMap()[languageName.lowercaseString];
+    // A UDL that must win over a built-in of the same name skips the
+    // built-in lookup.
+    UserDefinedLang *preferredUDL = preferUDL
+        ? [[UserDefineLangManager shared] languageNamed:languageName] : nil;
+    NSString *lexerName = preferredUDL ? nil : languageLexerNameMap()[languageName.lowercaseString];
     if (!lexerName) {
         // Not a built-in language. Try a User Defined Language of this exact
         // name (issue #130). Routing UDLs through setLanguage: makes them work
@@ -1251,9 +1248,10 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
         // restore, and the Language menu — not just the manual menu selection.
         // STYLECLEARALL above already reset styles; applyLanguage: then installs
         // the user lexer and the UDL's WordsStyle colors on top.
-        UserDefinedLang *udl = [[UserDefineLangManager shared] languageNamed:languageName];
+        UserDefinedLang *udl = preferredUDL ?: [[UserDefineLangManager shared] languageNamed:languageName];
         if (udl) {
             [[UserDefineLangManager shared] applyLanguage:udl toScintillaView:_scintillaView];
+            _currentLanguageIsUDL = YES;
         } else {
             [self applyPreferencesFromDefaults];
         }
@@ -1671,34 +1669,21 @@ static NSString *nppEditorFontName(NSString *name) {
     // applyLexerColors is a no-op (NPPStyleStore only knows built-in lexers),
     // so SCI_STYLECLEARALL above would otherwise leave UDL-styled tabs as
     // plain text after every theme toggle. Re-route UDLs through the UDL
-    // apply path, and re-resolve by file extension so a multi-variant UDL
+    // apply path, and re-resolve by file name so a multi-variant UDL
     // (the markdown light/dark preinstalled pair) picks the variant matching
-    // the new dark-mode state.
+    // the new editor theme.
     if (_currentLanguage.length) {
         UserDefineLangManager *udlMgr = [UserDefineLangManager shared];
-        UserDefinedLang *udl = [udlMgr languageNamed:_currentLanguage];
+        // The flag, not the name, says whether this is a UDL: a built-in
+        // "python" must not be swapped for a UDL that happens to share it.
+        UserDefinedLang *udl = _currentLanguageIsUDL ? [udlMgr languageNamed:_currentLanguage] : nil;
         if (udl) {
-            // Default: re-apply the same UDL. Only re-resolve by extension
-            // (which picks the theme-matching variant for multi-variant UDLs
-            // like the markdown light/dark pair) when the *current* UDL
-            // actually claims this file's extension. Otherwise the user
+            // Default: re-apply the same UDL. Only switch to the
+            // theme-matching variant (markdown light/dark pair) when the
+            // *current* UDL actually claims this file. Otherwise the user
             // manually picked a UDL whose ext list doesn't include this
             // file (an override) — respect that choice.
-            UserDefinedLang *target = udl;
-            NSString *ext = _filePath.pathExtension.lowercaseString;
-            if (ext.length) {
-                BOOL currentClaimsExt = NO;
-                for (NSString *e in [udl.extensions componentsSeparatedByString:@" "]) {
-                    if ([e.lowercaseString isEqualToString:ext]) {
-                        currentClaimsExt = YES;
-                        break;
-                    }
-                }
-                if (currentClaimsExt) {
-                    UserDefinedLang *resolved = [udlMgr languageForExtension:ext];
-                    if (resolved) target = resolved;
-                }
-            }
+            UserDefinedLang *target = [udlMgr variantOf:udl forFileName:_filePath.lastPathComponent];
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {
@@ -2804,73 +2789,45 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
-
-    // Some languages share lexers — map to the canonical language for keyword lookup.
-    // c, objc, swift all use the cpp lexer; javascript.js uses javascript.
-    NSString *kwLang = lang;
-    if ([@[@"c", @"objc"] containsObject:lang]) kwLang = @"cpp";
-    if ([lang isEqualToString:@"javascript.js"]) kwLang = @"javascript";
+    // Legacy "javascript" tabs (L_JS_EMBEDDED) read the javascript.js lists, so
+    // treat them as javascript.js for the own-list check below.
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";
 
     NppLangsManager *lm = [NppLangsManager shared];
     BOOL fed = NO;
 
-    // Keyword class names → Scintilla SCI_SETKEYWORDS index.
-    // The mapping follows the most common pattern used by Scintilla lexers:
-    // instre1→0, type1→1, instre2→2, type2→3, type3→4, type4→5, type5→6, type6→7, type7→8
-    static NSDictionary<NSString *, NSNumber *> *kwClassToIndex;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        kwClassToIndex = @{
-            @"instre1": @0, @"type1": @1, @"instre2": @2,
-            @"type2": @3, @"type3": @4, @"type4": @5,
-            @"type5": @6, @"type6": @7, @"type7": @8,
-        };
-    });
-
-    // Issue #28 — LexHTML's WordListSet uses bespoke slot semantics that
-    // diverge from the universal `instre1=0` convention. The slot layout
-    // (htmlWordListDesc[] in lexilla/lexers/LexHTML.cxx) is:
-    //   0 = HTML elements & attributes (lowercased)
-    //   1 = JavaScript keywords
-    //   2 = VBScript keywords
-    //   3 = Python keywords
-    //   4 = PHP keywords
-    //   5 = SGML/DTD keywords
-    // langs.xml exposes each language's keywords under `instre1` (and HTML
-    // also under `instre2` for DTD), so without an override:
-    //   • PHP keywords land in slot 0 → never matched as SCE_HPHP_WORD
-    //   • ASP/VB keywords land in slot 0 → never matched as SCE_HB_WORD
-    //   • HTML's instre2 (DTD) lands in slot 2 (VBScript) → never matched
-    //   • XML's instre1 (DTD) lands in slot 0 → never matched
-    // All other 127 Lexilla lexers follow `slot 0 = primary keywords`, so the
-    // generic mapping is correct for them. The override only triggers for
-    // LexHTML-family languages.
-    NSDictionary<NSString *, NSNumber *> *idxOverride = nil;
-    if ([kwLang isEqualToString:@"php"]) {
-        idxOverride = @{ @"instre1": @4 };               // PHP keywords
-    } else if ([kwLang isEqualToString:@"asp"]) {
-        idxOverride = @{ @"instre1": @2 };               // VBScript keywords
-    } else if ([kwLang isEqualToString:@"html"]) {
-        idxOverride = @{ @"instre2": @5 };               // SGML/DTD; instre1 already correct (HTML tags → slot 0)
-    } else if ([kwLang isEqualToString:@"xml"]) {
-        idxOverride = @{ @"instre1": @5 };               // SGML/DTD
-    }
-
-    // Feed keywords from langs.xml for all keyword classes
-    for (NSString *kwClass in kwClassToIndex) {
-        NSString *kw = [lm keywordsForLanguage:kwLang keywordClass:kwClass];
+    // Feed langs.xml keyword groups into the lexer's word list slots the way
+    // Windows Notepad++ does. The group-to-slot table (generic LIST_n masks
+    // plus the bespoke C++/JS/ObjC/TCL/JSON/XML/HTML setters) lives in
+    // NppKeywordSlots.mm. Some slots read another language's list: doxygen
+    // tags come from cpp's type2, and HTML/PHP/ASP/JSP all load the HTML,
+    // embedded JavaScript, VBScript and PHP lists into LexHTML's slots.
+    // Several entries may target one slot; their words are merged (deduped).
+    // Only the language's own lists count as "fed": a lone cross-language
+    // list such as cpp's doxygen tags must not suppress the fallback below.
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *kw = [lm keywordsForLanguage:src keywordClass:@(slots[i].group)];
         if (!kw.length) continue;
-        NSNumber *ov = idxOverride[kwClass];
-        NSInteger idx = ov ? ov.integerValue : kwClassToIndex[kwClass].integerValue;
-        const char *utf8 = kw.UTF8String;
-        [sci message:SCI_SETKEYWORDS wParam:(uptr_t)idx lParam:(sptr_t)utf8];
-        fed = YES;
+        NSMutableOrderedSet *set = words[@(slots[i].slot)];
+        if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
+        for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
+            if (w.length) [set addObject:w];
+        if ([src isEqualToString:lang]) fed = YES;
+    }
+    for (NSNumber *slot in words) {
+        NSString *kw = [words[slot].array componentsJoinedByString:@" "];
+        [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
     }
 
     if (fed) return;
 
-    // Hardcoded fallback for the 4 languages that had keywords before langs.xml
-    if ([kwLang isEqualToString:@"cpp"]) {
+    // Hardcoded fallback, used only when langs.xml supplied nothing (e.g. it
+    // failed to load). Every list here is primary keywords, so slot 0.
+    if ([@[@"c", @"cpp", @"objc"] containsObject:lang]) {
         const char *kw = "alignas alignof and and_eq asm auto bitand bitor bool break case catch char "
             "char8_t char16_t char32_t class compl concept const consteval constexpr constinit "
             "const_cast continue co_await co_return co_yield decltype default delete do double "
@@ -2881,18 +2838,18 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
             "typedef typeid typename union unsigned using virtual void volatile wchar_t while "
             "xor xor_eq";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"python"]) {
+    } else if ([lang isEqualToString:@"python"]) {
         const char *kw = "False None True and as assert async await break class continue def del "
             "elif else except finally for from global if import in is lambda nonlocal not or "
             "pass raise return try while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"javascript"]) {
+    } else if ([@[@"javascript", @"javascript.js"] containsObject:lang]) {
         const char *kw = "async await break case catch class const continue debugger default "
             "delete do else export extends false finally for from function if import in "
             "instanceof let new null of return static super switch this throw true try typeof "
             "undefined var void while with yield";
         [sci message:SCI_SETKEYWORDS wParam:0 lParam:(sptr_t)kw];
-    } else if ([kwLang isEqualToString:@"sql"]) {
+    } else if ([lang isEqualToString:@"sql"]) {
         const char *kw = "add all alter and any as asc authorization backup begin between by "
             "cascade case check close clustered coalesce column commit compute constraint "
             "contains containstable continue convert create cross current current_date "
@@ -2937,11 +2894,13 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
     if (!lang.length) return;
     ScintillaView *sci = _scintillaView;
 
-    // Map EditorView language names to NPP style-store lexer IDs
+    // C, Objective-C and TypeScript have their own style sections (as on
+    // Windows). Only the legacy "javascript" tab language (a file opened as
+    // JavaScript before the javascript.js rename) needs mapping: its lexer is
+    // cpp, so it takes the JavaScript file styles, not the embedded-JS ones.
     NSString *lid = lang.lowercaseString;
-    if ([lid isEqualToString:@"c"] || [lid isEqualToString:@"objc"]) lid = @"cpp";
-    else if ([lid isEqualToString:@"javascript"] || [lid isEqualToString:@"typescript"])
-                                                                      lid = @"cpp";
+    if ([lid isEqualToString:@"javascript"]) lid = @"javascript.js";
+    BOOL objc = [lid isEqualToString:@"objc"];
 
     NPPStyleStore *store = [NPPStyleStore sharedStore];
     NSArray<NPPStyleEntry *> *styles = [store stylesForLexer:lid];
@@ -2968,6 +2927,14 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
 
     for (NPPStyleEntry *e in styles) {
         int sid = e.styleID;
+        // stylers.model.xml and every theme (upstream too) list the ObjC
+        // DIRECTIVE/QUALIFIER styles as 19/20, but LexObjC emits
+        // SCE_OBJC_DIRECTIVE (20) and SCE_OBJC_QUALIFIER (21). Apply them by
+        // name so QUALIFIER no longer paints @-directives.
+        if (objc) {
+            if ([e.name isEqualToString:@"DIRECTIVE"])      sid = SCE_OBJC_DIRECTIVE;
+            else if ([e.name isEqualToString:@"QUALIFIER"]) sid = SCE_OBJC_QUALIFIER;
+        }
 
         // fg
         if (ovFg && gov) {
@@ -4536,8 +4503,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)line];
     if (startPos >= endPos) return NO;
 
-    // Use std::regex (CXX11REGEX) so the `|` alternations in `expr` actually
-    // work — Scintilla's POSIX RESearch treats `|` as a literal pipe.
+    // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the `|`
+    // alternations in `expr` work. (SCFIND_CXX11REGEX is ignored there.)
     [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
     [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 
@@ -4713,8 +4680,8 @@ static NSSet<NSString *> *_cLikeLanguages() {
         sptr_t endPos   = [sci message:SCI_GETLINEENDPOSITION wParam:(uptr_t)prevLine];
 
         if (startPos < endPos) {
-            // Use std::regex (CXX11REGEX) so the `(#|$)` alternation works —
-            // POSIX RESearch would match the parens/pipe literally.
+            // SCFIND_REGEXP goes to the Boost backend (SCI_OWNREGEX), so the
+            // `(#|$)` alternation works. (SCFIND_CXX11REGEX is ignored there.)
             [sci message:SCI_SETSEARCHFLAGS wParam:SCFIND_REGEXP | SCFIND_CXX11REGEX];
             [sci message:SCI_SETTARGETRANGE wParam:(uptr_t)startPos lParam:endPos];
 

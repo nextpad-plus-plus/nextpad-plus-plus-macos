@@ -173,6 +173,11 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 	if (self != nil) {
 		owner = nil;
 		marginWidth = 20;
+		// A partial first/last line must not paint over neighboring views.
+		// NSView no longer clips to its bounds by default with the macOS 14 SDK.
+		if (@available(macOS 14.0, *)) {
+			self.clipsToBounds = YES;
+		}
 		currentCursors = [NSMutableArray arrayWithCapacity: 0];
 		for (size_t i=0; i<=SC_MAX_MARGIN; i++) {
 			[currentCursors addObject: reverseArrowCursor];

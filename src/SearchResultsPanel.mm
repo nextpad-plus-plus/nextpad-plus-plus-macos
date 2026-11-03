@@ -470,10 +470,10 @@ static sptr_t _srSciColor(NSColor *c) {
 
     [_sci message:SCI_SETREADONLY wParam:0];
 
-    // Count total hits
+    // Count total hits (a line can hold several)
     NSInteger totalHits = 0;
     for (NPPFileResults *fr in fileResults)
-        totalHits += (NSInteger)fr.results.count;
+        totalHits += fr.hitCount;
 
     // Search mode label
     NSString *modeLabel = @"Normal";
@@ -537,10 +537,11 @@ static sptr_t _srSciColor(NSColor *c) {
 
     for (NPPFileResults *fileRes in fileResults) {
         // File header
+        const NSInteger fileHits = fileRes.hitCount;
         NSString *fileHeader = [NSString stringWithFormat:@" %@ (%ld hit%@)\n",
             fileRes.filePath,
-            (long)fileRes.results.count,
-            fileRes.results.count == 1 ? @"" : @"s"];
+            (long)fileHits,
+            fileHits == 1 ? @"" : @"s"];
         // wParam = UTF-8 byte count, not character count — see issue #46 note above.
         [_sci message:SCI_APPENDTEXT
                      wParam:[fileHeader lengthOfBytesUsingEncoding:NSUTF8StringEncoding]
@@ -561,22 +562,36 @@ static sptr_t _srSciColor(NSColor *c) {
             const char *prefixUTF8 = linePrefix.UTF8String;
             size_t prefixBytes = strlen(prefixUTF8);
 
-            // Convert character-based matchStart to byte offset in lineText
-            NSString *beforeMatch = [r.lineText substringToIndex:MIN((NSUInteger)r.matchStart, r.lineText.length)];
-            size_t matchByteStart = strlen(beforeMatch.UTF8String);
-            NSString *matchStr = @"";
-            if (r.matchStart + r.matchLength <= (NSInteger)r.lineText.length)
-                matchStr = [r.lineText substringWithRange:NSMakeRange(r.matchStart, r.matchLength)];
-            size_t matchByteLen = strlen(matchStr.UTF8String);
-
+            // One highlighted segment per hit on the line (as Notepad++ lists a
+            // line once, with all its hits). Ranges are UTF-16 offsets into
+            // lineText; the lexer wants UTF-8 byte offsets into the result line.
+            // Hits come left to right, so convert incrementally.
             SearchResultMarkingLine marking = {};
-            if (matchByteLen > 0) {
+            const NSUInteger textLength = r.lineText.length;
+            NSUInteger convertedUnits = 0;
+            size_t convertedBytes = 0;
+            auto bytesUpTo = [&](NSUInteger units) -> size_t {
+                units = MIN(units, textLength);
+                if (units < convertedUnits) { convertedUnits = 0; convertedBytes = 0; }
+                convertedBytes += [[r.lineText substringWithRange:NSMakeRange(convertedUnits, units - convertedUnits)]
+                                     lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+                convertedUnits = units;
+                return convertedBytes;
+            };
+            NSArray<NSValue *> *ranges = r.matchRanges;
+            if (!ranges.count)
+                ranges = @[[NSValue valueWithRange:NSMakeRange((NSUInteger)r.matchStart, (NSUInteger)r.matchLength)]];
+            for (NSValue *v in ranges) {
+                const NSRange range = v.rangeValue;
+                const size_t matchByteStart = bytesUpTo(range.location);
+                const size_t matchByteEnd   = bytesUpTo(range.location + range.length);
+                if (matchByteEnd <= matchByteStart) continue;   // empty match: nothing to colour
                 // LexSearchResult: ColourTo(startLine + mi.first - 1, DEFAULT) then
                 // ColourTo(startLine + mi.second - 1, WORD2SEARCH).
                 // So mi.first = offset of first highlighted byte (0-based within line buffer)
                 // and mi.second = offset of last highlighted byte + 1
                 intptr_t segStart = (intptr_t)(prefixBytes + matchByteStart);
-                intptr_t segEnd   = (intptr_t)(prefixBytes + matchByteStart + matchByteLen);
+                intptr_t segEnd   = (intptr_t)(prefixBytes + matchByteEnd);
                 marking._segmentPostions.push_back(std::make_pair(segStart, segEnd));
             }
             _markingLines.push_back(marking);

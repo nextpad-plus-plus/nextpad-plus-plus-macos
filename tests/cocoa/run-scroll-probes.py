@@ -26,7 +26,8 @@ objects = sorted((build / 'CMakeFiles/NotepadPlusPlusMac.dir/src').glob('*.o'))
 # Compile path helpers from source, so even a build with diagnostic config-path
 # overrides runs the tests with this disposable profile.
 objects = [p for p in objects if p.name not in {'main.mm.o', 'NppPaths.mm.o', 'NppLocalizer.mm.o'}]
-if not objects or not (build / 'libscintilla.a').exists():
+scintilla_libraries = [build / name for name in ('libscintilla.a', 'libscintilla_core.a')]
+if not objects or not all(path.exists() for path in scintilla_libraries):
     sys.exit('Build the application with CMake first, then pass that build directory.')
 common = ['clang++', '-std=c++17', '-fobjc-arc', '-O2', '-g']
 for folder in ['src', 'scintilla/include', 'scintilla/src', 'scintilla/cocoa', 'lexilla/include']:
@@ -38,7 +39,7 @@ for test in (sys.argv[2:] or ['ScrollProbe', 'EditorScrollProbe', 'OverscrollPro
     if test in {'EditorScrollProbe', 'ScrollWorkProbe'}:
         command += [str(p) for p in objects]
         command += [str(root / 'src/NppPaths.mm'), str(root / 'src/NppLocalizer.mm')]
-    command += [str(build / 'libscintilla.a')]
+    command += [str(path) for path in scintilla_libraries]
     if test in {'EditorScrollProbe', 'ScrollWorkProbe'}:
         command += [str(build / 'liblexilla.a')]
     for framework in ['Cocoa', 'QuartzCore', 'UniformTypeIdentifiers', 'CoreGraphics']:
