@@ -152,10 +152,6 @@ typedef struct {
 /// dark (light-on-dark) variants: DarkAqua appearance, dark icon set.
 + (BOOL)isDarkColor:(NSColor *)color;
 
-/// Aqua or DarkAqua to match content drawn on `color` (via +isDarkColor:).
-/// For views painted with the editor theme background rather than the chrome.
-+ (NSAppearance *)appearanceForBackground:(NSColor *)color;
-
 /// Load a tabbar icon by name (e.g. "closeTabButton"). Uses current theme directory.
 - (nullable NSImage *)tabbarIconNamed:(NSString *)name;
 
