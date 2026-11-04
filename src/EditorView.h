@@ -76,6 +76,13 @@ extern NSNotificationName const EditorViewZoomDidChangeNotification;
 @property (nonatomic, readonly) NSString *encodingName;  // "UTF-8", "UTF-8 BOM", etc.
 @property (nonatomic, readonly) NSString *eolName;       // "LF" / "CR" / "CRLF"
 @property (nonatomic, readonly) BOOL hasBOM;             // YES if file has/should have BOM
+@property (nonatomic, readonly) NSStringEncoding fileEncoding; // encoding used to read/save the file
+// Modification date and size of the file as last read by a load or written by
+// a save (nil and 0 before either). Unlike the external-change poll's record,
+// they do not advance when the user ignores a newer version on disk, so they
+// identify the bytes the buffer was decoded from.
+@property (nonatomic, readonly, nullable) NSDate *loadedFileDate;
+@property (nonatomic, readonly) unsigned long long loadedFileSize;
 
 // Current language name (e.g. "python"). Empty string = plain text.
 @property (nonatomic, copy) NSString *currentLanguage;
