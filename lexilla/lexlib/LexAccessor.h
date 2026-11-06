@@ -113,6 +113,7 @@ public:
 		}
 		return true;
 	}
+	[[nodiscard]] bool Match(Sci_Position pos, std::string_view sv);
 	bool MatchIgnoreCase(Sci_Position pos, const char *s);
 
 	// Get first len - 1 characters in range [startPos_, endPos_).
@@ -180,7 +181,7 @@ public:
 		startSeg = pos;
 	}
 	void ColourTo(Sci_PositionU pos, int chAttr) {
-		// Only perform styling if non empty range
+		// Only perform styling for non empty range [startSeg, pos + 1)
 		pos += 1; // pos could be -1
 		assert(pos >= startSeg && pos <= static_cast<Sci_PositionU>(Length()));
 		if (pos > startSeg) {
