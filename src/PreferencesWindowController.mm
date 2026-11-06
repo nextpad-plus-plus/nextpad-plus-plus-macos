@@ -645,14 +645,25 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         return container;
     }
 
-    NSTextField *tf = [tv makeViewWithIdentifier:@"cell" owner:nil];
-    if (!tf) {
-        tf = [NSTextField labelWithString:@""];
-        tf.identifier = @"cell";
+    NSTableCellView *cell = [tv makeViewWithIdentifier:@"sidebarCell" owner:nil];
+    if (!cell) {
+        cell = [[NSTableCellView alloc] initWithFrame:NSZeroRect];
+        cell.identifier = @"sidebarCell";
+
+        NSTextField *tf = [NSTextField labelWithString:@""];
+        tf.translatesAutoresizingMaskIntoConstraints = NO;
         tf.font = [NSFont systemFontOfSize:13];
+        [cell addSubview:tf];
+        cell.textField = tf;
+
+        [NSLayoutConstraint activateConstraints:@[
+            [tf.leadingAnchor constraintEqualToAnchor:cell.leadingAnchor constant:8],
+            [tf.trailingAnchor constraintLessThanOrEqualToAnchor:cell.trailingAnchor constant:-8],
+            [tf.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor],
+        ]];
     }
-    tf.stringValue = name;
-    return tf;
+    cell.textField.stringValue = name;
+    return cell;
 }
 
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
