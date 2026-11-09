@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// explicitly rather than inferred from -[NSWindow isVisible], which is also NO
 /// for a merely miniaturized window.
 @property (nonatomic, readonly) BOOL windowHasClosed;
+/// While YES, closed tabs are not added to Restore Recent Closed File (batch runs).
+@property (nonatomic) BOOL suppressClosedFileRecording;
 
 /// Write session.plist covering the tabs of EVERY open window, and prune backup
 /// files no longer referenced by any of them.
