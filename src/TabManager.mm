@@ -295,6 +295,10 @@
         [editor discardBackup];
     }
 
+    // The tab that stays selected when a background tab closes.
+    EditorView *current = self.currentEditor;
+    if (current == editor) current = nil;
+
     // Unregister file presenter so the EditorView can be deallocated.
     // (NSFileCoordinator holds a strong ref to registered presenters.)
     [editor prepareForClose];
@@ -315,6 +319,16 @@
             return;
         }
         [self addNewTab];
+        return;
+    }
+
+    // Closing a background tab keeps the current one, as on Windows. Only
+    // the index shifts, so the tab is re-selected without activating it again.
+    NSUInteger currentIdx = current ? [_editors indexOfObjectIdenticalTo:current] : NSNotFound;
+    if (currentIdx != NSNotFound) {
+        _selectedIndex = (NSInteger)currentIdx;
+        [_tabBar selectTabAtIndex:_selectedIndex];
+        [_delegate tabManager:self didCloseEditor:editor];
         return;
     }
 
