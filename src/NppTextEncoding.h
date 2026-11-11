@@ -5,7 +5,8 @@
 //  must agree on how a file's bytes become text, otherwise a file that opens
 //  fine in a tab is silently skipped by Find in Files. These functions hold the
 //  detection rules both paths use: BOM sniff (UTF-8, UTF-16 LE/BE), strict UTF-8
-//  validation, then +[NSString stringEncodingForData:] (covers the CJK
+//  validation, then UTF-8 with a few damaged bytes (NppIsDamagedUTF8), then
+//  +[NSString stringEncodingForData:] (covers the CJK
 //  encodings), then Windows-1252, then Latin-1.
 
 #import <Foundation/Foundation.h>
@@ -30,9 +31,24 @@ typedef NS_ENUM(NSInteger, NppDetectorMode) {
 /// NSUIntegerMax when the large-file restriction is disabled. Thread-safe.
 FOUNDATION_EXPORT NSUInteger NppLargeFileThreshold(void);
 
+/// YES when the bytes are UTF-8 that contains a few ill-formed sequences (a stray
+/// 0xFF, a multibyte character cut in half, one GBK line in a Chinese log) but
+/// are otherwise clearly UTF-8: at least one ill-formed sequence, and at least 8
+/// well-formed multibyte sequences per ill-formed one. A truncated sequence
+/// counts as one ill-formed unit. Strictly valid UTF-8 returns NO (check that
+/// first). O(n), no allocation, may stop early.
+FOUNDATION_EXPORT BOOL NppIsDamagedUTF8(const uint8_t *bytes, NSUInteger length);
+
+/// Decode UTF-8 that NppIsDamagedUTF8 accepted: every ill-formed unit becomes
+/// exactly one U+FFFD. Lossy, so it cannot be written back; callers that must
+/// preserve bytes (the editor) pass the raw bytes on instead.
+FOUNDATION_EXPORT NSString *NppDecodeDamagedUTF8(NSData *data);
+
 /// Decode bytes that are known NOT to be UTF-8: macOS's charset detector first
-/// (only trusted when it decoded without lossy substitution), then Windows-1252,
-/// then Latin-1. On success *outEncoding is the encoding that actually decoded
+/// (trusted when it decoded without lossy substitution, or when it names a
+/// multibyte CJK encoding and only a little of the text does not fit it, e.g. a
+/// GBK log with a few UTF-8 lines; those bytes become U+FFFD or decode as
+/// whatever they spell in that encoding), then Windows-1252, then Latin-1. On success *outEncoding is the encoding that actually decoded
 /// the bytes. It is the detector's own guess, not the canonical Encoding-menu
 /// constant, so re-encoding with it reproduces the original bytes.
 /// acceptDetected (optional) can veto the detector's result, in which case the

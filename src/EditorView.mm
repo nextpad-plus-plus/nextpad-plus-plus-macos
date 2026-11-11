@@ -247,6 +247,7 @@ static NSStringEncoding canonicalCJKEncoding(NSStringEncoding ns) {
         case kCFStringEncodingGB_2312_80:
         case kCFStringEncodingEUC_CN:
         case kCFStringEncodingHZ_GB_2312:
+        case kCFStringEncodingDOSChineseSimplif:   // CP936, the detector's name for damaged GBK
             return nppEnc(kCFStringEncodingGBK_95);
         // Traditional Chinese family → Big5
         case kCFStringEncodingBig5:
@@ -527,11 +528,13 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     // a UTF-8 NSData payload to SCI_ADDTEXT with explicit length.
     //
     // Phase 2 rules:
-    //   • Small files: full UTF-8 validation pass + Win-1252 / Latin-1
+    //   • Small files: full UTF-8 validation pass (a few damaged bytes are
+    //     tolerated, see NppIsDamagedUTF8) + Win-1252 / Latin-1
     //     fallbacks (cheap on small inputs, matches NPP-Win behaviour).
     //   • Large files (>=threshold): head/tail UTF-8 probe instead of a
     //     full-file walk. If both 1 MB ends decode as UTF-8 we treat the
     //     whole thing as UTF-8 and pass mmap'd bytes straight to Scintilla.
+    //     A probe that is only slightly damaged also passes.
     //     Probe boundaries are slid off any UTF-8 continuation byte.
     //   • Huge non-UTF-8 file: byte-pass-through as Latin-1 (no full-file
     //     conversion). Bytes >= 0x80 may render as U+FFFD; user already
@@ -562,7 +565,8 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
             while (headEnd > 0 && (b[headEnd] & 0xC0) == 0x80) headEnd--;
             NSData *headProbe = [rawData subdataWithRange:NSMakeRange(0, headEnd)];
             BOOL headValid = ([[NSString alloc] initWithData:headProbe
-                                                    encoding:NSUTF8StringEncoding] != nil);
+                                                    encoding:NSUTF8StringEncoding] != nil)
+                          || NppIsDamagedUTF8(b, headEnd);
             BOOL tailValid = YES;
             if (len > probeLen) {
                 NSUInteger tailStart = len - probeLen;
@@ -570,13 +574,18 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
                 NSData *tailProbe = [rawData subdataWithRange:
                                      NSMakeRange(tailStart, len - tailStart)];
                 tailValid = ([[NSString alloc] initWithData:tailProbe
-                                                   encoding:NSUTF8StringEncoding] != nil);
+                                                   encoding:NSUTF8StringEncoding] != nil)
+                         || NppIsDamagedUTF8(b + tailStart, len - tailStart);
             }
             isUTF8 = headValid && tailValid;
         } else {
-            // Small file — full validation (same path as before).
+            // Small file — full validation. UTF-8 with a few damaged bytes
+            // also counts: Scintilla shows them as xNN blobs and the save path
+            // writes the raw bytes back unchanged, so the file round-trips.
+            NSData *body = hasBOM ? textData : rawData;
             isUTF8 = ([[NSString alloc] initWithData:rawData
-                                            encoding:NSUTF8StringEncoding] != nil);
+                                            encoding:NSUTF8StringEncoding] != nil)
+                  || NppIsDamagedUTF8((const uint8_t *)body.bytes, body.length);
         }
 
         if (isUTF8) {
