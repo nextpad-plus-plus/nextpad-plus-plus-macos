@@ -146,6 +146,41 @@ static void addMacroToShortcutsXML(NSString *name, NSArray<NSDictionary *> *acti
                                    BOOL ctrl, BOOL alt, BOOL shift, BOOL cmd, NSUInteger keyCode);
 static void removeMacroFromShortcutsXML(NSString *name);
 
+static NSUInteger NPPShortcutKeyCodeForPopupName(NSString *name) {
+    if ([name isEqualToString:@"None"] || name.length == 0) return 0;
+    NSDictionary *map = @{@"Backspace":@8, @"Tab":@9, @"Enter":@13, @"Escape":@27, @"Space":@32,
+        @"Page Up":@33, @"Page Down":@34, @"End":@35, @"Home":@36, @"Left":@37, @"Up":@38,
+        @"Right":@39, @"Down":@40, @"Insert":@45, @"Delete":@46, @";":@186, @"+":@187, @"=":@187,
+        @",":@188, @"-":@189, @".":@190, @"/":@191, @"`":@192, @"[":@219, @"\\":@220,
+        @"]":@221, @"'":@222};
+    NSNumber *mapped = map[name];
+    if (mapped) return mapped.unsignedIntegerValue;
+    if (name.length == 1) return [name characterAtIndex:0];
+    if ([name hasPrefix:@"F"] && name.length <= 3) return 111 + [name substringFromIndex:1].intValue;
+    return 0;
+}
+
+static NSUInteger NPPShortcutKeyCodeForMenuKeyEquivalent(NSString *keyEquivalent) {
+    if (!keyEquivalent.length) return 0;
+    unichar key = [keyEquivalent.uppercaseString characterAtIndex:0];
+    if (key >= 0xF704 && key <= 0xF70F) return 112 + (key - 0xF704);
+    switch (key) {
+        case ';': return 186;
+        case '=': return 187;
+        case '+': return 187;
+        case ',': return 188;
+        case '-': return 189;
+        case '.': return 190;
+        case '/': return 191;
+        case '`': return 192;
+        case '[': return 219;
+        case '\\': return 220;
+        case ']': return 221;
+        case '\'': return 222;
+        default: return key;
+    }
+}
+
 #pragma mark - Context menu XML parser
 
 /// Walk a menu recursively to find an item by title (case-insensitive, strips shortcuts).
@@ -5648,7 +5683,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
         for (int i = 1; i <= 12; i++) [keys addObject:[NSString stringWithFormat:@"F%d", i]];
         [keys addObjectsFromArray:@[@"Backspace", @"Tab", @"Enter", @"Escape", @"Space",
             @"Page Up", @"Page Down", @"End", @"Home", @"Left", @"Up", @"Right", @"Down",
-            @"Insert", @"Delete", @";", @"=", @",", @"-", @".", @"/", @"`", @"[", @"\\", @"]", @"'"]];
+            @"Insert", @"Delete", @";", @"+", @"=", @",", @"-", @".", @"/", @"`", @"[", @"\\", @"]", @"'"]];
         [keyPopup addItemsWithTitles:keys];
     }
     [cv addSubview:keyPopup];
@@ -5697,9 +5732,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
             btnOK.enabled = YES;          // no key → no possible conflict
             return;
         }
-        NSUInteger keyCode = 0;
-        if (keyName.length == 1) keyCode = [keyName characterAtIndex:0];
-        else if ([keyName hasPrefix:@"F"]) keyCode = 111 + [keyName substringFromIndex:1].intValue;
+        NSUInteger keyCode = NPPShortcutKeyCodeForPopupName(keyName);
         if (keyCode == 0) {
             conflictLabel.stringValue = @"";
             btnOK.enabled = YES;
@@ -5718,8 +5751,7 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
                 BOOL mCtrl = (m & NSEventModifierFlagControl) != 0;
                 BOOL mAlt = (m & NSEventModifierFlagOption) != 0;
                 BOOL mShift = (m & NSEventModifierFlagShift) != 0;
-                unichar mKey = [mi.keyEquivalent.uppercaseString characterAtIndex:0];
-                if (mKey >= 0xF704 && mKey <= 0xF70F) mKey = 112 + (mKey - 0xF704);
+                NSUInteger mKey = NPPShortcutKeyCodeForMenuKeyEquivalent(mi.keyEquivalent);
                 if (mKey == keyCode &&
                     mCmd == (chkCmd.state == NSControlStateValueOn) &&
                     mCtrl == (chkCtrl.state == NSControlStateValueOn) &&
@@ -5788,13 +5820,8 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
     BOOL macroCtrl  = (chkCtrl.state == NSControlStateValueOn);
     BOOL macroAlt   = (chkOpt.state == NSControlStateValueOn);
     BOOL macroShift = (chkShift.state == NSControlStateValueOn);
-    NSUInteger macroKeyCode = 0;
     NSString *keyName = keyPopup.titleOfSelectedItem;
-    if (keyName.length == 1) {
-        macroKeyCode = [keyName characterAtIndex:0]; // 'A'-'Z' or '0'-'9'
-    } else if ([keyName hasPrefix:@"F"]) {
-        macroKeyCode = 111 + [keyName substringFromIndex:1].intValue; // F1=112..F12=123
-    }
+    NSUInteger macroKeyCode = NPPShortcutKeyCodeForPopupName(keyName);
 
     ensureNppDirs();
     // Insert macro into shortcuts.xml in-place (preserves rest of file)
@@ -9627,6 +9654,9 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
         [keyPopup addItemWithTitle:[NSString stringWithFormat:@"%c", c]];
     for (int i = 1; i <= 12; i++)
         [keyPopup addItemWithTitle:[NSString stringWithFormat:@"F%d", i]];
+    [keyPopup addItemsWithTitles:@[@"Backspace", @"Tab", @"Enter", @"Escape", @"Space",
+        @"Page Up", @"Page Down", @"End", @"Home", @"Left", @"Up", @"Right", @"Down",
+        @"Insert", @"Delete", @";", @"+", @"=", @",", @"-", @".", @"/", @"`", @"[", @"\\", @"]", @"'"]];
     [cv addSubview:keyPopup];
 
     // Conflict warning label
@@ -9669,9 +9699,7 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
             btnOK.enabled = YES;
             return;
         }
-        NSUInteger keyCode = 0;
-        if (keyName.length == 1) keyCode = [keyName characterAtIndex:0];
-        else if ([keyName hasPrefix:@"F"]) keyCode = 111 + [keyName substringFromIndex:1].intValue;
+        NSUInteger keyCode = NPPShortcutKeyCodeForPopupName(keyName);
         if (keyCode == 0) {
             conflictLabel.stringValue = @"";
             btnOK.enabled = YES;
@@ -9689,8 +9717,7 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
                 BOOL mCtrl = (m & NSEventModifierFlagControl) != 0;
                 BOOL mAlt = (m & NSEventModifierFlagOption) != 0;
                 BOOL mShift = (m & NSEventModifierFlagShift) != 0;
-                unichar mKey = [mi.keyEquivalent.uppercaseString characterAtIndex:0];
-                if (mKey >= 0xF704 && mKey <= 0xF70F) mKey = 112 + (mKey - 0xF704);
+                NSUInteger mKey = NPPShortcutKeyCodeForMenuKeyEquivalent(mi.keyEquivalent);
                 if (mKey == keyCode &&
                     mCmd == (chkCmd.state == NSControlStateValueOn) &&
                     mCtrl == (chkCtrl.state == NSControlStateValueOn) &&
@@ -9752,25 +9779,7 @@ typedef NS_ENUM(NSInteger, NppBatchCloseDecision) {
     BOOL hasOpt   = (chkOpt.state == NSControlStateValueOn);
     BOOL hasShift = (chkShift.state == NSControlStateValueOn);
     NSString *keyTitle = keyPopup.titleOfSelectedItem;
-    int keyCode = 0;
-    if ([keyTitle isEqualToString:@"None"]) keyCode = 0;
-    else if (keyTitle.length == 1) keyCode = [keyTitle characterAtIndex:0];
-    else if ([keyTitle hasPrefix:@"F"] && keyTitle.length <= 3) keyCode = 111 + [keyTitle substringFromIndex:1].intValue;
-    else if ([keyTitle isEqualToString:@"Backspace"]) keyCode = 8;
-    else if ([keyTitle isEqualToString:@"Tab"]) keyCode = 9;
-    else if ([keyTitle isEqualToString:@"Enter"]) keyCode = 13;
-    else if ([keyTitle isEqualToString:@"Escape"]) keyCode = 27;
-    else if ([keyTitle isEqualToString:@"Space"]) keyCode = 32;
-    else if ([keyTitle isEqualToString:@"Page Up"]) keyCode = 33;
-    else if ([keyTitle isEqualToString:@"Page Down"]) keyCode = 34;
-    else if ([keyTitle isEqualToString:@"End"]) keyCode = 35;
-    else if ([keyTitle isEqualToString:@"Home"]) keyCode = 36;
-    else if ([keyTitle isEqualToString:@"Left"]) keyCode = 37;
-    else if ([keyTitle isEqualToString:@"Up"]) keyCode = 38;
-    else if ([keyTitle isEqualToString:@"Right"]) keyCode = 39;
-    else if ([keyTitle isEqualToString:@"Down"]) keyCode = 40;
-    else if ([keyTitle isEqualToString:@"Insert"]) keyCode = 45;
-    else if ([keyTitle isEqualToString:@"Delete"]) keyCode = 46;
+    int keyCode = (int)NPPShortcutKeyCodeForPopupName(keyTitle);
 
     // Insert into shortcuts.xml using raw text manipulation (preserves file structure)
     NSString *shortcutsPath = NppConfigSubpath(@"shortcuts.xml");
