@@ -1,7 +1,9 @@
 #import "StyleConfiguratorWindowController.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "PreferencesWindowController.h"
 #import "NppLocalizer.h"
+#import "NppThemeManager.h"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MARK: - NPPStyleEntry
@@ -76,18 +78,176 @@ static NSString *hexFromColor(NSColor *c) {
 static NSString *const kNSDefaultsStyleKey  = @"NPPStyleOverrides";
 static NSString *const kNSDefaultsThemeKey  = @"NPPActiveTheme";
 static NSString *const kDefaultThemeName    = @"Default (stylers.xml)";
+// Remembered theme per appearance (#366, #370). The active theme (NPPActiveTheme)
+// follows whichever of these matches NppThemeManager.isDark.
+static NSString *const kNSDefaultsLightThemeKey = @"NPPLightTheme";
+static NSString *const kNSDefaultsDarkThemeKey  = @"NPPDarkTheme";
+static NSString *const kDefaultDarkThemeName    = @"DarkModeDefault";
 
 /// Mapping: theme/model lexer ID aliases.
-/// Some theme XML files use "c" while the model uses "cpp"; merge into "cpp".
+/// "c", "objc" and "typescript" are real sections with their own styles (as on
+/// Windows); they are not folded into "cpp".
 static NSString *modelLexerID(NSString *themeID) {
     NSDictionary<NSString *, NSString *> *aliases = @{
-        @"c"          : @"cpp",
         @"hypertext"  : @"html",
-        @"js"         : @"javascript",
+        @"js"         : @"javascript.js",
         @"ts"         : @"typescript",
     };
     NSString *mapped = aliases[themeID.lowercaseString];
     return mapped ?: themeID.lowercaseString;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MARK: - Theme layer (raw XML attributes, so "absent" and "empty" differ)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// The attributes one theme file gives each GlobalStyles widget (by name) and
+/// each lexer style (by styleID). The first occurrence of a widget, lexer or
+/// styleID wins, as on Windows; a WordsStyle without styleID is skipped.
+@interface _NPPThemeLayer : NSObject
+@property (nonatomic, strong) NSMutableArray<NSString *> *globalOrder;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSString *> *> *globals;
+@property (nonatomic, strong) NSMutableArray<NSString *> *lexerOrder;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *lexerDesc;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSNumber *> *> *styleOrder;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSNumber *, NSMutableDictionary<NSString *, NSString *> *> *> *styles;
+@end
+
+static NSMutableDictionary<NSString *, NSString *> *xmlAttributes(NSXMLElement *el) {
+    NSMutableDictionary *d = [NSMutableDictionary new];
+    for (NSXMLNode *a in el.attributes) if (a.name) d[a.name] = a.stringValue ?: @"";
+    return d;
+}
+
+@implementation _NPPThemeLayer
+- (instancetype)init {
+    self = [super init];
+    _globalOrder = [NSMutableArray new]; _globals    = [NSMutableDictionary new];
+    _lexerOrder  = [NSMutableArray new]; _lexerDesc  = [NSMutableDictionary new];
+    _styleOrder  = [NSMutableDictionary new]; _styles = [NSMutableDictionary new];
+    return self;
+}
+
++ (nullable instancetype)layerWithContentsOfURL:(nullable NSURL *)url {
+    NSData *data = url ? [NSData dataWithContentsOfURL:url] : nil;
+    NSXMLDocument *doc = data ? [[NSXMLDocument alloc] initWithData:data options:0 error:nil] : nil;
+    if (!doc) return nil;
+    _NPPThemeLayer *layer = [_NPPThemeLayer new];
+    for (NSXMLElement *el in [doc nodesForXPath:@"//GlobalStyles/WidgetStyle" error:nil]) {
+        NSString *name = [el attributeForName:@"name"].stringValue;
+        if (!name.length || layer.globals[name]) continue;
+        layer.globals[name] = xmlAttributes(el);
+        [layer.globalOrder addObject:name];
+    }
+    for (NSXMLElement *lt in [doc nodesForXPath:@"//LexerStyles/LexerType" error:nil]) {
+        NSString *rawID = [lt attributeForName:@"name"].stringValue.lowercaseString;
+        if (!rawID.length) continue;
+        NSString *lid = modelLexerID(rawID);
+        if (layer.styles[lid]) continue;
+        NSMutableDictionary *styles = [NSMutableDictionary new];
+        NSMutableArray *order = [NSMutableArray new];
+        for (NSXMLElement *ws in [lt nodesForXPath:@"WordsStyle" error:nil]) {
+            NSString *sidStr = [ws attributeForName:@"styleID"].stringValue;
+            if (!sidStr.length) continue;
+            NSNumber *sid = @(sidStr.intValue);
+            if (styles[sid]) continue;
+            styles[sid] = xmlAttributes(ws);
+            [order addObject:sid];
+        }
+        layer.styles[lid]     = styles;
+        layer.styleOrder[lid] = order;
+        layer.lexerDesc[lid]  = [lt attributeForName:@"desc"].stringValue ?: lid;
+        [layer.lexerOrder addObject:lid];
+    }
+    return layer;
+}
+
+/// Lay `upper` over the receiver: attributes upper sets win, the rest stay.
+- (void)overlay:(_NPPThemeLayer *)upper {
+    for (NSString *name in upper.globalOrder) {
+        if (_globals[name]) [_globals[name] addEntriesFromDictionary:upper.globals[name]];
+        else { _globals[name] = [upper.globals[name] mutableCopy]; [_globalOrder addObject:name]; }
+    }
+    for (NSString *lid in upper.lexerOrder) {
+        if (!_styles[lid]) {
+            _styles[lid] = [NSMutableDictionary new]; _styleOrder[lid] = [NSMutableArray new];
+            _lexerDesc[lid] = upper.lexerDesc[lid];
+            [_lexerOrder addObject:lid];
+        }
+        for (NSNumber *sid in upper.styleOrder[lid]) {
+            if (_styles[lid][sid]) [_styles[lid][sid] addEntriesFromDictionary:upper.styles[lid][sid]];
+            else { _styles[lid][sid] = [upper.styles[lid][sid] mutableCopy]; [_styleOrder[lid] addObject:sid]; }
+        }
+    }
+}
+
+- (void)removeStyle:(NSNumber *)sid ofLexer:(NSString *)lid {
+    [_styles[lid] removeObjectForKey:sid];
+    [_styleOrder[lid] removeObject:sid];
+}
+@end
+
+/// True when a TypeScript WordsStyle in a user copy of bundled theme
+/// `themeName` is still exactly what that theme shipped before TypeScript got
+/// real colours: the placeholder's fgColor and bgColor (per theme, below),
+/// empty fontName and fontSize, and the placeholder's fontStyle for that
+/// styleID (the same in all 20 themes). Anything the user changed (colour,
+/// font, bold, italic) makes it a customised style that must be kept.
+static BOOL isOldTypeScriptPlaceholderStyle(NSString *themeName, int sid,
+                                            NSDictionary<NSString *, NSString *> *a) {
+    static NSDictionary<NSString *, NSArray<NSString *> *> *colours;   // theme -> fg, bg
+    static NSDictionary<NSNumber *, NSString *> *fontStyles;            // styleID -> fontStyle
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        colours = @{
+            @"Bespin"            : @[@"BDAE9D", @"2A211C"], @"Black board"     : @[@"F8F8F8", @"0C1021"],
+            @"Choco"             : @[@"C3BE98", @"1A0F0B"], @"DansLeRuSH-Dark" : @[@"C7C7C7", @"2E2E2E"],
+            @"Deep Black"        : @[@"FFFFFF", @"000000"], @"Hello Kitty"     : @[@"000000", @"FFB0FF"],
+            @"HotFudgeSundae"    : @[@"B7975D", @"2B0F01"], @"Mono Industrial" : @[@"FFFFFF", @"222C28"],
+            @"Monokai"           : @[@"F8F8F2", @"272822"], @"MossyLawn"       : @[@"F2C476", @"58693D"],
+            @"Navajo"            : @[@"000000", @"BA9C80"], @"Obsidian"        : @[@"E0E2E4", @"293134"],
+            @"Plastic Code Wrap" : @[@"F8F8F8", @"0B161D"], @"Ruby Blue"       : @[@"FFFFFF", @"112435"],
+            @"Solarized-light"   : @[@"657B83", @"FDF6E3"], @"Solarized"       : @[@"839496", @"002B36"],
+            @"Twilight"          : @[@"F8F8F8", @"141414"], @"Vibrant Ink"     : @[@"FFFFFF", @"000000"],
+            @"khaki"             : @[@"5F5F00", @"D7D7AF"], @"vim Dark Blue"   : @[@"FFFFBF", @"000040"],
+        };
+        fontStyles = @{
+            @11: @"0", @5: @"1", @16: @"0", @19: @"1", @4: @"0", @6: @"0", @20: @"0",
+            @7: @"0", @10: @"1", @13: @"0", @14: @"1", @1: @"0", @2: @"0", @3: @"0",
+            @15: @"0", @17: @"1", @18: @"0", @128: @"1", @129: @"1", @130: @"1",
+            @131: @"1", @132: @"1", @133: @"1", @134: @"1", @135: @"1",
+        };
+    });
+    NSArray<NSString *> *c = colours[themeName];
+    NSString *fs = fontStyles[@(sid)];
+    if (!c || !fs) return NO;
+    return [a[@"fgColor"] caseInsensitiveCompare:c[0]] == NSOrderedSame
+        && [a[@"bgColor"] caseInsensitiveCompare:c[1]] == NSOrderedSame
+        && [a[@"fontName"] isEqualToString:@""]
+        && [a[@"fontSize"] isEqualToString:@""]
+        && [a[@"fontStyle"] isEqualToString:fs];
+}
+
+/// Apply one theme entry's attributes. An attribute the theme sets wins (an
+/// empty colour means "inherit"); a colour attribute it omits takes the
+/// fallback colour, as Windows' updateStylesXml does; font attributes it
+/// omits keep the model's value. The model's style name is kept as the label
+/// (theme files spell them inconsistently); theme-only styles use the theme's.
+static void applyThemeAttributes(NPPStyleEntry *e, NSDictionary<NSString *, NSString *> *a,
+                                 NSColor *fallbackFg, NSColor *fallbackBg) {
+    NSString *v;
+    if (!e.name.length && (v = a[@"name"]).length) e.name = v;
+    v = a[@"fgColor"]; e.fgColor = v ? colorFromRRGGBB(v) : fallbackFg;
+    v = a[@"bgColor"]; e.bgColor = v ? colorFromRRGGBB(v) : fallbackBg;
+    if ((v = a[@"fontName"])) e.fontName = v;
+    if ((v = a[@"fontSize"])) e.fontSize = v.length ? v.intValue : 0;
+    if ((v = a[@"fontStyle"])) {
+        int bits = v.intValue;
+        e.fontStyleExplicit = v.length > 0;
+        e.bold      = e.fontStyleExplicit && (bits & 1);
+        e.italic    = e.fontStyleExplicit && (bits & 2);
+        e.underline = e.fontStyleExplicit && (bits & 4);
+    }
 }
 
 @implementation NPPStyleStore {
@@ -101,6 +261,22 @@ static NSString *modelLexerID(NSString *themeID) {
     static dispatch_once_t once;
     dispatch_once(&once, ^{ s = [NPPStyleStore new]; });
     return s;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        // Single owner of "editor theme follows appearance". Fires for Auto
+        // (system flip) and for explicit Light/Dark changes in Preferences.
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_darkModeChanged:)
+                   name:NPPDarkModeChangedNotification object:nil];
+    }
+    return self;
+}
+
+- (void)_darkModeChanged:(NSNotification *)n {
+    [self syncThemeWithAppearance];
 }
 
 // ── XML parsing ──────────────────────────────────────────────────────────────
@@ -144,100 +320,198 @@ static NSString *modelLexerID(NSString *themeID) {
         lex.lexerID        = [lt attributeForName:@"name"].stringValue.lowercaseString ?: @"";
         lex.displayName    = [lt attributeForName:@"desc"].stringValue ?: lex.lexerID;
         NSArray *words     = [lt nodesForXPath:@"WordsStyle" error:nil];
-        for (NSXMLElement *el in words)
-            [lex.styles addObject:[self _parseElement:el]];
+        for (NSXMLElement *el in words) {
+            // First occurrence wins; a WordsStyle without styleID is not a style.
+            if (![el attributeForName:@"styleID"].stringValue.length) continue;
+            NPPStyleEntry *e = [self _parseElement:el];
+            if (![lex styleForID:e.styleID]) [lex.styles addObject:e];
+        }
         if (lex.lexerID.length) [result addObject:lex];
     }
     return result;
 }
 
-- (NSMutableArray<NPPLexer *> *)_parseDefaultXML {
-    // Read from ~/Library/Application Support/Nextpad++/stylers.xml first (user-editable), fall back to bundle model.
-    NSString *userStylers = NppConfigSubpath(@"stylers.xml");
-    NSURL *url = nil;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:userStylers]) {
-        url = [NSURL fileURLWithPath:userStylers];
-    } else {
-        url = [[NSBundle mainBundle] URLForResource:@"stylers.model" withExtension:@"xml"];
+/// Bundled stylers.model.xml, parsed once (re-parsed only if the file's
+/// modification date changes). Returns a deep copy the caller may mutate.
+- (NSMutableArray<NPPLexer *> *)_modelLexers {
+    static NSArray<NPPLexer *> *cache;
+    static NSDate *cacheDate;
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"stylers.model" withExtension:@"xml"];
+    NSMutableArray<NPPLexer *> *result = [NSMutableArray new];
+    if (!url) { NSLog(@"[NPPStyleStore] stylers.model.xml not found"); return result; }
+    NSDate *date = [[NSFileManager defaultManager] attributesOfItemAtPath:url.path error:nil].fileModificationDate;
+    @synchronized ([NPPStyleStore class]) {
+        if (!cache || !(date ? [date isEqualToDate:cacheDate] : cacheDate == nil)) {
+            NSData *data = [NSData dataWithContentsOfURL:url];
+            NSXMLDocument *doc = data ? [[NSXMLDocument alloc] initWithData:data options:0 error:nil] : nil;
+            cache = doc ? [self _parseXML:doc] : @[];
+            cacheDate = date;
+        }
+        for (NPPLexer *lex in cache) [result addObject:[lex copy]];
     }
-    if (!url) { NSLog(@"[NPPStyleStore] stylers.xml not found"); return [NSMutableArray new]; }
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
-    return doc ? [self _parseXML:doc] : [NSMutableArray new];
+    return result;
 }
 
-// ── Merge theme entry into target ─────────────────────────────────────────────
+- (NSMutableArray<NPPLexer *> *)_parseDefaultXML {
+    // Read ~/Library/Application Support/Nextpad++/stylers.xml (user-editable); fall back to the bundled model.
+    NSString *userStylers = NppConfigSubpath(@"stylers.xml");
+    if (![[NSFileManager defaultManager] fileExistsAtPath:userStylers]) return [self _modelLexers];
+    NSData *data = [NSData dataWithContentsOfFile:userStylers];
+    NSXMLDocument *doc = data ? [[NSXMLDocument alloc] initWithData:data options:0 error:nil] : nil;
+    if (!doc) return [self _modelLexers];
+    NSMutableArray<NPPLexer *> *result = [self _parseXML:doc];
 
-- (void)_mergeThemeEntry:(NPPStyleEntry *)src into:(NPPStyleEntry *)dst {
-    if (src.fgColor)           dst.fgColor  = src.fgColor;
-    if (src.bgColor)           dst.bgColor  = src.bgColor;
-    if (src.fontName.length)   dst.fontName = src.fontName;
-    if (src.fontSize > 0)      dst.fontSize = src.fontSize;
-    if (src.fontStyleExplicit) {
-        dst.bold      = src.bold;
-        dst.italic    = src.italic;
-        dst.underline = src.underline;
-        dst.fontStyleExplicit = YES;
-    }
+    // A user stylers.xml can lack whole sections (e.g. "c", "objc",
+    // "typescript", which used to borrow the "cpp" styles). Give such a
+    // language the bundled model's section rather than no styles at all.
+    NSMutableSet<NSString *> *have = [NSMutableSet new];
+    for (NPPLexer *lex in result) [have addObject:lex.lexerID];
+    for (NPPLexer *lex in [self _modelLexers])
+        if (![have containsObject:lex.lexerID]) [result addObject:lex];
+    return result;
 }
 
 // ── Load theme from XML ───────────────────────────────────────────────────────
 
+static NSURL * _Nullable bundledThemeURL(NSString *themeName) {
+    return [[NSBundle mainBundle] URLForResource:themeName withExtension:@"xml" subdirectory:@"themes"];
+}
+
+static NSString *_userThemesDir(void);
+
+static NSString *userThemePath(NSString *themeName) {
+    return [_userThemesDir() stringByAppendingPathComponent:[themeName stringByAppendingPathExtension:@"xml"]];
+}
+
 - (NSArray<NPPLexer *> *)lexersForTheme:(NSString *)themeName {
-    // Start from clean defaults
-    NSMutableArray<NPPLexer *> *result = [self _parseDefaultXML];
+    if ([themeName isEqualToString:kDefaultThemeName] || !themeName.length)
+        return [self _parseDefaultXML]; // "Default (stylers.xml)"
 
-    if ([themeName isEqualToString:kDefaultThemeName] || !themeName.length) {
-        return result; // "Default (stylers.xml)" = pure model defaults
-    }
-
-    // Find theme XML: check user ~/Library/Application Support/Nextpad++/themes/ first, then bundle
-    NSURL *themeURL = nil;
-    NSString *userPath = [_userThemesDir() stringByAppendingPathComponent:
-                          [themeName stringByAppendingPathExtension:@"xml"]];
+    // Layers, lowest first: bundled theme of this name, then the user's copy
+    // in ~/Library/Application Support/Nextpad++/themes/. The copy is made on
+    // the first Style Configurator save and freezes the bundled file of that
+    // day; layering keeps later bundled additions (e.g. cpp STRINGRAW)
+    // visible under it.
+    _NPPThemeLayer *theme = [_NPPThemeLayer layerWithContentsOfURL:bundledThemeURL(themeName)];
+    NSString *userPath = userThemePath(themeName);
     if ([[NSFileManager defaultManager] fileExistsAtPath:userPath]) {
-        themeURL = [NSURL fileURLWithPath:userPath];
-    } else {
-        themeURL = [[NSBundle mainBundle] URLForResource:themeName
-                                          withExtension:@"xml"
-                                           subdirectory:@"themes"];
-    }
-    if (!themeURL) {
-        NSLog(@"[NPPStyleStore] Theme not found: %@", themeName);
-        return result;
-    }
-    NSData *data = [NSData dataWithContentsOfURL:themeURL];
-    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
-    if (!doc) return result;
-
-    // Build quick lookup by lexerID
-    NSMutableDictionary<NSString *, NPPLexer *> *lookup = [NSMutableDictionary new];
-    for (NPPLexer *lex in result) lookup[lex.lexerID] = lex;
-
-    // Merge GlobalStyles (match by name, not styleID)
-    NPPLexer *globalLex = lookup[@"global"];
-    NSArray<NSXMLElement *> *widgets = [doc nodesForXPath:@"//GlobalStyles/WidgetStyle" error:nil];
-    for (NSXMLElement *el in widgets) {
-        NPPStyleEntry *themeEntry = [self _parseElement:el];
-        NPPStyleEntry *target = [globalLex styleForName:themeEntry.name];
-        if (target) [self _mergeThemeEntry:themeEntry into:target];
-    }
-
-    // Merge per-language styles
-    NSArray<NSXMLElement *> *lexerTypes = [doc nodesForXPath:@"//LexerStyles/LexerType" error:nil];
-    for (NSXMLElement *lt in lexerTypes) {
-        NSString *rawID = [lt attributeForName:@"name"].stringValue.lowercaseString ?: @"";
-        NSString *lid   = modelLexerID(rawID); // e.g. "c" → "cpp"
-        NPPLexer *lex   = lookup[lid];
-        // If not found by alias, try original ID too
-        if (!lex) lex   = lookup[rawID];
-        if (!lex) continue;
-        NSArray<NSXMLElement *> *words = [lt nodesForXPath:@"WordsStyle" error:nil];
-        for (NSXMLElement *el in words) {
-            NPPStyleEntry *themeEntry = [self _parseElement:el];
-            NPPStyleEntry *target = [lex styleForID:themeEntry.styleID];
-            if (target) [self _mergeThemeEntry:themeEntry into:target];
+        _NPPThemeLayer *user = [_NPPThemeLayer layerWithContentsOfURL:[NSURL fileURLWithPath:userPath]];
+        // A copy taken before the bundled TypeScript section got real colours
+        // still holds the old single-colour placeholder. Let the bundled style
+        // show for each TypeScript style that is still exactly the placeholder;
+        // a style the user changed in any way is kept.
+        if (user && theme.styles[@"typescript"]) {
+            for (NSNumber *sid in [user.styleOrder[@"typescript"] copy])
+                if (isOldTypeScriptPlaceholderStyle(themeName, sid.intValue, user.styles[@"typescript"][sid]))
+                    [user removeStyle:sid ofLexer:@"typescript"];
         }
+        if (theme && user) [theme overlay:user];
+        else if (user)     theme = user;
+    }
+    if (!theme) {
+        NSLog(@"[NPPStyleStore] Theme not found: %@", themeName);
+        return [self _parseDefaultXML];
+    }
+    return [self _lexersFromTheme:theme];
+}
+
+// ── Resolve a theme against the model ─────────────────────────────────────────
+//
+// Windows semantics (NppParameters::updateStylesXml for a theme file): every
+// model lexer and style is present; whatever the theme defines wins; whatever
+// it lacks (a whole lexer, a style, or a colour attribute) comes from the model
+// with fgColor/bgColor replaced by the theme's "Default Style" colours, never
+// the model's light ones. javascript.js entries the theme lacks take their
+// colours from the theme's embedded "javascript" section, with Windows'
+// mapping. Lexers and styles only the theme has are kept and appended.
+// Additionally, a missing cpp STRINGRAW (20) takes the theme's cpp STRING (6)
+// colours, matching the line added to the bundled themes.
+
+- (NSMutableArray<NPPLexer *> *)_lexersFromTheme:(_NPPThemeLayer *)theme {
+    NSMutableArray<NPPLexer *> *result = [self _modelLexers];
+
+    NSDictionary *defStyle = nil;
+    for (NSString *name in theme.globalOrder)
+        if ([theme.globals[name][@"styleID"] isEqualToString:@"32"]) { defStyle = theme.globals[name]; break; }
+    if (!defStyle) defStyle = theme.globals[@"Default Style"];
+    NSColor *defFg = colorFromRRGGBB(defStyle[@"fgColor"]);
+    NSColor *defBg = colorFromRRGGBB(defStyle[@"bgColor"]);
+
+    // javascript.js styleID <- embedded javascript styleID (Parameters.cpp).
+    // Applied in the embedded section's order, so a later source wins (19).
+    static const int kDotJsFromEmbedded[][2] = {
+        {11, 41}, {4, 45}, {16, 46}, {5, 47}, {19, 47}, {6, 48}, {20, 48}, {7, 49},
+        {10, 50}, {14, 52}, {1, 42}, {2, 43}, {3, 44}, {15, 44}, {17, 44}, {18, 44},
+        {19, 44}, {128, 200}, {129, 201}, {130, 202}, {131, 203}, {132, 204},
+        {133, 205}, {134, 206}, {135, 207},
+    };
+    NSMutableDictionary<NSNumber *, NSMutableDictionary<NSString *, NSString *> *> *dotJs = [NSMutableDictionary new];
+    for (NSNumber *embID in theme.styleOrder[@"javascript"]) {
+        NSDictionary *src = theme.styles[@"javascript"][embID];
+        for (size_t i = 0; i < sizeof(kDotJsFromEmbedded) / sizeof(kDotJsFromEmbedded[0]); i++) {
+            if (kDotJsFromEmbedded[i][1] != embID.intValue) continue;
+            NSNumber *dst = @(kDotJsFromEmbedded[i][0]);
+            if (!dotJs[dst]) dotJs[dst] = [NSMutableDictionary new];
+            if (src[@"fgColor"]) dotJs[dst][@"fgColor"] = src[@"fgColor"];
+            if (src[@"bgColor"]) dotJs[dst][@"bgColor"] = src[@"bgColor"];
+        }
+    }
+    NSDictionary *cppString = theme.styles[@"cpp"][@6];
+
+    // Colour a style the theme leaves unset falls back to.
+    void (^fallback)(NSString *, int, NSColor **, NSColor **) =
+        ^(NSString *lid, int sid, NSColor **fg, NSColor **bg) {
+            *fg = defFg; *bg = defBg;
+            NSDictionary *src = nil;
+            if ([lid isEqualToString:@"javascript.js"]) src = dotJs[@(sid)];
+            else if ([lid isEqualToString:@"cpp"] && sid == 20) src = cppString;
+            if (src[@"fgColor"]) *fg = colorFromRRGGBB(src[@"fgColor"]);
+            if (src[@"bgColor"]) *bg = colorFromRRGGBB(src[@"bgColor"]);
+        };
+
+    for (NPPLexer *lex in result) {
+        BOOL isGlobal = [lex.lexerID isEqualToString:@"global"];
+        NSDictionary *themeStyles = isGlobal ? (NSDictionary *)theme.globals : (NSDictionary *)theme.styles[lex.lexerID];
+        NSMutableSet *seen = [NSMutableSet new];
+        for (NPPStyleEntry *e in lex.styles) {
+            id key = isGlobal ? (id)e.name : (id)@(e.styleID);
+            [seen addObject:key];
+            NSColor *fg, *bg;
+            if (isGlobal) { fg = defFg; bg = defBg; }
+            else fallback(lex.lexerID, e.styleID, &fg, &bg);
+            // Only colours the model entry has are filled (as Windows clones
+            // only the attributes the model element carries).
+            NSDictionary *a = themeStyles[key] ?: @{};
+            applyThemeAttributes(e, a, e.fgColor ? fg : nil, e.bgColor ? bg : nil);
+        }
+        // Theme-only entries of a model lexer.
+        NSArray *order = isGlobal ? (NSArray *)theme.globalOrder : (NSArray *)theme.styleOrder[lex.lexerID];
+        for (id key in order) {
+            if ([seen containsObject:key]) continue;
+            NPPStyleEntry *e = [NPPStyleEntry new];
+            e.name = isGlobal ? key : @"";
+            e.styleID = isGlobal ? [themeStyles[key][@"styleID"] intValue] : [key intValue];
+            e.fontName = @"";
+            applyThemeAttributes(e, themeStyles[key], nil, nil);
+            [lex.styles addObject:e];
+        }
+    }
+
+    // Theme-only lexers.
+    NSMutableSet<NSString *> *have = [NSMutableSet new];
+    for (NPPLexer *lex in result) [have addObject:lex.lexerID];
+    for (NSString *lid in theme.lexerOrder) {
+        if ([have containsObject:lid]) continue;
+        NPPLexer *lex = [NPPLexer new];
+        lex.lexerID = lid;
+        lex.displayName = theme.lexerDesc[lid] ?: lid;
+        for (NSNumber *sid in theme.styleOrder[lid]) {
+            NPPStyleEntry *e = [NPPStyleEntry new];
+            e.name = @""; e.styleID = sid.intValue; e.fontName = @"";
+            applyThemeAttributes(e, theme.styles[lid][sid], nil, nil);
+            [lex.styles addObject:e];
+        }
+        [result addObject:lex];
     }
     return result;
 }
@@ -321,12 +595,24 @@ static NSString *_userThemesDir(void) {
     }
 }
 
+/// Merge newer stylers.model.xml entries into the user's copy of a theme that
+/// is becoming the active one. Notepad++ does this for the active theme only,
+/// so previews (lexersForTheme) never touch theme files. Returns YES when the
+/// file changed.
+- (BOOL)_updateUserThemeFromModel:(NSString *)themeName {
+    if (!themeName.length || [themeName isEqualToString:kDefaultThemeName]) return NO;
+    NSString *userPath = [_userThemesDir() stringByAppendingPathComponent:
+                          [themeName stringByAppendingPathExtension:@"xml"]];
+    return NppUpdateUserThemeFromModel(userPath);
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 - (void)loadFromDefaults {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSString *savedTheme = [ud stringForKey:kNSDefaultsThemeKey] ?: kDefaultThemeName;
     _activeThemeName = savedTheme;
+    [self _updateUserThemeFromModel:savedTheme];
 
     // Load theme (model + XML merge)
     NSMutableArray<NPPLexer *> *base = [[self lexersForTheme:savedTheme] mutableCopy];
@@ -339,6 +625,112 @@ static NSString *_userThemesDir(void) {
     [self _buildDict];
 }
 
+// Range of the first live (not inside <!-- -->) <WidgetStyle name="..."> tag.
+static NSRange _widgetTagRange(NSString *xml, NSString *styleName) {
+    NSRegularExpression *commentRe = [NSRegularExpression
+        regularExpressionWithPattern:@"<!--.*?-->"
+                             options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSArray<NSTextCheckingResult *> *comments =
+        [commentRe matchesInString:xml options:0 range:NSMakeRange(0, xml.length)];
+    NSString *tagPattern = [NSString stringWithFormat:
+        @"<WidgetStyle\\b[^>]*\\bname=\"%@\"[^>]*>",
+        [NSRegularExpression escapedPatternForString:styleName]];
+    NSRegularExpression *tagRe = [NSRegularExpression regularExpressionWithPattern:tagPattern options:0 error:nil];
+    for (NSTextCheckingResult *m in [tagRe matchesInString:xml options:0 range:NSMakeRange(0, xml.length)]) {
+        BOOL commented = NO;
+        for (NSTextCheckingResult *c in comments) {
+            if (NSLocationInRange(m.range.location, c.range)) { commented = YES; break; }
+        }
+        if (!commented) return m.range;
+    }
+    return NSMakeRange(NSNotFound, 0);
+}
+
+// Rewrite one attribute value inside the first live <WidgetStyle name="...">
+// tag of `xml`, only if it currently equals `oldValue`. Text-level edit so the
+// rest of the file (comments, attribute order, line endings) is left
+// byte-for-byte.
+static BOOL _replaceWidgetAttr(NSMutableString *xml, NSString *styleName,
+                               NSString *attr, NSString *oldValue, NSString *newValue) {
+    NSRange tag = _widgetTagRange(xml, styleName);
+    if (tag.location == NSNotFound) return NO;
+    NSString *needle = [NSString stringWithFormat:@" %@=\"%@\"", attr, oldValue];
+    NSRange hit = [xml rangeOfString:needle options:0 range:tag];
+    if (hit.location == NSNotFound) return NO;
+    [xml replaceCharactersInRange:hit
+                       withString:[NSString stringWithFormat:@" %@=\"%@\"", attr, newValue]];
+    return YES;
+}
+
+static BOOL _widgetHasAttr(NSString *xml, NSString *styleName, NSString *attr, NSString *value) {
+    NSMutableString *probe = [xml mutableCopy];
+    return _replaceWidgetAttr(probe, styleName, attr, value, value);
+}
+
++ (void)migrateLegacyDefaultEditorFont {
+    // One shot: once this has looked at the file, a user who later picks
+    // Courier New 10 on purpose keeps it.
+    static NSString *const kDoneKey = @"NPPMacDefaultEditorFontMigrated";
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud boolForKey:kDoneKey]) return;
+
+    // Resolve a symlinked stylers.xml (e.g. into a dotfiles repo) so the
+    // atomic write replaces the target file, not the link.
+    NSString *path = [NppConfigSubpath(@"stylers.xml") stringByResolvingSymlinksInPath];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    if (!data) {
+        // No user copy yet: it will be created from the current model,
+        // which already carries the Mac default.
+        [ud setBool:YES forKey:kDoneKey];
+        return;
+    }
+    // Keep a UTF-8 BOM if the file has one; NSString decoding drops it.
+    static const uint8_t kBOM[3] = {0xEF, 0xBB, 0xBF};
+    BOOL hasBOM = data.length >= 3 && memcmp(data.bytes, kBOM, 3) == 0;
+    NSData *body = hasBOM ? [data subdataWithRange:NSMakeRange(3, data.length - 3)] : data;
+    NSMutableString *xml = [[NSMutableString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+    if (!xml) { [ud setBool:YES forKey:kDoneKey]; return; }
+
+    // A font the user chose in Style Configurator is also recorded here;
+    // its presence means "touched", whatever the XML says. The overrides are
+    // diffs against the active theme, so they only describe stylers.xml when
+    // that theme is the default one.
+    NSString *activeTheme = [ud stringForKey:kNSDefaultsThemeKey];
+    BOOL overridesAreStylers = !activeTheme.length || [activeTheme isEqualToString:kDefaultThemeName];
+    NSDictionary *overrides = overridesAreStylers ? [ud dictionaryForKey:kNSDefaultsStyleKey] : nil;
+    BOOL changed = NO;
+
+    // Default Style: only the exact old pair counts as "never touched".
+    // Courier New at another size, or another font at 10, was a choice.
+    if (!overrides[@"global|Default Style|fontName"] &&
+        !overrides[@"global|Default Style|fontSize"] &&
+        _widgetHasAttr(xml, @"Default Style", @"fontName", @"Courier New") &&
+        _widgetHasAttr(xml, @"Default Style", @"fontSize", @"10")) {
+        changed |= _replaceWidgetAttr(xml, @"Default Style", @"fontName", @"Courier New", @"Menlo");
+        changed |= _replaceWidgetAttr(xml, @"Default Style", @"fontSize", @"10", @"12");
+    }
+
+    // Global override row: its font only applies when the user enables the
+    // override's font checkbox. Leave it alone if they have.
+    if (!overrides[@"global|Global override|fontName"] &&
+        ![ud boolForKey:kPrefGlobalOverrideEnableFont]) {
+        changed |= _replaceWidgetAttr(xml, @"Global override", @"fontName", @"Courier New", @"Menlo");
+    }
+
+    if (changed) {
+        NSMutableData *out = [NSMutableData data];
+        if (hasBOM) [out appendBytes:kBOM length:3];
+        [out appendData:[xml dataUsingEncoding:NSUTF8StringEncoding]];
+        NSError *err = nil;
+        if (![out writeToFile:path options:NSDataWritingAtomic error:&err]) {
+            NSLog(@"[NPPStyleStore] default font migration: could not write %@: %@", path, err);
+            return;  // retry next launch
+        }
+        NSLog(@"[NPPStyleStore] Migrated untouched Courier New default font in stylers.xml to Menlo");
+    }
+    [ud setBool:YES forKey:kDoneKey];
+}
+
 - (void)_buildDict {
     NSMutableDictionary *d = [NSMutableDictionary new];
     for (NPPLexer *lex in _lexers) d[lex.lexerID] = lex;
@@ -348,8 +740,7 @@ static NSString *_userThemesDir(void) {
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID {
     if (!_lexers.count) [self loadFromDefaults];
     NSString *lid = lexerID.lowercaseString;
-    if ([lid isEqualToString:@"c"] || [lid isEqualToString:@"objc"])  lid = @"cpp";
-    else if ([lid isEqualToString:@"js"])   lid = @"javascript";
+    if ([lid isEqualToString:@"js"])        lid = @"javascript.js";
     else if ([lid isEqualToString:@"ts"])   lid = @"typescript";
     NPPLexer *lex = _lexerDict[lid];
     return lex ? lex.styles : nil;
@@ -370,7 +761,7 @@ static NSString *_userThemesDir(void) {
 - (NSColor *)globalFg   { NPPStyleEntry *e = [self _globalDefaultEntry]; return e.fgColor ?: [NSColor blackColor]; }
 - (NSColor *)globalBg   { NPPStyleEntry *e = [self _globalDefaultEntry]; return e.bgColor ?: [NSColor whiteColor]; }
 - (NSString *)globalFontName { NPPStyleEntry *e = [self _globalDefaultEntry]; return (e.fontName.length) ? e.fontName : @"Menlo"; }
-- (int)globalFontSize   { NPPStyleEntry *e = [self _globalDefaultEntry]; return e.fontSize > 0 ? e.fontSize : 11; }
+- (int)globalFontSize   { NPPStyleEntry *e = [self _globalDefaultEntry]; return e.fontSize > 0 ? e.fontSize : 12; }
 
 - (nullable NPPStyleEntry *)globalStyleNamed:(NSString *)name {
     if (!_lexers.count) [self loadFromDefaults];
@@ -431,6 +822,10 @@ static NSString *_userThemesDir(void) {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:overrides forKey:kNSDefaultsStyleKey];
     [ud setObject:themeName forKey:kNSDefaultsThemeKey];
+    // Remember this theme for the current appearance (#366) so the next
+    // light/dark flip restores it instead of reverting to the default.
+    [ud setObject:themeName forKey:[NppThemeManager shared].isDark ? kNSDefaultsDarkThemeKey
+                                                                   : kNSDefaultsLightThemeKey];
 
     // Legacy keys for backward compat
     [ud setObject:[@"#" stringByAppendingString:hexFromColor(self.globalFg)] forKey:kPrefStyleFg];
@@ -440,6 +835,73 @@ static NSString *_userThemesDir(void) {
 
     // Write changes back to the XML file (selective update, not full rewrite).
     [self _writeOverridesToXML:overrides themeName:themeName];
+
+    // The committed theme is the active one: give it newer model entries. This
+    // runs on every commit, because a Style Configurator preview has already
+    // set _activeThemeName, so "did the theme change" cannot be told here; the
+    // updater checks each path once per run, so repeat commits cost nothing.
+    // The overrides above were taken against the file as it was, and the merge
+    // only adds what was missing, so reload the merged file with them.
+    if ([self _updateUserThemeFromModel:themeName]) {
+        NSMutableArray<NPPLexer *> *merged = [[self lexersForTheme:themeName] mutableCopy];
+        [self _applyUserOverrides:overrides to:merged];
+        [self previewLexers:merged];
+    }
+}
+
+// ── Light / dark theme slots ──────────────────────────────────────────────────
+
+- (NSString *)themeNameForDarkAppearance:(BOOL)dark {
+    NSString *name = [[NSUserDefaults standardUserDefaults]
+        stringForKey:dark ? kNSDefaultsDarkThemeKey : kNSDefaultsLightThemeKey];
+    return name.length ? name : (dark ? kDefaultDarkThemeName : kDefaultThemeName);
+}
+
+/// YES if the theme's Default Style background is dark (luminance < 0.5).
+- (BOOL)_themeIsDark:(NSString *)themeName {
+    NPPLexer *g = nil;
+    for (NPPLexer *lex in [self lexersForTheme:themeName])
+        if ([lex.lexerID isEqualToString:@"global"]) { g = lex; break; }
+    NPPStyleEntry *e = [g styleForID:32] ?: [g styleForName:@"Default Style"];
+    NSColor *bg = [e.bgColor colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (!bg) return NO;
+    CGFloat lum = 0.2126 * bg.redComponent + 0.7152 * bg.greenComponent + 0.0722 * bg.blueComponent;
+    return lum < 0.5;
+}
+
+/// One-time migration for builds that kept a single NPPActiveTheme. The goal is
+/// that the first launch after upgrading looks unchanged, except for the #370
+/// state (Auto mode with a theme that does not suit the system appearance,
+/// typically the stale light Default while macOS is dark):
+///  - explicit Light/Dark, or a theme whose brightness matches the current
+///    appearance: seed the current appearance's slot with it (no visual change);
+///  - Auto with a mismatched theme: file it under the slot it suits, so the
+///    current appearance gets its default (fixes #370) and the theme returns
+///    on the next flip.
+/// The other slot keeps its default.
+- (void)_seedAppearanceSlotsIfNeeded {
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:kNSDefaultsLightThemeKey] || [ud objectForKey:kNSDefaultsDarkThemeKey]) return;
+    NSString *active = [ud stringForKey:kNSDefaultsThemeKey];
+    if (!active.length || ![self.availableThemeNames containsObject:active]) return;
+
+    NppThemeManager *tm = [NppThemeManager shared];
+    BOOL themeDark = [self _themeIsDark:active];
+    BOOL slotDark = (tm.mode != NppDarkModeAuto || themeDark == tm.isDark) ? tm.isDark : themeDark;
+    [ud setObject:active forKey:slotDark ? kNSDefaultsDarkThemeKey : kNSDefaultsLightThemeKey];
+}
+
+- (void)syncThemeWithAppearance {
+    if (!_lexers.count) [self loadFromDefaults];
+    [self _seedAppearanceSlotsIfNeeded];
+
+    BOOL dark = [NppThemeManager shared].isDark;
+    NSString *target = [self themeNameForDarkAppearance:dark];
+    if (![self.availableThemeNames containsObject:target])  // theme file removed
+        target = dark ? kDefaultDarkThemeName : kDefaultThemeName;
+    if ([_activeThemeName isEqualToString:target]) return;
+
+    [self commitLexers:[self lexersForTheme:target] themeName:target];
 }
 
 /// Selectively update changed style attributes in the theme/stylers XML file.
@@ -478,6 +940,35 @@ static NSString *_userThemesDir(void) {
     if (!doc) return;
 
     BOOL changed = NO;
+
+    // A user copy of a bundled theme taken before TypeScript got real colours
+    // holds the old single-colour placeholder. lexersForTheme: shows the
+    // bundled style for each placeholder style, but writing a TypeScript edit
+    // into the file would make that style look customised. So first replace
+    // each TypeScript style that is still exactly the placeholder with the
+    // bundled one; styles the user changed are left alone.
+    NSURL *bundled = [xmlPath isEqualToString:NppConfigSubpath(@"stylers.xml")]
+                   ? nil : bundledThemeURL(themeName);
+    NSXMLElement *userTS = bundled ? [[doc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']"
+                                                   error:nil] firstObject] : nil;
+    if (userTS) {
+        NSData *bData = [NSData dataWithContentsOfURL:bundled];
+        NSXMLDocument *bDoc = bData ? [[NSXMLDocument alloc] initWithData:bData options:0 error:nil] : nil;
+        NSMutableDictionary<NSString *, NSXMLElement *> *bundledStyles = [NSMutableDictionary new];
+        for (NSXMLElement *ws in [bDoc nodesForXPath:@"//LexerStyles/LexerType[@name='typescript']/WordsStyle"
+                                               error:nil]) {
+            NSString *sid = [ws attributeForName:@"styleID"].stringValue;
+            if (sid.length && !bundledStyles[sid]) bundledStyles[sid] = ws;
+        }
+        for (NSXMLElement *ws in [userTS elementsForName:@"WordsStyle"]) {
+            NSString *sid = [ws attributeForName:@"styleID"].stringValue;
+            NSXMLElement *src = sid.length ? bundledStyles[sid] : nil;
+            if (!src || !isOldTypeScriptPlaceholderStyle(themeName, sid.intValue, xmlAttributes(ws))) continue;
+            [userTS replaceChildAtIndex:ws.index withNode:[src copy]];
+            changed = YES;
+        }
+    }
+
     for (NSString *key in overrides) {
         NSArray<NSString *> *parts = [key componentsSeparatedByString:@"|"];
         if (parts.count != 3) continue;
@@ -650,8 +1141,22 @@ static NSString *_userThemesDir(void) {
     if (self) {
         [self _buildUI];
         _selectedStyleID = -1;
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_appearanceChanged:)
+                   name:NPPDarkModeChangedNotification object:nil];
     }
     return self;
+}
+
+/// Light/dark flip while the window is open: the snapshot taken on open belongs
+/// to the old appearance's theme slot. Drop unsaved edits, let the store switch
+/// to the new slot's theme, then re-snapshot so Save writes the theme being
+/// shown into the current slot and Cancel never restores a pre-flip theme.
+- (void)_appearanceChanged:(NSNotification *)n {
+    if (!self.window.isVisible) return;
+    [self _restoreCancelSnapshot];
+    [[NPPStyleStore sharedStore] syncThemeWithAppearance];
+    [self _loadFromStore];
 }
 
 // ── UI construction ───────────────────────────────────────────────────────────
@@ -1163,7 +1668,13 @@ static NSString *_userThemesDir(void) {
 }
 
 - (void)_cancel:(id)sender {
-    // Restore state that was active when window was opened
+    [self _restoreCancelSnapshot];
+    [self.window close];
+}
+
+/// Restore the store state that was active when the window was opened (or
+/// last re-snapshotted after an appearance flip).
+- (void)_restoreCancelSnapshot {
     if (_cancelBackup) {
         [NPPStyleStore sharedStore].activeThemeName = _cancelTheme ?: kDefaultThemeName;
         // Roll the Global override flags back to their snapshot before
@@ -1179,7 +1690,6 @@ static NSString *_userThemesDir(void) {
         [d setBool:_backupOverrideUnderline forKey:kPrefGlobalOverrideEnableUnderline];
         [[NPPStyleStore sharedStore] previewLexers:_cancelBackup];
     }
-    [self.window close];
 }
 
 // ── Import NPP theme XML ──────────────────────────────────────────────────────
@@ -1200,54 +1710,47 @@ static NSString *_userThemesDir(void) {
     NSData *data = [NSData dataWithContentsOfURL:url];
     if (!data) return;
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithData:data options:0 error:nil];
-    if (!doc) return;
+    if (!doc) { NSBeep(); return; }
 
-    // Apply GlobalStyles Default Style fg/bg/font
-    NSArray<NSXMLElement *> *widgets = [doc nodesForXPath:@"//GlobalStyles/WidgetStyle" error:nil];
-    NPPLexer *global = [self _workingLexerForID:@"global"];
-    for (NSXMLElement *el in widgets) {
-        NSString *name = [el attributeForName:@"name"].stringValue;
-        NPPStyleEntry *target = [global styleForName:name];
-        if (target) {
-            NPPStyleStore *s = [NPPStyleStore sharedStore];
-            NPPStyleEntry *te = [s _parseElement:el];
-            [s _mergeThemeEntry:te into:target];
-        }
+    // As on Windows, an imported theme becomes a theme file of its own in
+    // ~/Library/Application Support/Nextpad++/themes/ and is selected. Merging
+    // it into the working set instead would lose its lexers and styles that
+    // the current theme lacks on the next launch. Never overwrite an existing
+    // theme: a clashing name gets an " (imported)" suffix.
+    NSString *base = url.lastPathComponent.stringByDeletingPathExtension;
+    if (!base.length) base = @"Imported";
+    NSMutableSet<NSString *> *taken = [NSMutableSet new];
+    for (NSString *t in [[NPPStyleStore sharedStore] availableThemeNames])
+        [taken addObject:t.lowercaseString];
+    NSString *name = base;
+    for (int n = 1; [taken containsObject:name.lowercaseString]; n++)
+        name = n == 1 ? [base stringByAppendingString:@" (imported)"]
+                      : [NSString stringWithFormat:@"%@ (imported %d)", base, n];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    [fm createDirectoryAtPath:_userThemesDir() withIntermediateDirectories:YES attributes:nil error:nil];
+    NSError *err = nil;
+    if (![fm copyItemAtURL:url toURL:[NSURL fileURLWithPath:userThemePath(name)] error:&err]) {
+        NSLog(@"[StyleConfigurator] Import failed: %@", err);
+        NSBeep();
+        return;
     }
 
-    // Apply per-language styles
-    NSArray<NSXMLElement *> *lexerTypes = [doc nodesForXPath:@"//LexerStyles/LexerType" error:nil];
-    for (NSXMLElement *lt in lexerTypes) {
-        NSString *rawID = [lt attributeForName:@"name"].stringValue.lowercaseString ?: @"";
-        NSString *lid = modelLexerID(rawID);
-        NPPLexer *lex = [self _workingLexerForID:lid] ?: [self _workingLexerForID:rawID];
-        if (!lex) continue;
-        NSArray<NSXMLElement *> *words = [lt nodesForXPath:@"WordsStyle" error:nil];
-        NPPStyleStore *s = [NPPStyleStore sharedStore];
-        for (NSXMLElement *el in words) {
-            NPPStyleEntry *te = [s _parseElement:el];
-            NPPStyleEntry *target = [lex styleForID:te.styleID];
-            if (target) [s _mergeThemeEntry:te into:target];
-        }
-    }
-
-    [_themePopup selectItemWithTitle:@"Custom"];
-    [_styleTable reloadData];
-    NSInteger row = _styleTable.selectedRow;
-    NSInteger langIdx = _langPopup.indexOfSelectedItem;
-    if (row >= 0 && langIdx >= 0 && langIdx < (NSInteger)_workingLexers.count) {
-        _currentStyles = _workingLexers[langIdx].styles;
-        if (row < (NSInteger)_currentStyles.count)
-            [self _updateRightPanelForStyle:_currentStyles[row] lang:_workingLexers[langIdx]];
-    }
-    // Live preview
-    [[NPPStyleStore sharedStore] previewLexers:_workingLexers];
+    [self _populateThemePopup];
+    [_themePopup selectItemWithTitle:name];
+    [self _themeChanged:_themePopup];   // loads the working copy and previews it
 }
 
 // ── Show window ───────────────────────────────────────────────────────────────
 
 - (void)showWindow:(id)sender {
     [super showWindow:sender];
+    [self _loadFromStore];
+    [self.window center];
+}
+
+/// Snapshot the live store (for Cancel) and rebuild the working copy and popups
+/// from the active theme. Called on open and after an appearance flip.
+- (void)_loadFromStore {
     NPPStyleStore *store = [NPPStyleStore sharedStore];
     if (!store.allLexers.count) [store loadFromDefaults];
 
@@ -1319,8 +1822,6 @@ static NSString *_userThemesDir(void) {
         [_langPopup selectItemAtIndex:0];
         [self _selectLangAtIndex:0];
     }
-
-    [self.window center];
 }
 
 @end

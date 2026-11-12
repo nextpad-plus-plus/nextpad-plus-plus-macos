@@ -1068,13 +1068,13 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90006" name="Rialú Foinse"/>
 				<Item id="90007" name="Tiomantas"/>
 				<Item id="90008" name="Theip ar an Gealltanas"/>
-				<Item id="90009" name="Gan stór git\nBain úsáid as Brabhsáil chun athcheannach a oscailt."/>
+				<Item id="90009" name="Gan stór git&#10;Bain úsáid as Brabhsáil chun athcheannach a oscailt."/>
 				<Item id="90010" name="Céim"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Céim ar fad"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Tiomantas\u2026"/>
-				<Item id="90015" name="Brabhsáil le haghaidh stór\u2026"/>
+				<Item id="90014" name="Tiomantas…"/>
+				<Item id="90015" name="Brabhsáil le haghaidh stór…"/>
 				<Item id="90016" name="Roghnaigh fillteán stórtha git"/>
 				<Item id="90017" name="(gan stór)"/>
 				<Item id="90018" name="(scoite)"/>
@@ -1088,9 +1088,9 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90026" name="Torthaí"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Cuireadh stop leis an gcuardach."/>
-				<Item id="90029" name="Ag cuardach\u2026"/>
+				<Item id="90029" name="Ag cuardach…"/>
 				<Item id="90030" name="Téacs le cuardach a dhéanamh ar"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Ag cuardach..."/>
 				<Item id="90033" name="Ionadaigh:"/>
 				<Item id="90034" name="Focal Iomlán"/>
@@ -1150,7 +1150,7 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90088" name="Suiteáil Breiseáin"/>
 				<Item id="90089" name="Bain Breiseáin"/>
 				<Item id="90090" name="Níor aimsíodh aon orduithe"/>
-				<Item id="90091" name="Clóscríobh chun cuardach a dhéanamh\u2026"/>
+				<Item id="90091" name="Clóscríobh chun cuardach a dhéanamh…"/>
 				<Item id="90092" name="Teanga Shainithe Úsáideora v.2.1"/>
 				<Item id="90093" name="Cruthaigh Teanga Nua"/>
 				<Item id="90094" name="Iontráil ainm:"/>
@@ -1159,7 +1159,6 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90097" name="Ná Sábháil"/>
 				<Item id="90098" name="Arna dhéanamh"/>
 				<Item id="90099" name="Scoránaigh Timfhilleadh Focal"/>
-				<Item id="90100" name="Taispeáin Gach Carachtair"/>
 				<Item id="90101" name="Taispeáin Roghanna Carachtair"/>
 				<Item id="90102" name="Scoránaigh Treoir Eangaithe"/>
 				<Item id="90103" name="Neamhfheidhmithe fós"/>
@@ -1172,7 +1171,7 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90110" name="Íoslódáil"/>
 				<Item id="90111" name="Leathanach Eisiúna"/>
 				<Item id="90112" name="Níos déanaí"/>
-				<Item id="90113" name="Scag breiseáin\u2026"/>
+				<Item id="90113" name="Scag breiseáin…"/>
 				<Item id="90114" name="Ar fáil"/>
 				<Item id="90115" name="Nuashonruithe"/>
 				<Item id="90116" name="Suiteáilte"/>
@@ -1181,7 +1180,7 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90119" name="An bhfuil fonn ort na forlíontáin seo a leanas a bhaint?"/>
 				<Item id="90120" name="Suiteáil na forlíontáin seo a leanas?"/>
 				<Item id="90121" name="Scriosfaidh sé seo na comhaid breiseán."/>
-				<Item id="90122" name="Orduithe cuardaigh\u2026"/>
+				<Item id="90122" name="Orduithe cuardaigh…"/>
 				<Item id="90123" name="Dath an tulra"/>
 				<Item id="90124" name="Dath an chúlra"/>
 				<Item id="90125" name="Macra ainm"/>
@@ -1201,7 +1200,7 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90139" name="Glanadh na marcanna go léir."/>
 				<Item id="90140" name="Téacs marcáilte a chóipeáiltear chuig an ngearrthaisce."/>
 				<Item id="90141" name="Níl aon téacs marcáilte le cóipeáil."/>
-				<Item id="90142" name="Ag cuardach... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Ag cuardach... %ld hit(s) — %@"/>
 				<Item id="90143" name="Athsholáthar i gcomhaid…"/>
 				<Item id="90144" name="Ionadaigh i dTionscadail: Gan ceangal fós."/>
 				<Item id="90145" name="Faigh i dTionscadail: Níl sé ceangailte go fóill le liosta comhad Painéal an Tionscadail."/>
@@ -1222,20 +1221,21 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90160" name="Aibhsiú cliste: focal iomlán amháin"/>
 				<Item id="90161" name="Cliceáil faoi dhó chun cluaisín a dhúnadh"/>
 				<Item id="90162" name="Taispeáin an cnaipe dúnta ar na cluaisíní"/>
+				<Item id="90168" name="Úsáid cló monaspáis sa dialóg Find"/>
+				<Item id="90175" name="Sínte (\n, \r, \t, \0, \x...)"/>
+				<Item id="90191" name="Stór liosta breiseán"/>
 				<Item id="90224" name="Taispeáin cluaisíní ar iliomad línte"/>
 				<Item id="90163" name="Cuimhnigh infheictheacht an phainéil thar seisiúin"/>
 				<Item id="90164" name="Coinnigh iontrálacha comhaid as láthair i seisiún"/>
 				<Item id="90165" name="Deimhnigh roimh Sábháil Uile"/>
 				<Item id="90166" name="Deimhnigh Ionadaigh Uile atá i ndoiciméid oscailte"/>
 				<Item id="90167" name="Ionadaigh: ná bog go dtí an chéad teagmhas eile"/>
-				<Item id="90168" name="Úsáid cló monaspáis sa dialóg Find"/>
 				<Item id="90169" name="Coinníonn cliceáil ar dheis an roghnú"/>
 				<Item id="90170" name="Ordú dáta/ama réamhshocraithe"/>
 				<Item id="90171" name="Úsáid parsairí liostaí feidhm atá bunaithe ar XML"/>
 				<Item id="90172" name="Lúibíní uathdhúnadh ( ) [ ] { }"/>
 				<Item id="90173" name="Ón Nú carachtar:"/>
 				<Item id="90174" name="Tairseach uathsheiceála in‑roghnúcháin (bearta):"/>
-				<Item id="90175" name="Sínte (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Eagarthóir"/>
 				<Item id="90177" name="Corrlaigh"/>
 				<Item id="90178" name="Dorcha"/>
@@ -1249,12 +1249,10 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optamaithe"/>
 				<Item id="90188" name="Simplí +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Stór liosta breiseán"/>
 				<Item id="90192" name="Roghnaigh comhad XML téama Nextpad++ chun é a chur i bhfeidhm"/>
-				<Item id="90193" name="Cruthaigh nua\u2026"/>
-				<Item id="90194" name="Sábháil mar\u2026"/>
+				<Item id="90193" name="Cruthaigh nua…"/>
+				<Item id="90194" name="Sábháil mar…"/>
 				<Item id="90195" name="Teanga úsáideora:"/>
 				<Item id="90196" name="Ainm teanga"/>
 				<Item id="90197" name="Cruthaigh"/>
@@ -1284,6 +1282,234 @@ You can define several column markers by using white space to separate the diffe
 				<Item id="90221" name="Tréith faoi Ghlas (macOS)"/>
 				<Item id="90222" name="Seiceáil le haghaidh Nuashonruithe…"/>
 				<Item id="90223" name="Oscail Le Déanaí"/>
+				<Item id="90225" name="Cuimhnigh ar an seisiún reatha don chéad seoladh eile"/>
+				<Item id="90226" name="Cabhair"/>
+				<Item id="90227" name="Theip ar an gCéim"/>
+				<Item id="90228" name="Theip ar Unstage"/>
+				<Item id="90229" name="ar fáil"/>
+				<Item id="90230" name="Tá tú ag rith"/>
+				<Item id="90231" name="Ná cuir i gcuimhne dom arís"/>
+				<Item id="90232" name="Nuashonruithe"/>
+				<Item id="90233" name="Seiceáil go huathoibríoch le haghaidh nuashonruithe"/>
+				<Item id="90234" name="Tá seiceálacha nuashonraithe uathoibríoch múchta."/>
+				<Item id="90235" name="Seiceáladh:"/>
+				<Item id="90236" name="Gan nasc idirlín."/>
+				<Item id="90237" name="Freagra gan choinne ón bhfreastalaí nuashonraithe."/>
+				<Item id="90238" name="Níor aimsíodh aon eisiúint foilsithe."/>
+				<Item id="90239" name="Níl an freastalaí nuashonraithe ar fáil go sealadach.Bain triail eile as ar ball."/>
+				<Item id="90240" name="Dhiúltaigh an freastalaí nuashonraithe don iarratas.Seans go bhfuil seachfhreastalaí, balla dóiteáin nó VPN ag cur bac ar rochtain ar GitHub."/>
+				<Item id="90241" name="An iomarca seiceálacha nuashonraithe ó do líonra (roinneann gach duine ar an teorainn seo).Bain triail eile as tar éis"/>
+				<Item id="90242" name="An iomarca seiceálacha nuashonraithe ó do líonra (roinneann gach duine ar an teorainn seo).Bain triail eile as ar ball."/>
+				<Item id="90243" name="Thug an freastalaí nuashonraithe stádas ar ais"/>
+				<Item id="90244" name="Bain triail eile as"/>
+				<Item id="90245" name="Priontáil méid an téacs:"/>
+				<Item id="90246" name="Úsáid súmáil scáileáin"/>
+				<Item id="90247" name="Méid iarbhír"/>
+				<Item id="90248" name="Níorbh fhéidir roinnt comhad a athsholáthar"/>
+				<Item id="90249" name="...agus %lu eile"/>
+				<Item id="90250" name="Déanann d'eagraíocht cumainn chomhaid a bhainistiú."/>
+				<Item id="90251" name="Ag fanacht le macOS a dheimhniú…"/>
+				<Item id="90252" name="Níor chuir macOS an t-athrú i bhfeidhm."/>
+				<Item id="90253" name="Cláraithe"/>
+				<Item id="90254" name="Oscail gach comhad san fhillteán?"/>
+				<Item id="90255" name="Osclóidh sé seo %lu comhad i gcluaisíní nua."/>
+				<Item id="90256" name="Níorbh fhéidir: %@ a iompórtáil"/>
+				<Item id="90257" name="Folíne"/>
+				<Item id="90258" name="Aimsíodh %ld meaitseáil i %ld gcomhad(i)s."/>
+				<Item id="90259" name="Ag cuardach… %ld meaitseáil go dtí seo"/>
+				<Item id="90260" name="%@ (%ld meaitseáil%@)"/>
+				<Item id="90261" name="Cuardach doiléir"/>
+				<Item id="90265" name="Aimsigh: Ní féidir an téacs &quot;%@&quot; a aimsiú"/>
+				<Item id="90266" name="Comhaireamh: %ld meaitseáil."/>
+				<Item id="90267" name="Ionadaigh Uile: Cuireadh %ld teagmhas(anna) in ionad %@."/>
+				<Item id="90268" name="Ionadaigh i gComhaid Osclaíodh: Athsholáthraíodh %ld teagmhas."/>
+				<Item id="90269" name="Aimsigh i gComhaid: %ld amas i %ld chomhad(i)."/>
+				<Item id="90270" name="Faigh i gComhaid: 0 amas."/>
+				<Item id="90271" name="Replace all occurrences of &quot;%@&quot; with &quot;%@&quot; in directory:&#10;%@&#10;&#10;This cannot be undone."/>
+				<Item id="90272" name="Ionadaigh i gComhaid: %ld athsholáthair(i) i %ld chomhad(i)."/>
+				<Item id="90273" name="Oscail Painéal Tionscadail ar dtús."/>
+				<Item id="90274" name="Roghnaigh Painéal Tionscadail amháin ar a laghad chun cuardach a dhéanamh."/>
+				<Item id="90275" name="Níl aon chomhaid le cuardach."/>
+				<Item id="90276" name="Aimsigh i dTionscadail: %ld amas i %ld chomhad(i)."/>
+				<Item id="90277" name="Faigh i dTionscadail: 0 amas."/>
+				<Item id="90278" name="Gach teagmhas de"/>
+				<Item id="90279" name="le"/>
+				<Item id="90280" name="isteach"/>
+				<Item id="90281" name="comhaid tionscadail.Ní féidir é seo a chealú."/>
+				<Item id="90282" name="Ionadaigh i dTionscadail: %ld athsholáthair(eanna) i %ld chomhad(i)."/>
+				<Item id="90283" name="Marcáil: marcáilte %ld meaitseáil."/>
+				<Item id="90284" name="Scag ainm an chomhaid/an fhillteáin..."/>
+				<Item id="90285" name="Níorbh fhéidir roinnt doiciméad a shábháil"/>
+				<Item id="90286" name="⌘ Ordú"/>
+				<Item id="90287" name="⌃ Rialú"/>
+				<Item id="90288" name="⌥ Rogha"/>
+				<Item id="90289" name="⇧ Aistriú"/>
+				<Item id="90290" name="Cuir isteach teaghrán formáide NSDateFormatter:"/>
+				<Item id="90291" name="Níl '%@' i bhfeidhm fós sa leagan seo."/>
+				<Item id="90292" name="Breiseán Iompórtála"/>
+				<Item id="90293" name="Atosaigh ag teastáil"/>
+				<Item id="90294" name="Níl aon chomhaid le próiseáil"/>
+				<Item id="90295" name="Níl aon chomhaid sa nód tionscadail seo."/>
+				<Item id="90296" name="Tá athruithe gan sábháil ag '%@'.&#10; Athlódáil agus cuir ar ceal athruithe?"/>
+				<Item id="90297" name="Cuir isteach ainm comhaid nua:"/>
+				<Item id="90299" name="Ainm nua:"/>
+				<Item id="90300" name="Theip ar an athainmniú"/>
+				<Item id="90301" name="Ní féidir “/” nó “:”."/>
+				<Item id="90304" name="Ná Sábháil Uile"/>
+				<Item id="90305" name="Leid Mód Colún"/>
+				<Item id="90306" name="Tá 3 bhealach ann le hathrú go mód roghnaithe colúin:&#10;&#10;1.(Méarchláir agus Luch) Coinnigh an Rogha agus an cliceáil ar chlé á tharraingt&#10;&#10;2.(Méarchlár amháin) Coinnigh Option+Shift agus na heochracha saighde in úsáid&#10;&#10;3.(Méarchlár nó Luch)&#10; Cuir an cúram ag tús inmhianaithe suíomh an bhloic colúin, ansin&#10; rith an t-ordú “Tosaigh/Deireadh Roghnaigh i Mód Colún”;&#10; Bog an cúramóir go dtí suíomh inmhianaithe an bhloc colúin, ansin&#10; rith an t-ordú “Tosaigh/Deireadh Roghnaigh i Mód Colún” arís"/>
+				<Item id="90307" name="Cuir isteach an URL cuardaigh.Úsáid %s mar choinneálaí an iarratais (nó cuir an cheist ag an deireadh i gceangal leis):"/>
+				<Item id="90308" name="Cuir isteach ordú nó URL..."/>
+				<Item id="90309" name="Theip ar rith:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Roghchlár comhthéacs á chur in eagar"/>
+				<Item id="90311" name="Trí contextMenu.xml a chur in eagar, is féidir leat do roghchlár comhthéacs Nextpad++ a mhionathrú sa chrios eagarthóireachta.&#10;Ní mór duit do Nextpad++ a atosú le dul i bhfeidhm tar éis contextMenu.xml a mhodhnú."/>
+				<Item id="90312" name="Suiteáilte cheana féin"/>
+				<Item id="90313" name="Suiteáil nextpad++ Uirlis Líne Ordú"/>
+				<Item id="90314" name="Theip ar an tsuiteáil"/>
+				<Item id="90315" name="Suiteáilte — ach níl ~/.local/bin ar do PATH"/>
+				<Item id="90316" name="Cheana féin i do chumraíocht"/>
+				<Item id="90317" name="Curtha le PATH"/>
+				<Item id="90318" name="Níorbh fhéidir scríobh"/>
+				<Item id="90319" name="Cóipeáladh"/>
+				<Item id="90321" name="Caillfear do chuid athruithe mura sábhálfaidh tú iad."/>
+				<Item id="90322" name="Cuir i bhfeidhm ar gach doiciméad"/>
+				<Item id="90323" name="Rith Macra ar Chomhaid"/>
+				<Item id="90324" name="Macra:"/>
+				<Item id="90325" name="Fillteán:"/>
+				<Item id="90326" name="Roghnaigh fillteán…"/>
+				<Item id="90327" name="Brabhsáil…"/>
+				<Item id="90328" name="Eisínteachtaí:"/>
+				<Item id="90329" name="Fochomhadlanna atarlaithe"/>
+				<Item id="90330" name="Cuir comhaid i bhfolach san áireamh"/>
+				<Item id="90331" name="Uasmhéid:"/>
+				<Item id="90332" name="Gan teorainn"/>
+				<Item id="90333" name="In aghaidh an chomhaid:"/>
+				<Item id="90334" name="Sábháil má athraíodh é"/>
+				<Item id="90335" name="Dún tar éis"/>
+				<Item id="90336" name="Dún fiú comhaid a bhí oscailte cheana féin"/>
+				<Item id="90337" name="Ar earráid:"/>
+				<Item id="90338" name="Léim an comhad agus lean ar aghaidh"/>
+				<Item id="90339" name="Stop ar an gcéad earráid"/>
+				<Item id="90340" name="(gan macraí sábháilte)"/>
+				<Item id="90341" name="Meaitseálann %lu comhad"/>
+				<Item id="90342" name="Fillteán gan aimsiú"/>
+				<Item id="90343" name="Roghnaigh fillteán atá ann."/>
+				<Item id="90344" name="Níl aon chomhaid ag teacht leis"/>
+				<Item id="90345" name="Coigeartaigh an rogha scagaire síntí, atriallta nó comhaid fholaithe."/>
+				<Item id="90346" name="Ag tosú…"/>
+				<Item id="90347" name="Próiseáil:"/>
+				<Item id="90348" name="%ld / %ld Ceart go leor: %ld Léimeadh: %ld Theip: %ld"/>
+				<Item id="90349" name="Baisce curtha ar ceal"/>
+				<Item id="90350" name="Baisc críochnaithe"/>
+				<Item id="90351" name="Iomlán: %lu Ceart go leor: %ld Léimte: %ld Theip: %ld"/>
+				<Item id="90352" name="Dáta Tógtha"/>
+				<Item id="90353" name="Córas Oibriúcháin"/>
+				<Item id="90354" name="is déanaí"/>
+				<Item id="90355" name="as dáta"/>
+				<Item id="90356" name="anaithnid"/>
+				<Item id="90357" name="Atosaigh an feidhmchlár chun athruithe a chur i bhfeidhm."/>
+				<Item id="90358" name="Nuashonraigh Breiseáin"/>
+				<Item id="90359" name="Nuashonraigh na forlíontáin seo a leanas?"/>
+				<Item id="90360" name="Déantar cúltaca de na leaganacha reatha go dtí ~/Library/Application Support/Nextpad++/plugin-backups/ sula n-athrófar iad."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Athraigh go dtí an cuma Tahoe Nua (Beta)"/>
+				<Item id="90363" name="Úsáid biachláir ar stíl macOS (Beta)"/>
+				<Item id="90364" name="Cuirfear an chuma Tahoe nua i bhfeidhm tar éis duit Nextpad++ a atosú."/>
+				<Item id="90365" name="Déanfar an cuma Chlasaiceach a aischur tar éis duit Nextpad++ a atosú."/>
+				<Item id="90366" name="Scoir Anois"/>
+				<Item id="90367" name="Déanfar biachláir a atheagrú sa stíl macOS tar éis duit Nextpad++ a atosú."/>
+				<Item id="90368" name="Déanfar leagan amach clasaiceach an roghchláir a athchóiriú tar éis duit Nextpad++ a atosú."/>
+				<Item id="90369" name="Dath"/>
+				<Item id="90370" name="Cuir isteach ar dheilbhíní an bharra uirlisí breiseán"/>
+				<Item id="90371" name="Sa mhód Comhlánaigh déantar dath soladach amháin ar dheilbhíní breiseán."/>
+				<Item id="90372" name="Grúpaí Barra Uirlisí"/>
+				<Item id="90373" name="Roghnaigh an áit a bhfuil gach cnaipe le feiceáil sa bharra uirlisí Liquid Glass: ar an"/>
+				<Item id="90374" name="Cnaipe"/>
+				<Item id="90375" name="Socrúchán"/>
+				<Item id="90376" name="Athshocraigh go Réamhshocruithe"/>
+				<Item id="90377" name="Roghchlár thar maoil"/>
+				<Item id="90378" name="i bhfolach"/>
+				<Item id="90379" name="Timfhilleadh focal cairdiúil CJK"/>
+				<Item id="90380" name="Aistrítear roghnú na gcolún go hileagarthóireacht"/>
+				<Item id="90381" name="Spásáil líne:"/>
+				<Item id="90382" name="1.0 (Réamhshocrú)"/>
+				<Item id="90383" name="Folaigh barra cluaisíní"/>
+				<Item id="90384" name="Leanann méid na gcluaisíní súmáil doiciméad"/>
+				<Item id="90385" name="Roghnaigh…"/>
+				<Item id="90386" name="Athshocraigh go Réamhshocrú"/>
+				<Item id="90387" name="Ag baint úsáide as an suíomh réamhshocraithe."/>
+				<Item id="90388" name="Suíomh saincheaptha."/>
+				<Item id="90389" name="Conair neamhbhailí - úsáidfidh cúltacaí an suíomh réamhshocraithe."/>
+				<Item id="90390" name="Roghnaigh"/>
+				<Item id="90391" name="Ionsáigh Roghnú:"/>
+				<Item id="90392" name="Úsáid Boost mód Regex (illíne; atosaigh chun é a chur i bhfeidhm)"/>
+				<Item id="90393" name="Atosaigh Nextpad++ le cur i bhfeidhm."/>
+				<Item id="90395" name="Atosaigh Anois"/>
+				<Item id="90396" name="Roghnaigh fillteán óna léann/scríobhann Nextpad++ a shocruithe"/>
+				<Item id="90397" name="(ná roghnaigh é mura bhfuil a fhios agat cad atá á dhéanamh agat)"/>
+				<Item id="90398" name="Méid deilbhín an bharra uirlisí"/>
+				<Item id="90399" name="100% (Réamhshocrú)"/>
+				<Item id="90400" name="Luas scrollbharra roth luiche"/>
+				<Item id="90401" name="1× (as)"/>
+				<Item id="90402" name="Athraíodh méid deilbhín an bharra uirlisí"/>
+				<Item id="90403" name="Tiocfaidh méid deilbhíní an bharra uirlisí nua i bhfeidhm an chéad uair eile a seolfar Nextpad++."/>
+				<Item id="90404" name="Athraíodh deilbhíní an bharra uirlisí"/>
+				<Item id="90405" name="Tiocfaidh deilbhíní an bharra uirlisí nua i bhfeidhm an chéad uair eile a seolfar Nextpad++."/>
+				<Item id="90406" name="Spás Oibre Nua"/>
+				<Item id="90408" name="Athlódáil Spás Oibre"/>
+				<Item id="90410" name="Faigh i dTionscadail..."/>
+				<Item id="90411" name="Rith Macra ar Chomhaid..."/>
+				<Item id="90417" name="Athraigh Conair an Chomhaid"/>
+				<Item id="90418" name="Bainfidh sé seo é agus a bhfuil ann go léir ón tionscadal.Ní dhéanfar difear d'aon chomhaid ar diosca."/>
+				<Item id="90419" name="Spás oibre"/>
+				<Item id="90420" name="Fillteán"/>
+				<Item id="90423" name="Cóipeáil Conair(neacha) Roghnaithe"/>
+				<Item id="90424" name="Oscail Pathname(s) Roghnaithe"/>
+				<Item id="90425" name="Focal wrap línte fada"/>
+				<Item id="90426" name="Glan do gach cuardach"/>
+				<Item id="90427" name="Ní bhfuarthas"/>
+				<Item id="90428" name="COIMHLINT: %@"/>
+				<Item id="90429" name="An bhfuil fonn ort &quot;%@&quot; a scriosadh?"/>
+				<Item id="90430" name="Riarachán Teanga Sainithe ag Úsáideoir"/>
+				<Item id="90431" name="Scag teangacha…"/>
+				<Item id="90432" name="Foinse"/>
+				<Item id="90433" name="Foinsí AC"/>
+				<Item id="90434" name="Stádas"/>
+				<Item id="90435" name="Suiteáil / Nuashonraigh"/>
+				<Item id="90436" name="%lu teanga · %lu suiteáilte · %lu nuashonrú"/>
+				<Item id="90437" name="Údar"/>
+				<Item id="90438" name="Comhcheangailte: %ld iontráil ó %lu fhoinse (cumasc)"/>
+				<Item id="90439" name="Roghnaigh teanga amháin nó níos mó le suiteáil."/>
+				<Item id="90440" name="Ní féidir aon rud a íoslódáil don roghnú."/>
+				<Item id="90441" name="Theip ar an íoslódáil"/>
+				<Item id="90442" name="Neamhréir seiceála"/>
+				<Item id="90443" name="Tá na teangacha roghnaithe ar fáil anois sa roghchlár Teanga."/>
+				<Item id="90444" name="Roghnaigh teanga suiteáilte amháin nó níos mó le baint."/>
+				<Item id="90445" name="Bainte"/>
+				<Item id="90446" name="Tá an t-ainm seo in úsáid i dteanga eile cheana féin."/>
+				<Item id="90447" name="Níorbh fhéidir an teanga seo a bhaint."/>
+				<Item id="90448" name="Ní féidir teangacha réamhshuiteáilte a bhaint."/>
+				<Item id="90449" name="Níorbh fhéidir an teanga seo a athainmniú."/>
+				<Item id="90450" name="Is é %@ an comhad seo.Má osclaítear í díchumasófar aibhsiú comhréire agus cealaigh stair chun an aip a choinneáil sofhreagrach.&#10;&#10;Ar mhaith leat leanúint ar aghaidh?"/>
+				<Item id="90451" name="Oscail Ar aon nós"/>
+				<Item id="90452" name="Athraíodh &quot;%@&quot; ar an diosca"/>
+				<Item id="90453" name="Déan neamhaird de"/>
+				<Item id="90454" name="Coinnigh Mo Leagan"/>
+				<Item id="90455" name="Níorbh fhéidir &quot;%@&quot; a athlódáil"/>
+				<Item id="90456" name="Níorbh fhéidir an comhad a léamh."/>
+				<Item id="90457" name="Roghnaigh cá bhfuil gach cnaipe sa bharra uirlisí Liquid Glass: ar an capsule grúpa (Bar Uirlisí), i roghchlár ró-shreabhadh an ghrúpa ▾, nó Hidden."/>
+				<Item id="90458" name="Deonaigh chun Tacú le Forbairt"/>
+				<Item id="90459" name="Suiteáil Uirlisí Líne Ordú"/>
+				<Item id="90460" name="Taispeáin scáthanna taobh thiar de na capsúil barra uirlisí"/>
+				<Item id="90461" name="Síntiúis"/>
+				<Item id="90462" name="Leagann carachtar"/>
+				<Item id="90463" name="Íoslaghdaigh"/>
+				<Item id="90464" name="Folaigh Nextpad++"/>
+				<Item id="90465" name="Folaigh Daoine Eile"/>
+				<Item id="90466" name="Taispeáin Uile"/>
+				<Item id="90467" name="Scoir Nextpad++"/>
+				<Item id="90468" name="Sábháil an Macra Taifeadta Reatha…"/>
+				<Item id="90469" name="Spás Trailing Baile Átha Troim agus Sábháil"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox><!-- $INT_REPLACE$ is a place holder, don't translate it -->

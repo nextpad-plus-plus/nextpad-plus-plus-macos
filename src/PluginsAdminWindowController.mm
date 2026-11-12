@@ -1021,7 +1021,7 @@ static NSInteger compareSemver(NSString *a, NSString *b) {
         [names componentsJoinedByString:@"\n"],
         [loc translate:@"Restart the application for changes to take effect."]];
     [confirm addButtonWithTitle:[loc translate:@"Install"]];
-    [confirm addButtonWithTitle:[loc translate:@"Cancel"]];
+    [confirm addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
 
     [confirm beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse resp) {
         if (resp != NSAlertFirstButtonReturn) return;
@@ -1056,7 +1056,7 @@ static NSInteger compareSemver(NSString *a, NSString *b) {
         [loc translate:@"Current versions are backed up to ~/Library/Application Support/Nextpad++/plugin-backups/ before being replaced."],
         [loc translate:@"Restart the application for changes to take effect."]];
     [confirm addButtonWithTitle:[loc translate:@"Update"]];
-    [confirm addButtonWithTitle:[loc translate:@"Cancel"]];
+    [confirm addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
 
     [confirm beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse resp) {
         if (resp != NSAlertFirstButtonReturn) return;
@@ -1290,7 +1290,7 @@ static NSInteger compareSemver(NSString *a, NSString *b) {
         [loc translate:@"This will delete the plugin files."],
         [loc translate:@"Restart the application for changes to take effect."]];
     [confirm addButtonWithTitle:[loc translate:@"Remove"]];
-    [confirm addButtonWithTitle:[loc translate:@"Cancel"]];
+    [confirm addButtonWithTitle:[loc translate:@"Cancel"]].keyEquivalent = @"\033";
     confirm.alertStyle = NSAlertStyleWarning;
 
     [confirm beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse resp) {

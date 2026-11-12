@@ -78,6 +78,10 @@ static const NSUInteger kMaxHistory = 30;
     NSColor *bg = [store globalBg];
     _scrollView.backgroundColor = bg;
     _tableView.backgroundColor  = bg;
+    // Pin the table (and scroller) appearance to the theme background, not the
+    // chrome: otherwise dark chrome over a light theme draws the unfocused
+    // selection in dark-mode grey under theme-black text.
+    _scrollView.appearance = [NppThemeManager appearanceForBackground:bg];
     [_tableView reloadData];
 }
 
@@ -166,7 +170,7 @@ static const NSUInteger kMaxHistory = 30;
 
     NSTextField *cell = [tableView makeViewWithIdentifier:@"ClipCell" owner:nil];
     if (!cell) {
-        cell = [[NSTextField alloc] init];
+        cell = [[NppThemedLabel alloc] init];
         cell.identifier = @"ClipCell";
         cell.editable = NO;
         cell.bordered = NO;
@@ -177,7 +181,10 @@ static const NSUInteger kMaxHistory = 30;
     int fontSize = [store globalFontSize];
     cell.font = [NSFont fontWithName:fontName size:fontSize ?: 12];
     cell.font = [NSFont systemFontOfSize:_panelFontSize];
-    cell.textColor = [store globalFg];
+    if ([cell isKindOfClass:[NppThemedLabel class]])
+        ((NppThemedLabel *)cell).themeTextColor = [store globalFg];
+    else
+        cell.textColor = [store globalFg];
     cell.stringValue = display;
     return cell;
 }

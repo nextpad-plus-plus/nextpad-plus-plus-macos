@@ -1466,13 +1466,13 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90006" name="Source Control"/>
 				<Item id="90007" name="Manolotra"/>
 				<Item id="90008" name="Tsy nahomby ny fanoloran-tena"/>
-				<Item id="90009" name="No git repository\nAmpiasao ny Browse hanokafana repo."/>
+				<Item id="90009" name="No git repository&#10;Ampiasao ny Browse hanokafana repo."/>
 				<Item id="90010" name="Dingana"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Dingana rehetra"/>
 				<Item id="90013" name="Esory daholo"/>
-				<Item id="90014" name="Manorata hafatra\u2026"/>
-				<Item id="90015" name="Mitadiava tahiry\u2026"/>
+				<Item id="90014" name="Manorata hafatra…"/>
+				<Item id="90015" name="Mitadiava tahiry…"/>
 				<Item id="90016" name="Mifidiana fampirimana git repository"/>
 				<Item id="90017" name="(tsy misy tahiry)"/>
 				<Item id="90018" name="(misaraka)"/>
@@ -1486,9 +1486,9 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90026" name="Vokatra"/>
 				<Item id="90027" name="Atsaharo"/>
 				<Item id="90028" name="Nitsahatra ny fikarohana."/>
-				<Item id="90029" name="Mikaroka\u2026"/>
+				<Item id="90029" name="Mikaroka…"/>
 				<Item id="90030" name="Lahatsoratra hitadiavana"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Mitady..."/>
 				<Item id="90033" name="Soloy:"/>
 				<Item id="90034" name="Teny manontolo"/>
@@ -1548,7 +1548,7 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90088" name="Mametraka Plugins"/>
 				<Item id="90089" name="Esory ny Plugins"/>
 				<Item id="90090" name="Tsy misy baiko hita"/>
-				<Item id="90091" name="Soraty raha hikaroka\u2026"/>
+				<Item id="90091" name="Soraty raha hikaroka…"/>
 				<Item id="90092" name="Fiteny voafaritry ny mpampiasa v.2.1"/>
 				<Item id="90093" name="Mamorona fiteny vaovao"/>
 				<Item id="90094" name="Ampidiro anarana:"/>
@@ -1557,11 +1557,9 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90097" name="Aza mitahiry"/>
 				<Item id="90098" name="Vita"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Asehoy ny endri-tsoratra rehetra"/>
 				<Item id="90101" name="Asehoy ny Options"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Tsy mbola ampiharina"/>
-				<Item id="90104" name="Avereno avy amin'ny Disk"/>
 				<Item id="90105" name="Hanova ny motera fikarohana"/>
 				<Item id="90106" name="Run Error"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Pejy famoahana"/>
 				<Item id="90112" name="Taty aoriana"/>
-				<Item id="90113" name="Sivana plugins\u2026"/>
+				<Item id="90113" name="Sivana plugins…"/>
 				<Item id="90114" name="Misy"/>
 				<Item id="90115" name="Vaovao farany"/>
 				<Item id="90116" name="Napetraka"/>
@@ -1579,7 +1577,7 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90119" name="Esory ireto plugins manaraka ireto?"/>
 				<Item id="90120" name="Mametraka ireto plugins manaraka ireto?"/>
 				<Item id="90121" name="Izany dia hamafa ny rakitra plugin."/>
-				<Item id="90122" name="Fikarohana baiko\u2026"/>
+				<Item id="90122" name="Fikarohana baiko…"/>
 				<Item id="90123" name="Loko eo anoloana"/>
 				<Item id="90124" name="Loko ambadika"/>
 				<Item id="90125" name="Anarana macro"/>
@@ -1599,7 +1597,7 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90139" name="Voafafa ny marika rehetra."/>
 				<Item id="90140" name="Lahatsoratra voamarika nadika amin'ny solaitrabe."/>
 				<Item id="90141" name="Tsy misy soratra voamarika hadika."/>
-				<Item id="90142" name="Mikaroka... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Mikaroka... %ld hit(s) — %@"/>
 				<Item id="90143" name="Manolo amin'ny rakitra..."/>
 				<Item id="90144" name="Soloy amin'ny tetikasa: Tsy mbola mifandray."/>
 				<Item id="90145" name="Tadiavo ao amin'ny tetikasa: Tsy mbola mifandray amin'ny lisitry ny rakitra Project Panel."/>
@@ -1626,14 +1624,12 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90165" name="Hamafiso alohan'ny Save All"/>
 				<Item id="90166" name="Hamafiso ny Soloy rehetra amin'ny antontan-taratasy misokatra"/>
 				<Item id="90167" name="Soloy: aza mifindra amin'ny fisehoan-javatra manaraka"/>
-				<Item id="90168" name="Mampiasà endritsoratra monospaced amin'ny Find dialog"/>
 				<Item id="90169" name="Tsindrio havanana dia mitazona safidy"/>
 				<Item id="90170" name="Avereno ny baiko daty/ora mahazatra"/>
 				<Item id="90171" name="Mampiasà mpizara lisitry ny asa mifototra amin'ny XML"/>
 				<Item id="90172" name="Fampidirana mandeha ho azy ( ) [ ] { }"/>
 				<Item id="90173" name="Avy amin'ny toetra Nth:"/>
 				<Item id="90174" name="Fehezan'ny fanaraha-maso mandeha ho azy (bytes):"/>
-				<Item id="90175" name="Nitarina (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margins"/>
 				<Item id="90178" name="Maizina"/>
@@ -1647,12 +1643,10 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Tsotra +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Fitehirizam-boky lisitry ny plugin"/>
 				<Item id="90192" name="Misafidiana rakitra XML lohahevitra Nextpad++ hampiharina"/>
-				<Item id="90193" name="Mamorona vaovao\u2026"/>
-				<Item id="90194" name="Tehirizo ho\u2026"/>
+				<Item id="90193" name="Mamorona vaovao…"/>
+				<Item id="90194" name="Tehirizo ho…"/>
 				<Item id="90195" name="Fiteny mpampiasa:"/>
 				<Item id="90196" name="Anaran'ny fiteny"/>
 				<Item id="90197" name="Mamorona"/>
@@ -1682,6 +1676,218 @@ Azonao atao ny mamerina indray ity fifanakalozan-kevitra ity ao amin'ny Préfér
 				<Item id="90221" name="Attribute voahidy (macOS)"/>
 				<Item id="90222" name="Jereo ny fanavaozana…"/>
 				<Item id="90223" name="Sokafy vao haingana"/>
+				<Item id="90226" name="Fanampiana"/>
+				<Item id="90227" name="Tsy nahomby ny dingana"/>
+				<Item id="90228" name="Tsy nahomby ny Unstage"/>
+				<Item id="90229" name="dia misy"/>
+				<Item id="90230" name="Mihazakazaka ianao"/>
+				<Item id="90231" name="Aza mampahatsiahy ahy intsony"/>
+				<Item id="90232" name="Fanavaozana"/>
+				<Item id="90233" name="Hamarino ho azy ny fanavaozana"/>
+				<Item id="90234" name="Tsy mandeha ny fanamarinana fanavaozana mandeha ho azy."/>
+				<Item id="90235" name="Voamarina farany:"/>
+				<Item id="90236" name="Tsy misy fifandraisana Internet."/>
+				<Item id="90237" name="Valiny tsy nampoizina avy amin'ny mpizara fanavaozana."/>
+				<Item id="90238" name="Tsy nisy famoahana navoaka hita."/>
+				<Item id="90239" name="Tsy misy vonjimaika ny mpizara fanavaozana.Andramo indray rahatrizay."/>
+				<Item id="90240" name="Nolavin'ny mpizara fanavaozana ilay fangatahana.Ny proxy, firewall na VPN dia mety manakana ny fidirana amin'ny GitHub."/>
+				<Item id="90241" name="Be loatra ny fisavana fanavaozam-baovao avy amin'ny tambajotrao (io fetra io dia zarain'ny rehetra ao aminy).Andramo indray rehefa avy eo"/>
+				<Item id="90242" name="Be loatra ny fisavana fanavaozam-baovao avy amin'ny tambajotrao (io fetra io dia zarain'ny rehetra ao aminy).Andramo indray rahatrizay."/>
+				<Item id="90243" name="Naverin'ny mpizara fanavaozana ny sata"/>
+				<Item id="90244" name="Andramo indray"/>
+				<Item id="90245" name="Haben'ny soratra:"/>
+				<Item id="90246" name="Mampiasà zoom efijery"/>
+				<Item id="90247" name="Habe tena izy"/>
+				<Item id="90248" name="Tsy azo nosoloina ny rakitra sasany"/>
+				<Item id="90249" name="...sy %lu fanampiny"/>
+				<Item id="90250" name="Ny fikambanan'ny rakitra dia tantanin'ny fikambananao."/>
+				<Item id="90251" name="Miandry macOS hanamarina…"/>
+				<Item id="90252" name="macOS dia tsy nampihatra ny fanovana."/>
+				<Item id="90253" name="voasoratra anarana"/>
+				<Item id="90254" name="Sokafy ny rakitra rehetra ao anaty lahatahiry?"/>
+				<Item id="90255" name="Hanokatra rakitra %lu amin'ny tabilao vaovao izany."/>
+				<Item id="90256" name="Tsy afaka nanafatra: %@"/>
+				<Item id="90258" name="Nahita lalao %ld tao amin'ny rakitra %ld."/>
+				<Item id="90259" name="Mikaroka… %ld lalao (es) hatreto"/>
+				<Item id="90260" name="%@ (%ld lalao%@)"/>
+				<Item id="90261" name="Fikarohana manjavozavo"/>
+				<Item id="90266" name="Isa: %ld lalao."/>
+				<Item id="90267" name="Soloy Rehetra: %ld ny fisehoan-javatra dia nosoloina %@."/>
+				<Item id="90268" name="Soloy amin'ny rakitra misokatra: %ld nosoloina."/>
+				<Item id="90269" name="Tadiavo ao anaty rakitra: %ld kapoka ao amin'ny %ld rakitra."/>
+				<Item id="90270" name="Tadiavo ao anaty rakitra: 0 hits."/>
+				<Item id="90271" name="Replace all occurrences of &quot;%@&quot; with &quot;%@&quot; in directory:&#10;%@&#10;&#10;This cannot be undone."/>
+				<Item id="90272" name="Soloy amin'ny rakitra: %ld fanoloana amin'ny %ld rakitra."/>
+				<Item id="90273" name="Sokafy ny Panel Project aloha."/>
+				<Item id="90274" name="Misafidiana Panel Tetikasa iray farafahakeliny hikaroka."/>
+				<Item id="90275" name="Tsy misy rakitra hikaroka."/>
+				<Item id="90276" name="Tadiavo ao amin'ny tetikasa: %ld kapoka amin'ny %ld rakitra."/>
+				<Item id="90277" name="Tadiavo ao amin'ny tetikasa: 0 hits."/>
+				<Item id="90278" name="Soloy ny fisehoan-javatra rehetra amin'ny"/>
+				<Item id="90279" name="miaraka amin'ny"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="rakitra tetikasa (s).Tsy azo averina izany."/>
+				<Item id="90282" name="Soloy amin'ny tetikasa: %ld fanoloana amin'ny %ld rakitra."/>
+				<Item id="90283" name="Mariho: %ld mifanandrify voamarika."/>
+				<Item id="90284" name="Sivana ny anaran'ny rakitra/folder..."/>
+				<Item id="90285" name="Tsy voatahiry ny antontan-taratasy sasany"/>
+				<Item id="90286" name="⌘ Didy"/>
+				<Item id="90287" name="⌃ Fanaraha-maso"/>
+				<Item id="90288" name="⌥ Safidy"/>
+				<Item id="90289" name="⇧ Miova"/>
+				<Item id="90290" name="Ampidiro tady endrika NSDateFormatter:"/>
+				<Item id="90291" name="'%@' dia tsy mbola ampiharina amin'ity dikan-teny ity."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Ilaina ny manomboka indray"/>
+				<Item id="90294" name="Tsy misy rakitra hokarakaraina"/>
+				<Item id="90295" name="Tsy misy rakitra ity node tetikasa ity."/>
+				<Item id="90296" name="'%@' dia misy fiovana tsy voatahiry.&#10;Avereno ariana sy ario ny fanovana?"/>
+				<Item id="90297" name="Ampidiro anarana fisie vaovao:"/>
+				<Item id="90299" name="Anarana vaovao:"/>
+				<Item id="90301" name="Tsy misy “/” na “:” ny anarana."/>
+				<Item id="90304" name="Aza Vonjeo Rehetra"/>
+				<Item id="90306" name="Misy fomba 3 hifindra amin'ny fomba fantenana tsanganana:&#10;&#10;1.(Kitendry sy totozy) Tazony ny Option raha misintona ankavia&#10;&#10;2.(Kyboard ihany) Tazony ny Option+Shift raha mampiasa fanalahidin'ny zana-tsipìka&#10;&#10;3.(Keyboard na totozy)&#10; Asio caret eo amin'ny fiatombohan'ny toeran'ny tsanganana tiana, avy eo&#10; tanteraho ny baiko “Begin/End Select in Column Mode”;&#10; Atsofohy any amin'ny faran'ny toeran'ny tsanganana irina, dia&#10; avereno indray ny baiko “Begin/End Select in Column Mode”"/>
+				<Item id="90307" name="Ampidiro ny URL fikarohana.Ampiasao ny %s ho toy ny toeran'ny fanontaniana (na ampio ny fanontaniana amin'ny farany):"/>
+				<Item id="90308" name="Ampidiro baiko na URL..."/>
+				<Item id="90309" name="Tsy nahomby:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ny fanitsiana contextMenu.xml dia ahafahanao manova ny menio contexte pop-up Nextpad++ ao amin'ny faritra fanovana.&#10;Tsy maintsy averinao indray ny Nextpad++ anao mba hanan-kery rehefa avy manova ny contextMenu.xml."/>
+				<Item id="90312" name="Efa napetraka"/>
+				<Item id="90313" name="Mametraka nextpad++ Tool Line Command"/>
+				<Item id="90314" name="Tsy nahomby ny fametrahana"/>
+				<Item id="90315" name="Napetraka — fa ~/.local/bin tsy ao amin'ny PATH-nao"/>
+				<Item id="90316" name="Efa ao amin'ny config anao"/>
+				<Item id="90317" name="Nampidirina tao amin'ny PATH"/>
+				<Item id="90318" name="Tsy afaka nanoratra"/>
+				<Item id="90319" name="Nadika"/>
+				<Item id="90321" name="Ho very ny fanovanao raha tsy tehirizinao."/>
+				<Item id="90322" name="Ampiharo amin'ny antontan-taratasy rehetra"/>
+				<Item id="90323" name="Alefaso ny Macro amin'ny rakitra"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="lahatahiry:"/>
+				<Item id="90326" name="Mifidiana lahatahiry…"/>
+				<Item id="90327" name="Hijery…"/>
+				<Item id="90328" name="Fanitarana:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Ampidiro ny rakitra miafina"/>
+				<Item id="90331" name="Habe ambony:"/>
+				<Item id="90332" name="tsy voafetra"/>
+				<Item id="90333" name="Isaky ny rakitra:"/>
+				<Item id="90334" name="Tehirizo raha ovaina"/>
+				<Item id="90335" name="Akatona aorian'izay"/>
+				<Item id="90336" name="Akatona na dia ny rakitra efa misokatra aza"/>
+				<Item id="90337" name="Raha diso:"/>
+				<Item id="90338" name="Tsidiho ny rakitra ary tohizo"/>
+				<Item id="90339" name="Atsaharo amin'ny fahadisoana voalohany"/>
+				<Item id="90340" name="(tsy misy macro voatahiry)"/>
+				<Item id="90341" name="%lu rakitra mifanandrify"/>
+				<Item id="90342" name="Tsy hita ny lahatahiry"/>
+				<Item id="90343" name="Mifidiana lahatahiry misy."/>
+				<Item id="90344" name="Tsy misy rakitra mifanentana"/>
+				<Item id="90345" name="Ahitsio ny sivana fanitarana, recursion, na safidy miafina."/>
+				<Item id="90346" name="Manomboka…"/>
+				<Item id="90347" name="Fanodinana:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Nandalo: %ld Tsy nahomby: %ld"/>
+				<Item id="90349" name="Nofoanana ny andiany"/>
+				<Item id="90350" name="Vita ny batch"/>
+				<Item id="90351" name="Total: %lu Ok: %ld Nandalo: %ld Tsy nahomby: %ld"/>
+				<Item id="90352" name="Daty nanorenana"/>
+				<Item id="90353" name="Rafitra fandidiana"/>
+				<Item id="90354" name="farany"/>
+				<Item id="90355" name="lany andro"/>
+				<Item id="90356" name="tsy fantatra"/>
+				<Item id="90357" name="Avereno indray ny fampiharana mba hanan-kery ny fanovana."/>
+				<Item id="90358" name="Fanavaozana ny Plugins"/>
+				<Item id="90359" name="Havaozy ireto plugins manaraka ireto?"/>
+				<Item id="90360" name="Ny dikan-teny ankehitriny dia averina averina amin'ny ~/Library/Application Support/Nextpad++/plugin-backups/ alohan'ny hanoloana azy."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Mivadika amin'ny endrika Tahoe vaovao (Beta)"/>
+				<Item id="90363" name="Mampiasà sakafo macOS-style (Beta)"/>
+				<Item id="90364" name="Ny endrika Tahoe vaovao dia hampiharina rehefa manomboka Nextpad++ indray ianao."/>
+				<Item id="90365" name="Haverina amin'ny laoniny ny endrika Classic rehefa manomboka Nextpad++ indray ianao."/>
+				<Item id="90366" name="Mialà izao"/>
+				<Item id="90367" name="Hamboarina amin'ny fomba macOS ny menus rehefa manomboka Nextpad++ ianao."/>
+				<Item id="90368" name="Haverina amin'ny laoniny ny fisehon'ny sakafo mahazatra rehefa manomboka Nextpad++ ianao."/>
+				<Item id="90369" name="loko"/>
+				<Item id="90370" name="Ampiharo amin'ny kisary kisary fitaovan'ny plugin"/>
+				<Item id="90371" name="Ao amin'ny Complete mode plugin kisary lasa loko mivaingana tokana."/>
+				<Item id="90372" name="Toolbar Groups"/>
+				<Item id="90373" name="Fidio ny toerana hisehoan'ny bokotra tsirairay ao amin'ny Liquid Glass fitaovana: eo amin'ny"/>
+				<Item id="90374" name="bokotra"/>
+				<Item id="90375" name="Fametrahana"/>
+				<Item id="90376" name="Hiverina any amin'ny Defaults"/>
+				<Item id="90377" name="Menu overflow"/>
+				<Item id="90378" name="miafina"/>
+				<Item id="90379" name="Fandefasana teny CJK"/>
+				<Item id="90380" name="Mivadika ho fanitsiana maro ny fifantenana tsanganana"/>
+				<Item id="90381" name="Ny elanelan'ny tsipika:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Afeno ny tabilao kiheba"/>
+				<Item id="90384" name="Ny haben'ny tabilao dia manaraka ny zoom document"/>
+				<Item id="90385" name="Fidio…"/>
+				<Item id="90386" name="Hiverina any amin'ny Default"/>
+				<Item id="90387" name="Mampiasa ny toerana misy anao."/>
+				<Item id="90388" name="Toerana manokana."/>
+				<Item id="90389" name="Lalana tsy mety — ny backups dia hampiasa ny toerana misy azy."/>
+				<Item id="90390" name="Mifidiana"/>
+				<Item id="90391" name="Ampidiro safidy:"/>
+				<Item id="90392" name="Mampiasà fomba Boost Regex (tsipika maromaro; avereno indray ny fampiharana)"/>
+				<Item id="90395" name="Avereno indray izao"/>
+				<Item id="90397" name="(aza mifidy raha tsy fantatrao izay ataonao)"/>
+				<Item id="90398" name="Haben'ny kisary kisary"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Hafainganam-boky kodiarana amin'ny totozy"/>
+				<Item id="90401" name="1 × (eny)"/>
+				<Item id="90402" name="Niova ny haben'ny kisary kisary"/>
+				<Item id="90403" name="Ny haben'ny kisary kisary vaovao dia hisy fiantraikany amin'ny fandefasana Nextpad++ manaraka."/>
+				<Item id="90404" name="Niova ny kisary kisary"/>
+				<Item id="90405" name="Ny kisary kisary vaovao dia hanan-kery amin'ny manaraka Nextpad++ manomboka."/>
+				<Item id="90408" name="Avereno avereno ny Workspace"/>
+				<Item id="90411" name="Alefaso ny Macro amin'ny rakitra..."/>
+				<Item id="90418" name="Izany dia hanaisotra azy sy ny ao anatiny rehetra amin'ny tetikasa.Tsy misy rakitra amin'ny kapila hisy fiantraikany."/>
+				<Item id="90420" name="lahatahiry"/>
+				<Item id="90427" name="Tsy hita"/>
+				<Item id="90428" name="fifandirana: %@"/>
+				<Item id="90429" name="Fafao ny &quot;%@&quot;?"/>
+				<Item id="90430" name="Mpitantana ny fiteny voafaritry ny mpampiasa"/>
+				<Item id="90431" name="Sivana ny fiteny…"/>
+				<Item id="90432" name="Loharano"/>
+				<Item id="90433" name="AC Sources"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Install / Update"/>
+				<Item id="90436" name="%lu fiteny · %lu napetraka · %lu fanavaozana"/>
+				<Item id="90437" name="Mpanoratra"/>
+				<Item id="90438" name="Mitambatra: %ld fidirana avy amin'ny loharano %lu (natambatra)"/>
+				<Item id="90439" name="Misafidiana fiteny iray na maromaro hapetraka."/>
+				<Item id="90440" name="Tsy misy azo alaina amin'ny fisafidianana."/>
+				<Item id="90441" name="Tsy nahomby ny fampidinana"/>
+				<Item id="90442" name="Checksum tsy mifanaraka"/>
+				<Item id="90443" name="Ireo fiteny nofantenana dia azo alaina ao amin'ny menu Language."/>
+				<Item id="90444" name="Mifidiana fiteny iray na maromaro napetraka ho esorina."/>
+				<Item id="90445" name="nesorina"/>
+				<Item id="90446" name="Efa ampiasain'ny fiteny hafa io anarana io."/>
+				<Item id="90447" name="Tsy nesorina io fiteny io."/>
+				<Item id="90448" name="Tsy azo esorina ny fiteny efa napetraka."/>
+				<Item id="90449" name="Tsy azo novana anarana io fiteny io."/>
+				<Item id="90450" name="Ity rakitra ity dia %@.Ny fanokafana azy dia hanafoana ny fanasongadinana syntax ary hanafoana ny tantara mba hihazonana ny fampiharana.&#10;&#10;Te hanohy ve ianao?"/>
+				<Item id="90451" name="Sokafy Na ahoana na ahoana"/>
+				<Item id="90452" name="&quot;%@&quot; dia niova tamin'ny kapila"/>
+				<Item id="90453" name="Tsy miraharaha"/>
+				<Item id="90454" name="Tazony ny Dikan-ko"/>
+				<Item id="90455" name="Tsy afaka namerina ny &quot;%@&quot;"/>
+				<Item id="90456" name="Tsy azo novakiana ilay rakitra."/>
+				<Item id="90457" name="Fidio ny toerana hisehoan'ny bokotra tsirairay ao amin'ny Liquid Glass Toolbar: ao amin'ny capsule groupe (Toolbar), ao amin'ny menu ▾ overflow an'ny vondrona, na Hidden."/>
+				<Item id="90458" name="Manome ho fanohanana ny fampandrosoana"/>
+				<Item id="90459" name="Mametraka Tools Command Line"/>
+				<Item id="90460" name="Asehoy ny aloka ao ambadiky ny kapsily fitaovana"/>
+				<Item id="90461" name="Manome"/>
+				<Item id="90462" name="Karazana karazana"/>
+				<Item id="90463" name="Manamaivana"/>
+				<Item id="90464" name="Afeno Nextpad++"/>
+				<Item id="90465" name="Afeno ny hafa"/>
+				<Item id="90466" name="Asehoy daholo"/>
+				<Item id="90467" name="Mialà Nextpad++"/>
+				<Item id="90468" name="Tehirizo ny Macro voarakitra ankehitriny…"/>
+				<Item id="90469" name="Hetezo ny Espace Trailing ary Tehirizo"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

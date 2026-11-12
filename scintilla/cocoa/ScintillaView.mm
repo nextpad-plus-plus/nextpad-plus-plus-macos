@@ -116,6 +116,11 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 	if (self != nil) {
 		owner = nil;
 		marginWidth = 20;
+		// A partial first/last line must not paint over neighboring views.
+		// NSView no longer clips to its bounds by default with the macOS 14 SDK.
+		if (@available(macOS 14.0, *)) {
+			self.clipsToBounds = YES;
+		}
 		currentCursors = [NSMutableArray arrayWithCapacity: 0];
 		for (size_t i=0; i<=SC_MAX_MARGIN; i++) {
 			[currentCursors addObject: reverseArrowCursor];
@@ -793,6 +798,26 @@ static NSCursor *cursorFromEnum(Window::Cursor cursor) {
 			break;
 		default:
 			return; // not a key that should collapse the column selection
+	}
+
+	// A rectangular-extend command must never collapse the block it is extending,
+	// whatever key it happens to be bound to. The Option test above covers only the
+	// stock Opt+Shift+arrow bindings; a shortcut reassigned in the Shortcut Mapper
+	// carries no Option, so without this the selection collapsed on every press and
+	// the block could never grow past two lines.
+	switch (mOwner.backend->CommandForKeyEvent(theEvent)) {
+		case Message::LineDownRectExtend:
+		case Message::LineUpRectExtend:
+		case Message::CharLeftRectExtend:
+		case Message::CharRightRectExtend:
+		case Message::HomeRectExtend:
+		case Message::VCHomeRectExtend:
+		case Message::LineEndRectExtend:
+		case Message::PageUpRectExtend:
+		case Message::PageDownRectExtend:
+			return;
+		default:
+			break;
 	}
 
 	// Switch to stream mode so the key acts on independent carets. The second

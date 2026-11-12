@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, FindWindowTab) {
 @end
 
 /// Unified 5-tab Find/Replace/Find in Files/Find in Projects/Mark window.
-@interface FindWindow : NSWindowController <NSWindowDelegate>
+@interface FindWindow : NSWindowController <NSWindowDelegate, NSComboBoxDelegate>
 
 @property (nonatomic, weak, nullable) id<FindWindowDelegate> delegate;
 

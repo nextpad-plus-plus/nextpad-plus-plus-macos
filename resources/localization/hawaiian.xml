@@ -1466,13 +1466,13 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90006" name="Mana Kumu"/>
 				<Item id="90007" name="Hāʻawi"/>
 				<Item id="90008" name="Hana ʻole ʻia"/>
-				<Item id="90009" name="ʻAʻohe git repository\nE hoʻohana i ka Huli e wehe i kahi repo."/>
+				<Item id="90009" name="ʻAʻohe git repository&#10;E hoʻohana i ka Huli e wehe i kahi repo."/>
 				<Item id="90010" name="Ke kahua"/>
 				<Item id="90011" name="Wehe i ke kahua"/>
 				<Item id="90012" name="Ke kahua a pau"/>
 				<Item id="90013" name="Wehe i na mea a pau"/>
-				<Item id="90014" name="Hāʻawi memo\u2026"/>
-				<Item id="90015" name="Huli no ka waihona\u2026"/>
+				<Item id="90014" name="Hāʻawi memo…"/>
+				<Item id="90015" name="Huli no ka waihona…"/>
 				<Item id="90016" name="E koho i kahi waihona waihona git"/>
 				<Item id="90017" name="(ʻaʻohe waihona)"/>
 				<Item id="90018" name="(kaawale)"/>
@@ -1486,9 +1486,9 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90026" name="Nā hualoaʻa"/>
 				<Item id="90027" name="Hooki"/>
 				<Item id="90028" name="Ua kū ka huli ʻana."/>
-				<Item id="90029" name="Huli\u2026"/>
+				<Item id="90029" name="Huli…"/>
 				<Item id="90030" name="He kikokikona no ka huli ʻana iā"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Ke huli nei..."/>
 				<Item id="90033" name="Pani:"/>
 				<Item id="90034" name="ʻŌlelo holoʻokoʻa"/>
@@ -1548,7 +1548,7 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90088" name="E hoʻouka i nā plugins"/>
 				<Item id="90089" name="Wehe i nā plugins"/>
 				<Item id="90090" name="ʻAʻohe kauoha i loaʻa"/>
-				<Item id="90091" name="E kikokiko e huli\u2026"/>
+				<Item id="90091" name="E kikokiko e huli…"/>
 				<Item id="90092" name="ʻŌlelo Hoʻohana ʻia v.2.1"/>
 				<Item id="90093" name="Hana i ka ʻōlelo hou"/>
 				<Item id="90094" name="E hookomo i ka inoa:"/>
@@ -1557,11 +1557,9 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90097" name="Mai Hoola"/>
 				<Item id="90098" name="Pau"/>
 				<Item id="90099" name="Hoʻololi i ka ʻōwili huaʻōlelo"/>
-				<Item id="90100" name="Hōʻike i nā mea a pau"/>
 				<Item id="90101" name="Hōʻike i nā ʻano koho"/>
 				<Item id="90102" name="E hoʻololi i ke alakaʻi kuhikuhi"/>
 				<Item id="90103" name="ʻAʻole i hoʻokō ʻia"/>
-				<Item id="90104" name="Hoʻouka hou mai Disk"/>
 				<Item id="90105" name="Hoʻololi i ka ʻenekini huli"/>
 				<Item id="90106" name="Holo hewa"/>
 				<Item id="90107" name="Nextpad++ Hoʻouka Manawa"/>
@@ -1570,7 +1568,7 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90110" name="Hoʻoiho"/>
 				<Item id="90111" name="ʻAoʻao hoʻokuʻu"/>
 				<Item id="90112" name="Ma hope"/>
-				<Item id="90113" name="Kānā i nā plugins\u2026"/>
+				<Item id="90113" name="Kānā i nā plugins…"/>
 				<Item id="90114" name="Loaʻa"/>
 				<Item id="90115" name="Nā mea hou"/>
 				<Item id="90116" name="Hoʻokomo ʻia"/>
@@ -1579,7 +1577,7 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90119" name="Wehe i kēia mau plugins?"/>
 				<Item id="90120" name="E hoʻouka i kēia mau plugins?"/>
 				<Item id="90121" name="E hoʻopau kēia i nā faila plugin."/>
-				<Item id="90122" name="Nā kauoha huli\u2026"/>
+				<Item id="90122" name="Nā kauoha huli…"/>
 				<Item id="90123" name="kala mua"/>
 				<Item id="90124" name="Ka waihoʻoluʻu hope"/>
 				<Item id="90125" name="inoa macro"/>
@@ -1599,7 +1597,7 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90139" name="Holoi ʻia nā māka a pau."/>
 				<Item id="90140" name="Ua kope ʻia ke kikokikona i kaha ʻia i ka papa ʻokiʻoki."/>
 				<Item id="90141" name="ʻAʻohe kikokikona i kaha ʻia e kope."/>
-				<Item id="90142" name="Ke huli nei... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Ke huli nei... %ld hit(s) — %@"/>
 				<Item id="90143" name="Ke pani nei i nā faila..."/>
 				<Item id="90144" name="Hoʻololi i nā papahana: ʻAʻole i pili."/>
 				<Item id="90145" name="E ʻimi i nā papahana: ʻAʻole i hoʻopili ʻia i ka papa inoa waihona Panel Panel."/>
@@ -1626,14 +1624,12 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90165" name="E hōʻoia ma mua o ka mālama ʻana i nā mea a pau"/>
 				<Item id="90166" name="E hōʻoia e hoʻololi i nā mea a pau i nā palapala wehe"/>
 				<Item id="90167" name="Hoʻololi: mai neʻe i kahi hanana aʻe"/>
-				<Item id="90168" name="E hoʻohana i ka monospaced ma ka ʻimi kamaʻilio"/>
 				<Item id="90169" name="Mālama ka kaomi ʻākau i ke koho"/>
 				<Item id="90170" name="Hoʻohuli i ke kauoha paʻamau i ka lā/manawa"/>
 				<Item id="90171" name="E hoʻohana i ka XML-based list list parser"/>
 				<Item id="90172" name="Hoʻopili ʻakomi i nā pale ( ) [ ] { }"/>
 				<Item id="90173" name="Mai ka helu Nth:"/>
 				<Item id="90174" name="Ke koho ʻana i ka paepae hōʻoia ʻokoʻa (bytes):"/>
-				<Item id="90175" name="Hoʻonui ʻia (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Lunahooponopono"/>
 				<Item id="90177" name="Nā palena"/>
 				<Item id="90178" name="Pouli"/>
@@ -1647,12 +1643,10 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="Hoʻopono ʻia ʻo LCD"/>
 				<Item id="90188" name="Maʻalahi +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Waihona papa inoa plugin"/>
 				<Item id="90192" name="E koho i kahi waihona XML kumuhana Nextpad++ e hoʻohana"/>
-				<Item id="90193" name="Hana hou\u2026"/>
-				<Item id="90194" name="Mālama i\u2026"/>
+				<Item id="90193" name="Hana hou…"/>
+				<Item id="90194" name="Mālama i…"/>
 				<Item id="90195" name="ʻŌlelo mea hoʻohana:"/>
 				<Item id="90196" name="Ka inoa ʻōlelo"/>
 				<Item id="90197" name="Hana"/>
@@ -1682,6 +1676,217 @@ Hiki iā ʻoe ke hoʻāla hou i kēia kamaʻilio ma nā Koho ma hope."/>
 				<Item id="90221" name="ʻAno laka (macOS)"/>
 				<Item id="90222" name="E nānā i nā mea hou…"/>
 				<Item id="90223" name="Wehe Hou"/>
+				<Item id="90226" name="Kokua"/>
+				<Item id="90227" name="Hāʻule ka pae"/>
+				<Item id="90228" name="Holo ʻole ka Unstage"/>
+				<Item id="90229" name="loaʻa"/>
+				<Item id="90230" name="Ke holo nei ʻoe"/>
+				<Item id="90231" name="Mai hoʻomanaʻo hou iaʻu"/>
+				<Item id="90232" name="Nā mea hou"/>
+				<Item id="90233" name="E nānā 'akomi no nā mea hou"/>
+				<Item id="90234" name="Paʻa nā hōʻoia hōʻano hou."/>
+				<Item id="90235" name="Nānā hope loa:"/>
+				<Item id="90236" name="ʻAʻohe pili pūnaewele."/>
+				<Item id="90237" name="Pane i manaʻo ʻole ʻia mai ke kikowaena hōʻano hou."/>
+				<Item id="90238" name="ʻAʻohe mea i hoʻopuka ʻia."/>
+				<Item id="90239" name="ʻAʻole loaʻa ke kikowaena hōʻano hou.E ʻoluʻolu e hoʻāʻo hou ma hope."/>
+				<Item id="90240" name="Ua hōʻole ke kikowaena hōʻano hou i ke noi.Hiki paha i kahi mea koho, firewall a i ʻole VPN ke pale i ke komo ʻana iā GitHub."/>
+				<Item id="90241" name="Nui loa nā loiloi hōʻano hou mai kāu pūnaewele (ua kaʻana like kēia palena e nā mea a pau ma laila).E ho'āʻo hou ma hope"/>
+				<Item id="90242" name="Nui loa nā loiloi hōʻano hou mai kāu pūnaewele (ua kaʻana like kēia palena e nā mea a pau ma laila).E ʻoluʻolu e hoʻāʻo hou ma hope."/>
+				<Item id="90243" name="Ua hoʻihoʻi ke kikowaena hōʻano hou i ke kūlana"/>
+				<Item id="90244" name="E hoao hou"/>
+				<Item id="90245" name="Nui kikokikona paʻi:"/>
+				<Item id="90246" name="E hoʻohana i ka zoom pale"/>
+				<Item id="90247" name="Nui maoli"/>
+				<Item id="90248" name="ʻAʻole hiki ke pani ʻia kekahi mau faila"/>
+				<Item id="90249" name="...a me %lu mea hou aku"/>
+				<Item id="90250" name="Mālama ʻia nā hui waihona e kāu hui."/>
+				<Item id="90251" name="Ke kali nei iā macOS e hōʻoia…"/>
+				<Item id="90252" name="ʻAʻole i hoʻohana ʻo macOS i ka hoʻololi."/>
+				<Item id="90253" name="Kakau inoa"/>
+				<Item id="90254" name="E wehe i nā faila a pau i loko o ka waihona?"/>
+				<Item id="90255" name="E wehe kēia i nā faila %lu ma nā ʻaoʻao hou."/>
+				<Item id="90256" name="ʻAʻole hiki ke hoʻokomo: %@"/>
+				<Item id="90258" name="Loaʻa ka %ld pāʻani ma %ld waihona."/>
+				<Item id="90259" name="Ke ʻimi nei… %ld nā pāʻani i kēia manawa"/>
+				<Item id="90260" name="%@ (%ld pāʻani%@)"/>
+				<Item id="90261" name="Huli pohihihi"/>
+				<Item id="90266" name="Helu: %ld pāʻani."/>
+				<Item id="90267" name="Hoʻololi i nā mea a pau: %ld ua pani ʻia %@."/>
+				<Item id="90268" name="Hoʻololi i nā faila i wehe ʻia: %ld mea i pani ʻia."/>
+				<Item id="90269" name="E huli i loko o nā waihona: %ld paʻi ma %ld waihona."/>
+				<Item id="90270" name="Loaʻa ma nā waihona: 0 hits."/>
+				<Item id="90271" name="Hoʻololi i nā hanana a pau o &quot;%@&quot; me &quot;%@&quot; ma ka papa kuhikuhi:&#10;%@&#10;&#10;ʻAʻole hiki ke hoʻopau ʻia kēia."/>
+				<Item id="90272" name="Hoʻololi i nā waihona: %ld pani (mau) i %ld waihona."/>
+				<Item id="90273" name="E wehe mua i kahi Papahana Papahana."/>
+				<Item id="90274" name="E koho i hoʻokahi Papahana Papahana e huli ai."/>
+				<Item id="90275" name="ʻAʻohe faila e ʻimi."/>
+				<Item id="90276" name="E huli i loko o nā papahana: %ld paʻi ma %ld waihona."/>
+				<Item id="90277" name="Loaʻa ma nā papahana: 0 hits."/>
+				<Item id="90278" name="Hoʻololi i nā hanana a pau o"/>
+				<Item id="90279" name="me"/>
+				<Item id="90280" name="i loko"/>
+				<Item id="90281" name="waihona papahana.ʻAʻole hiki ke hoʻopau ʻia kēia."/>
+				<Item id="90282" name="Hoʻololi i nā papahana: %ld pani (mau) i %ld waihona."/>
+				<Item id="90283" name="Māka: %ld hōʻailona ʻia."/>
+				<Item id="90284" name="Kāna i ka inoa waihona/palapala..."/>
+				<Item id="90285" name="ʻAʻole hiki ke mālama ʻia kekahi mau palapala"/>
+				<Item id="90286" name="⌘ Kauoha"/>
+				<Item id="90287" name="⌃ Kāohi"/>
+				<Item id="90288" name="⌥ Koho"/>
+				<Item id="90289" name="⇧ Hoʻololi"/>
+				<Item id="90290" name="E hookomo i ke kaula NSDateFormatter:"/>
+				<Item id="90291" name="'%@' 'a'ole i ho'okō 'ia ma kēia mana."/>
+				<Item id="90292" name="Pākuʻi lawe mai"/>
+				<Item id="90293" name="Pono e hoʻomaka hou"/>
+				<Item id="90294" name="ʻAʻohe faila e hana"/>
+				<Item id="90295" name="ʻAʻohe faila o kēia node pāhana."/>
+				<Item id="90296" name="Loaʻa iā '%@' nā loli i mālama ʻole ʻia.&#10;Hoʻouka hou a hoʻolei i nā loli?"/>
+				<Item id="90297" name="E hoʻokomo i kahi inoa faila hou:"/>
+				<Item id="90299" name="inoa hou:"/>
+				<Item id="90301" name="ʻAʻole hiki ke komo i ka inoa &quot;/&quot; a i ʻole &quot;:&quot;."/>
+				<Item id="90304" name="Mai mālama i nā mea a pau"/>
+				<Item id="90306" name="There are 3 ways to switch to column-select mode:&#10;&#10;1. (Keyboard and Mouse)  Hold Option while left-click dragging&#10;&#10;2. (Keyboard only)  Hold Option+Shift while using arrow keys&#10;&#10;3. (Keyboard or Mouse)&#10;   Put caret at desired start of column block position, then&#10;   execute “Begin/End Select in Column Mode” command;&#10;   Move caret to desired end of column block position, then&#10;   execute “Begin/End Select in Column Mode” command again"/>
+				<Item id="90307" name="E komo i ka URL huli.E hoʻohana iā %s ma ke ʻano he wahi hulina (a i ʻole e hoʻopili i ka nīnau ma ka hope):"/>
+				<Item id="90308" name="E hoʻokomo i ke kauoha a i ʻole URL..."/>
+				<Item id="90309" name="ʻAʻole hiki ke hoʻokō:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Ua kau ʻia"/>
+				<Item id="90313" name="E hoʻouka i ka nextpad++ mea paahana laina kauoha"/>
+				<Item id="90314" name="ʻAʻole i hoʻokomo ʻia"/>
+				<Item id="90315" name="Hoʻokomo ʻia - akā ʻaʻole ʻo ~/.local/bin ma kāu PATH"/>
+				<Item id="90316" name="Aia i kāu config"/>
+				<Item id="90317" name="Hoʻohui ʻia i PATH"/>
+				<Item id="90318" name="ʻAʻole hiki ke kākau"/>
+				<Item id="90319" name="Kope ʻia"/>
+				<Item id="90321" name="E nalowale ana kāu mau hoʻololi inā ʻaʻole ʻoe e mālama iā lākou."/>
+				<Item id="90322" name="E noi i nā palapala a pau"/>
+				<Item id="90323" name="Holo i ka Macro ma nā waihona"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="waihona:"/>
+				<Item id="90326" name="E koho i kahi waihona…"/>
+				<Item id="90327" name="Nānā…"/>
+				<Item id="90328" name="Hoʻonui:"/>
+				<Item id="90329" name="E hoʻihoʻi i nā subdirectories"/>
+				<Item id="90330" name="E hoʻokomo i nā faila huna"/>
+				<Item id="90331" name="Nui nui:"/>
+				<Item id="90332" name="palena ʻole"/>
+				<Item id="90333" name="No kēlā me kēia waihona:"/>
+				<Item id="90334" name="E mālama inā hoʻololi ʻia"/>
+				<Item id="90335" name="Pani ma hope"/>
+				<Item id="90336" name="E pani i nā faila i wehe mua ʻia"/>
+				<Item id="90337" name="Ma ka hewa:"/>
+				<Item id="90338" name="Holo i ka faila a hoʻomau"/>
+				<Item id="90339" name="Kū i ka hewa mua"/>
+				<Item id="90340" name="(ʻaʻohe macro i mālama ʻia)"/>
+				<Item id="90341" name="%lu waihona (mau) pili"/>
+				<Item id="90342" name="ʻAʻole i loaʻa ka waihona"/>
+				<Item id="90343" name="E koho i kahi waihona i loaʻa."/>
+				<Item id="90344" name="ʻAʻohe faila pili"/>
+				<Item id="90345" name="E hoʻoponopono i ke kānana hoʻonui, recursion, a i ʻole nā faila huna."/>
+				<Item id="90346" name="E hoʻomaka ana…"/>
+				<Item id="90347" name="Ke hana nei:"/>
+				<Item id="90348" name="%ld / %ld ʻAe: %ld Holo ʻia: %ld Hāʻule: %ld"/>
+				<Item id="90349" name="Hoʻopau ʻia ka hui"/>
+				<Item id="90350" name="Paʻa pūʻulu"/>
+				<Item id="90351" name="Huina: %lu ʻAe: %ld Holo ʻia: %ld Ua hāʻule: %ld"/>
+				<Item id="90352" name="Lā Hana ʻia"/>
+				<Item id="90353" name="Pūnaehana hana"/>
+				<Item id="90354" name="hou loa"/>
+				<Item id="90355" name="kahiko loa"/>
+				<Item id="90356" name="ʻike ʻole ʻia"/>
+				<Item id="90357" name="E hoʻomaka hou i ka noi no ka hoʻololi ʻana i ka mana."/>
+				<Item id="90358" name="Hoʻohou i nā plugins"/>
+				<Item id="90359" name="Hōʻano hou i kēia mau plugins?"/>
+				<Item id="90360" name="Kākoʻo ʻia nā mana o kēia manawa i ~/Library/Application Support/Nextpad++/plugin-backups/ ma mua o ke pani ʻia ʻana."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="E hoʻololi i ka nānā Tahoe hou (Beta)"/>
+				<Item id="90363" name="E hoʻohana i nā papa kuhikuhi macOS-style (Beta)"/>
+				<Item id="90364" name="E hoʻohana ʻia ka nānā Tahoe hou ma hope o kou hoʻomaka hou ʻana iā Nextpad++."/>
+				<Item id="90365" name="E hoʻihoʻi hou ʻia ka nānā Kūlana ma hope o kou hoʻomaka hou ʻana iā Nextpad++."/>
+				<Item id="90366" name="Haʻalele i kēia manawa"/>
+				<Item id="90367" name="E hoʻonohonoho hou ʻia nā papa kuhikuhi ma ke ʻano macOS ma hope o kou hoʻomaka hou ʻana iā Nextpad++."/>
+				<Item id="90368" name="E hoʻihoʻi hou ʻia ka papa kuhikuhi papa kuhikuhi maʻamau ma hope o kou hoʻomaka hou ʻana iā Nextpad++."/>
+				<Item id="90369" name="kalakala"/>
+				<Item id="90370" name="E hoʻopili i nā ikona pahu hana hoʻopili"/>
+				<Item id="90371" name="Ma ke ʻano hoʻopihapiha hoʻopihapiha nā kiʻi e lilo i kala paʻa hoʻokahi."/>
+				<Item id="90372" name="Nā Pūʻulu Toolbar"/>
+				<Item id="90373" name="E koho i kahi e ʻike ʻia ai kēlā me kēia pihi ma ka pahu hana Liquid Glass: ma ka"/>
+				<Item id="90374" name="pihi"/>
+				<Item id="90375" name="Hoʻokomo"/>
+				<Item id="90376" name="Hoʻihoʻi hou i nā Defaults"/>
+				<Item id="90377" name="Papa kuhikuhipuʻuone"/>
+				<Item id="90378" name="Huna"/>
+				<Item id="90379" name="CJK-aloha hua'ōlelo"/>
+				<Item id="90380" name="Hoʻololi ke koho kolamu i ka hoʻoponopono lehulehu"/>
+				<Item id="90381" name="Kaʻawale laina:"/>
+				<Item id="90382" name="1.0 (Paʻamau)"/>
+				<Item id="90383" name="Hūnā pā pā"/>
+				<Item id="90384" name="ʻO ka nui o ka pā ma hope o ka hoʻonui palapala"/>
+				<Item id="90385" name="E koho…"/>
+				<Item id="90386" name="Hoʻihoʻi i ka Default"/>
+				<Item id="90387" name="Ke hoʻohana nei i ka wahi paʻamau."/>
+				<Item id="90388" name="Wahi maʻamau."/>
+				<Item id="90389" name="He ala hewa ʻole - e hoʻohana nā waihona i ka wahi paʻamau."/>
+				<Item id="90390" name="E koho"/>
+				<Item id="90391" name="Hoʻokomo i ke koho:"/>
+				<Item id="90392" name="E hoʻohana i ke ʻano Boost Regex (nui-laina; hoʻomaka hou e hoʻohana)"/>
+				<Item id="90395" name="Hoʻomaka hou i kēia manawa"/>
+				<Item id="90397" name="(mai koho ia ke ʻole ʻoe e ʻike i kāu hana)"/>
+				<Item id="90398" name="Ka nui o ka iconbar toolbar"/>
+				<Item id="90399" name="100% (Paʻamau)"/>
+				<Item id="90400" name="Holo kaʻa huila iole māmā"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Ua hoʻololi ʻia ka nui o ka iconbar toolbar"/>
+				<Item id="90403" name="E hoʻohana ʻia ka nui o ka ikona pahu hana hou i ka manawa aʻe e hoʻomaka ai ʻo Nextpad++."/>
+				<Item id="90404" name="Ua hoʻololi ʻia nā kiʻiona pahu hana"/>
+				<Item id="90405" name="E hoʻohana ʻia nā kiʻiona pahu hana hou i ka manawa aʻe e hoʻomaka ai ʻo Nextpad++."/>
+				<Item id="90411" name="Holo i ka Macro ma nā waihona..."/>
+				<Item id="90418" name="Na kēia e wehe iā ia a me kāna mau mea a pau mai ka papahana.ʻAʻole pili nā faila ma ka disk."/>
+				<Item id="90420" name="waihona"/>
+				<Item id="90427" name="ʻAʻole i loaʻa"/>
+				<Item id="90428" name="HUI: %@"/>
+				<Item id="90429" name="Holoi &quot;%@&quot;?"/>
+				<Item id="90430" name="Luna Hoʻoponopono ʻŌlelo Hoʻohana"/>
+				<Item id="90431" name="Kānā i nā ʻōlelo…"/>
+				<Item id="90432" name="Puna"/>
+				<Item id="90433" name="Nā Punawai AC"/>
+				<Item id="90434" name="Kūlana"/>
+				<Item id="90435" name="Hoʻouka / Hoʻohou"/>
+				<Item id="90436" name="%lu ʻōlelo · %lu hoʻokomo ʻia · %lu hōʻano hou"/>
+				<Item id="90437" name="Mea kākau"/>
+				<Item id="90438" name="Hoʻohui ʻia: %ld mau helu mai %lu kumu (hoʻohui ʻia)"/>
+				<Item id="90439" name="E koho i hoʻokahi a ʻoi aku paha nā ʻōlelo e hoʻouka ai."/>
+				<Item id="90440" name="ʻAʻohe mea hiki ke hoʻoiho no ke koho."/>
+				<Item id="90441" name="ʻAʻole i hoʻoiho ʻia"/>
+				<Item id="90442" name="Kūlike like ʻole Checksum"/>
+				<Item id="90443" name="Loaʻa ka (mau) ʻōlelo i koho ʻia ma ka papa ʻōlelo Language."/>
+				<Item id="90444" name="E koho i hoʻokahi a ʻoi aku paha nā ʻōlelo i hoʻokomo ʻia e wehe."/>
+				<Item id="90445" name="Wehe ʻia"/>
+				<Item id="90446" name="Ua hoʻohana ʻia kēia inoa e kekahi ʻōlelo ʻē aʻe."/>
+				<Item id="90447" name="ʻAʻole hiki ke wehe ʻia kēia ʻōlelo."/>
+				<Item id="90448" name="ʻAʻole hiki ke wehe ʻia nā ʻōlelo i kau mua ʻia."/>
+				<Item id="90449" name="ʻAʻole hiki ke kapa hou ʻia kēia ʻōlelo."/>
+				<Item id="90450" name="ʻO %@ kēia waihona.ʻO ka wehe ʻana iā ia e hoʻopau i ka hōʻailona syntax a hoʻopau i ka mōʻaukala e hoʻomau i ka pane ʻana o ka app.&#10;&#10;Makemake ʻoe e hoʻomau?"/>
+				<Item id="90451" name="Wehe naʻe"/>
+				<Item id="90452" name="Ua hoʻololi ʻia ʻo &quot;%@&quot; ma ka disk"/>
+				<Item id="90453" name="Haʻalele"/>
+				<Item id="90454" name="E mālama i kaʻu mana"/>
+				<Item id="90455" name="ʻAʻole hiki ke hoʻouka hou iā &quot;%@&quot;"/>
+				<Item id="90456" name="ʻAʻole hiki ke heluhelu ʻia ka faila."/>
+				<Item id="90457" name="E koho i kahi e ʻike ʻia ai kēlā me kēia pihi ma ka Liquid Glass toolbar: ma ka pūʻulu hui (Toolbar), ma ka papa kuhikuhi ▾ overflow o ka hui, a i ʻole Huna."/>
+				<Item id="90458" name="Hāʻawi i ke kākoʻo i ka hoʻomohala ʻana"/>
+				<Item id="90459" name="E hoʻouka i nā mea hana laina kauoha"/>
+				<Item id="90460" name="Hōʻike i nā aka ma hope o nā pahu pahu mea hana"/>
+				<Item id="90461" name="Hāʻawi"/>
+				<Item id="90462" name="Hoʻonohonoho ʻano"/>
+				<Item id="90463" name="Hoemi"/>
+				<Item id="90464" name="Hūnā Nextpad++"/>
+				<Item id="90465" name="Huna 'ē aʻe"/>
+				<Item id="90466" name="Hōʻike i nā mea a pau"/>
+				<Item id="90467" name="Haʻalele Nextpad++"/>
+				<Item id="90468" name="E mālama i ka Macro i hoʻopaʻa ʻia i kēia manawa…"/>
+				<Item id="90469" name="E ʻoki i ka Trailing Space a mālama"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

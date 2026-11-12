@@ -1277,13 +1277,13 @@ Updated to v8.6 fixed version
 				<Item id="90006" name="Lähteen ohjaus"/>
 				<Item id="90007" name="Sitoudu"/>
 				<Item id="90008" name="Sitoutuminen epäonnistui"/>
-				<Item id="90009" name="Ei git-varastoa\nAvaa arkisto Selaa-toiminnolla."/>
+				<Item id="90009" name="Ei git-varastoa&#10;Avaa arkisto Selaa-toiminnolla."/>
 				<Item id="90010" name="Vaihe"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Vaihe kaikki"/>
 				<Item id="90013" name="Poista vaihe kaikki"/>
-				<Item id="90014" name="Sitouta viesti\u2026"/>
-				<Item id="90015" name="Selaa arkistoa\u2026"/>
+				<Item id="90014" name="Sitouta viesti…"/>
+				<Item id="90015" name="Selaa arkistoa…"/>
 				<Item id="90016" name="Valitse git-arkistokansio"/>
 				<Item id="90017" name="(ei arkistoa)"/>
 				<Item id="90018" name="(irrotettu)"/>
@@ -1297,9 +1297,9 @@ Updated to v8.6 fixed version
 				<Item id="90026" name="Tulokset"/>
 				<Item id="90027" name="Lopeta"/>
 				<Item id="90028" name="Haku lopetettiin."/>
-				<Item id="90029" name="Haetaan\u2026"/>
+				<Item id="90029" name="Haetaan…"/>
 				<Item id="90030" name="Haettava teksti"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Haetaan..."/>
 				<Item id="90033" name="Korvaa:"/>
 				<Item id="90034" name="Koko sana"/>
@@ -1359,7 +1359,7 @@ Updated to v8.6 fixed version
 				<Item id="90088" name="Asenna lisäosat"/>
 				<Item id="90089" name="Poista lisäosat"/>
 				<Item id="90090" name="Ei komentoja löytynyt"/>
-				<Item id="90091" name="Hae kirjoittamalla\u2026"/>
+				<Item id="90091" name="Hae kirjoittamalla…"/>
 				<Item id="90092" name="Käyttäjän määrittämä kieli v.2.1"/>
 				<Item id="90093" name="Luo uusi kieli"/>
 				<Item id="90094" name="Anna nimi:"/>
@@ -1368,11 +1368,9 @@ Updated to v8.6 fixed version
 				<Item id="90097" name="Älä tallenna"/>
 				<Item id="90098" name="Valmis"/>
 				<Item id="90099" name="Vaihda rivitys"/>
-				<Item id="90100" name="Näytä kaikki merkit"/>
 				<Item id="90101" name="Näytä merkkivalinnat"/>
 				<Item id="90102" name="Vaihda sisennysopas"/>
 				<Item id="90103" name="Ei vielä toteutettu"/>
-				<Item id="90104" name="Lataa uudelleen levyltä"/>
 				<Item id="90105" name="Muuta hakukonetta"/>
 				<Item id="90106" name="Suoritusvirhe"/>
 				<Item id="90107" name="Nextpad++ Latausaika"/>
@@ -1381,16 +1379,12 @@ Updated to v8.6 fixed version
 				<Item id="90110" name="Lataa"/>
 				<Item id="90111" name="Julkaisusivu"/>
 				<Item id="90112" name="Myöhemmin"/>
-				<Item id="90113" name="Suodata laajennuksia\u2026"/>
-				<Item id="90114" name="Saatavilla"/>
-				<Item id="90115" name="Päivitykset"/>
-				<Item id="90116" name="Asennettu"/>
-				<Item id="90117" name="Yhteensopimaton"/>
+				<Item id="90113" name="Suodata laajennuksia…"/>
 				<Item id="90118" name="Asennus epäonnistui"/>
 				<Item id="90119" name="Poistetaanko seuraavat laajennukset?"/>
 				<Item id="90120" name="Asennatko seuraavat lisäosat?"/>
 				<Item id="90121" name="Tämä poistaa liitännäistiedostot."/>
-				<Item id="90122" name="Hakukomennot\u2026"/>
+				<Item id="90122" name="Hakukomennot…"/>
 				<Item id="90123" name="Etualan väri"/>
 				<Item id="90124" name="Taustaväri"/>
 				<Item id="90125" name="Makron nimi"/>
@@ -1410,7 +1404,7 @@ Updated to v8.6 fixed version
 				<Item id="90139" name="Kaikki merkit poistettu."/>
 				<Item id="90140" name="Merkitty teksti kopioitu leikepöydälle."/>
 				<Item id="90141" name="Ei kopioitavaa merkittyä tekstiä."/>
-				<Item id="90142" name="Haetaan... %ld osumaa \u2014 %@"/>
+				<Item id="90142" name="Haetaan... %ld osumaa — %@"/>
 				<Item id="90143" name="Korvataan tiedostoissa..."/>
 				<Item id="90144" name="Korvaa projekteissa: Ei vielä yhdistetty."/>
 				<Item id="90145" name="Etsi Projekteista: Ei vielä yhdistetty projektipaneelin tiedostoluetteloon."/>
@@ -1431,20 +1425,19 @@ Updated to v8.6 fixed version
 				<Item id="90160" name="Älykäs korostus: vain koko sana"/>
 				<Item id="90161" name="Sulje välilehti kaksoisnapsauttamalla"/>
 				<Item id="90162" name="Näytä välilehtien sulkemispainike"/>
+				<Item id="90191" name="Lisäosien luettelovarasto"/>
 				<Item id="90224" name="Näytä välilehdet usealla rivillä"/>
 				<Item id="90163" name="Muista paneelin näkyvyys istuntojen aikana"/>
 				<Item id="90164" name="Pidä poissa tiedostomerkinnät istunnossa"/>
 				<Item id="90165" name="Vahvista ennen Tallenna kaikki"/>
 				<Item id="90166" name="Vahvista Korvaa kaikki avoimessa asiakirjassa"/>
 				<Item id="90167" name="Korvaa: älä siirry seuraavaan esiintymään"/>
-				<Item id="90168" name="Käytä yksivälistä fonttia Etsi-valintaikkunassa"/>
 				<Item id="90169" name="Napsauta hiiren kakkospainikkeella säilyttää valinnan"/>
 				<Item id="90170" name="Käänteinen oletuspäivämäärä/aikajärjestys"/>
 				<Item id="90171" name="Käytä XML-pohjaisia ​​funktioluettelon jäsentimiä"/>
 				<Item id="90172" name="Sulkevat hakasulkeet automaattisesti ( ) [ ] { }"/>
 				<Item id="90173" name="N:nnestä merkistä:"/>
 				<Item id="90174" name="Automaattisen tarkistuksen kynnys (tavuina):"/>
-				<Item id="90175" name="Laajennettu (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Toimittaja"/>
 				<Item id="90177" name="Marginaalit"/>
 				<Item id="90178" name="Tumma"/>
@@ -1458,12 +1451,10 @@ Updated to v8.6 fixed version
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD-optimoitu"/>
 				<Item id="90188" name="Yksinkertainen +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Lisäosien luettelovarasto"/>
 				<Item id="90192" name="Valitse käytettävä Nextpad++-teeman XML-tiedosto"/>
-				<Item id="90193" name="Luo uusi\u2026"/>
-				<Item id="90194" name="Tallenna nimellä\u2026"/>
+				<Item id="90193" name="Luo uusi…"/>
+				<Item id="90194" name="Tallenna nimellä…"/>
 				<Item id="90195" name="Käyttäjän kieli:"/>
 				<Item id="90196" name="Kielen nimi"/>
 				<Item id="90197" name="Luo"/>
@@ -1493,6 +1484,218 @@ Updated to v8.6 fixed version
 				<Item id="90221" name="Lukittu attribuutti (macOS)"/>
 				<Item id="90222" name="Tarkista päivitykset…"/>
 				<Item id="90223" name="Avaa Viimeisimmät"/>
+				<Item id="90226" name="Ohje"/>
+				<Item id="90227" name="Vaihe epäonnistui"/>
+				<Item id="90228" name="Unstage epäonnistui"/>
+				<Item id="90229" name="on saatavilla"/>
+				<Item id="90230" name="Sinä juokset"/>
+				<Item id="90231" name="Älä koskaan muistuta minua enää"/>
+				<Item id="90233" name="Tarkista päivitykset automaattisesti"/>
+				<Item id="90234" name="Automaattiset päivitystarkistukset eivät ole käytössä."/>
+				<Item id="90235" name="Viimeksi tarkistettu:"/>
+				<Item id="90236" name="Ei internetyhteyttä."/>
+				<Item id="90237" name="Odottamaton vastaus päivityspalvelimelta."/>
+				<Item id="90238" name="Julkaistua julkaisua ei löytynyt."/>
+				<Item id="90239" name="Päivityspalvelin on tilapäisesti poissa käytöstä.Yritä myöhemmin uudelleen."/>
+				<Item id="90240" name="Päivityspalvelin hylkäsi pyynnön.Välityspalvelin, palomuuri tai VPN saattaa estää pääsyn GitHubiin."/>
+				<Item id="90241" name="Liian monta päivitystarkistusta verkostasi (tämän rajan jakavat kaikki verkon käyttäjät).Yritä sen jälkeen uudelleen"/>
+				<Item id="90242" name="Liian monta päivitystarkistusta verkostasi (tämän rajan jakavat kaikki verkon käyttäjät).Yritä myöhemmin uudelleen."/>
+				<Item id="90243" name="Päivityspalvelin palautti tilan"/>
+				<Item id="90244" name="Yritä uudelleen"/>
+				<Item id="90245" name="Tulostetun tekstin koko:"/>
+				<Item id="90246" name="Käytä näytön zoomia"/>
+				<Item id="90247" name="Todellinen koko"/>
+				<Item id="90248" name="Joitakin tiedostoja ei voitu korvata"/>
+				<Item id="90249" name="...ja %lu muuta"/>
+				<Item id="90250" name="Organisaatiosi hallitsee tiedostosidoksia."/>
+				<Item id="90251" name="Odotetaan macOS:n vahvistusta…"/>
+				<Item id="90252" name="macOS ei ottanut muutosta käyttöön."/>
+				<Item id="90253" name="Rekisteröidyt"/>
+				<Item id="90254" name="Avataanko kaikki kansion tiedostot?"/>
+				<Item id="90255" name="Tämä avaa %lu tiedostoa uusille välilehdille."/>
+				<Item id="90256" name="Ei voitu tuoda: %@"/>
+				<Item id="90258" name="Löytyi %ld hakua %ld tiedostosta."/>
+				<Item id="90259" name="Haetaan… %ld osumaa tähän mennessä"/>
+				<Item id="90260" name="%@ (%ld vastaavuus%@)"/>
+				<Item id="90261" name="Sumea haku"/>
+				<Item id="90266" name="Määrä: %ld osumaa."/>
+				<Item id="90267" name="Korvaa kaikki: %ld esiintymää korvattiin %@."/>
+				<Item id="90268" name="Korvaa avatuissa tiedostoissa: %ld esiintymää korvattiin."/>
+				<Item id="90269" name="Etsi tiedostoista: %ld osumaa %ld tiedostossa."/>
+				<Item id="90270" name="Etsi tiedostoista: 0 osumaa."/>
+				<Item id="90271" name="Korvaa kaikki sanan &quot;%@&quot; esiintymät sanalla &quot;%@&quot; hakemistossa:&#10;%@&#10;&#10;Tätä ei voi kumota."/>
+				<Item id="90272" name="Korvaa tiedostoissa: %ld vaihtoa %ld tiedostossa."/>
+				<Item id="90273" name="Avaa ensin projektipaneeli."/>
+				<Item id="90274" name="Valitse vähintään yksi projektipaneeli haettavaksi."/>
+				<Item id="90275" name="Ei haettavia tiedostoja."/>
+				<Item id="90276" name="Etsi projekteista: %ld osumaa %ld tiedostossa."/>
+				<Item id="90277" name="Etsi projekteista: 0 osumaa."/>
+				<Item id="90278" name="Korvaa kaikki esiintymät"/>
+				<Item id="90279" name="kanssa"/>
+				<Item id="90280" name="sisään"/>
+				<Item id="90281" name="projektitiedosto(t).Tätä ei voi kumota."/>
+				<Item id="90282" name="Korvaa projekteissa: %ld vaihtoa %ld tiedostossa."/>
+				<Item id="90283" name="Merkitse: %ld osumaa merkitty."/>
+				<Item id="90284" name="Suodata tiedoston/kansion nimi..."/>
+				<Item id="90285" name="Joitakin asiakirjoja ei voitu tallentaa"/>
+				<Item id="90286" name="⌘ Komento"/>
+				<Item id="90287" name="⌃ Ohjaus"/>
+				<Item id="90288" name="⌥ Vaihtoehto"/>
+				<Item id="90289" name="⇧ Vaihto"/>
+				<Item id="90290" name="Anna muotomerkkijono NSDateFormatter:"/>
+				<Item id="90291" name="&quot;%@&quot; ei ole vielä otettu käyttöön tässä versiossa."/>
+				<Item id="90292" name="Tuo laajennus"/>
+				<Item id="90293" name="Uudelleenkäynnistys vaaditaan"/>
+				<Item id="90294" name="Ei käsiteltäviä tiedostoja"/>
+				<Item id="90295" name="Tämä projektisolmu ei sisällä tiedostoja."/>
+				<Item id="90296" name="%@ sisältää tallentamattomia muutoksia.&#10;Ladataanko uudelleen ja hylätäänkö muutokset?"/>
+				<Item id="90297" name="Anna uusi tiedostonimi:"/>
+				<Item id="90299" name="Uusi nimi:"/>
+				<Item id="90301" name="Nimi ei voi sisältää &quot;/&quot; tai &quot;:&quot;."/>
+				<Item id="90304" name="Älä tallenna kaikkea"/>
+				<Item id="90306" name="Voit vaihtaa sarakkeen valintatilaan kolmella tavalla:&#10;&#10;1.(Näppäimistö ja hiiri) Pidä vaihtoehto, kun vedät hiiren vasemmalla painikkeella&#10;&#10;2.(Vain näppäimistö) Pidä Optio+Shift painettuna käyttäessäsi nuolinäppäimiä&#10;&#10;3.(Näppäimistö tai hiiri)&#10; Aseta merkintä haluttuun sarakelohkon alkukohtaan ja&#10; suorita &quot;Aloita/Lopeta valinta saraketilassa&quot; -komento;&#10; Siirrä merkintä sarakelohkon lopun kohtaan ja&#10; suorita &quot;Aloita/Lopeta valinta saraketilassa&quot; -komento uudelleen."/>
+				<Item id="90307" name="Anna haun URL-osoite.Käytä %s kyselyn paikkamerkkinä (tai liitä kysely loppuun):"/>
+				<Item id="90308" name="Anna komento tai URL..."/>
+				<Item id="90309" name="Suoritus epäonnistui:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Muokkaamalla contextMenu.xml voit muokata Nextpad++-ponnahdusvalikkoa muokkausvyöhykkeellä.&#10;Sinun on käynnistettävä Nextpad++ uudelleen, jotta se tulee voimaan contextMenu.xml-muokkauksen jälkeen."/>
+				<Item id="90312" name="Jo asennettu"/>
+				<Item id="90313" name="Asenna nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Asennus epäonnistui"/>
+				<Item id="90315" name="Asennettu – mutta ~/.local/bin ei ole polullasi"/>
+				<Item id="90316" name="Jo asetuksissasi"/>
+				<Item id="90317" name="Lisätty kohteeseen PATH"/>
+				<Item id="90318" name="Ei voinut kirjoittaa"/>
+				<Item id="90319" name="Kopioitu"/>
+				<Item id="90321" name="Muutokset menetetään, jos et tallenna niitä."/>
+				<Item id="90322" name="Käytä kaikkiin asiakirjoihin"/>
+				<Item id="90323" name="Suorita makro tiedostoissa"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Kansio:"/>
+				<Item id="90326" name="Valitse kansio…"/>
+				<Item id="90327" name="Selaa…"/>
+				<Item id="90328" name="Laajennukset:"/>
+				<Item id="90329" name="Toista alihakemistot"/>
+				<Item id="90330" name="Sisällytä piilotetut tiedostot"/>
+				<Item id="90331" name="Max koko:"/>
+				<Item id="90332" name="Rajoittamaton"/>
+				<Item id="90333" name="Tiedostoa kohden:"/>
+				<Item id="90334" name="Tallenna, jos sitä muutetaan"/>
+				<Item id="90335" name="Sulje jälkeen"/>
+				<Item id="90336" name="Sulje jopa tiedostot, jotka olivat jo auki"/>
+				<Item id="90337" name="Virheessä:"/>
+				<Item id="90338" name="Ohita tiedosto ja jatka"/>
+				<Item id="90339" name="Pysähdy ensimmäiseen virheeseen"/>
+				<Item id="90340" name="(ei tallennettuja makroja)"/>
+				<Item id="90341" name="%lu tiedostoa vastaa"/>
+				<Item id="90342" name="Kansiota ei löydy"/>
+				<Item id="90343" name="Valitse olemassa oleva kansio."/>
+				<Item id="90344" name="Yksikään tiedosto ei täsmää"/>
+				<Item id="90345" name="Säädä laajennussuodatin, rekursio tai piilotetut tiedostot -vaihtoehto."/>
+				<Item id="90346" name="Alkaen…"/>
+				<Item id="90347" name="Käsittely:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Ohitettu: %ld Epäonnistui: %ld"/>
+				<Item id="90349" name="Erä peruutettu"/>
+				<Item id="90350" name="Erä valmis"/>
+				<Item id="90351" name="Yhteensä: %lu Ok: %ld Ohitettu: %ld Epäonnistui: %ld"/>
+				<Item id="90352" name="Rakennuspäivämäärä"/>
+				<Item id="90353" name="Käyttöjärjestelmä"/>
+				<Item id="90354" name="uusin"/>
+				<Item id="90355" name="vanhentunut"/>
+				<Item id="90356" name="tuntematon"/>
+				<Item id="90357" name="Käynnistä sovellus uudelleen, jotta muutokset tulevat voimaan."/>
+				<Item id="90358" name="Päivitä laajennukset"/>
+				<Item id="90359" name="Päivitetäänkö seuraavat lisäosat?"/>
+				<Item id="90360" name="Nykyiset versiot varmuuskopioidaan verkkotunnukseen ~/Library/Application Support/Nextpad++/plugin-backups/ ennen vaihtamista."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Vaihda uuteen Tahoe-ulkoasuun (beta)"/>
+				<Item id="90363" name="Käytä macOS-tyylisiä valikoita (beta)"/>
+				<Item id="90364" name="Uusi Tahoe-ulkoasu otetaan käyttöön, kun käynnistät tuotteen Nextpad++ uudelleen."/>
+				<Item id="90365" name="Klassinen ulkoasu palautetaan, kun käynnistät sovelluksen Nextpad++ uudelleen."/>
+				<Item id="90366" name="Lopeta nyt"/>
+				<Item id="90367" name="Valikot järjestetään uudelleen macOS-tyyliin, kun käynnistät sovelluksen Nextpad++ uudelleen."/>
+				<Item id="90368" name="Klassinen valikkoasettelu palautetaan, kun käynnistät sovelluksen Nextpad++ uudelleen."/>
+				<Item id="90369" name="Väri"/>
+				<Item id="90370" name="Käytä laajennustyökalurivin kuvakkeisiin"/>
+				<Item id="90371" name="Valmiissa tilassa laajennuskuvakkeet muuttuvat yhdeksi yhtenäiseksi väriksi."/>
+				<Item id="90372" name="Työkalupalkin ryhmät"/>
+				<Item id="90373" name="Valitse, missä kukin painike näkyy Liquid Glass-työkalupalkissa:"/>
+				<Item id="90374" name="Painike"/>
+				<Item id="90375" name="Sijoitus"/>
+				<Item id="90376" name="Palauta oletusarvoihin"/>
+				<Item id="90377" name="Ylivuotovalikko"/>
+				<Item id="90378" name="Piilotettu"/>
+				<Item id="90379" name="CJK-ystävällinen rivitys"/>
+				<Item id="90380" name="Sarakevalinta vaihtuu monimuokkaukseen"/>
+				<Item id="90381" name="Rivivälit:"/>
+				<Item id="90382" name="1.0 (oletus)"/>
+				<Item id="90383" name="Piilota välilehtipalkki"/>
+				<Item id="90384" name="Välilehden koko seuraa asiakirjan zoomausta"/>
+				<Item id="90385" name="Valitse…"/>
+				<Item id="90386" name="Palauta oletusarvo"/>
+				<Item id="90387" name="Oletussijaintia käyttämällä."/>
+				<Item id="90388" name="Mukautettu sijainti."/>
+				<Item id="90389" name="Virheellinen polku – varmuuskopiot käyttävät oletussijaintia."/>
+				<Item id="90390" name="Valitse"/>
+				<Item id="90391" name="Lisää valinta:"/>
+				<Item id="90392" name="Käytä Boost Regex-tilaa (monirivinen; ota käyttöön käynnistämällä uudelleen)"/>
+				<Item id="90395" name="Käynnistä nyt uudelleen"/>
+				<Item id="90397" name="(älä valitse sitä, ellet tiedä mitä olet tekemässä)"/>
+				<Item id="90398" name="Työkalupalkin kuvakkeen koko"/>
+				<Item id="90399" name="100 % (oletus)"/>
+				<Item id="90400" name="Hiiren rullan vieritysnopeus"/>
+				<Item id="90401" name="1× (pois)"/>
+				<Item id="90402" name="Työkalupalkin kuvakkeen kokoa muutettu"/>
+				<Item id="90403" name="Työkalupalkin kuvakkeen uusi koko tulee voimaan, kun Nextpad++ käynnistetään seuraavan kerran."/>
+				<Item id="90404" name="Työkalupalkin kuvakkeet muutettu"/>
+				<Item id="90405" name="Uudet työkalupalkin kuvakkeet tulevat voimaan, kun Nextpad++ käynnistetään seuraavan kerran."/>
+				<Item id="90411" name="Suorita makro tiedostoissa..."/>
+				<Item id="90418" name="Tämä poistaa sen ja kaiken sen sisällön projektista.Tämä ei vaikuta levyllä oleviin tiedostoihin."/>
+				<Item id="90420" name="Kansio"/>
+				<Item id="90423" name="Kopioi valitut polun nimet"/>
+				<Item id="90424" name="Avaa valitut polun nimet"/>
+				<Item id="90427" name="Ei löytynyt"/>
+				<Item id="90428" name="KONFLIKTI: %@"/>
+				<Item id="90429" name="Poistetaanko &quot;%@&quot;?"/>
+				<Item id="90430" name="Käyttäjän määrittämä kieli Admin"/>
+				<Item id="90431" name="Suodata kielet…"/>
+				<Item id="90432" name="lähde"/>
+				<Item id="90433" name="AC-lähteet"/>
+				<Item id="90434" name="Tila"/>
+				<Item id="90435" name="Asenna / Päivitä"/>
+				<Item id="90436" name="%lu kieltä · %lu asennettu · %lu päivitystä"/>
+				<Item id="90437" name="Tekijä"/>
+				<Item id="90438" name="Yhdistetty: %ld merkintää %lu lähteestä (yhdistetty)"/>
+				<Item id="90439" name="Valitse yksi tai useampi asennettava kieli."/>
+				<Item id="90440" name="Ei mitään ladattavaa valintaa varten."/>
+				<Item id="90441" name="Lataus epäonnistui"/>
+				<Item id="90442" name="Tarkistussumma ei täsmää"/>
+				<Item id="90443" name="Valitut kielet ovat nyt saatavilla Kieli-valikossa."/>
+				<Item id="90444" name="Valitse yksi tai useampi asennettu kieli poistettavaksi."/>
+				<Item id="90445" name="Poistettu"/>
+				<Item id="90446" name="Tämä nimi on jo toisen kielen käytössä."/>
+				<Item id="90447" name="Tätä kieltä ei voitu poistaa."/>
+				<Item id="90448" name="Esiasennettuja kieliä ei voi poistaa."/>
+				<Item id="90449" name="Tätä kieltä ei voitu nimetä uudelleen."/>
+				<Item id="90450" name="Tämä tiedosto on %@.Sen avaaminen poistaa syntaksin korostuksen käytöstä ja kumoaa historian, jotta sovellus pysyy reagoivana.&#10;&#10;Haluatko jatkaa?"/>
+				<Item id="90451" name="Avaa joka tapauksessa"/>
+				<Item id="90452" name="&quot;%@&quot; muutettu levyllä"/>
+				<Item id="90453" name="Ohita"/>
+				<Item id="90454" name="Säilytä Oma versio"/>
+				<Item id="90455" name="Ei voitu ladata uudelleen &quot;%@&quot;"/>
+				<Item id="90456" name="Tiedostoa ei voitu lukea."/>
+				<Item id="90457" name="Valitse, missä kukin painike näkyy Liquid Glass-työkalupalkissa: ryhmäkapselissa (työkalupalkissa), ryhmän ▾ ylivuotovalikossa tai Piilotettu."/>
+				<Item id="90458" name="Lahjoita kehityksen tukemiseen"/>
+				<Item id="90459" name="Asenna komentorivityökalut"/>
+				<Item id="90460" name="Näytä varjot työkalupalkin kapseleiden takana"/>
+				<Item id="90461" name="Lahjoita"/>
+				<Item id="90462" name="Hahmosarjat"/>
+				<Item id="90463" name="Minimoi"/>
+				<Item id="90464" name="Piilota Nextpad++"/>
+				<Item id="90465" name="Piilota Muut"/>
+				<Item id="90466" name="Näytä kaikki"/>
+				<Item id="90467" name="Lopeta Nextpad++"/>
+				<Item id="90468" name="Tallenna nykyinen tallennettu makro…"/>
+				<Item id="90469" name="Leikkaa perässä olevaa tilaa ja säästä"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

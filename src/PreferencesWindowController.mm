@@ -6,10 +6,6 @@
 #import "StyleConfiguratorWindowController.h"
 #import "TahoeToolbarConfig.h"
 
-// Defined in regex/RegexBackendSelect.cxx — selects the Boost.Regex backend over
-// the default per-line std::regex one. Mirrored from kPrefUseBoostRegex.
-extern "C" bool gNppUseBoostRegex;
-
 // ── NSUserDefaults keys (mirrors NPP settings) ────────────────────────────────
 NSString *const kPrefTabWidth           = @"tabWidth";
 NSString *const kPrefUseTabs            = @"useTabs";
@@ -41,6 +37,7 @@ NSString *const kPrefTabCloseButton      = @"tabCloseButton";
 NSString *const kPrefDoubleClickTabClose = @"doubleClickTabClose";
 NSString *const kPrefTabBarWrap          = @"tabBarWrap";
 NSString *const kPrefHideTabBar          = @"hideTabBar";
+NSString *const kPrefExitOnCloseLastTab  = @"exitOnCloseLastTab";
 NSString *const kPrefVirtualSpace        = @"virtualSpace";
 NSString *const kPrefColumnSel2MultiEdit = @"columnSel2MultiEdit";
 NSString *const kPrefScrollBeyondLastLine= @"scrollBeyondLastLine";
@@ -88,7 +85,6 @@ NSString *const kPrefDisableTextDragDrop = @"disableTextDragDrop";
 NSString *const kPrefMonoFontFind        = @"monoFontFind";
 NSString *const kPrefConfirmReplaceAll   = @"confirmReplaceAll";
 NSString *const kPrefReplaceAndStop      = @"replaceAndStop";
-NSString *const kPrefUseBoostRegex       = @"useBoostRegex";
 NSString *const kPrefSmartHiliteCase     = @"smartHiliteCase";
 NSString *const kPrefSmartHiliteWord     = @"smartHiliteWord";
 NSString *const kPrefDateTimeReverse     = @"dateTimeReverse";
@@ -151,10 +147,15 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 
 // ── PreferencesWindowController ───────────────────────────────────────────────
 
-@interface PreferencesWindowController () <NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
+@interface PreferencesWindowController () <NSTableViewDataSource, NSTableViewDelegate, NSTextViewDelegate, NSTextFieldDelegate, NSWindowDelegate, NSOutlineViewDataSource, NSOutlineViewDelegate>
 @end
 
 @implementation PreferencesWindowController {
+    // Value each preference text field held when its current edit session
+    // began, so a commit can tell a real change from a field the user only
+    // passed through (issue #341). Weak keys: a discarded page view takes its
+    // fields with it.
+    NSMapTable<NSTextField *, NSString *> *_editingBaselines;
     NSTableView          *_sidebarTable;
     NSScrollView         *_contentScroll;
     NSView               *_contentArea;
@@ -198,7 +199,7 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefStyleNumber:        @"#098658",
         kPrefStylePreproc:       @"#800080",
         kPrefStyleFontName:      @"Menlo",
-        kPrefStyleFontSize:      @11,
+        kPrefStyleFontSize:      @12,
         kPrefAutoCompleteEnable:   @YES,
         kPrefAutoCompleteMinChars: @1,
         kPrefAutoCloseBrackets:    @YES,
@@ -212,12 +213,13 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefDoubleClickTabClose:  @NO,
         kPrefTabBarWrap:           @NO,
         kPrefHideTabBar:           @NO,
+        kPrefExitOnCloseLastTab:   @NO,
         kPrefVirtualSpace:         @NO,
         kPrefColumnSel2MultiEdit:  @YES,
         kPrefScrollBeyondLastLine: @NO,
         kPrefScrollSpeedGain:      @1.0,
         kPrefCaretBlinkRate:       @500,
-        kPrefFontQuality:          @3,   // 0=default 1=none 2=antialiased 3=LCD
+        kPrefFontQuality:          @3,   // SC_EFF_QUALITY_*: 0=default 1=none 2=antialiased 3=LCD; on Cocoa 3 = system font smoothing (AppKit's look)
         kPrefLineHeightMultiplier: @1.0, // 1.0 = no extra spacing (current behavior)
         kPrefGlobalOverrideEnableFg:        @NO,
         kPrefGlobalOverrideEnableBg:        @NO,
@@ -228,7 +230,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         kPrefGlobalOverrideEnableUnderline: @NO,
         kPrefCopyLineNoSelection:  @YES,
         kPrefSmartHighlight:       @YES,
-        kPrefUseBoostRegex:        @NO,   // off = current per-line std::regex backend
         kPrefFillFindWithSelection:@YES,
         kPrefFuncParamsHint:       @NO,
         kPrefFindTransparencyEnabled: @YES,  // matches Windows default
@@ -293,9 +294,6 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         [ud setBool:YES forKey:kPrefUseTabs];
         [ud setBool:YES forKey:@"_useTabsDefaultApplied"];
     }
-    // Sync the regex-backend selector flag from the saved/default preference at
-    // startup (registerDefaults above makes boolForKey valid immediately).
-    gNppUseBoostRegex = [ud boolForKey:kPrefUseBoostRegex];
 }
 
 + (instancetype)sharedController {
@@ -305,6 +303,70 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         shared = [[self alloc] init];
     });
     return shared;
+}
+
+- (void)showWindow:(id)sender {
+    // Sync toolbar visibility with the main window before showing the page.
+    [self _syncToolbarVisibilityFromMainWindow];
+
+    [_pageViews removeAllObjects];
+    [super showWindow:sender];
+    NSInteger selectedRow = [_sidebarTable selectedRow];
+    if (selectedRow >= 0) {
+        [self _showPageAtIndex:selectedRow];
+    }
+
+    // Watch for toolbar toggles while the preferences window is open.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(_mainWindowDidUpdate:)
+                                                 name:NSWindowDidUpdateNotification
+                                               object:nil];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    // The window is closable, so the red button and Cmd-W bypass closePrefs:.
+    // Ending editing here is what sends the field's action (issue #341); the
+    // close itself does not, even with sendsActionOnEndEditing set.
+    [self.window makeFirstResponder:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSWindowDidUpdateNotification
+                                                  object:nil];
+}
+
+- (void)_mainWindowDidUpdate:(NSNotification *)note {
+    // Avoid feedback loops if preferences window is currently active.
+    if (self.window.isKeyWindow) return;
+
+    // Ignore updates from the preferences window itself.
+    NSWindow *updatedWin = note.object;
+    if (updatedWin == self.window || !updatedWin.toolbar) return;
+
+    [self _syncToolbarVisibilityFromMainWindow];
+}
+
+- (void)_syncToolbarVisibilityFromMainWindow {
+    // Find the main window toolbar and sync its state to defaults and the checkbox.
+    for (NSWindow *win in [NSApp windows]) {
+        if (win == self.window) continue;
+        if (win.toolbar) {
+            BOOL actuallyVisible = win.toolbar.visible;
+            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+            if ([ud boolForKey:kPrefToolbarVisible] != actuallyVisible) {
+                [ud setBool:actuallyVisible forKey:kPrefToolbarVisible];
+                // Update the checkbox state.
+                BOOL isHidden = !actuallyVisible;
+                for (NSView *pageView in _pageViews.allValues) {
+                    NSButton *hideBtn = [pageView viewWithTag:903];
+                    if (hideBtn) {
+                        hideBtn.state = isHidden ? NSControlStateValueOn : NSControlStateValueOff;
+                        [self _updateToolbarPageControlsEnabledState:pageView hidden:isHidden];
+                    }
+                }
+            }
+            break;
+        }
+    }
 }
 
 - (instancetype)init {
@@ -319,11 +381,20 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     [win center];
     self = [super initWithWindow:win];
     if (self) {
+        // -initWithWindow: does not make the controller the window's delegate,
+        // so windowWillClose: below never ran until this was wired up.
+        win.delegate = self;
+        _editingBaselines = [NSMapTable weakToStrongObjectsMapTable];
         [self registerDefaults];
         [self _buildSidebarLayout];
         [self retranslateUI];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_locChanged:)
                                                      name:NPPLocalizationChanged object:nil];
+        // Observe application-wide preference alterations to ensure synchronization of UI states.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_prefsChanged:)
+                                                     name:@"NPPPreferencesChanged" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_prefsChanged:)
+                                                     name:@"NPPToolbarVisibilityChanged" object:nil];
     }
     return self;
 }
@@ -331,6 +402,32 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
 - (void)_locChanged:(NSNotification *)n {
     [self retranslateUI];
     [self _rebuildLanguagePopup];
+}
+
+- (void)_prefsChanged:(NSNotification *)note {
+    // Update the "Hide" checkbox and color settings when the toolbar visibility changes.
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    BOOL isHidden = ![ud boolForKey:kPrefToolbarVisible];
+    for (NSView *pageView in _pageViews.allValues) {
+        NSButton *hideBtn = [pageView viewWithTag:903];
+        if (hideBtn) {
+            hideBtn.state = isHidden ? NSControlStateValueOn : NSControlStateValueOff;
+            [self _updateToolbarPageControlsEnabledState:pageView hidden:isHidden];
+        }
+    }
+}
+
+- (void)_updateToolbarPageControlsEnabledState:(NSView *)pageView hidden:(BOOL)isHidden {
+    // Enable or disable all color and styling settings on the page, except for the "Hide" checkbox.
+    for (NSView *sub in pageView.subviews) {
+        if ([sub respondsToSelector:@selector(setEnabled:)]) {
+            if (sub.tag != 903) {
+                [((id)sub) setEnabled:!isHidden];
+                // Dim the controls to 50% opacity to visually signify they are inactive
+                sub.alphaValue = isHidden ? 0.5 : 1.0;
+            }
+        }
+    }
 }
 
 - (void)retranslateUI {
@@ -548,14 +645,25 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
         return container;
     }
 
-    NSTextField *tf = [tv makeViewWithIdentifier:@"cell" owner:nil];
-    if (!tf) {
-        tf = [NSTextField labelWithString:@""];
-        tf.identifier = @"cell";
+    NSTableCellView *cell = [tv makeViewWithIdentifier:@"sidebarCell" owner:nil];
+    if (!cell) {
+        cell = [[NSTableCellView alloc] initWithFrame:NSZeroRect];
+        cell.identifier = @"sidebarCell";
+
+        NSTextField *tf = [NSTextField labelWithString:@""];
+        tf.translatesAutoresizingMaskIntoConstraints = NO;
         tf.font = [NSFont systemFontOfSize:13];
+        [cell addSubview:tf];
+        cell.textField = tf;
+
+        [NSLayoutConstraint activateConstraints:@[
+            [tf.leadingAnchor constraintEqualToAnchor:cell.leadingAnchor constant:8],
+            [tf.trailingAnchor constraintLessThanOrEqualToAnchor:cell.trailingAnchor constant:-8],
+            [tf.centerYAnchor constraintEqualToAnchor:cell.centerYAnchor],
+        ]];
     }
-    tf.stringValue = name;
-    return tf;
+    cell.textField.stringValue = name;
+    return cell;
 }
 
 - (CGFloat)tableView:(NSTableView *)tv heightOfRow:(NSInteger)row {
@@ -825,6 +933,21 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     note.textColor = NSColor.secondaryLabelColor;
     note.frame = NSMakeRect(38, y - 18, 400, 34);
     [v addSubview:note];
+
+    // Decrement layout origin coordinate to space the checkbox appropriately.
+    y -= 52;
+
+    // Instantiate and configure the "Hide" checkbox.
+    NSButton *hideBtn = [NSButton checkboxWithTitle:[loc translate:@"Hide"]
+                                             target:self action:@selector(prefChanged:)];
+    hideBtn.tag = 903;
+    hideBtn.frame = NSMakeRect(20, y, 400, 20);
+    // Check the box if the toolbar is hidden.
+    hideBtn.state = ![ud boolForKey:kPrefToolbarVisible] ? NSControlStateValueOn : NSControlStateValueOff;
+    [v addSubview:hideBtn];
+
+    // Disable all options above if the toolbar is currently hidden.
+    [self _updateToolbarPageControlsEnabledState:v hidden:![ud boolForKey:kPrefToolbarVisible]];
 
     return v;
 }
@@ -1143,6 +1266,7 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     NSTextField *brField = [[NSTextField alloc] initWithFrame:NSMakeRect(190, y-2, 60, 22)];
     brField.integerValue = [ud integerForKey:kPrefCaretBlinkRate];
     brField.tag = 704; brField.target = self; brField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:brField];
     [v addSubview:brField];
     y -= 32;
 
@@ -1150,9 +1274,26 @@ NSString *const kPrefStyleFontSize      = @"styleFontSize";
     NSTextField *fqLabel = [NSTextField labelWithString:[loc translate:@"Font rendering:"]];
     fqLabel.frame = NSMakeRect(20, y, 120, 20);
     [v addSubview:fqLabel];
-    NSPopUpButton *fqPopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(150, y-2, 180, 26) pullsDown:NO];
-    [fqPopup addItemsWithTitles:@[[loc translate:@"Default"], [loc translate:@"None"], [loc translate:@"Antialiased"], [loc translate:@"LCD Optimized"]]];
-    [fqPopup selectItemAtIndex:[ud integerForKey:kPrefFontQuality]];
+    // Item tags are the stored SC_EFF_QUALITY_* values (config.xml smoothFont
+    // keeps the Windows numbering). Labels describe what Scintilla's Cocoa
+    // backend does with each value: macOS has no subpixel (LCD) rendering, so
+    // value 3 only enables system font smoothing, which is how AppKit draws
+    // text by default. 0 and 2 draw thinner, unsmoothed glyphs (2 also snaps glyphs to whole pixels).
+    NSPopUpButton *fqPopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(150, y-2, 240, 26) pullsDown:NO];
+    NSArray *fqItems = @[@[@"Smoothed (macOS standard)", @3],
+                         @[@"Unsmoothed", @0],
+                         @[@"Unsmoothed, whole-pixel spacing", @2],
+                         @[@"None", @1]];
+    for (NSArray *fq in fqItems) {
+        [fqPopup addItemWithTitle:[loc translate:fq[0]]];
+        fqPopup.lastItem.tag = [fq[1] integerValue];
+    }
+    if (![fqPopup selectItemWithTag:[ud integerForKey:kPrefFontQuality]]) {
+        // Out-of-range stored value: show and store the default so the popup
+        // matches what Scintilla renders.
+        [fqPopup selectItemWithTag:3];
+        [ud setInteger:3 forKey:kPrefFontQuality];
+    }
     fqPopup.tag = 705; fqPopup.target = self; fqPopup.action = @selector(prefChanged:);
     [v addSubview:fqPopup];
 
@@ -1291,6 +1432,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     sizeField.tag = 100;
     sizeField.target = self;
     sizeField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:sizeField];
     sizeField.enabled = NO;
     [optBox addSubview:sizeField];
     oy -= 30;
@@ -1601,6 +1743,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         @[[loc translate:@"Double-click to close tab"],        @801, kPrefDoubleClickTabClose],
         @[[loc translate:@"Wrap tabs to multiple lines"],      @803, kPrefTabBarWrap],
         @[[loc translate:@"Hide tab bar"],                     @804, kPrefHideTabBar],
+        @[[loc translate:@"Exit on close the last tab"],        @805, kPrefExitOnCloseLastTab],
     ];
     for (NSArray *def in checks) {
         NSButton *chk = [NSButton checkboxWithTitle:def[0] target:self action:@selector(prefChanged:)];
@@ -1618,6 +1761,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *mwField = [[NSTextField alloc] initWithFrame:NSMakeRect(200, y-2, 60, 22)];
     mwField.integerValue = [ud integerForKey:kPrefTabMaxLabelWidth];
     mwField.tag = 802; mwField.target = self; mwField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:mwField];
     [v addSubview:mwField];
 
     return v;
@@ -1654,6 +1798,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *ecField = [[NSTextField alloc] initWithFrame:NSMakeRect(130, y-2, 50, 22)];
     ecField.integerValue = [ud integerForKey:kPrefEdgeColumn];
     ecField.tag = 1100; ecField.target = self; ecField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:ecField];
     [v addSubview:ecField];
     y -= 36;
 
@@ -1693,6 +1838,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *plField = [[NSTextField alloc] initWithFrame:NSMakeRect(65, y-2, 50, 22)];
     plField.integerValue = [ud integerForKey:kPrefPaddingLeft];
     plField.tag = 1102; plField.target = self; plField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:plField];
     [v addSubview:plField];
 
     NSTextField *prLabel = [NSTextField labelWithString:[loc translate:@"Right:"]];
@@ -1701,6 +1847,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *prField = [[NSTextField alloc] initWithFrame:NSMakeRect(195, y-2, 50, 22)];
     prField.integerValue = [ud integerForKey:kPrefPaddingRight];
     prField.tag = 1103; prField.target = self; prField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:prField];
     [v addSubview:prField];
 
     return v;
@@ -1742,18 +1889,9 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
                 ? NSControlStateValueOn : NSControlStateValueOff];
         }
     }
+    // Posts NPPDarkModeChangedNotification; NPPStyleStore then switches the
+    // editor to the theme remembered for the resulting appearance.
     [NppThemeManager shared].mode = (NppDarkModeOption)mode;
-
-    // Switch theme to match dark/light mode
-    NPPStyleStore *store = [NPPStyleStore sharedStore];
-    BOOL effectiveDark = (mode == NppDarkModeDark) ||
-        (mode == NppDarkModeAuto && [NSApp.effectiveAppearance bestMatchFromAppearancesWithNames:
-            @[NSAppearanceNameDarkAqua]] != nil);
-    NSString *targetTheme = effectiveDark ? @"DarkModeDefault" : @"Default (stylers.xml)";
-    if (![store.activeThemeName isEqualToString:targetTheme]) {
-        NSArray *lexers = [store lexersForTheme:targetTheme];
-        [store commitLexers:lexers themeName:targetTheme];
-    }
 }
 
 #pragma mark - New Document Page
@@ -1827,6 +1965,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     intField.tag = 301;
     intField.target = self;
     intField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:intField];
     [v addSubview:intField];
     y -= 36;
 
@@ -1875,6 +2014,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     minField.tag = 601;
     minField.target = self;
     minField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:minField];
     [v addSubview:minField];
 
     return v;
@@ -1896,7 +2036,6 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         @[[loc translate:@"Use monospaced font in Find dialog"],      @1004, kPrefMonoFontFind],
         @[[loc translate:@"Confirm Replace All in open documents"],   @1005, kPrefConfirmReplaceAll],
         @[[loc translate:@"Replace: don't move to next occurrence"],  @1006, kPrefReplaceAndStop],
-        @[[loc translate:@"Use Boost Regex mode (multi-line; restart to apply)"], @1008, kPrefUseBoostRegex],
     ];
     for (NSArray *def in checks) {
         NSButton *chk = [NSButton checkboxWithTitle:def[0] target:self action:@selector(prefChanged:)];
@@ -1914,6 +2053,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *threshField = [[NSTextField alloc] initWithFrame:NSMakeRect(330, y-2, 60, 22)];
     threshField.integerValue = [ud integerForKey:kPrefInSelThreshold];
     threshField.tag = 1007; threshField.target = self; threshField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:threshField];
     [v addSubview:threshField];
 
     return v;
@@ -2033,6 +2173,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     NSTextField *sizeField = [[NSTextField alloc] initWithFrame:NSMakeRect(225, y-2, 70, 22)];
     sizeField.integerValue = [ud integerForKey:kPrefLargeFileSizeMB];
     sizeField.tag = 1401; sizeField.target = self; sizeField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:sizeField];
     [v addSubview:sizeField];
 
     NSTextField *sizeUnit = [NSTextField labelWithString:@"MB    (1 - 2046)"];
@@ -2128,6 +2269,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     charsField.tag = 1502;
     charsField.target = self;
     charsField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:charsField];
     charsField.enabled = !useDefault;
     [v addSubview:charsField];
     _delimWordCharsField = charsField;  // cached for the radio toggle to re-enable
@@ -2153,6 +2295,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     openerField.tag = 1503;
     openerField.target = self;
     openerField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:openerField];
     [v addSubview:openerField];
 
     NSTextField *previewLabel = [NSTextField labelWithString:@"bla bla bla bla bla"];
@@ -2167,6 +2310,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
     closerField.tag = 1504;
     closerField.target = self;
     closerField.action = @selector(prefChanged:);
+    [self _commitOnEndEditing:closerField];
     [v addSubview:closerField];
 
     NSTextField *closeLabel = [NSTextField labelWithString:[loc translate:@"Close"]];
@@ -2306,9 +2450,45 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
 // Actions
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// AppKit sends an NSTextField's action on Return only: NSTextFieldCell's
+// sendsActionOnEndEditing defaults to NO, so a value that is typed and then
+// left by clicking another control — or by closing the window — never reaches
+// prefChanged: and is silently discarded (issue #341). Every preference text
+// field persists solely through that action, so each one opts in here.
+//
+// The controller also becomes the field's delegate, so it can record what the
+// field held when editing began and drop a commit that changes nothing. Without
+// that, passing through a field would broadcast NPPPreferencesChanged, and that
+// broadcast is not free: it makes each EditorView re-apply the saved whitespace,
+// EOL and zoom settings, undoing a Show All Characters toggle or a per-window
+// zoom that was never written to defaults.
+- (void)_commitOnEndEditing:(NSTextField *)field {
+    field.cell.sendsActionOnEndEditing = YES;
+    field.delegate = self;
+}
+
+- (void)controlTextDidBeginEditing:(NSNotification *)note {
+    if ([note.object isKindOfClass:[NSTextField class]])
+        [_editingBaselines setObject:[(NSTextField *)note.object stringValue]
+                              forKey:(NSTextField *)note.object];
+}
+
 - (void)prefChanged:(id)sender {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSInteger tag = [(NSControl *)sender tag];
+
+    // A text field commits when its edit session ends, which includes ending one
+    // the user only tabbed through, and one whose value was typed and then put
+    // back. Neither has anything to store, and the broadcast at the end of this
+    // method has side effects (see -_commitOnEndEditing:). A missing baseline
+    // means the field was never typed into, because AppKit posts the
+    // begin-editing notification on the first keystroke rather than on focus.
+    if ([sender isKindOfClass:[NSTextField class]]) {
+        NSString *baseline = [_editingBaselines objectForKey:sender];
+        [_editingBaselines removeObjectForKey:sender];
+        if (!baseline || [baseline isEqualToString:[(NSTextField *)sender stringValue]])
+            return;
+    }
 
     switch (tag) {
         case 100: {
@@ -2348,7 +2528,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 702: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefVirtualSpace]; break;
         case 703: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefScrollBeyondLastLine]; break;
         case 704: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefCaretBlinkRate]; break;
-        case 705: [ud setInteger:[(NSPopUpButton *)sender indexOfSelectedItem] forKey:kPrefFontQuality]; break;
+        case 705: [ud setInteger:[(NSPopUpButton *)sender selectedTag] forKey:kPrefFontQuality]; break;
         case 706: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefCopyLineNoSelection]; break;
         // Tab Bar settings
         case 800: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefTabCloseButton]; break;
@@ -2356,6 +2536,7 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 802: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefTabMaxLabelWidth]; break;
         case 803: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefTabBarWrap]; break;
         case 804: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefHideTabBar]; break;
+        case 805: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefExitOnCloseLastTab]; break;
         // General
         case 900: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowFullPathInTitle]; break;
         // Searching
@@ -2367,20 +2548,23 @@ static NSDictionary<NSString *, NSString *> *_langDisplayNames() {
         case 1005: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefConfirmReplaceAll]; break;
         case 1006: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefReplaceAndStop]; break;
         case 1007: [ud setInteger:[(NSTextField *)sender integerValue] forKey:kPrefInSelThreshold]; break;
-        case 1008: {
-            BOOL on = [(NSButton *)sender state] == NSControlStateValueOn;
-            [ud setBool:on forKey:kPrefUseBoostRegex];
-            // New Documents (and any not-yet-searched ones) pick up the new engine
-            // immediately; already-searched Documents keep their cached backend
-            // until reopened — hence "restart to apply" in the label.
-            gNppUseBoostRegex = on;
-            break;
-        }
         // General
         case 901: [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefShowStatusBar]; break;
         case 902: {
             [ud setBool:[(NSButton *)sender state] == NSControlStateValueOn forKey:kPrefDockPanelsOnLeft];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NPPDockPanelsLeftChanged" object:nil];
+            break;
+        }
+        case 903: {
+            // Save the toolbar visibility state to preferences.
+            BOOL hide = [(NSButton *)sender state] == NSControlStateValueOn;
+            [ud setBool:!hide forKey:kPrefToolbarVisible];
+            
+            // Disable or enable the color options above the checkbox.
+            [self _updateToolbarPageControlsEnabledState:[(NSButton *)sender superview] hidden:hide];
+            
+            // Tell the main window to update the toolbar visibility.
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NPPToolbarVisibilityChanged" object:nil];
             break;
         }
         // Editor

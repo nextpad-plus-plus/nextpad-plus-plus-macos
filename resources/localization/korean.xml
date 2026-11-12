@@ -1405,13 +1405,13 @@ Translation note:
 				<Item id="90006" name="소스 제어"/>
 				<Item id="90007" name="커밋"/>
 				<Item id="90008" name="커밋 실패"/>
-				<Item id="90009" name="Git 저장소가 없습니다.\n찾아보기를 사용하여 저장소를 엽니다."/>
+				<Item id="90009" name="Git 저장소가 없습니다.&#10;찾아보기를 사용하여 저장소를 엽니다."/>
 				<Item id="90010" name="무대"/>
 				<Item id="90011" name="무대 해제"/>
 				<Item id="90012" name="모두 무대"/>
 				<Item id="90013" name="모두 무대 해제"/>
-				<Item id="90014" name="커밋 메시지\u2026"/>
-				<Item id="90015" name="저장소 찾아보기\u2026"/>
+				<Item id="90014" name="커밋 메시지…"/>
+				<Item id="90015" name="저장소 찾아보기…"/>
 				<Item id="90016" name="git 저장소 폴더를 선택하세요"/>
 				<Item id="90017" name="(저장소 없음)"/>
 				<Item id="90018" name="(분리됨)"/>
@@ -1425,9 +1425,9 @@ Translation note:
 				<Item id="90026" name="결과"/>
 				<Item id="90027" name="그만"/>
 				<Item id="90028" name="검색이 중지되었습니다."/>
-				<Item id="90029" name="검색 중\u2026"/>
+				<Item id="90029" name="검색 중…"/>
 				<Item id="90030" name="검색할 텍스트"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="검색 중..."/>
 				<Item id="90033" name="바꾸기:"/>
 				<Item id="90034" name="전체 단어"/>
@@ -1487,7 +1487,7 @@ Translation note:
 				<Item id="90088" name="플러그인 설치"/>
 				<Item id="90089" name="플러그인 제거"/>
 				<Item id="90090" name="명령을 찾을 수 없습니다"/>
-				<Item id="90091" name="검색하려면 입력하세요\u2026"/>
+				<Item id="90091" name="검색하려면 입력하세요…"/>
 				<Item id="90092" name="사용자 정의 언어 v.2.1"/>
 				<Item id="90093" name="새 언어 만들기"/>
 				<Item id="90094" name="이름을 입력하세요:"/>
@@ -1496,11 +1496,9 @@ Translation note:
 				<Item id="90097" name="저장하지 마세요"/>
 				<Item id="90098" name="완료"/>
 				<Item id="90099" name="줄 바꿈 전환"/>
-				<Item id="90100" name="모든 문자 표시"/>
 				<Item id="90101" name="문자 옵션 표시"/>
 				<Item id="90102" name="들여쓰기 가이드 전환"/>
 				<Item id="90103" name="아직 구현되지 않음"/>
-				<Item id="90104" name="디스크에서 다시 로드"/>
 				<Item id="90105" name="검색 엔진 변경"/>
 				<Item id="90106" name="실행 오류"/>
 				<Item id="90107" name="메모장++ 로딩 시간"/>
@@ -1509,16 +1507,12 @@ Translation note:
 				<Item id="90110" name="다운로드"/>
 				<Item id="90111" name="출시 페이지"/>
 				<Item id="90112" name="나중에"/>
-				<Item id="90113" name="필터 플러그인\u2026"/>
-				<Item id="90114" name="사용 가능"/>
-				<Item id="90115" name="업데이트"/>
-				<Item id="90116" name="설치됨"/>
-				<Item id="90117" name="호환되지 않음"/>
+				<Item id="90113" name="필터 플러그인…"/>
 				<Item id="90118" name="설치 실패"/>
 				<Item id="90119" name="다음 플러그인을 제거하시겠습니까?"/>
 				<Item id="90120" name="다음 플러그인을 설치하시겠습니까?"/>
 				<Item id="90121" name="그러면 플러그인 파일이 삭제됩니다."/>
-				<Item id="90122" name="검색 명령\u2026"/>
+				<Item id="90122" name="검색 명령…"/>
 				<Item id="90123" name="전경색"/>
 				<Item id="90124" name="배경색"/>
 				<Item id="90125" name="매크로 이름"/>
@@ -1538,7 +1532,7 @@ Translation note:
 				<Item id="90139" name="모든 마크가 지워졌습니다."/>
 				<Item id="90140" name="표시된 텍스트가 클립보드에 복사되었습니다."/>
 				<Item id="90141" name="복사할 표시된 텍스트가 없습니다."/>
-				<Item id="90142" name="검색 중... %ld개의 조회수 \u2014 %@"/>
+				<Item id="90142" name="검색 중... %ld개의 조회수 — %@"/>
 				<Item id="90143" name="파일을 바꾸는 중..."/>
 				<Item id="90144" name="프로젝트에서 바꾸기: 아직 연결되지 않았습니다."/>
 				<Item id="90145" name="프로젝트에서 찾기: 아직 프로젝트 패널 파일 목록에 연결되지 않았습니다."/>
@@ -1565,14 +1559,12 @@ Translation note:
 				<Item id="90165" name="모두 저장하기 전에 확인"/>
 				<Item id="90166" name="열려 있는 문서에서 모두 바꾸기 확인"/>
 				<Item id="90167" name="바꾸기: 다음 항목으로 이동하지 않음"/>
-				<Item id="90168" name="찾기 대화상자에서 고정 폭 글꼴 사용"/>
 				<Item id="90169" name="마우스 오른쪽 버튼을 클릭하면 선택이 유지됩니다"/>
 				<Item id="90170" name="기본 날짜/시간 순서 역순"/>
 				<Item id="90171" name="XML 기반 함수 목록 파서 사용"/>
 				<Item id="90172" name="자동 닫기 괄호( ) [ ] { }"/>
 				<Item id="90173" name="N번째 문자부터:"/>
 				<Item id="90174" name="선택 시 자동 확인 임계값(바이트):"/>
-				<Item id="90175" name="확장(\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="편집자"/>
 				<Item id="90177" name="여백"/>
 				<Item id="90178" name="어두움"/>
@@ -1586,12 +1578,10 @@ Translation note:
 				<Item id="90186" name="앤티앨리어싱됨"/>
 				<Item id="90187" name="LCD 최적화"/>
 				<Item id="90188" name="단순 +/-"/>
-				<Item id="90189" name="윈도우(CRLF)"/>
 				<Item id="90190" name="맥(CR)"/>
-				<Item id="90191" name="플러그인 목록 저장소"/>
 				<Item id="90192" name="적용할 Nextpad++ 테마 XML 파일을 선택하세요"/>
-				<Item id="90193" name="새로 만들기\u2026"/>
-				<Item id="90194" name="다른 이름으로 저장\u2026"/>
+				<Item id="90193" name="새로 만들기…"/>
+				<Item id="90194" name="다른 이름으로 저장…"/>
 				<Item id="90195" name="사용자 언어:"/>
 				<Item id="90196" name="언어 이름"/>
 				<Item id="90197" name="만들기"/>
@@ -1621,6 +1611,218 @@ Translation note:
 				<Item id="90221" name="잠긴 속성(macOS)"/>
 				<Item id="90222" name="업데이트를 확인하세요..."/>
 				<Item id="90223" name="최근 열기"/>
+				<Item id="90226" name="도움말"/>
+				<Item id="90227" name="단계 실패"/>
+				<Item id="90228" name="언스테이지 실패"/>
+				<Item id="90229" name="이용 가능"/>
+				<Item id="90230" name="당신은 달리고 있습니다"/>
+				<Item id="90231" name="다시 알림 안 함"/>
+				<Item id="90233" name="자동으로 업데이트 확인"/>
+				<Item id="90234" name="자동 업데이트 확인이 꺼져 있습니다."/>
+				<Item id="90235" name="마지막 확인:"/>
+				<Item id="90236" name="인터넷에 연결되어 있지 않습니다."/>
+				<Item id="90237" name="업데이트 서버에서 예상치 못한 응답이 발생했습니다."/>
+				<Item id="90238" name="출판된 릴리스를 찾을 수 없습니다."/>
+				<Item id="90239" name="업데이트 서버를 일시적으로 사용할 수 없습니다.나중에 다시 시도해 주세요."/>
+				<Item id="90240" name="업데이트 서버가 요청을 거부했습니다.프록시, 방화벽 또는 VPN이 GitHub에 대한 액세스를 차단하고 있을 수 있습니다."/>
+				<Item id="90241" name="네트워크에서 업데이트 확인이 너무 많습니다(이 제한은 네트워크의 모든 사람이 공유함).다음 후에 다시 시도해 보세요."/>
+				<Item id="90242" name="네트워크에서 업데이트 확인이 너무 많습니다(이 제한은 네트워크의 모든 사람이 공유함).나중에 다시 시도해 주세요."/>
+				<Item id="90243" name="업데이트 서버가 상태를 반환했습니다."/>
+				<Item id="90244" name="다시 시도"/>
+				<Item id="90245" name="인쇄 텍스트 크기:"/>
+				<Item id="90246" name="화면 확대 사용"/>
+				<Item id="90247" name="실제 크기"/>
+				<Item id="90248" name="일부 파일을 교체할 수 없습니다."/>
+				<Item id="90249" name="...외 %lu개"/>
+				<Item id="90250" name="파일 연결이 조직에 의해 관리되고 있습니다."/>
+				<Item id="90251" name="macOS 확인을 기다리는 중…"/>
+				<Item id="90252" name="macOS가 변경 사항을 적용하지 않았습니다."/>
+				<Item id="90253" name="등록됨"/>
+				<Item id="90254" name="폴더의 모든 파일을 열까요?"/>
+				<Item id="90255" name="새 탭에 %lu개의 파일이 열립니다."/>
+				<Item id="90256" name="가져올 수 없습니다: %@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="검색 중… 현재까지 %ld개 일치"/>
+				<Item id="90260" name="%@(%ld 일치%@)"/>
+				<Item id="90261" name="퍼지 검색"/>
+				<Item id="90266" name="개수: %ld개 일치."/>
+				<Item id="90267" name="모두 바꾸기: %ld개의 항목이 %@개로 대체되었습니다."/>
+				<Item id="90268" name="열린 파일에서 바꾸기: %ld개의 항목이 교체되었습니다."/>
+				<Item id="90269" name="Find in Files: %ld hit(s) in %ld file(s)."/>
+				<Item id="90270" name="파일에서 찾기: 0개의 조회수."/>
+				<Item id="90271" name="디렉토리에서 &quot;%@&quot; 항목을 모두 &quot;%@&quot;로 바꾸기:&#10;%@&#10;&#10;이 작업은 취소할 수 없습니다."/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="먼저 프로젝트 패널을 엽니다."/>
+				<Item id="90274" name="검색할 프로젝트 패널을 하나 이상 선택하세요."/>
+				<Item id="90275" name="검색할 파일이 없습니다."/>
+				<Item id="90276" name="Find in Projects: %ld hit(s) in %ld file(s)."/>
+				<Item id="90277" name="프로젝트에서 찾기: 조회수 0개."/>
+				<Item id="90278" name="다음 항목을 모두 바꿉니다."/>
+				<Item id="90279" name="와"/>
+				<Item id="90280" name="안으로"/>
+				<Item id="90281" name="프로젝트 파일.이 작업은 취소할 수 없습니다."/>
+				<Item id="90282" name="Replace in Projects: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90283" name="표시: %ld개의 일치 항목이 표시되었습니다."/>
+				<Item id="90284" name="파일/폴더 이름 필터링..."/>
+				<Item id="90285" name="일부 문서를 저장할 수 없습니다"/>
+				<Item id="90286" name="⌘ 명령"/>
+				<Item id="90287" name="⌃ 제어"/>
+				<Item id="90288" name="⌥ 옵션"/>
+				<Item id="90289" name="⇧ 교대"/>
+				<Item id="90290" name="NSDateFormatter 형식 문자열을 입력하세요."/>
+				<Item id="90291" name="이 버전에서는 '%@'이(가) 아직 구현되지 않았습니다."/>
+				<Item id="90292" name="플러그인 가져오기"/>
+				<Item id="90293" name="다시 시작 필요"/>
+				<Item id="90294" name="처리할 파일이 없습니다."/>
+				<Item id="90295" name="이 프로젝트 노드에는 파일이 없습니다."/>
+				<Item id="90296" name="'%@'에 저장되지 않은 변경사항이 있습니다.&#10;변경사항을 다시 로드하고 삭제하시겠습니까?"/>
+				<Item id="90297" name="새 파일 이름을 입력하세요:"/>
+				<Item id="90299" name="새 이름:"/>
+				<Item id="90301" name="이름에는 &quot;/&quot; 또는 &quot;:&quot;이 포함될 수 없습니다."/>
+				<Item id="90304" name="모두 저장하지 않음"/>
+				<Item id="90306" name="열 선택 모드로 전환하는 방법에는 3가지가 있습니다.&#10;&#10;1.(키보드 및 마우스) 옵션을 누른 상태에서 마우스 왼쪽 버튼 클릭 드래그&#10;&#10;2.(키보드만 해당) 화살표 키를 사용하는 동안 Option+Shift를 누르세요.&#10;&#10;3.(키보드 또는 마우스)&#10; 원하는 열 블록 위치의 시작 부분에 캐럿을 넣은 다음&#10; &quot;열 모드에서 선택 시작/끝&quot; 명령을 실행합니다.&#10; 캐럿을 원하는 열 블록 위치의 끝으로 이동한 다음&#10; &quot;열 모드에서 선택 시작/끝&quot; 명령을 다시 실행합니다."/>
+				<Item id="90307" name="검색 URL을 입력하세요.쿼리 자리 표시자로 %s를 사용하거나 끝에 쿼리를 추가합니다."/>
+				<Item id="90308" name="명령 또는 URL을 입력하세요..."/>
+				<Item id="90309" name="실행 실패:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="이미 설치됨"/>
+				<Item id="90313" name="nextpad++ 명령줄 도구 설치"/>
+				<Item id="90314" name="설치 실패"/>
+				<Item id="90315" name="설치되었지만 ~/.local/bin이(가) PATH에 없습니다."/>
+				<Item id="90316" name="이미 구성에 있습니다."/>
+				<Item id="90317" name="경로에 추가됨"/>
+				<Item id="90318" name="쓸 수 없습니다"/>
+				<Item id="90319" name="복사됨"/>
+				<Item id="90321" name="저장하지 않으면 변경사항이 손실됩니다."/>
+				<Item id="90322" name="모든 문서에 적용"/>
+				<Item id="90323" name="파일에서 매크로 실행"/>
+				<Item id="90324" name="매크로:"/>
+				<Item id="90325" name="폴더:"/>
+				<Item id="90326" name="폴더를 선택하세요…"/>
+				<Item id="90327" name="찾아보기…"/>
+				<Item id="90328" name="확장:"/>
+				<Item id="90329" name="반복 하위 디렉터리"/>
+				<Item id="90330" name="숨겨진 파일 포함"/>
+				<Item id="90331" name="최대 크기:"/>
+				<Item id="90332" name="무제한"/>
+				<Item id="90333" name="파일당:"/>
+				<Item id="90334" name="수정된 경우 저장"/>
+				<Item id="90335" name="다음 이후에 종료"/>
+				<Item id="90336" name="이미 열려 있는 파일도 닫습니다."/>
+				<Item id="90337" name="오류 발생 시:"/>
+				<Item id="90338" name="파일을 건너뛰고 계속하기"/>
+				<Item id="90339" name="첫 번째 오류 발생 시 중지"/>
+				<Item id="90340" name="(저장된 매크로 없음)"/>
+				<Item id="90341" name="%lu개의 파일이 일치합니다."/>
+				<Item id="90342" name="폴더를 찾을 수 없습니다"/>
+				<Item id="90343" name="존재하는 폴더를 선택하세요."/>
+				<Item id="90344" name="일치하는 파일이 없습니다."/>
+				<Item id="90345" name="확장 필터, 재귀 또는 숨김 파일 옵션을 조정합니다."/>
+				<Item id="90346" name="시작 중…"/>
+				<Item id="90347" name="처리:"/>
+				<Item id="90348" name="%ld / %ld 확인: %ld 건너뛰음: %ld 실패: %ld"/>
+				<Item id="90349" name="일괄 취소됨"/>
+				<Item id="90350" name="배치 완료"/>
+				<Item id="90351" name="총계: %lu 확인: %ld 건너뛰기: %ld 실패: %ld"/>
+				<Item id="90352" name="건설 날짜"/>
+				<Item id="90353" name="운영 체제"/>
+				<Item id="90354" name="최신"/>
+				<Item id="90355" name="구식"/>
+				<Item id="90356" name="알 수 없음"/>
+				<Item id="90357" name="변경 사항을 적용하려면 애플리케이션을 다시 시작하세요."/>
+				<Item id="90358" name="플러그인 업데이트"/>
+				<Item id="90359" name="다음 플러그인을 업데이트하시겠습니까?"/>
+				<Item id="90360" name="현재 버전은 교체되기 전에 ~/Library/Application Support/Nextpad++/plugin-backups/에 백업됩니다."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="새로운 Tahoe 디자인으로 전환(베타)"/>
+				<Item id="90363" name="macOS 스타일 메뉴 사용(베타)"/>
+				<Item id="90364" name="The new Tahoe look will be applied after you restart Nextpad++."/>
+				<Item id="90365" name="Nextpad++을(를) 다시 시작하면 기본 디자인이 복원됩니다."/>
+				<Item id="90366" name="지금 종료"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Nextpad++을(를) 다시 시작하면 기본 메뉴 레이아웃이 복원됩니다."/>
+				<Item id="90369" name="색상"/>
+				<Item id="90370" name="플러그인 도구 모음 아이콘에 적용"/>
+				<Item id="90371" name="전체 모드에서는 플러그인 아이콘이 단일 단색으로 표시됩니다."/>
+				<Item id="90372" name="도구 모음 그룹"/>
+				<Item id="90373" name="Liquid Glass 툴바에서 각 버튼이 표시되는 위치를 선택합니다."/>
+				<Item id="90374" name="버튼"/>
+				<Item id="90375" name="배치"/>
+				<Item id="90376" name="기본값으로 재설정"/>
+				<Item id="90377" name="오버플로 메뉴"/>
+				<Item id="90378" name="숨겨진"/>
+				<Item id="90379" name="CJK 친화적인 줄 바꿈"/>
+				<Item id="90380" name="열 선택이 다중 편집으로 전환됩니다."/>
+				<Item id="90381" name="줄 간격:"/>
+				<Item id="90382" name="1.0(기본값)"/>
+				<Item id="90383" name="탭바 숨기기"/>
+				<Item id="90384" name="탭 크기는 문서 확대/축소를 따릅니다."/>
+				<Item id="90385" name="선택하세요…"/>
+				<Item id="90386" name="기본값으로 재설정"/>
+				<Item id="90387" name="기본 위치를 사용합니다."/>
+				<Item id="90388" name="사용자 정의 위치."/>
+				<Item id="90389" name="잘못된 경로 - 백업 시 기본 위치를 사용합니다."/>
+				<Item id="90390" name="선택"/>
+				<Item id="90391" name="선택 항목 삽입:"/>
+				<Item id="90392" name="Boost Regex 모드 사용(여러 줄, 적용하려면 다시 시작)"/>
+				<Item id="90395" name="지금 다시 시작"/>
+				<Item id="90397" name="(무슨 일을 하고 있는지 모르면 선택하지 마세요)"/>
+				<Item id="90398" name="툴바 아이콘 크기"/>
+				<Item id="90399" name="100%(기본값)"/>
+				<Item id="90400" name="마우스 휠 스크롤 속도"/>
+				<Item id="90401" name="1×(꺼짐)"/>
+				<Item id="90402" name="툴바 아이콘 크기가 변경되었습니다."/>
+				<Item id="90403" name="새로운 도구 모음 아이콘 크기는 다음에 Nextpad++이 실행될 때 적용됩니다."/>
+				<Item id="90404" name="툴바 아이콘이 변경되었습니다."/>
+				<Item id="90405" name="새 도구 모음 아이콘은 다음에 Nextpad++이 실행될 때 적용됩니다."/>
+				<Item id="90411" name="파일에서 매크로 실행..."/>
+				<Item id="90418" name="그러면 해당 항목과 해당 내용이 모두 프로젝트에서 제거됩니다.디스크의 어떤 파일도 영향을 받지 않습니다."/>
+				<Item id="90420" name="폴더"/>
+				<Item id="90423" name="선택한 경로 이름 복사"/>
+				<Item id="90424" name="선택한 경로 이름 열기"/>
+				<Item id="90427" name="찾을 수 없음"/>
+				<Item id="90428" name="충돌: %@"/>
+				<Item id="90429" name="&quot;%@&quot;을(를) 삭제하시겠습니까?"/>
+				<Item id="90430" name="사용자 정의 언어 관리자"/>
+				<Item id="90431" name="언어 필터링…"/>
+				<Item id="90432" name="소스"/>
+				<Item id="90433" name="AC 소스"/>
+				<Item id="90434" name="상태"/>
+				<Item id="90435" name="설치/업데이트"/>
+				<Item id="90436" name="%lu개 언어 · %lu개 설치됨 · %lu개 업데이트"/>
+				<Item id="90437" name="작성자"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="설치할 언어를 하나 이상 선택하세요."/>
+				<Item id="90440" name="선택 항목에 대해 다운로드할 수 있는 항목이 없습니다."/>
+				<Item id="90441" name="다운로드 실패"/>
+				<Item id="90442" name="체크섬 불일치"/>
+				<Item id="90443" name="이제 선택한 언어를 언어 메뉴에서 사용할 수 있습니다."/>
+				<Item id="90444" name="제거할 설치된 언어를 하나 이상 선택하세요."/>
+				<Item id="90445" name="삭제됨"/>
+				<Item id="90446" name="이 이름은 이미 다른 언어에서 사용되고 있습니다."/>
+				<Item id="90447" name="이 언어는 제거할 수 없습니다."/>
+				<Item id="90448" name="사전 설치된 언어는 제거할 수 없습니다."/>
+				<Item id="90449" name="이 언어의 이름을 바꿀 수 없습니다."/>
+				<Item id="90450" name="이 파일은 %@입니다.앱을 열면 구문 강조가 비활성화되고 기록이 실행취소되어 앱의 응답성이 유지됩니다.&#10;&#10;계속하시겠습니까?"/>
+				<Item id="90451" name="어쨌든 열기"/>
+				<Item id="90452" name="디스크에서 &quot;%@&quot;이(가) 변경되었습니다."/>
+				<Item id="90453" name="무시"/>
+				<Item id="90454" name="내 버전 유지"/>
+				<Item id="90455" name="&quot;%@&quot;을(를) 다시 로드할 수 없습니다."/>
+				<Item id="90456" name="파일을 읽을 수 없습니다."/>
+				<Item id="90457" name="Liquid Glass 툴바에서 각 버튼이 표시되는 위치를 선택합니다(그룹 캡슐(툴바), 그룹의 ▾ 더보기 메뉴 또는 숨김)."/>
+				<Item id="90458" name="개발 지원을 위해 기부"/>
+				<Item id="90459" name="명령줄 도구 설치"/>
+				<Item id="90460" name="도구 모음 캡슐 뒤에 그림자 표시"/>
+				<Item id="90461" name="기부"/>
+				<Item id="90462" name="문자 세트"/>
+				<Item id="90463" name="최소화"/>
+				<Item id="90464" name="Nextpad++ 숨기기"/>
+				<Item id="90465" name="다른 사람 숨기기"/>
+				<Item id="90466" name="모두 표시"/>
+				<Item id="90467" name="Nextpad++ 종료"/>
+				<Item id="90468" name="현재 기록된 매크로 저장…"/>
+				<Item id="90469" name="후행 공백을 잘라내고 저장"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

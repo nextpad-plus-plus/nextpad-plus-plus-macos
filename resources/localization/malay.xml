@@ -491,13 +491,13 @@ Desc: Malay translation for Nextpad++
 				<Item id="90006" name="Kawalan Sumber"/>
 				<Item id="90007" name="Komit"/>
 				<Item id="90008" name="Komit Gagal"/>
-				<Item id="90009" name="Tiada repositori git\nGunakan Semak imbas untuk membuka repo."/>
+				<Item id="90009" name="Tiada repositori git&#10;Gunakan Semak imbas untuk membuka repo."/>
 				<Item id="90010" name="Peringkat"/>
 				<Item id="90011" name="Buka pentas"/>
 				<Item id="90012" name="Peringkat Semua"/>
 				<Item id="90013" name="Nyahpentas Semua"/>
-				<Item id="90014" name="Komit mesej\u2026"/>
-				<Item id="90015" name="Semak imbas untuk repositori\u2026"/>
+				<Item id="90014" name="Komit mesej…"/>
+				<Item id="90015" name="Semak imbas untuk repositori…"/>
 				<Item id="90016" name="Pilih folder repositori git"/>
 				<Item id="90017" name="(tiada repositori)"/>
 				<Item id="90018" name="(berpisah)"/>
@@ -511,9 +511,9 @@ Desc: Malay translation for Nextpad++
 				<Item id="90026" name="Keputusan"/>
 				<Item id="90027" name="Berhenti"/>
 				<Item id="90028" name="Carian berhenti."/>
-				<Item id="90029" name="Mencari\u2026"/>
+				<Item id="90029" name="Mencari…"/>
 				<Item id="90030" name="Teks untuk mencari"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Mencari..."/>
 				<Item id="90033" name="Gantikan:"/>
 				<Item id="90034" name="Seluruh Perkataan"/>
@@ -573,7 +573,7 @@ Desc: Malay translation for Nextpad++
 				<Item id="90088" name="Pasang Pemalam"/>
 				<Item id="90089" name="Alih Keluar Pemalam"/>
 				<Item id="90090" name="Tiada arahan ditemui"/>
-				<Item id="90091" name="Taip untuk mencari\u2026"/>
+				<Item id="90091" name="Taip untuk mencari…"/>
 				<Item id="90092" name="Bahasa Ditakrifkan Pengguna v.2.1"/>
 				<Item id="90093" name="Cipta Bahasa Baharu"/>
 				<Item id="90094" name="Masukkan nama:"/>
@@ -582,11 +582,9 @@ Desc: Malay translation for Nextpad++
 				<Item id="90097" name="Jangan Simpan"/>
 				<Item id="90098" name="Selesai"/>
 				<Item id="90099" name="Togol Bungkus Perkataan"/>
-				<Item id="90100" name="Tunjukkan Semua Aksara"/>
 				<Item id="90101" name="Tunjukkan Pilihan Aksara"/>
 				<Item id="90102" name="Togol Panduan Inden"/>
 				<Item id="90103" name="Belum Dilaksanakan"/>
-				<Item id="90104" name="Muat semula daripada Cakera"/>
 				<Item id="90105" name="Tukar Enjin Carian"/>
 				<Item id="90106" name="Ralat Jalankan"/>
 				<Item id="90107" name="Nextpad++ Masa Memuatkan"/>
@@ -595,7 +593,7 @@ Desc: Malay translation for Nextpad++
 				<Item id="90110" name="Muat turun"/>
 				<Item id="90111" name="Halaman Keluaran"/>
 				<Item id="90112" name="Nanti"/>
-				<Item id="90113" name="Tapis pemalam\u2026"/>
+				<Item id="90113" name="Tapis pemalam…"/>
 				<Item id="90114" name="Tersedia"/>
 				<Item id="90115" name="Kemas kini"/>
 				<Item id="90116" name="Dipasang"/>
@@ -604,7 +602,7 @@ Desc: Malay translation for Nextpad++
 				<Item id="90119" name="Alih keluar pemalam berikut?"/>
 				<Item id="90120" name="Pasang pemalam berikut?"/>
 				<Item id="90121" name="Ini akan memadamkan fail pemalam."/>
-				<Item id="90122" name="Perintah carian\u2026"/>
+				<Item id="90122" name="Perintah carian…"/>
 				<Item id="90123" name="Warna latar depan"/>
 				<Item id="90124" name="Warna latar belakang"/>
 				<Item id="90125" name="Nama makro"/>
@@ -624,7 +622,7 @@ Desc: Malay translation for Nextpad++
 				<Item id="90139" name="Semua markah dibersihkan."/>
 				<Item id="90140" name="Teks bertanda disalin ke papan keratan."/>
 				<Item id="90141" name="Tiada teks bertanda untuk disalin."/>
-				<Item id="90142" name="Mencari... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Mencari... %ld hit(s) — %@"/>
 				<Item id="90143" name="Menggantikan dalam fail..."/>
 				<Item id="90144" name="Gantikan dalam Projek: Belum disambungkan."/>
 				<Item id="90145" name="Cari dalam Projek: Belum disambungkan ke senarai fail Panel Projek."/>
@@ -645,20 +643,20 @@ Desc: Malay translation for Nextpad++
 				<Item id="90160" name="Sorotan pintar: seluruh perkataan sahaja"/>
 				<Item id="90161" name="Klik dua kali untuk menutup tab"/>
 				<Item id="90162" name="Tunjukkan butang tutup pada tab"/>
+				<Item id="90168" name="Gunakan fon monospace dalam dialog Cari"/>
+				<Item id="90191" name="Repositori senarai pemalam"/>
 				<Item id="90224" name="Paparkan tab dalam berbilang baris"/>
 				<Item id="90163" name="Ingat keterlihatan panel merentas sesi"/>
 				<Item id="90164" name="Simpan entri fail yang tidak hadir dalam sesi"/>
 				<Item id="90165" name="Sahkan sebelum Simpan Semua"/>
 				<Item id="90166" name="Sahkan Gantikan Semua dalam dokumen terbuka"/>
 				<Item id="90167" name="Gantikan: jangan beralih ke kejadian seterusnya"/>
-				<Item id="90168" name="Gunakan fon monospace dalam dialog Cari"/>
 				<Item id="90169" name="Klik kanan mengekalkan pilihan"/>
 				<Item id="90170" name="Balikkan susunan tarikh/masa lalai"/>
 				<Item id="90171" name="Gunakan penghurai senarai fungsi berasaskan XML"/>
 				<Item id="90172" name="Autotutup kurungan ( ) [ ] { }"/>
 				<Item id="90173" name="Daripada aksara Nth:"/>
 				<Item id="90174" name="Ambang semak automatik dalam pilihan (bait):"/>
-				<Item id="90175" name="Dilanjutkan (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margin"/>
 				<Item id="90178" name="Gelap"/>
@@ -672,12 +670,10 @@ Desc: Malay translation for Nextpad++
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Dioptimumkan"/>
 				<Item id="90188" name="Mudah +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repositori senarai pemalam"/>
 				<Item id="90192" name="Pilih fail XML tema Nextpad++ untuk digunakan"/>
-				<Item id="90193" name="Buat baharu\u2026"/>
-				<Item id="90194" name="Simpan sebagai\u2026"/>
+				<Item id="90193" name="Buat baharu…"/>
+				<Item id="90194" name="Simpan sebagai…"/>
 				<Item id="90195" name="Bahasa pengguna:"/>
 				<Item id="90196" name="Nama bahasa"/>
 				<Item id="90197" name="Buat"/>
@@ -707,6 +703,248 @@ Desc: Malay translation for Nextpad++
 				<Item id="90221" name="Atribut Terkunci (macOS)"/>
 				<Item id="90222" name="Semak Kemas Kini…"/>
 				<Item id="90223" name="Buka Baru-baru ini"/>
+				<Item id="90225" name="Ingat sesi semasa untuk pelancaran seterusnya"/>
+				<Item id="90226" name="Bantuan"/>
+				<Item id="90227" name="Peringkat Gagal"/>
+				<Item id="90228" name="Unstage Gagal"/>
+				<Item id="90229" name="tersedia"/>
+				<Item id="90230" name="Awak berlari"/>
+				<Item id="90231" name="Jangan ingatkan saya lagi"/>
+				<Item id="90232" name="Kemas kini"/>
+				<Item id="90233" name="Semak kemas kini secara automatik"/>
+				<Item id="90234" name="Semakan kemas kini automatik dimatikan."/>
+				<Item id="90235" name="Terakhir diperiksa:"/>
+				<Item id="90236" name="Tiada sambungan internet."/>
+				<Item id="90237" name="Sambutan yang tidak dijangka daripada pelayan kemas kini."/>
+				<Item id="90238" name="Tiada keluaran yang diterbitkan ditemui."/>
+				<Item id="90239" name="Pelayan kemas kini tidak tersedia buat sementara waktu.Sila cuba lagi kemudian."/>
+				<Item id="90240" name="Pelayan kemas kini menolak permintaan itu.Proksi, tembok api atau VPN mungkin menyekat akses kepada GitHub."/>
+				<Item id="90241" name="Terlalu banyak semakan kemas kini daripada rangkaian anda (had ini dikongsi oleh semua orang di dalamnya).Cuba lagi selepas"/>
+				<Item id="90242" name="Terlalu banyak semakan kemas kini daripada rangkaian anda (had ini dikongsi oleh semua orang di dalamnya).Sila cuba lagi kemudian."/>
+				<Item id="90243" name="Pelayan kemas kini mengembalikan status"/>
+				<Item id="90244" name="Cuba Lagi"/>
+				<Item id="90245" name="Saiz teks cetakan:"/>
+				<Item id="90246" name="Gunakan zum skrin"/>
+				<Item id="90247" name="Saiz sebenar"/>
+				<Item id="90248" name="Sesetengah fail tidak dapat diganti"/>
+				<Item id="90249" name="...dan %lu lagi"/>
+				<Item id="90250" name="Perkaitan fail diuruskan oleh organisasi anda."/>
+				<Item id="90251" name="Menunggu pengesahan macOS…"/>
+				<Item id="90252" name="macOS tidak menggunakan perubahan itu."/>
+				<Item id="90253" name="Berdaftar"/>
+				<Item id="90254" name="Buka semua fail dalam folder?"/>
+				<Item id="90255" name="Ini akan membuka %lu fail dalam tab baharu."/>
+				<Item id="90256" name="Tidak dapat mengimport: %@"/>
+				<Item id="90258" name="Menjumpai %ld padanan dalam %ld fail."/>
+				<Item id="90259" name="Mencari… %ld padanan setakat ini"/>
+				<Item id="90260" name="%@ (%ld padanan%@)"/>
+				<Item id="90261" name="Carian kabur"/>
+				<Item id="90262" name="Cari dalam Dokumen Semasa"/>
+				<Item id="90265" name="Cari: Tidak dapat mencari teks &quot;%@&quot;"/>
+				<Item id="90266" name="Kiraan: %ld padanan."/>
+				<Item id="90267" name="Gantikan Semua: %ld kejadian telah digantikan %@."/>
+				<Item id="90268" name="Gantikan dalam Fail Terbuka: %ld kejadian telah diganti."/>
+				<Item id="90269" name="Cari dalam Fail: %ld hit dalam %ld fail."/>
+				<Item id="90270" name="Cari dalam Fail: 0 hits."/>
+				<Item id="90271" name="Gantikan semua kejadian &quot;%@&quot; dengan &quot;%@&quot; dalam direktori:&#10;%@&#10;&#10;Ini tidak boleh dibuat asal."/>
+				<Item id="90272" name="Gantikan dalam Fail: %ld penggantian dalam %ld fail."/>
+				<Item id="90273" name="Buka Panel Projek dahulu."/>
+				<Item id="90274" name="Pilih sekurang-kurangnya satu Panel Projek untuk mencari."/>
+				<Item id="90275" name="Tiada fail untuk dicari."/>
+				<Item id="90276" name="Cari dalam Projek: %ld hit dalam %ld fail."/>
+				<Item id="90277" name="Cari dalam Projek: 0 hits."/>
+				<Item id="90278" name="Gantikan semua kejadian"/>
+				<Item id="90279" name="dengan"/>
+				<Item id="90280" name="dalam"/>
+				<Item id="90281" name="fail projek.Ini tidak boleh dibuat asal."/>
+				<Item id="90282" name="Gantikan dalam Projek: %ld penggantian dalam %ld fail."/>
+				<Item id="90283" name="Tandai: %ld padanan ditandai."/>
+				<Item id="90284" name="Tapis nama fail/folder..."/>
+				<Item id="90285" name="Sesetengah dokumen tidak dapat disimpan"/>
+				<Item id="90286" name="⌘ Perintah"/>
+				<Item id="90287" name="⌃ Kawalan"/>
+				<Item id="90288" name="⌥ Pilihan"/>
+				<Item id="90289" name="⇧ Beralih"/>
+				<Item id="90290" name="Masukkan rentetan format NSDateFormatter:"/>
+				<Item id="90291" name="'%@' belum lagi dilaksanakan dalam versi ini."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Mulakan semula Diperlukan"/>
+				<Item id="90294" name="Tiada fail untuk diproses"/>
+				<Item id="90295" name="Nod projek ini tidak mengandungi fail."/>
+				<Item id="90296" name="'%@' mempunyai perubahan yang belum disimpan.&#10;Muat semula dan buang perubahan?"/>
+				<Item id="90297" name="Masukkan nama fail baharu:"/>
+				<Item id="90298" name="Namakan semula Tab Semasa"/>
+				<Item id="90299" name="Nama baharu:"/>
+				<Item id="90300" name="Nama semula gagal"/>
+				<Item id="90301" name="Nama tidak boleh mengandungi “/” atau “:”."/>
+				<Item id="90302" name="Alihkan '%@' ke Sampah?"/>
+				<Item id="90303" name="Simpan '%@' sebelum ditutup?"/>
+				<Item id="90304" name="Jangan Simpan Semua"/>
+				<Item id="90305" name="Petua Mod Lajur"/>
+				<Item id="90306" name="Terdapat 3 cara untuk bertukar kepada mod pilih lajur:&#10;&#10;1.(Papan Kekunci dan Tetikus) Tahan Pilihan semasa menyeret klik kiri&#10;&#10;2.(Papan kekunci sahaja) Tahan Option+Shift semasa menggunakan kekunci anak panah&#10;&#10;3.(Papan Kekunci atau Tetikus)&#10; Letakkan karet pada permulaan kedudukan blok lajur yang diingini, kemudian&#10; laksanakan arahan &quot;Mula/Tamatkan Pilih dalam Mod Lajur&quot;;&#10; Alihkan karet ke hujung kedudukan blok lajur yang dikehendaki, kemudian&#10; laksanakan perintah &quot;Mula/Tamat Pilih dalam Mod Lajur&quot; sekali lagi"/>
+				<Item id="90307" name="Masukkan URL carian.Gunakan %s sebagai pemegang tempat pertanyaan (atau tambahkan pertanyaan pada penghujung):"/>
+				<Item id="90308" name="Masukkan arahan atau URL..."/>
+				<Item id="90309" name="Gagal melaksanakan:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Mengedit contextMenu"/>
+				<Item id="90311" name="Mengedit contextMenu.xml membolehkan anda mengubah suai menu konteks timbul Nextpad++ anda pada zon edit.&#10;Anda perlu memulakan semula Nextpad++ anda untuk berkuat kuasa selepas mengubah suai contextMenu.xml."/>
+				<Item id="90312" name="Sudah dipasang"/>
+				<Item id="90313" name="Pasang nextpad++ Alat Baris Perintah"/>
+				<Item id="90314" name="Pemasangan gagal"/>
+				<Item id="90315" name="Dipasang — tetapi ~/.local/bin tiada pada PATH anda"/>
+				<Item id="90316" name="Sudah dalam konfigurasi anda"/>
+				<Item id="90317" name="Ditambah pada PATH"/>
+				<Item id="90318" name="tidak dapat menulis"/>
+				<Item id="90319" name="disalin"/>
+				<Item id="90320" name="Simpan perubahan pada '%@'?"/>
+				<Item id="90321" name="Perubahan anda akan hilang jika anda tidak menyimpannya."/>
+				<Item id="90322" name="Memohon kepada semua dokumen"/>
+				<Item id="90323" name="Jalankan Makro pada Fail"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Pilih folder…"/>
+				<Item id="90327" name="Semak imbas…"/>
+				<Item id="90328" name="Sambungan:"/>
+				<Item id="90329" name="Subdirektori berulang"/>
+				<Item id="90330" name="Sertakan fail tersembunyi"/>
+				<Item id="90331" name="Saiz maksimum:"/>
+				<Item id="90332" name="Tidak terhad"/>
+				<Item id="90333" name="Setiap fail:"/>
+				<Item id="90334" name="Simpan jika diubah suai"/>
+				<Item id="90335" name="Tutup selepas"/>
+				<Item id="90336" name="Tutup juga fail yang telah dibuka"/>
+				<Item id="90337" name="Atas kesilapan:"/>
+				<Item id="90338" name="Langkau fail dan teruskan"/>
+				<Item id="90339" name="Berhenti pada ralat pertama"/>
+				<Item id="90340" name="(tiada makro disimpan)"/>
+				<Item id="90341" name="%lu fail padanan"/>
+				<Item id="90342" name="Folder tidak ditemui"/>
+				<Item id="90343" name="Pilih folder yang wujud."/>
+				<Item id="90344" name="Tiada fail yang sepadan"/>
+				<Item id="90345" name="Laraskan pilihan penapis sambungan, rekursi atau fail tersembunyi."/>
+				<Item id="90346" name="Bermula…"/>
+				<Item id="90347" name="Pemprosesan:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Dilangkau: %ld Gagal: %ld"/>
+				<Item id="90349" name="Kumpulan dibatalkan"/>
+				<Item id="90350" name="Batch selesai"/>
+				<Item id="90351" name="Jumlah: %lu Ok: %ld Dilangkau: %ld Gagal: %ld"/>
+				<Item id="90352" name="Tarikh Dibina"/>
+				<Item id="90353" name="Sistem Operasi"/>
+				<Item id="90354" name="terkini"/>
+				<Item id="90355" name="ketinggalan zaman"/>
+				<Item id="90356" name="tidak diketahui"/>
+				<Item id="90357" name="Mulakan semula aplikasi untuk perubahan berkuat kuasa."/>
+				<Item id="90358" name="Kemas kini Pemalam"/>
+				<Item id="90359" name="Kemas kini pemalam berikut?"/>
+				<Item id="90360" name="Versi semasa disandarkan kepada ~/Library/Application Support/Nextpad++/plugin-backups/ sebelum diganti."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Beralih kepada rupa Tahoe Baharu (Beta)"/>
+				<Item id="90363" name="Gunakan menu gaya macOS (Beta)"/>
+				<Item id="90364" name="Penampilan Tahoe baharu akan digunakan selepas anda memulakan semula Nextpad++."/>
+				<Item id="90365" name="Rupa Klasik akan dipulihkan selepas anda memulakan semula Nextpad++."/>
+				<Item id="90366" name="Berhenti Sekarang"/>
+				<Item id="90367" name="Menu akan disusun semula dalam gaya macOS selepas anda memulakan semula Nextpad++."/>
+				<Item id="90368" name="Reka letak menu klasik akan dipulihkan selepas anda memulakan semula Nextpad++."/>
+				<Item id="90369" name="warna"/>
+				<Item id="90370" name="Gunakan pada ikon bar alat pemalam"/>
+				<Item id="90371" name="Dalam mod Lengkap, ikon pemalam menjadi satu warna pepejal."/>
+				<Item id="90372" name="Kumpulan Bar Alat"/>
+				<Item id="90373" name="Pilih tempat setiap butang muncul dalam bar alat Liquid Glass: pada"/>
+				<Item id="90374" name="Butang"/>
+				<Item id="90375" name="Penempatan"/>
+				<Item id="90376" name="Tetapkan semula kepada Lalai"/>
+				<Item id="90377" name="Menu limpahan"/>
+				<Item id="90378" name="Tersembunyi"/>
+				<Item id="90379" name="Bungkus perkataan mesra CJK"/>
+				<Item id="90380" name="Pemilihan lajur bertukar kepada pengeditan berbilang"/>
+				<Item id="90381" name="Jarak baris:"/>
+				<Item id="90382" name="1.0 (Lalai)"/>
+				<Item id="90383" name="Sembunyikan bar tab"/>
+				<Item id="90384" name="Saiz tab mengikut zum dokumen"/>
+				<Item id="90385" name="Pilih…"/>
+				<Item id="90386" name="Tetapkan semula kepada Lalai"/>
+				<Item id="90387" name="Menggunakan lokasi lalai."/>
+				<Item id="90388" name="Lokasi tersuai."/>
+				<Item id="90389" name="Laluan tidak sah — sandaran akan menggunakan lokasi lalai."/>
+				<Item id="90390" name="pilih"/>
+				<Item id="90391" name="Sisipkan Pilihan:"/>
+				<Item id="90392" name="Gunakan Boost mod Regex (berbilang talian; mulakan semula untuk memohon)"/>
+				<Item id="90393" name="Sila mulakan semula Nextpad++ untuk berkuat kuasa."/>
+				<Item id="90394" name="Laluan tidak sah."/>
+				<Item id="90395" name="Mulakan semula Sekarang"/>
+				<Item id="90396" name="Pilih folder dari/ke tempat Nextpad++ membaca/menulis tetapannya"/>
+				<Item id="90397" name="(jangan pilih melainkan anda tahu apa yang anda lakukan)"/>
+				<Item id="90398" name="Saiz ikon bar alat"/>
+				<Item id="90399" name="100% (Lalai)"/>
+				<Item id="90400" name="Kelajuan tatal roda tetikus"/>
+				<Item id="90401" name="1× (mati)"/>
+				<Item id="90402" name="Saiz ikon bar alat telah berubah"/>
+				<Item id="90403" name="Saiz ikon bar alat baharu akan berkuat kuasa pada kali berikutnya Nextpad++ dilancarkan."/>
+				<Item id="90404" name="Ikon bar alat telah berubah"/>
+				<Item id="90405" name="Ikon bar alat baharu akan berkuat kuasa pada kali berikutnya Nextpad++ dilancarkan."/>
+				<Item id="90406" name="Ruang Kerja Baharu"/>
+				<Item id="90407" name="Buka Ruang Kerja"/>
+				<Item id="90408" name="Muat semula Ruang Kerja"/>
+				<Item id="90409" name="Tambah Projek Baharu"/>
+				<Item id="90410" name="Cari dalam Projek..."/>
+				<Item id="90411" name="Jalankan Makro pada Fail..."/>
+				<Item id="90412" name="Bergerak Ke Atas"/>
+				<Item id="90413" name="Bergerak ke Bawah"/>
+				<Item id="90414" name="Tambah Folder"/>
+				<Item id="90415" name="Tambah Fail..."/>
+				<Item id="90416" name="Tambah Fail daripada Direktori..."/>
+				<Item id="90417" name="Ubah suai Laluan Fail"/>
+				<Item id="90418" name="Ini akan mengalih keluarnya dan semua kandungannya daripada projek.Tiada fail pada cakera akan terjejas."/>
+				<Item id="90419" name="Ruang kerja"/>
+				<Item id="90420" name="folder"/>
+				<Item id="90421" name="Cari dalam hasil carian ini..."/>
+				<Item id="90422" name="Salin Baris yang Dipilih"/>
+				<Item id="90423" name="Salin Nama Laluan yang Dipilih"/>
+				<Item id="90424" name="Buka Nama Laluan Terpilih"/>
+				<Item id="90425" name="Balut perkataan baris panjang"/>
+				<Item id="90426" name="Bersihkan untuk setiap carian"/>
+				<Item id="90427" name="Tidak dijumpai"/>
+				<Item id="90428" name="KONFLIK: %@"/>
+				<Item id="90429" name="Padamkan &quot;%@&quot;?"/>
+				<Item id="90430" name="Pentadbir Bahasa Ditakrifkan Pengguna"/>
+				<Item id="90431" name="Tapis bahasa…"/>
+				<Item id="90432" name="Sumber"/>
+				<Item id="90433" name="Sumber AC"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Pasang / Kemas Kini"/>
+				<Item id="90436" name="%lu bahasa · %lu dipasang · %lu kemas kini"/>
+				<Item id="90437" name="Pengarang"/>
+				<Item id="90438" name="Digabungkan: %ld entri daripada %lu sumber (digabungkan)"/>
+				<Item id="90439" name="Pilih satu atau lebih bahasa untuk dipasang."/>
+				<Item id="90440" name="Tiada apa-apa yang boleh dimuat turun untuk pemilihan."/>
+				<Item id="90441" name="Muat turun gagal"/>
+				<Item id="90442" name="Checksum tidak padan"/>
+				<Item id="90443" name="Bahasa yang dipilih kini tersedia dalam menu Bahasa."/>
+				<Item id="90444" name="Pilih satu atau lebih bahasa yang dipasang untuk dialih keluar."/>
+				<Item id="90445" name="Dialih keluar"/>
+				<Item id="90446" name="Nama ini sudah digunakan oleh bahasa lain."/>
+				<Item id="90447" name="Bahasa ini tidak dapat dialih keluar."/>
+				<Item id="90448" name="Bahasa prapasang tidak boleh dialih keluar."/>
+				<Item id="90449" name="Bahasa ini tidak boleh dinamakan semula."/>
+				<Item id="90450" name="Fail ini ialah %@.Membukanya akan melumpuhkan penyerlahan sintaks dan membuat asal sejarah untuk memastikan apl responsif.&#10;&#10;Adakah anda mahu meneruskan?"/>
+				<Item id="90451" name="Buka Bagaimanapun"/>
+				<Item id="90452" name="&quot;%@&quot; ditukar pada cakera"/>
+				<Item id="90453" name="abaikan"/>
+				<Item id="90454" name="Simpan Versi Saya"/>
+				<Item id="90455" name="Tidak dapat memuat semula &quot;%@&quot;"/>
+				<Item id="90456" name="Fail tidak dapat dibaca."/>
+				<Item id="90457" name="Pilih tempat setiap butang muncul dalam bar alat Liquid Glass: pada kapsul kumpulan (Bar Alat), dalam menu limpahan ▾ kumpulan atau Tersembunyi."/>
+				<Item id="90458" name="Menderma untuk Menyokong Pembangunan"/>
+				<Item id="90459" name="Pasang Alat Baris Perintah"/>
+				<Item id="90460" name="Tunjukkan bayang-bayang di belakang kapsul bar alat"/>
+				<Item id="90461" name="Menderma"/>
+				<Item id="90462" name="Set watak"/>
+				<Item id="90463" name="Minimumkan"/>
+				<Item id="90464" name="Sembunyikan Nextpad++"/>
+				<Item id="90465" name="Sembunyikan Orang Lain"/>
+				<Item id="90466" name="Tunjukkan Semua"/>
+				<Item id="90467" name="Berhenti Nextpad++"/>
+				<Item id="90468" name="Simpan Makro Rakaman Semasa…"/>
+				<Item id="90469" name="Potong Ruang Trailing dan Jimat"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

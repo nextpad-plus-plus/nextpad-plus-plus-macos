@@ -29,9 +29,9 @@ License:             Feel free to modify this theme.
 
 Requirements:
     * This theme is based on the Inconsolata-dz font http://media.nodnod.net/Inconsolata-dz.otf.zip
-      However, that font may be replaced in the "GlobalStyles" section of this
-      file, where it is found in only the "Global override" and "Default Style" lines.
-      Fonts are not separately specified anywhere else in this version of the style file.
+      In Nextpad++ for macOS this theme sets no font: the "Default Style" and
+      "Global override" lines leave fontName empty, so the editor font from
+      stylers.xml (Menlo by default) is used. Set fontName there to override it.
       Note 3/29/2012: I have replaced Inconsola-dz with Consolas, since Consolas is
       installed by default in recent versions of Windows.
 
@@ -284,6 +284,7 @@ Installation:
             <WordsStyle name="TYPE WORD" styleID="16" fgColor="B58900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="type1" />
             <WordsStyle name="NUMBER" styleID="4" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
             <WordsStyle name="STRING" styleID="6" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="STRINGRAW" styleID="20" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
             <WordsStyle name="CHARACTER" styleID="7" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
             <WordsStyle name="OPERATOR" styleID="10" fgColor="586E75" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
             <WordsStyle name="VERBATIM" styleID="13" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
@@ -1793,30 +1794,30 @@ Installation:
         </LexerType>
         <LexerType name="typescript" desc="TypeScript" ext="">
             <WordsStyle name="DEFAULT" styleID="11" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="INSTRUCTION WORD" styleID="5" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="instre1" />
-            <WordsStyle name="TYPE WORD" styleID="16" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="type1" />
-            <WordsStyle name="WINDOW INSTRUCTION" styleID="19" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" />
-            <WordsStyle name="NUMBER" styleID="4" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="STRING" styleID="6" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="STRING RAW" styleID="20" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="CHARACTER" styleID="7" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="OPERATOR" styleID="10" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" />
-            <WordsStyle name="VERBATIM" styleID="13" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="REGEX" styleID="14" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" />
-            <WordsStyle name="COMMENT" styleID="1" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="COMMENT DOC" styleID="3" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="COMMENT LINE DOC" styleID="15" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="COMMENT DOC KEYWORD" styleID="17" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" />
-            <WordsStyle name="COMMENT DOC KEYWORD ERROR" styleID="18" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
-            <WordsStyle name="USER KEYWORDS 1" styleID="128" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle1" />
-            <WordsStyle name="USER KEYWORDS 2" styleID="129" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle2" />
-            <WordsStyle name="USER KEYWORDS 3" styleID="130" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle3" />
-            <WordsStyle name="USER KEYWORDS 4" styleID="131" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle4" />
-            <WordsStyle name="USER KEYWORDS 5" styleID="132" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle5" />
-            <WordsStyle name="USER KEYWORDS 6" styleID="133" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle6" />
-            <WordsStyle name="USER KEYWORDS 7" styleID="134" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle7" />
-            <WordsStyle name="USER KEYWORDS 8" styleID="135" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" keywordClass="substyle8" />
+            <WordsStyle name="INSTRUCTION WORD" styleID="5" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="instre1" />
+            <WordsStyle name="TYPE WORD" styleID="16" fgColor="B58900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="type1" />
+            <WordsStyle name="WINDOW INSTRUCTION" styleID="19" fgColor="B58900" bgColor="FDF6E3" fontName="" fontStyle="1" fontSize="" />
+            <WordsStyle name="NUMBER" styleID="4" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="STRING" styleID="6" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="STRING RAW" styleID="20" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="CHARACTER" styleID="7" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="OPERATOR" styleID="10" fgColor="586E75" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="VERBATIM" styleID="13" fgColor="2AA198" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="REGEX" styleID="14" fgColor="268BD2" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
+            <WordsStyle name="COMMENT" styleID="1" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="2" fontSize="" />
+            <WordsStyle name="COMMENT LINE" styleID="2" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="2" fontSize="" />
+            <WordsStyle name="COMMENT DOC" styleID="3" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="2" fontSize="" />
+            <WordsStyle name="COMMENT LINE DOC" styleID="15" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="2" fontSize="" />
+            <WordsStyle name="COMMENT DOC KEYWORD" styleID="17" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="3" fontSize="" />
+            <WordsStyle name="COMMENT DOC KEYWORD ERROR" styleID="18" fgColor="D33682" bgColor="FDF6E3" fontName="" fontStyle="3" fontSize="" />
+            <WordsStyle name="USER KEYWORDS 1" styleID="128" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle1" />
+            <WordsStyle name="USER KEYWORDS 2" styleID="129" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle2" />
+            <WordsStyle name="USER KEYWORDS 3" styleID="130" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle3" />
+            <WordsStyle name="USER KEYWORDS 4" styleID="131" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle4" />
+            <WordsStyle name="USER KEYWORDS 5" styleID="132" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle5" />
+            <WordsStyle name="USER KEYWORDS 6" styleID="133" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle6" />
+            <WordsStyle name="USER KEYWORDS 7" styleID="134" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle7" />
+            <WordsStyle name="USER KEYWORDS 8" styleID="135" fgColor="859900" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" keywordClass="substyle8" />
         </LexerType>
         <LexerType name="visualprolog" desc="Visual Prolog" ext="">
             <WordsStyle name="DEFAULT" styleID="0" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize="" />
@@ -1846,7 +1847,7 @@ Installation:
     </LexerStyles>
     <GlobalStyles>
         <!-- Attention : Don't modify the name of styleID="0" -->
-        <WidgetStyle name="Default Style" styleID="32" fgColor="657B83" bgColor="FDF6E3" fontName="Consolas" fontStyle="0" fontSize="10"></WidgetStyle>
+        <WidgetStyle name="Default Style" styleID="32" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Indent guideline style" styleID="37" fgColor="93A1A1" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Brace highlight style" styleID="34" fgColor="DC322F" bgColor="859900" fontName="" fontStyle="1" fontSize=""></WidgetStyle>
         <WidgetStyle name="Bad brace colour" styleID="35" fgColor="D33682" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
@@ -1898,7 +1899,7 @@ Installation:
         <WidgetStyle name="URL hovered" styleID="0" fgColor="808040"></WidgetStyle>
         <WidgetStyle name="Document map" styleID="0" fgColor="657B83" bgColor="FDF6E3"></WidgetStyle>
         <WidgetStyle name="EOL custom color" styleID="0" fgColor="808080"></WidgetStyle>
-        <WidgetStyle name="Global override" styleID="0" fgColor="657B83" bgColor="FDF6E3" fontName="Consolas" fontStyle="0" fontSize=""></WidgetStyle>
+        <WidgetStyle name="Global override" styleID="0" fgColor="657B83" bgColor="FDF6E3" fontName="" fontStyle="0" fontSize=""></WidgetStyle>
         <WidgetStyle name="Non-printing characters custom color" styleID="0" fgColor="B58900"></WidgetStyle>
     </GlobalStyles>
 </NotepadPlus>

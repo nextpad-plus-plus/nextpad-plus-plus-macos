@@ -12,6 +12,8 @@
 
 @interface NppTabBar (TabItemEvents)
 - (void)tabItemMouseDown:(_NppTabItem *)item event:(NSEvent *)event;
+- (void)tabItemSelected:(_NppTabItem *)item;
+- (void)tabItemClosed:(_NppTabItem *)item;
 @end
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -128,9 +130,17 @@ static NSImage *toolbarIcon(NSString *name) {
 // ─────────────────────────────────────────────────────────────────────────────
 #pragma mark - _NppTabItem (private)
 
+@class _NppTabItem;
+@interface _NppTabCloseAccessibility : NSAccessibilityElement
+@property (nonatomic, weak) _NppTabItem *tab;
+@end
+
 @interface _NppTabItem : NSView {
     BOOL _hovered;
     BOOL _closeHovered;
+    _NppTabCloseAccessibility *_accessibleClose;
+
+    BOOL _middleClickArmed;
     NSTrackingArea *_trackingArea;
 }
 @property (nonatomic) NSInteger tabIndex;
@@ -143,10 +153,50 @@ static NSImage *toolbarIcon(NSString *name) {
 @property (nonatomic) SEL selectAction;
 @property (nonatomic) SEL closeAction;
 @property (nonatomic, readonly) BOOL hovered;  // exposed so the bar can gate close-button hits on hover state
+// YES while the mouse is held down on the close button and still inside it;
+// draws the pressed glyph. Driven by the bar's close-button tracking loop.
+@property (nonatomic) BOOL closePressed;
 - (CGFloat)preferredWidth;
+- (BOOL)closeButtonContainsPoint:(NSPoint)p;  // p in the item's own coordinates
+@end
+
+@implementation _NppTabCloseAccessibility
+- (BOOL)accessibilityPerformPress {
+    if (!self.tab.superview) return NO;
+    [(NppTabBar *)self.tab.target tabItemClosed:self.tab];
+    return YES;
+}
 @end
 
 @implementation _NppTabItem
+
+- (BOOL)isAccessibilityElement { return YES; }
+- (NSString *)accessibilityRole { return NSAccessibilityRadioButtonRole; }
+- (NSString *)accessibilityLabel { return self.title ?: @""; }
+- (id)accessibilityValue { return @(self.isSelected); }
+- (NSString *)accessibilityHelp {
+    NSMutableArray *details=[NSMutableArray new];
+    if(self.isModified) [details addObject:[[NppLocalizer shared] translate:@"Edited"]];
+    if(self.isPinned) [details addObject:[[NppLocalizer shared] translate:@"Pinned"]];
+    [details addObject:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Tab %ld of %ld"],
+        (long)self.tabIndex+1,(long)[(NppTabBar *)self.target tabCount]]];
+    return [details componentsJoinedByString:@", "];
+}
+
+- (BOOL)accessibilityPerformPress {
+    if (!self.superview) return NO;
+    [(NppTabBar *)self.target tabItemSelected:self]; return YES;
+}
+- (NSArray *)accessibilityChildren {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:kPrefTabCloseButton]) return @[];
+    if (!_accessibleClose) { _accessibleClose=[_NppTabCloseAccessibility new]; _accessibleClose.tab=self; }
+    _accessibleClose.accessibilityRole=NSAccessibilityButtonRole;
+    _accessibleClose.accessibilityLabel=[NSString stringWithFormat:@"%@ %@", [[NppLocalizer shared] translate:@"Close tab"],self.title ?: @""];
+    _accessibleClose.accessibilityParent=self;
+    NSRect frame=NSMakeRect(MAX(0,self.bounds.size.width-kCloseSize-6),0,kCloseSize,self.bounds.size.height);
+    _accessibleClose.accessibilityFrame=NSAccessibilityFrameInView(self,frame);
+    return @[_accessibleClose];
+}
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -315,7 +365,8 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     CGFloat cy = (h - kCloseSize) / 2.0;
     if (showClose && (_isSelected || _hovered)) {
         NSImage *closeImg = nil;
-        if (_closeHovered)    closeImg = tabIcon(@"closeTabButton_hoverIn");
+        if (_closePressed)    closeImg = tabIcon(@"closeTabButton_push") ?: tabIcon(@"closeTabButton_hoverIn");
+        else if (_closeHovered) closeImg = tabIcon(@"closeTabButton_hoverIn");
         else if (_isSelected) closeImg = tabIcon(@"closeTabButton");
         else                  closeImg = tabIcon(@"closeTabButton_hoverOnTab");
         if (closeImg) { closeImg.size = NSMakeSize(32, 32);
@@ -360,13 +411,48 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 - (void)mouseExited:(NSEvent *)e  { _hovered = NO; _closeHovered = NO; [self setNeedsDisplay:YES]; }
 - (void)mouseMoved:(NSEvent *)e {
     NSPoint p  = [self convertPoint:e.locationInWindow fromView:nil];
-    CGFloat cx = self.bounds.size.width - kCloseSize - 6;
-    BOOL oc    = p.x >= cx && p.x <= cx + kCloseSize;
+    BOOL oc    = [self closeButtonContainsPoint:p];
     if (oc != _closeHovered) { _closeHovered = oc; [self setNeedsDisplay:YES]; }
+}
+
+// Close-button hit zone: the glyph's horizontal span over the full tab height
+// (the same generous zone the hover highlight has always used).
+- (BOOL)closeButtonContainsPoint:(NSPoint)p {
+    CGFloat cx = self.bounds.size.width - kCloseSize - 6;
+    return p.x >= cx && p.x <= cx + kCloseSize
+        && p.y >= 0  && p.y <= self.bounds.size.height;
+}
+
+- (void)setClosePressed:(BOOL)pressed {
+    if (pressed == _closePressed) return;
+    _closePressed = pressed;
+    [self setNeedsDisplay:YES];
 }
 
 - (void)mouseDown:(NSEvent *)event {
     [(NppTabBar *)_target tabItemMouseDown:self event:event];
+}
+
+- (void)otherMouseDown:(NSEvent *)event {
+    if (event.buttonNumber != 2) {
+        [super otherMouseDown:event];
+        return;
+    }
+    _middleClickArmed = YES;
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    if (event.buttonNumber != 2) {
+        [super otherMouseUp:event];
+        return;
+    }
+    BOOL armed = _middleClickArmed;
+    _middleClickArmed = NO;
+    NSPoint p = [self convertPoint:event.locationInWindow fromView:nil];
+    // Close the clicked tab without selecting it first. Use the usual close
+    // route so unsaved-change prompts and the last empty tab behave as before.
+    if (armed && self.superview && NSPointInRect(p, self.visibleRect))
+        [(NppTabBar *)_target tabItemClosed:self];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)event {
@@ -490,6 +576,11 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     /// Drop slot index.
     NSInteger                      _dragReorderToIndex;
 }
+
+- (BOOL)isAccessibilityElement { return YES; }
+- (NSString *)accessibilityRole { return NSAccessibilityTabGroupRole; }
+- (NSString *)accessibilityLabel { return [[NppLocalizer shared] translate:@"Open documents"]; }
+- (NSArray *)accessibilityChildren { return [_items copy]; }
 
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
@@ -622,6 +713,7 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     }
     _selectedIndex                = index;
     _items[index].isSelected      = YES;
+    NSAccessibilityPostNotification(_items[index], NSAccessibilityValueChangedNotification);
     [_items[index] setNeedsDisplay:YES];
     [self relayout];
     [self scrollTabToVisible:index];
@@ -772,20 +864,25 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
 
 - (void)tabItemMouseDown:(_NppTabItem *)item event:(NSEvent *)event {
     NSPoint p  = [item convertPoint:event.locationInWindow fromView:nil];
-    CGFloat cx = item.bounds.size.width - kCloseSize - 6;
     BOOL closeVisible = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefTabCloseButton];
     // Issue #84 hardening #4 — restore the (isSelected || hovered) precondition.
     // Without it, an unhovered/unselected tab can be closed by a click that lands
     // in the close-button rect (e.g. blind clicks on a tab the user hasn't aimed at).
     BOOL overClose = closeVisible && (item.isSelected || item.hovered)
-                     && p.x >= cx && p.x <= cx + kCloseSize;
-    // Double-click anywhere on tab to close (if enabled) — independent of hover.
-    if (!overClose && event.clickCount == 2 &&
-        [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDoubleClickTabClose]) {
-        overClose = YES;
+                     && [item closeButtonContainsPoint:p];
+
+    // Close button: Mac push-button semantics. The press only highlights the
+    // button; the tab closes on mouse-up if the pointer is still inside it.
+    // Dragging off cancels (dragging back on re-arms), and a press on the
+    // close button never starts a tab drag.
+    if (overClose) {
+        [self _trackCloseButtonForItem:item];
+        return;
     }
 
-    if (overClose) {
+    // Double-click anywhere on tab to close (if enabled), independent of hover.
+    if (event.clickCount == 2 &&
+        [[NSUserDefaults standardUserDefaults] boolForKey:kPrefDoubleClickTabClose]) {
         [self tabItemClosed:item];
         return;
     }
@@ -902,6 +999,34 @@ static CGFloat tabShrinkFloor(_NppTabItem *item) {
     _dragReorderFromIndex = -1;
     _dragReorderToIndex   = -1;
     if (hadPreview) [self relayout];
+}
+
+// Mouse-tracking loop for a press that started on a tab's close button.
+// Highlights while the pointer is inside the button, and closes the tab only
+// if the button is released inside it. Same modal-loop shape as the drag loop
+// above, so the press never reaches the drag/select path.
+- (void)_trackCloseButtonForItem:(_NppTabItem *)item {
+    item.closePressed = YES;
+    BOOL inside = YES;
+    NSEvent *lastEvent = nil;
+    while (YES) {
+        NSEvent *nextEvent = [self.window nextEventMatchingMask:(NSEventMaskLeftMouseDragged | NSEventMaskLeftMouseUp)];
+        if (!nextEvent) { inside = NO; break; }
+        // The tab can disappear under us (external close, file watcher);
+        // never close whatever slid into its index.
+        if ([_items indexOfObjectIdenticalTo:item] == NSNotFound) { inside = NO; break; }
+        lastEvent = nextEvent;
+        NSPoint p = [item convertPoint:nextEvent.locationInWindow fromView:nil];
+        inside = [item closeButtonContainsPoint:p];
+        item.closePressed = inside;
+        if (nextEvent.type == NSEventTypeLeftMouseUp) break;
+    }
+    item.closePressed = NO;
+    // No mouseMoved events arrive during a press; resync the close-button
+    // hover glyph to where the button was released (the tracking area still
+    // delivers mouseExited if the pointer left the tab altogether).
+    if (lastEvent) [item mouseMoved:lastEvent];
+    if (inside) [self tabItemClosed:item];
 }
 
 - (void)tabItemSelected:(_NppTabItem *)item {

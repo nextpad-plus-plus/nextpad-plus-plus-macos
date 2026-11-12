@@ -963,13 +963,13 @@
 				<Item id="90006" name="Ukulawula Umthombo"/>
 				<Item id="90007" name="Zibophezele"/>
 				<Item id="90008" name="Ukuzibophezela Kwehlulekile"/>
-				<Item id="90009" name="Ayikho inqolobane ye-git\nSebenzisa Phequlula ukuze uvule i-repo."/>
+				<Item id="90009" name="Ayikho inqolobane ye-git&#10;Sebenzisa Phequlula ukuze uvule i-repo."/>
 				<Item id="90010" name="Isiteji"/>
 				<Item id="90011" name="Khulula"/>
 				<Item id="90012" name="Isiteji Sonke"/>
 				<Item id="90013" name="Khipha Konke"/>
-				<Item id="90014" name="Zibophezele umlayezo\u2026"/>
-				<Item id="90015" name="Phequlula ikhosombe\u2026"/>
+				<Item id="90014" name="Zibophezele umlayezo…"/>
+				<Item id="90015" name="Phequlula ikhosombe…"/>
 				<Item id="90016" name="Khetha ifolda ye-git repository"/>
 				<Item id="90017" name="(ayikho inqolobane)"/>
 				<Item id="90018" name="(ihlukanisiwe)"/>
@@ -983,9 +983,9 @@
 				<Item id="90026" name="Imiphumela"/>
 				<Item id="90027" name="Misa"/>
 				<Item id="90028" name="Ukusesha kumisiwe."/>
-				<Item id="90029" name="Iyasesha\u2026"/>
+				<Item id="90029" name="Iyasesha…"/>
 				<Item id="90030" name="Umbhalo ongaseshwa"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Iyasesha..."/>
 				<Item id="90033" name="Faka esikhundleni:"/>
 				<Item id="90034" name="Igama Eliphelele"/>
@@ -1045,7 +1045,7 @@
 				<Item id="90088" name="Faka ama-plugin"/>
 				<Item id="90089" name="Susa ama-plugin"/>
 				<Item id="90090" name="Ayikho imiyalo etholakele"/>
-				<Item id="90091" name="Thayipha ukuze useshe\u2026"/>
+				<Item id="90091" name="Thayipha ukuze useshe…"/>
 				<Item id="90092" name="Ulimi Oluchazwe Ngabasebenzisi v.2.1"/>
 				<Item id="90093" name="Dala Ulimi Olusha"/>
 				<Item id="90094" name="Faka igama:"/>
@@ -1054,11 +1054,9 @@
 				<Item id="90097" name="Ungalondolozi"/>
 				<Item id="90098" name="Kwenziwe"/>
 				<Item id="90099" name="Guqula ukugoqa kwegama"/>
-				<Item id="90100" name="Bonisa Bonke Izinhlamvu"/>
 				<Item id="90101" name="Bonisa Izinketho Zezinhlamvu"/>
 				<Item id="90102" name="Guqula umhlahlandlela wokuhlehlisa"/>
 				<Item id="90103" name="Akukasebenziswa"/>
-				<Item id="90104" name="Layisha kabusha kusuka kuDiski"/>
 				<Item id="90105" name="Shintsha Injini Yokusesha"/>
 				<Item id="90106" name="Qalisa Iphutha"/>
 				<Item id="90107" name="I-Nextpad++ Isikhathi Sokulayisha"/>
@@ -1067,16 +1065,13 @@
 				<Item id="90110" name="Landa"/>
 				<Item id="90111" name="Ikhasi Lokukhishwa"/>
 				<Item id="90112" name="Kamuva"/>
-				<Item id="90113" name="Hlunga ama-plugin\u2026"/>
-				<Item id="90114" name="Iyatholakala"/>
-				<Item id="90115" name="Izibuyekezo"/>
-				<Item id="90116" name="Kufakiwe"/>
+				<Item id="90113" name="Hlunga ama-plugin…"/>
 				<Item id="90117" name="Akuhambisani"/>
 				<Item id="90118" name="Yehlulekile ukufaka"/>
 				<Item id="90119" name="Susa ama-plugin alandelayo?"/>
 				<Item id="90120" name="Faka ama-plugin alandelayo?"/>
 				<Item id="90121" name="Lokhu kuzosusa amafayela e-plugin."/>
-				<Item id="90122" name="Sesha imiyalo\u2026"/>
+				<Item id="90122" name="Sesha imiyalo…"/>
 				<Item id="90123" name="Umbala wangaphambili"/>
 				<Item id="90124" name="Umbala wangemuva"/>
 				<Item id="90125" name="Igama lemakhro"/>
@@ -1096,7 +1091,7 @@
 				<Item id="90139" name="Wonke amamaki asuliwe."/>
 				<Item id="90140" name="Umbhalo omakiwe ukopishwe ebhodini lokunamathisela."/>
 				<Item id="90141" name="Awukho umbhalo omakiwe ongakopishwa."/>
-				<Item id="90142" name="Iyasesha... %ld hit(ama) \u2014 %@"/>
+				<Item id="90142" name="Iyasesha... %ld hit(ama) — %@"/>
 				<Item id="90143" name="Ifaka esikhundleni samafayela..."/>
 				<Item id="90144" name="Faka esikhundleni kumaProjekthi: Ayikaxhunywanga."/>
 				<Item id="90145" name="Thola kumaProjekthi: Ayikaxhunywanga ohlwini lwamafayela Lephaneli Yephrojekthi."/>
@@ -1117,20 +1112,22 @@
 				<Item id="90160" name="Ukugqamisa okuhlakaniphile: igama lonke kuphela"/>
 				<Item id="90161" name="Chofoza kabili ukuze uvale ithebhu"/>
 				<Item id="90162" name="Bonisa inkinobho yokuvala kumathebhu"/>
+				<Item id="90168" name="Sebenzisa ifonti enezikhala esisodwa engxoxweni ethi Thola"/>
+				<Item id="90175" name="Kunwetshiwe (\n, \r, \t, \0, \x...)"/>
+				<Item id="90189" name="IWindows (CRLF)"/>
+				<Item id="90191" name="Inqolobane yohlu lwe-plugin"/>
 				<Item id="90224" name="Bonisa amathebhu emigqeni eminingi"/>
 				<Item id="90163" name="Khumbula ukubonakala kwephaneli kuzo zonke izikhathi"/>
 				<Item id="90164" name="Gcina amafayela angenayo ngesikhathi"/>
 				<Item id="90165" name="Qinisekisa ngaphambi kokuthi Londoloza Konke"/>
 				<Item id="90166" name="Qinisekisa Faka esikhundleni Konke kumadokhumenti avuliwe"/>
 				<Item id="90167" name="Faka esikhundleni: ungadluleli kwesenzeke esilandelayo"/>
-				<Item id="90168" name="Sebenzisa ifonti enezikhala esisodwa engxoxweni ethi Thola"/>
 				<Item id="90169" name="Ukuchofoza kwesokudla kugcina ukukhetha"/>
 				<Item id="90170" name="Idethi ezenzakalelayo ehlehlisayo/i-oda lesikhathi"/>
 				<Item id="90171" name="Sebenzisa izihlaluli zohlu olusekelwe ku-XML"/>
 				<Item id="90172" name="Abakaki bokuvala ngokuzenzakalelayo ( ) [ ] { }"/>
 				<Item id="90173" name="Kusuka kumlingisi ongu-Nth:"/>
 				<Item id="90174" name="Okukhethiwe kokuhlola ngokuzenzakalelayo umkhawulo (amabhayithi):"/>
-				<Item id="90175" name="Kunwetshiwe (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Umhleli"/>
 				<Item id="90177" name="Amamajini"/>
 				<Item id="90178" name="Okumnyama"/>
@@ -1144,12 +1141,10 @@
 				<Item id="90186" name="I-Antialiased"/>
 				<Item id="90187" name="I-LCD Ilungiselelwe"/>
 				<Item id="90188" name="Elula +/-"/>
-				<Item id="90189" name="IWindows (CRLF)"/>
 				<Item id="90190" name="I-Mac (CR)"/>
-				<Item id="90191" name="Inqolobane yohlu lwe-plugin"/>
 				<Item id="90192" name="Khetha ifayela le-XML letimu ye-Nextpad++ ozolisebenzisa"/>
-				<Item id="90193" name="Dala okusha\u2026"/>
-				<Item id="90194" name="Londoloza njenge\u2026"/>
+				<Item id="90193" name="Dala okusha…"/>
+				<Item id="90194" name="Londoloza njenge…"/>
 				<Item id="90195" name="Ulimi lomsebenzisi:"/>
 				<Item id="90196" name="Igama lolimi"/>
 				<Item id="90197" name="Dala"/>
@@ -1179,6 +1174,225 @@
 				<Item id="90221" name="Isibaluli Esikhiyiwe (macOS)"/>
 				<Item id="90222" name="Bheka Izibuyekezo…"/>
 				<Item id="90223" name="Vula Okwakamuva"/>
+				<Item id="90226" name="Usizo"/>
+				<Item id="90227" name="Isiteji Sehlulekile"/>
+				<Item id="90228" name="Ukukhipha Isiteji Kwehlulekile"/>
+				<Item id="90229" name="iyatholakala"/>
+				<Item id="90230" name="Uyagijima"/>
+				<Item id="90231" name="Ungaphinde ungikhumbuze"/>
+				<Item id="90233" name="Hlola ngokuzenzakalelayo izibuyekezo"/>
+				<Item id="90234" name="Ukuhlola isibuyekezo esizenzakalelayo kuvaliwe."/>
+				<Item id="90235" name="Kugcinwe ukuhlolwa:"/>
+				<Item id="90236" name="Alukho uxhumano lwe-inthanethi."/>
+				<Item id="90237" name="Impendulo engalindelekile evela kuseva yokubuyekeza."/>
+				<Item id="90238" name="Akukho ukukhishwa okushicilelwe okutholiwe."/>
+				<Item id="90239" name="Iseva yokubuyekeza ayitholakali okwamanje.Sicela uzame futhi emuva kwesikhathi."/>
+				<Item id="90240" name="Iseva yokubuyekeza inqabile isicelo.Ummeleli, i-firewall noma i-VPN kungenzeka ivimbe ukufinyelela ku-GitHub."/>
+				<Item id="90241" name="Kunokuhlolwa okuningi kakhulu kwesibuyekezo kunethiwekhi yakho (lo mkhawulo wabiwa yibo bonke abakuwo).Zama futhi ngemva kwalokho"/>
+				<Item id="90242" name="Kunokuhlolwa okuningi kakhulu kwesibuyekezo kunethiwekhi yakho (lo mkhawulo wabiwa yibo bonke abakuwo).Sicela uzame futhi emuva kwesikhathi."/>
+				<Item id="90243" name="Iseva yokubuyekeza ibuyise isimo"/>
+				<Item id="90244" name="Zama Futhi"/>
+				<Item id="90245" name="Usayizi wombhalo wokuphrinta:"/>
+				<Item id="90246" name="Sebenzisa ukusondeza isikrini"/>
+				<Item id="90247" name="Usayizi wangempela"/>
+				<Item id="90248" name="Amanye amafayela awakwazanga ukushintshwa"/>
+				<Item id="90249" name="...kanye %lu nokunye"/>
+				<Item id="90250" name="Izixhumanisi zamafayela ziphethwe inhlangano yakho."/>
+				<Item id="90251" name="Ilinde u-macOS ukuthi aqinisekise..."/>
+				<Item id="90252" name="macOS akalusebenzisanga ushintsho."/>
+				<Item id="90253" name="Ibhalisiwe"/>
+				<Item id="90254" name="Vula wonke amafayela kufolda?"/>
+				<Item id="90255" name="Lokhu kuzovula amafayela angu-%lu kumathebhu amasha."/>
+				<Item id="90256" name="Ayikwazanga ukungenisa: %@"/>
+				<Item id="90258" name="Kutholwe %ld okufanayo ku(ama)fayela %ld."/>
+				<Item id="90259" name="Iyasesha... %ld okufanayo kuze kube manje"/>
+				<Item id="90260" name="%@ (%ld okufanayo%@)"/>
+				<Item id="90261" name="Ukusesha okungaqondakali"/>
+				<Item id="90266" name="Bala: %ld okufanayo."/>
+				<Item id="90267" name="Miselela Konke: %ld izenzakalo zishintshiwe %@."/>
+				<Item id="90268" name="Faka esikhundleni kokuthi Amafayela Avuliwe: %ld izenzeko zishintshiwe."/>
+				<Item id="90269" name="Thola kokuthi Amafayela: %ld shaya (ama) ku(ama)fayela %ld."/>
+				<Item id="90270" name="Thola kumafayela: 0 hits."/>
+				<Item id="90271" name="Miselela zonke izenzakalo ze-&quot;%@&quot; ngokuthi &quot;%@&quot; ohlwini lwemibhalo:&#10;%@&#10;&#10;Lokhu akukwazi ukuhlehliswa."/>
+				<Item id="90272" name="Faka esikhundleni kokuthi Amafayela: %ld ukumiselela ku(ama)fayela %ld."/>
+				<Item id="90273" name="Vula Iphaneli Yephrojekthi kuqala."/>
+				<Item id="90274" name="Khetha okungenani Iphaneli Yephrojekthi eyodwa ukuze useshe."/>
+				<Item id="90275" name="Awekho amafayela azoseshwa."/>
+				<Item id="90276" name="Thola kumaProjekthi: %ld hit(ama) %ld amafayela."/>
+				<Item id="90277" name="Thola kumaphrojekthi: 0 hits."/>
+				<Item id="90278" name="Miselela zonke izehlakalo ze"/>
+				<Item id="90279" name="nge"/>
+				<Item id="90280" name="phakathi"/>
+				<Item id="90281" name="ifayela(ama).Lokhu akukwazi ukuhlehliswa."/>
+				<Item id="90282" name="Faka esikhundleni Kumaphrojekthi: %ld ukumiselela ku(ama)fayela %ld."/>
+				<Item id="90283" name="Maka: %ld okufanayo kumakiwe."/>
+				<Item id="90284" name="Hlunga ifayela/igama lefolda..."/>
+				<Item id="90285" name="Amanye amadokhumenti awakwazanga ukulondolozwa"/>
+				<Item id="90286" name="⌘ Umyalo"/>
+				<Item id="90287" name="⌃ Ukulawula"/>
+				<Item id="90288" name="⌥ Inketho"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Faka NSDateFormatter ifomethi yeyunithi yezinhlamvu:"/>
+				<Item id="90291" name="'%@' ayikasetshenziswa kule nguqulo."/>
+				<Item id="90292" name="Ngenisa i-plugin"/>
+				<Item id="90293" name="Ukuqala kabusha Kudingeka"/>
+				<Item id="90294" name="Awekho amafayela azocutshungulwa"/>
+				<Item id="90295" name="Le nodi yephrojekthi ayinawo amafayela."/>
+				<Item id="90296" name="'%@' inezinguquko ezingalondoloziwe.&#10;Layisha kabusha futhi ulahle izinguquko?"/>
+				<Item id="90297" name="Faka igama lefayela elisha:"/>
+				<Item id="90298" name="Qamba kabusha ithebhu yamanje"/>
+				<Item id="90299" name="Igama elisha:"/>
+				<Item id="90300" name="Ukuqamba kabusha kuhlulekile"/>
+				<Item id="90301" name="Igama alikwazi ukuqukatha “/” noma “:”."/>
+				<Item id="90303" name="Londoloza okuthi '%@' ngaphambi kokuvala?"/>
+				<Item id="90304" name="Ungalondolozi Konke"/>
+				<Item id="90306" name="Kunezindlela ezingu-3 zokushintshela kumodi yokukhetha ikholomu:&#10;&#10;1.(Ikhibhodi negundane) Bamba Inketho ngenkathi uhudula kwesokunxele&#10;&#10;2.(Ikhibhodi kuphela) Bamba okuthi Option+Shift ngenkathi usebenzisa okhiye bemicibisholo&#10;&#10;3.(Ikhibhodi noma Igundane)&#10; Beka i-caret esiqalweni osifunayo sendawo yebhulokhi yekholomu, bese&#10; ukhiphe umyalo othi “Qala/Qeda Khetha Ngemodi Yekholomu”;&#10; Hambisa i-caret ekugcineni oyifunayo yendawo yebhulokhi yekholomu, bese&#10; ukhiphe umyalo othi “Qala/Qeda Ukukhetha Ngemodi Yekholomu” futhi."/>
+				<Item id="90307" name="Faka i-URL yosesho.Sebenzisa %s njengesimeli sombuzo (noma faka umbuzo ekugcineni):"/>
+				<Item id="90308" name="Faka umyalo noma i-URL..."/>
+				<Item id="90309" name="Yehlulekile ukwenza:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ukuhlela contextMenu.xml kukuvumela ukuthi uguqule Nextpad++ imenyu yokuqukethwe kwe-popup endaweni yokuhlela.&#10;Kufanele uqale kabusha i-Nextpad++ yakho ukuze isebenze ngemva kokulungisa contextMenu.xml."/>
+				<Item id="90312" name="Isivele ifakiwe"/>
+				<Item id="90313" name="Faka nextpad++ Ithuluzi Lomugqa Womyalo"/>
+				<Item id="90314" name="Ukufaka kuhlulekile"/>
+				<Item id="90315" name="Ifakiwe — kodwa i-~/.local/bin ayikho ku-PATH yakho"/>
+				<Item id="90316" name="Usuvele ukucupha kwakho"/>
+				<Item id="90317" name="Kwengezwe ku-PATH"/>
+				<Item id="90318" name="Ayikwazanga ukubhala"/>
+				<Item id="90319" name="Kukopishiwe"/>
+				<Item id="90320" name="Londoloza izinguquko ku-'%@'?"/>
+				<Item id="90321" name="Izinguquko zakho zizolahleka uma ungazilondolozi."/>
+				<Item id="90322" name="Faka isicelo kuwo wonke amadokhumenti"/>
+				<Item id="90323" name="Qalisa i-Macro kumafayela"/>
+				<Item id="90324" name="Imakhro:"/>
+				<Item id="90325" name="Ifolda:"/>
+				<Item id="90326" name="Khetha ifolda..."/>
+				<Item id="90327" name="Phequlula..."/>
+				<Item id="90328" name="Izandiso:"/>
+				<Item id="90329" name="Phinda ama-subdirectories"/>
+				<Item id="90330" name="Faka amafayela afihliwe"/>
+				<Item id="90331" name="Usayizi omkhulu:"/>
+				<Item id="90332" name="Okungenamkhawulo"/>
+				<Item id="90333" name="Ngefayela ngalinye:"/>
+				<Item id="90334" name="Londoloza uma ishintshiwe"/>
+				<Item id="90335" name="Vala ngemva"/>
+				<Item id="90336" name="Vala amafayela alinganayo asevele evuliwe"/>
+				<Item id="90337" name="Ngephutha:"/>
+				<Item id="90338" name="Yeqa ifayela bese uqhubeka"/>
+				<Item id="90339" name="Misa iphutha lokuqala"/>
+				<Item id="90340" name="(awekho amamakhro alondoloziwe)"/>
+				<Item id="90341" name="%lu amafayela afanayo"/>
+				<Item id="90342" name="Ifolda ayitholakali"/>
+				<Item id="90343" name="Khetha ifolda ekhona."/>
+				<Item id="90344" name="Awekho amafayela afanayo"/>
+				<Item id="90345" name="Lungisa isihlungi sezandiso, inketho yokuphinda, noma amafayela afihliwe."/>
+				<Item id="90346" name="Iyaqala..."/>
+				<Item id="90347" name="Iyacubungula:"/>
+				<Item id="90348" name="%ld / %ld Kulungile: %ld Kweqiwe: %ld Kwehlulekile: %ld"/>
+				<Item id="90349" name="Iqoqo likhanseliwe"/>
+				<Item id="90350" name="Iqoqo liqediwe"/>
+				<Item id="90351" name="Inani: %lu Kulungile: %ld Kweqiwe: %ld Kwehlulekile: %ld"/>
+				<Item id="90352" name="Usuku Lokwakha"/>
+				<Item id="90353" name="Uhlelo lokusebenza"/>
+				<Item id="90354" name="zakamuva"/>
+				<Item id="90355" name="isiphelelwe yisikhathi"/>
+				<Item id="90356" name="engaziwa"/>
+				<Item id="90357" name="Qala kabusha uhlelo lokusebenza ukuze izinguquko zisebenze."/>
+				<Item id="90358" name="Buyekeza ama-plugin"/>
+				<Item id="90359" name="Buyekeza ama-plugin alandelayo?"/>
+				<Item id="90360" name="Izinguqulo zamanje zenziwa isipele ku-~/Library/Application Support/Nextpad++/plugin-backups/ ngaphambi kokushintshwa."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Shintshela ekubukeni okusha Tahoe (Beta)"/>
+				<Item id="90363" name="Sebenzisa amamenyu esitayela macOS (Beta)"/>
+				<Item id="90364" name="Ukubukeka Tahoe okusha kuzosetshenziswa ngemuva kokuthi uqale kabusha Nextpad++."/>
+				<Item id="90365" name="Ukubukeka Okujwayelekile kuzobuyiswa ngemva kokuthi uqale kabusha i-Nextpad++."/>
+				<Item id="90366" name="Yeka Manje"/>
+				<Item id="90367" name="Amamenyu azohlelwa kabusha ngesitayela macOS ngemva kokuthi uqale kabusha Nextpad++."/>
+				<Item id="90368" name="Isakhiwo semenyu yakudala sizobuyiselwa ngemva kokuthi uqale kabusha Nextpad++."/>
+				<Item id="90369" name="Umbala"/>
+				<Item id="90370" name="Sebenzisa kuzithonjana zebha yamathuluzi ye-plugin"/>
+				<Item id="90371" name="Kumodi egcwele izithonjana ze-plugin ziba umbala owodwa oqinile."/>
+				<Item id="90372" name="Amaqembu ebha yamathuluzi"/>
+				<Item id="90373" name="Khetha lapho inkinobho ngayinye ivela khona Liquid Glass kubha yamathuluzi: ku"/>
+				<Item id="90374" name="Inkinobho"/>
+				<Item id="90375" name="Ukubekwa"/>
+				<Item id="90376" name="Setha kabusha kokuthi Okuzenzakalelayo"/>
+				<Item id="90377" name="Imenyu yakho konke"/>
+				<Item id="90378" name="Kufihliwe"/>
+				<Item id="90379" name="Ukugoqa amagama anobungani be-CJK"/>
+				<Item id="90380" name="Ukukhetha ikholomu kushintshela ekuhleleni okuningi"/>
+				<Item id="90381" name="Isikhala somugqa:"/>
+				<Item id="90382" name="1.0 (Okuzenzakalelayo)"/>
+				<Item id="90383" name="Fihla ibha yethebhu"/>
+				<Item id="90384" name="Usayizi wethebhu ulandela ukusondeza kwedokhumenti"/>
+				<Item id="90385" name="Khetha..."/>
+				<Item id="90386" name="Setha kabusha kokuthi Okuzenzakalelayo"/>
+				<Item id="90387" name="Ukusebenzisa indawo ezenzakalelayo."/>
+				<Item id="90388" name="Indawo ngokwezifiso."/>
+				<Item id="90389" name="Indlela engavumelekile — izipele zizosebenzisa indawo emisiwe."/>
+				<Item id="90390" name="Khetha"/>
+				<Item id="90391" name="Faka Okukhethiwe:"/>
+				<Item id="90392" name="Sebenzisa Boost Imodi ye-Regex (imigqa eminingi; qala kabusha ukuze usebenzise)"/>
+				<Item id="90395" name="Qala kabusha Manje"/>
+				<Item id="90397" name="(ungakukhethi ngaphandle uma wazi ukuthi wenzani)"/>
+				<Item id="90398" name="Usayizi wesithonjana sebha yamathuluzi"/>
+				<Item id="90399" name="100% (Okuzenzakalelayo)"/>
+				<Item id="90400" name="Ijubane lokuskrola isondo legundane"/>
+				<Item id="90401" name="1× (cishiwe)"/>
+				<Item id="90402" name="Usayizi wesithonjana sebha yamathuluzi ushintshile"/>
+				<Item id="90403" name="Usayizi omusha wesithonjana sebha yamathuluzi uzoqala ukusebenza ngesikhathi esilandelayo lapho Nextpad++ iqala."/>
+				<Item id="90404" name="Izithonjana zebha yamathuluzi zishintshile"/>
+				<Item id="90405" name="Izithonjana ezintsha zebha yamathuluzi zizoqala ukusebenza ngesikhathi esilandelayo lapho Nextpad++ iqala."/>
+				<Item id="90410" name="Thola kumaphrojekthi..."/>
+				<Item id="90411" name="Qalisa Imakhro kumafayela..."/>
+				<Item id="90418" name="Lokhu kuzoyisusa nakho konke okuqukethwe kwayo kuphrojekthi.Awekho amafayela kudiski azothinteka."/>
+				<Item id="90420" name="Ifolda"/>
+				<Item id="90423" name="Kopisha amagama wendlela akhethiwe"/>
+				<Item id="90424" name="Vula Amagama Endlela Akhethiwe"/>
+				<Item id="90425" name="Ukugoqa amagama imigqa emide"/>
+				<Item id="90426" name="Hlanza kukho konke ukusesha"/>
+				<Item id="90427" name="Ayitholakali"/>
+				<Item id="90428" name="INGXABANO: %@"/>
+				<Item id="90429" name="Susa okuthi &quot;%@&quot;?"/>
+				<Item id="90430" name="Umlawuli Wolimi Ochazwe Umsebenzisi"/>
+				<Item id="90431" name="Hlunga izilimi..."/>
+				<Item id="90432" name="Umthombo"/>
+				<Item id="90433" name="Imithombo ye-AC"/>
+				<Item id="90434" name="Isimo"/>
+				<Item id="90435" name="Faka / Buyekeza"/>
+				<Item id="90436" name="%lu izilimi · %lu ifakiwe · %lu izibuyekezo"/>
+				<Item id="90437" name="Umbhali"/>
+				<Item id="90438" name="Kuhlanganiswe: %ld okufakiwe okuvela %lu emithonjeni (kuhlanganisiwe)"/>
+				<Item id="90439" name="Khetha ulimi olulodwa noma eziningi ongazifaka."/>
+				<Item id="90440" name="Akukho okulandekayo kokukhethiwe."/>
+				<Item id="90441" name="Ukulanda kuhlulekile"/>
+				<Item id="90442" name="Ukungafani kwe-Checksum"/>
+				<Item id="90443" name="Izilimi ezikhethiwe manje seziyatholakala kumenyu yolimi."/>
+				<Item id="90444" name="Khetha ulimi olulodwa noma ngaphezulu olufakiwe ukuze ulususe."/>
+				<Item id="90445" name="Kususiwe"/>
+				<Item id="90446" name="Leli gama selivele lisetshenziswa olunye ulimi."/>
+				<Item id="90447" name="Lolu limi alukwazanga ukususwa."/>
+				<Item id="90448" name="Izilimi ezifakwe ngaphambilini azikwazi ukususwa."/>
+				<Item id="90449" name="Lolu limi alukwazanga ukuqanjwa kabusha."/>
+				<Item id="90450" name="Leli fayela lithi %@.Ukuyivula kuzokhubaza ukugqamisa kwe-syntax futhi kuhlehlise umlando ukuze kugcinwe uhlelo lokusebenza luphendula.&#10;&#10;Ingabe ufuna ukuqhubeka?"/>
+				<Item id="90451" name="Vula Noma kunjalo"/>
+				<Item id="90452" name="&quot;%@&quot; ishintshile kudiski"/>
+				<Item id="90453" name="Ziba"/>
+				<Item id="90454" name="Gcina Inguqulo Yami"/>
+				<Item id="90455" name="Ayikwazanga ukulayisha kabusha &quot;%@&quot;"/>
+				<Item id="90456" name="Ifayela alikwazanga ukufundwa."/>
+				<Item id="90457" name="Khetha lapho inkinobho ngayinye ivela khona Liquid Glass kubha yamathuluzi: ku-capsule yeqembu (Ibha yamathuluzi), kumenyu yokuchichima yeqembu ▾, noma Kufihliwe."/>
+				<Item id="90458" name="Nikela Ukusekela Intuthuko"/>
+				<Item id="90459" name="Faka Amathuluzi Womugqa Womyalo"/>
+				<Item id="90460" name="Bonisa izithunzi ngemuva kwamaphilisi ebha yamathuluzi"/>
+				<Item id="90461" name="Nikela"/>
+				<Item id="90462" name="Amasethi wezinhlamvu"/>
+				<Item id="90463" name="Nciphisa"/>
+				<Item id="90464" name="Fihla Nextpad++"/>
+				<Item id="90465" name="Fihla Abanye"/>
+				<Item id="90466" name="Bonisa Konke"/>
+				<Item id="90467" name="Yeka Nextpad++"/>
+				<Item id="90468" name="Londoloza Imakhro Yamanje Erekhodiwe..."/>
+				<Item id="90469" name="Sika Isikhala Sokulandela bese Ulondoloza"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox><!-- $INT_REPLACE$ is a place holder, don't translate it -->

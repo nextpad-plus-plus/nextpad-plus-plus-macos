@@ -1466,13 +1466,13 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90006" name="Control Control"/>
 				<Item id="90007" name="Boitlamo"/>
 				<Item id="90008" name="Boitlamo bo hlolehile"/>
-				<Item id="90009" name="Ha ho polokelo ea git\nSebelisa Browse ho bula repo."/>
+				<Item id="90009" name="Ha ho polokelo ea git&#10;Sebelisa Browse ho bula repo."/>
 				<Item id="90010" name="Sethala"/>
 				<Item id="90011" name="E sa lebaleheng"/>
 				<Item id="90012" name="Stage All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Molaetsa oa boitlamo\u2026"/>
-				<Item id="90015" name="Batla sebaka sa polokelo\u2026"/>
+				<Item id="90014" name="Molaetsa oa boitlamo…"/>
+				<Item id="90015" name="Batla sebaka sa polokelo…"/>
 				<Item id="90016" name="Khetha foldara ea polokelo ea git"/>
 				<Item id="90017" name="(ha ho na polokelo)"/>
 				<Item id="90018" name="(e arotsoe)"/>
@@ -1486,9 +1486,9 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90026" name="Liphetho"/>
 				<Item id="90027" name="Emisa"/>
 				<Item id="90028" name="Ho batla ho emisitsoe."/>
-				<Item id="90029" name="E batla\u2026"/>
+				<Item id="90029" name="E batla…"/>
 				<Item id="90030" name="Mongolo o lokelang ho batloa"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Batla..."/>
 				<Item id="90033" name="Kenya sebaka:"/>
 				<Item id="90034" name="Lentsoe lohle"/>
@@ -1548,7 +1548,7 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90088" name="Kenya li-plugins"/>
 				<Item id="90089" name="Tlosa li-plugins"/>
 				<Item id="90090" name="Ha ho litaelo tse fumanoeng"/>
-				<Item id="90091" name="Tlanya ho batla\u2026"/>
+				<Item id="90091" name="Tlanya ho batla…"/>
 				<Item id="90092" name="Puo e Hlalositsoeng ke Mosebelisi v.2.1"/>
 				<Item id="90093" name="Theha Puo e Ncha"/>
 				<Item id="90094" name="Kenya lebitso:"/>
@@ -1557,11 +1557,9 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90097" name="Se Boloke"/>
 				<Item id="90098" name="E entsoe"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Hlahisa Litlhaku Tsohle"/>
 				<Item id="90101" name="Hlahisa Likhetho tsa Litlhaku"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Ha e E-so Kenngoe"/>
-				<Item id="90104" name="Khoasolla hape ho tsoa ho Disk"/>
 				<Item id="90105" name="Fetola Enjine ea ho Batla"/>
 				<Item id="90106" name="Matha Phoso"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90110" name="Khoasolla"/>
 				<Item id="90111" name="Leqephe la Phatlalatso"/>
 				<Item id="90112" name="Hamorao"/>
-				<Item id="90113" name="Sefa li-plugins\u2026"/>
+				<Item id="90113" name="Sefa li-plugins…"/>
 				<Item id="90114" name="E fumaneha"/>
 				<Item id="90115" name="Lintlafatso"/>
 				<Item id="90116" name="E kentsoe"/>
@@ -1579,7 +1577,7 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90119" name="Tlosa li-plugins tse latelang?"/>
 				<Item id="90120" name="Kenya li-plugins tse latelang?"/>
 				<Item id="90121" name="Sena se tla hlakola lifaele tsa plugin."/>
-				<Item id="90122" name="Batla litaelo\u2026"/>
+				<Item id="90122" name="Batla litaelo…"/>
 				<Item id="90123" name="Mmala o ka pele"/>
 				<Item id="90124" name="'Mala oa bokamorao"/>
 				<Item id="90125" name="Macro lebitso"/>
@@ -1599,7 +1597,7 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90139" name="Matshwao kaofela a hlakotswe."/>
 				<Item id="90140" name="Mongolo o tšoailoeng o kopitsitsoe ho clipboard."/>
 				<Item id="90141" name="Ha ho mongolo o tšoailoeng o ka kopitsoang."/>
-				<Item id="90142" name="E batla... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="E batla... %ld hit(s) — %@"/>
 				<Item id="90143" name="Ho fetola lifaele..."/>
 				<Item id="90144" name="Fetola ho Merero: Ha e so hokahane."/>
 				<Item id="90145" name="Fumana ho Merero: Ha e so hokahane le lenane la lifaele tsa Project Panel."/>
@@ -1626,14 +1624,12 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90165" name="Netefatsa pele ho Boloka Tsohle"/>
 				<Item id="90166" name="Netefatsa Tlosa Tsohle litokomaneng tse bulehileng"/>
 				<Item id="90167" name="Fetola: se fetele ketsahalong e latelang"/>
-				<Item id="90168" name="Sebelisa mohala o nang le sebaka se le seng ho Fumana lebokose"/>
 				<Item id="90169" name="Tlanya ka ho le letona ho boloka khetho"/>
 				<Item id="90170" name="Khutlisetsa morao letsatsi/otara ea nako"/>
 				<Item id="90171" name="Sebelisa li-parser tsa lenane la tšebetso tse thehiloeng ho XML"/>
 				<Item id="90172" name="Li-brackets tsa ho koala ka bohona ( ) [ ] { }"/>
 				<Item id="90173" name="Ho tsoa ho sebapali sa Nth:"/>
 				<Item id="90174" name="Mohaho oa khetho ea ho itlhahloba (li-byte):"/>
-				<Item id="90175" name="E atolositsoe (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Mohlophisi"/>
 				<Item id="90177" name="Margins"/>
 				<Item id="90178" name="Lefifi"/>
@@ -1647,12 +1643,10 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="E bonolo +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Sebaka sa polokelo ea lenane la plugin"/>
 				<Item id="90192" name="Khetha faele ea XML ea sehlooho sa Nextpad++ eo u ka e sebelisang"/>
-				<Item id="90193" name="Etsa e ncha\u2026"/>
-				<Item id="90194" name="Boloka e le\u2026"/>
+				<Item id="90193" name="Etsa e ncha…"/>
+				<Item id="90194" name="Boloka e le…"/>
 				<Item id="90195" name="Puo ea mosebelisi:"/>
 				<Item id="90196" name="Lebitso la puo"/>
 				<Item id="90197" name="Theha"/>
@@ -1682,6 +1676,217 @@ O ka kenya tshebetsong puisano ena hape ho Dikgethollo hamorao."/>
 				<Item id="90221" name="Tšobotsi e Noetsoeng (macOS)"/>
 				<Item id="90222" name="Sheba Lintlafatso…"/>
 				<Item id="90223" name="Bula Haufinyane"/>
+				<Item id="90226" name="Thuso"/>
+				<Item id="90227" name="Sethala se Hlolehile"/>
+				<Item id="90228" name="Sethala se hlolehile"/>
+				<Item id="90229" name="e teng"/>
+				<Item id="90230" name="Ua matha"/>
+				<Item id="90231" name="O se hlole o nkhopotsa hape"/>
+				<Item id="90232" name="Lintlafatso"/>
+				<Item id="90233" name="Sheba lintlafatso ka bo eona"/>
+				<Item id="90234" name="Litlhahlobo tsa lintlafatso li timiloe."/>
+				<Item id="90235" name="E qetetse ho hlahlojoa:"/>
+				<Item id="90236" name="Ha ho khokahanyo ea Marang-rang."/>
+				<Item id="90237" name="Karabelo e sa lebelloang ho tsoa ho seva ea ntlafatso."/>
+				<Item id="90238" name="Ha ho phatlalatso e fumanoeng."/>
+				<Item id="90239" name="Seva ea ntlafatso ha e fumanehe hajoale.Ka kopo, leka hape hamorao."/>
+				<Item id="90240" name="Seva ea ntlafatso e hanne kopo eo.Proxy, firewall kapa VPN e kanna ea thibela phihlello ea GitHub."/>
+				<Item id="90241" name="Ho na le litlhahlobo tse ngata haholo ho tsoa marang-rang a hau (moeli ona o arolelanoa ke bohle ho ona).Leka hape kamora moo"/>
+				<Item id="90242" name="Ho na le litlhahlobo tse ngata haholo ho tsoa marang-rang a hau (moeli ona o arolelanoa ke bohle ho ona).Ka kopo, leka hape hamorao."/>
+				<Item id="90243" name="Seva ea ntlafatso e khutlisitse boemo"/>
+				<Item id="90244" name="Leka Hape"/>
+				<Item id="90245" name="Boholo ba mongolo:"/>
+				<Item id="90246" name="Sebelisa katametso ea skrine"/>
+				<Item id="90247" name="Boholo ba sebele"/>
+				<Item id="90248" name="Lifaele tse ling ha lia khona ho nkeloa sebaka"/>
+				<Item id="90249" name="...le %lu tse ding"/>
+				<Item id="90250" name="Likhokahano tsa lifaele li laoloa ke mokhatlo oa hau."/>
+				<Item id="90251" name="E emetse macOS ho netefatsa…"/>
+				<Item id="90252" name="macOS ha e ea sebelisa phetoho."/>
+				<Item id="90253" name="Ngodisitsoe"/>
+				<Item id="90254" name="O bula lifaele tsohle ho sephutheli?"/>
+				<Item id="90255" name="Sena se tla bula %lu lifaele ho li-tab tse ncha."/>
+				<Item id="90256" name="Ha e khone ho reka: %@"/>
+				<Item id="90258" name="E fumanwe %ld tse tshwanang ho %ld difaele."/>
+				<Item id="90259" name="E batla… %ld e bapisang (li) ho fihla hajoale"/>
+				<Item id="90260" name="%@ (%ld papali%@)"/>
+				<Item id="90261" name="Patlisiso e makatsang"/>
+				<Item id="90266" name="Palo: %ld lipapali."/>
+				<Item id="90267" name="Tlosa Tsohle: %ld (l) liketsahalo li ile tsa nkeloa sebaka %@."/>
+				<Item id="90268" name="Fetola Lifaeleng Tse Butsoeng: %ld liketsahalo li ile tsa nkeloa sebaka."/>
+				<Item id="90269" name="Fumana ho Lifaele: %ld otla (li) ho %ld lifaele."/>
+				<Item id="90270" name="Fumana ho Lifaele: 0 hits."/>
+				<Item id="90271" name="Tlosa liketsahalo tsohle tsa &quot;%@&quot; ka &quot;%@&quot; bukeng:&#10;%@&#10;&#10;Sena se ke ke sa etsolloa."/>
+				<Item id="90272" name="Fetola ho Lifaele: %ld li-faele tse ling tse %ld."/>
+				<Item id="90273" name="Bula Phanele ea Morero pele."/>
+				<Item id="90274" name="Khetha bonyane Project Panel e le 'ngoe eo u batlang ho e batla."/>
+				<Item id="90275" name="Ha ho lifaele tseo u ka li batlang."/>
+				<Item id="90276" name="Fumana ho Merero: %ld otla(li) ho %ld lifaele."/>
+				<Item id="90277" name="Fumana ho Projects: 0 hits."/>
+				<Item id="90278" name="Fetola liketsahalo tsohle tsa"/>
+				<Item id="90279" name="ka"/>
+				<Item id="90280" name="ho"/>
+				<Item id="90281" name="Lifaele tsa morero.Sena se ke ke sa etsolloa."/>
+				<Item id="90282" name="Fetola ho Merero: %ld tse ling ho tse %ld lifaele."/>
+				<Item id="90283" name="Tšoaea: %ld lipapali tse tšoailoeng."/>
+				<Item id="90284" name="Sefa faele/lebitso la sephutheli..."/>
+				<Item id="90285" name="Litokomane tse ling ha lia ka tsa bolokoa"/>
+				<Item id="90286" name="⌘ Taelo"/>
+				<Item id="90287" name="⌃ Taolo"/>
+				<Item id="90288" name="⌥ Khetho"/>
+				<Item id="90289" name="⇧ Fetola"/>
+				<Item id="90290" name="Kenya NSDateFormatter mofuta oa khoele:"/>
+				<Item id="90291" name="'%@' ha e so kenngoe tšebetsong besheneng ena."/>
+				<Item id="90292" name="Kenya plugin"/>
+				<Item id="90293" name="Ho Hlokahala ho qala hape"/>
+				<Item id="90294" name="Ha ho lifaele tse lokelang ho sebetsoa"/>
+				<Item id="90295" name="Sebaka sena sa morero ha se na lifaele."/>
+				<Item id="90296" name="'%@' e na le liphetoho tse sa bolokoang.&#10; Kenya bocha 'me u lahle liphetoho?"/>
+				<Item id="90297" name="Kenya lebitso le lecha la faele:"/>
+				<Item id="90299" name="Lebitso le lecha:"/>
+				<Item id="90301" name="Lebitso ha le khone ho ba le &quot;/&quot; kapa &quot;:&quot;."/>
+				<Item id="90304" name="Se Boloka Tsohle"/>
+				<Item id="90306" name="Ho na le mekhoa e 3 ea ho fetohela ho mokhoa oa ho khetha likholomo:&#10;&#10;1.(Keyboard le Mouse) Tšoara Khetho ha u ntse u penya ka ho le letšehali&#10;&#10;2.(Keyboard feela) Tšoara Option+Shift ha u ntse u sebelisa linotlolo tsa metsu&#10;&#10;3.(Keyboard kapa Mouse)&#10; Beha caret qalong ea sebaka seo u batlang ho se boloka, ebe&#10; etsa taelo ea &quot;Qala/Qetella ho Khetha ka Mokhoa oa Kholomo&quot;;&#10; Tsamaisetsa tlhokomelo qetellong ea sebaka seo u batlang ho se boloka, ebe&#10; etsa taelo ea &quot;Qala/Qetella Khetha ka Kholomo Mode&quot; hape."/>
+				<Item id="90307" name="Kenya URL ea ho batla.Sebelisa %s joalo ka sets'oants'o sa potso (kapa eketsa potso qetellong):"/>
+				<Item id="90308" name="Kenya taelo kapa URL..."/>
+				<Item id="90309" name="E hlolehile ho phethahatsa:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Ho fetola contextMenu.xml ho u fa monyetla oa ho fetola Nextpad++ menu ea hau ea popup sebakeng sa edit.&#10;U tlameha ho qala Nextpad++ ea hau bocha hore e sebetse ka mor'a hore u fetole contextMenu.xml."/>
+				<Item id="90312" name="E se e kentsoe"/>
+				<Item id="90313" name="Kenya nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Kenyo e hlolehile"/>
+				<Item id="90315" name="E kentsoe - empa ~/.local/bin ha e tseleng ea hau ea PATH"/>
+				<Item id="90316" name="E se e ntse e le ho config"/>
+				<Item id="90317" name="E kenyellelitsoe ho PATH"/>
+				<Item id="90318" name="Ha e khone ho ngola"/>
+				<Item id="90319" name="E qopisitsoe"/>
+				<Item id="90321" name="Liphetoho tsa hau li tla lahleha ha u sa li boloke."/>
+				<Item id="90322" name="Etsa kopo ho litokomane tsohle"/>
+				<Item id="90323" name="Matha Macro ho Files"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Sephutheli:"/>
+				<Item id="90326" name="Khetha sephutheli…"/>
+				<Item id="90327" name="Batla…"/>
+				<Item id="90328" name="Keketso:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Kenyelletsa lifaele tse patiloeng"/>
+				<Item id="90331" name="Boholo ba boholo:"/>
+				<Item id="90332" name="Se nang moeli"/>
+				<Item id="90333" name="Ho latela faele:"/>
+				<Item id="90334" name="Boloka haeba e fetotsoe"/>
+				<Item id="90335" name="Kwalwa kamora"/>
+				<Item id="90336" name="Koala esita le lifaele tse neng li se li butsoe"/>
+				<Item id="90337" name="Ho na le phoso:"/>
+				<Item id="90338" name="Tlola faele 'me u tsoele pele"/>
+				<Item id="90339" name="Emisa phosong ea pele"/>
+				<Item id="90340" name="(ha ho na li-macros tse bolokiloeng)"/>
+				<Item id="90341" name="%lu(li)faele li nyallana"/>
+				<Item id="90342" name="Sephutheli ha se fumanehe"/>
+				<Item id="90343" name="Khetha sephutheli se teng."/>
+				<Item id="90344" name="Ha ho lifaele tse tšoanang"/>
+				<Item id="90345" name="Fetola sefaele sa li-extensions, recursion, kapa li-file tse patiloeng."/>
+				<Item id="90346" name="E qala..."/>
+				<Item id="90347" name="E sebetsa:"/>
+				<Item id="90348" name="%ld / %ld Ho lokile: %ld E tlotsitswe: %ld E hlolehile: %ld"/>
+				<Item id="90349" name="Sehlopha se hlakotsoe"/>
+				<Item id="90350" name="Sehlopha se phethiloe"/>
+				<Item id="90351" name="Kakaretso: %lu Ho lokile: %ld E tlotsoe: %ld E hlolehile: %ld"/>
+				<Item id="90352" name="Letsatsi le Ahiloeng"/>
+				<Item id="90353" name="Sistimi ea Ts'ebetso"/>
+				<Item id="90354" name="tsa moraorao"/>
+				<Item id="90355" name="e siiloe ke nako"/>
+				<Item id="90356" name="tse sa tsejoeng"/>
+				<Item id="90357" name="Qala hape sesebelisoa hore liphetoho li sebetse."/>
+				<Item id="90358" name="Ntlafatsa li-plugins"/>
+				<Item id="90359" name="Ntlafatsa li-plugins tse latelang?"/>
+				<Item id="90360" name="Liphetolelo tsa hajoale li bolokoa ho ~/Library/Application Support/Nextpad++/plugin-backups/ pele li nkeloa sebaka."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Fetohela ho chebahalo e Ncha Tahoe (Beta)"/>
+				<Item id="90363" name="Sebelisa mefuta ea macOS-mokhoa (Beta)"/>
+				<Item id="90364" name="Ponahalo e ncha ea Tahoe e tla sebelisoa ka mor'a hore u qale hape Nextpad++."/>
+				<Item id="90365" name="Chebahalo ea khale e tla khutlisoa ka mor'a hore u qale hape Nextpad++."/>
+				<Item id="90366" name="Tlohela Hona Joale"/>
+				<Item id="90367" name="Menus e tla hlophisoa bocha ka mokhoa oa macOS ha u qeta ho qala Nextpad++."/>
+				<Item id="90368" name="Sebopeho sa khale sa lenane se tla khutlisoa ka mor'a hore u qale bocha Nextpad++."/>
+				<Item id="90369" name="Mmala"/>
+				<Item id="90370" name="Sebetsa ho li-ekhone tsa plugin toolbar"/>
+				<Item id="90371" name="Ho Complete mode, li-icon tsa plugin li fetoha 'mala o le mong o tiileng."/>
+				<Item id="90372" name="Lihlopha tsa Toolbar"/>
+				<Item id="90373" name="Khetha moo konopo e 'ngoe le e 'ngoe e hlahang ho Liquid Glass toolbar: ho"/>
+				<Item id="90374" name="Konopo"/>
+				<Item id="90375" name="Ho beha"/>
+				<Item id="90376" name="Khutlela ho Defaults"/>
+				<Item id="90377" name="Lenane la phallo"/>
+				<Item id="90378" name="E patiloe"/>
+				<Item id="90379" name="Ho phuthela mantsoe a bonolo ho CJK"/>
+				<Item id="90380" name="Khetho ea likholomo e fetohela ho tse ling tse ngata"/>
+				<Item id="90381" name="Sekhahla sa mela:"/>
+				<Item id="90382" name="1.0 (E sa feleng)"/>
+				<Item id="90383" name="Pata sebaka sa li-tab"/>
+				<Item id="90384" name="Boholo ba li-tab bo latela katametso ea litokomane"/>
+				<Item id="90385" name="Khetha…"/>
+				<Item id="90386" name="Khutlisa ho Default"/>
+				<Item id="90387" name="Ho sebelisa sebaka sa kamehla."/>
+				<Item id="90388" name="Sebaka se ikhethileng."/>
+				<Item id="90389" name="Tsela e fosahetseng - li-backups li tla sebelisa sebaka sa kamehla."/>
+				<Item id="90390" name="Khetha"/>
+				<Item id="90391" name="Kenya Khetho:"/>
+				<Item id="90392" name="Sebelisa Boost mokhoa oa Regex (mehala e mengata; qala bocha ho sebetsa)"/>
+				<Item id="90395" name="Qala bocha Hona joale"/>
+				<Item id="90397" name="(u se ke oa e khetha ntle le haeba u tseba seo u se etsang)"/>
+				<Item id="90398" name="Boholo ba letšoao la Toolbar"/>
+				<Item id="90399" name="100% (Ka ho sa feleng)"/>
+				<Item id="90400" name="Lebili la toeba lebelo la ho tsamaea"/>
+				<Item id="90401" name="1× (theoha)"/>
+				<Item id="90402" name="Boholo ba aekhone ea Toolbar bo fetotsoe"/>
+				<Item id="90403" name="Letšoao le lecha la aekhone ea lithulusi le tla qala ho sebetsa nakong e tlang ha Nextpad++ e qala."/>
+				<Item id="90404" name="Li-icon tsa Toolbar li fetohile"/>
+				<Item id="90405" name="Lits'oants'o tse ncha tsa toolbar li tla sebetsa nakong e tlang ha Nextpad++ e qala."/>
+				<Item id="90411" name="Matha Macro ho Lifaele..."/>
+				<Item id="90418" name="Sena se tla e tlosa le likahare tsohle tsa eona morerong.Ha ho lifaele tse disk tse tla ameha."/>
+				<Item id="90420" name="Sephutheli"/>
+				<Item id="90427" name="Ha e fumanehe"/>
+				<Item id="90428" name="KHOTHATSO: %@"/>
+				<Item id="90429" name="Hlakola &quot;%@&quot;?"/>
+				<Item id="90430" name="Taolo ea Puo e Hlalositsoeng ke Mosebelisi"/>
+				<Item id="90431" name="Sefe lipuo…"/>
+				<Item id="90432" name="Mohloli"/>
+				<Item id="90433" name="Mehloli ea AC"/>
+				<Item id="90434" name="Boemo"/>
+				<Item id="90435" name="Kenya / Ntlafatsa"/>
+				<Item id="90436" name="%lu lipuo · %lu e kentsoe · %lu lintlafatso"/>
+				<Item id="90437" name="Mongoli"/>
+				<Item id="90438" name="E kopantsoe: %ld likenyo tse tsoang mehloling e %lu (tse kopaneng)"/>
+				<Item id="90439" name="Khetha puo e le 'ngoe kapa tse ngata tseo u ka li kenyang."/>
+				<Item id="90440" name="Ha ho letho le ka jarollwang bakeng sa khetho."/>
+				<Item id="90441" name="E hlolehile ho khoasolla"/>
+				<Item id="90442" name="Chelete e sa lumellaneng"/>
+				<Item id="90443" name="Lipuo tse khethiloeng li se li fumaneha ho menu ea Puo."/>
+				<Item id="90444" name="Khetha puo e le 'ngoe kapa tse ngata tse kentsoeng hore u li tlose."/>
+				<Item id="90445" name="E tlositsoe"/>
+				<Item id="90446" name="Lebitso lena le se le ntse le sebelisoa ke puo e 'ngoe."/>
+				<Item id="90447" name="Puo ena ha e khone ho tlosoa."/>
+				<Item id="90448" name="Lipuo tse kentsoeng esale pele li ka se tlosoe."/>
+				<Item id="90449" name="Puo ena ha e khone ho fetoleloa bocha."/>
+				<Item id="90450" name="Faele ena ke %@.Ho e bula ho tla tima tlhabollo ea mantsoe le ho etsolla nalane ho boloka sesebelisoa se sebetsa.&#10;&#10;Na u batla ho tsoela pele?"/>
+				<Item id="90451" name="Bula Leha ho le joalo"/>
+				<Item id="90452" name="&quot;%@&quot; e fetotsoe disk"/>
+				<Item id="90453" name="Iphapanyetse"/>
+				<Item id="90454" name="Boloka Phetolelo ea Ka"/>
+				<Item id="90455" name="Ha e khone ho kenya &quot;%@&quot; hape"/>
+				<Item id="90456" name="Faele ha e khone ho baloa."/>
+				<Item id="90457" name="Kgetha moo konopo e nngwe le e nngwe e hlahang ho Liquid Glass toolbar: ho sehlopha sa capsule (Toolbar), ho sehlopha ▾ menu ya phallo, kapa E patilwe."/>
+				<Item id="90458" name="Nehelana ka Ntšetso-pele ea Tšehetso"/>
+				<Item id="90459" name="Kenya Taelo Line Tools"/>
+				<Item id="90460" name="Hlahisa liriti ka morao ho li-capsules tsa toolbar"/>
+				<Item id="90461" name="Nehela"/>
+				<Item id="90462" name="Lihlopha tsa litlhaku"/>
+				<Item id="90463" name="Fokotsa"/>
+				<Item id="90464" name="Pata Nextpad++"/>
+				<Item id="90465" name="Pata Ba Bang"/>
+				<Item id="90466" name="Bontša Tsohle"/>
+				<Item id="90467" name="Tlohela Nextpad++"/>
+				<Item id="90468" name="Boloka Macro e Rekotiloeng Hona Joale..."/>
+				<Item id="90469" name="Fokotsa Sebaka sa ho Tsamaisa 'me u se boloke"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

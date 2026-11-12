@@ -797,13 +797,13 @@
 				<Item id="90006" name="Control de fuente"/>
 				<Item id="90007" name="Comprometerse"/>
 				<Item id="90008" name="Confirmación fallida"/>
-				<Item id="90009" name="Sin repositorio git\nUtilice Explorar para abrir un repositorio."/>
+				<Item id="90009" name="Sin repositorio git&#10;Utilice Explorar para abrir un repositorio."/>
 				<Item id="90010" name="Etapa"/>
 				<Item id="90011" name="Fuera del escenario"/>
 				<Item id="90012" name="Etapa todas"/>
 				<Item id="90013" name="Dejar de escena Todos"/>
-				<Item id="90014" name="Mensaje de confirmación\u2026"/>
-				<Item id="90015" name="Buscar repositorio\u2026"/>
+				<Item id="90014" name="Mensaje de confirmación…"/>
+				<Item id="90015" name="Buscar repositorio…"/>
 				<Item id="90016" name="Elija una carpeta de repositorio de git"/>
 				<Item id="90017" name="(sin repositorio)"/>
 				<Item id="90018" name="(separado)"/>
@@ -817,9 +817,9 @@
 				<Item id="90026" name="Resultados"/>
 				<Item id="90027" name="Detener"/>
 				<Item id="90028" name="La búsqueda se detuvo."/>
-				<Item id="90029" name="Buscando\u2026"/>
+				<Item id="90029" name="Buscando…"/>
 				<Item id="90030" name="Texto a buscar"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Buscando..."/>
 				<Item id="90033" name="Reemplazar:"/>
 				<Item id="90034" name="Palabra completa"/>
@@ -879,7 +879,7 @@
 				<Item id="90088" name="Instalar complementos"/>
 				<Item id="90089" name="Eliminar complementos"/>
 				<Item id="90090" name="No se encontraron comandos"/>
-				<Item id="90091" name="Escribe para buscar\u2026"/>
+				<Item id="90091" name="Escribe para buscar…"/>
 				<Item id="90092" name="Lenguaje definido por el usuario v.2.1"/>
 				<Item id="90093" name="Crear nuevo idioma"/>
 				<Item id="90094" name="Introduzca un nombre:"/>
@@ -888,11 +888,9 @@
 				<Item id="90097" name="No guardar"/>
 				<Item id="90098" name="Hecho"/>
 				<Item id="90099" name="Alternar ajuste de palabras"/>
-				<Item id="90100" name="Mostrar todos los personajes"/>
 				<Item id="90101" name="Mostrar opciones de personajes"/>
 				<Item id="90102" name="Alternar guía de sangría"/>
 				<Item id="90103" name="Aún no implementado"/>
-				<Item id="90104" name="Recargar desde disco"/>
 				<Item id="90105" name="Cambiar motor de búsqueda"/>
 				<Item id="90106" name="Error de ejecución"/>
 				<Item id="90107" name="Bloc de notas++ Tiempo de carga"/>
@@ -901,16 +899,15 @@
 				<Item id="90110" name="Descargar"/>
 				<Item id="90111" name="Página de lanzamiento"/>
 				<Item id="90112" name="Más tarde"/>
-				<Item id="90113" name="Complementos de filtrado\u2026"/>
+				<Item id="90113" name="Complementos de filtrado…"/>
 				<Item id="90114" name="Disponible"/>
 				<Item id="90115" name="Actualizaciones"/>
 				<Item id="90116" name="Instalado"/>
-				<Item id="90117" name="Incompatible"/>
 				<Item id="90118" name="Error al instalar"/>
 				<Item id="90119" name="¿Eliminar los siguientes complementos?"/>
 				<Item id="90120" name="¿Instalar los siguientes complementos?"/>
 				<Item id="90121" name="Esto eliminará los archivos del complemento."/>
-				<Item id="90122" name="Comandos de búsqueda\u2026"/>
+				<Item id="90122" name="Comandos de búsqueda…"/>
 				<Item id="90123" name="Color de primer plano"/>
 				<Item id="90124" name="Color de fondo"/>
 				<Item id="90125" name="Nombre de la macro"/>
@@ -930,7 +927,7 @@
 				<Item id="90139" name="Todas las marcas borradas."/>
 				<Item id="90140" name="Texto marcado copiado al portapapeles."/>
 				<Item id="90141" name="No hay texto marcado para copiar."/>
-				<Item id="90142" name="Buscando... %ld resultados \u2014 %@"/>
+				<Item id="90142" name="Buscando... %ld resultados — %@"/>
 				<Item id="90143" name="Reemplazo en archivos..."/>
 				<Item id="90144" name="Reemplazar en Proyectos: Aún no conectado."/>
 				<Item id="90145" name="Buscar en Proyectos: Aún no conectado a la lista de archivos del Panel de proyectos."/>
@@ -951,20 +948,20 @@
 				<Item id="90160" name="Resaltado inteligente: solo la palabra completa"/>
 				<Item id="90161" name="Haga doble clic para cerrar la pestaña"/>
 				<Item id="90162" name="Mostrar botón de cerrar en pestañas"/>
+				<Item id="90168" name="Usar fuente monoespaciada en el cuadro de diálogo Buscar"/>
+				<Item id="90191" name="Repositorio de lista de complementos"/>
 				<Item id="90224" name="Mostrar pestañas en varias líneas"/>
 				<Item id="90163" name="Recuerde la visibilidad del panel entre sesiones"/>
 				<Item id="90164" name="Mantener entradas de archivos ausentes en la sesión"/>
 				<Item id="90165" name="Confirmar antes de guardar todo"/>
 				<Item id="90166" name="Confirmar Reemplazar todo en documentos abiertos"/>
 				<Item id="90167" name="Reemplazar: no pasar a la siguiente aparición"/>
-				<Item id="90168" name="Usar fuente monoespaciada en el cuadro de diálogo Buscar"/>
 				<Item id="90169" name="Hacer clic derecho mantiene la selección"/>
 				<Item id="90170" name="Invertir el orden predeterminado de fecha y hora"/>
 				<Item id="90171" name="Utilice analizadores de listas de funciones basados ​​en XML"/>
 				<Item id="90172" name="Corchetes de cierre automático ( ) [ ] { }"/>
 				<Item id="90173" name="Del enésimo carácter:"/>
 				<Item id="90174" name="Umbral de verificación automática en la selección (bytes):"/>
-				<Item id="90175" name="Extendido (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redactora"/>
 				<Item id="90177" name="Márgenes"/>
 				<Item id="90178" name="Oscuro"/>
@@ -978,12 +975,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimizado"/>
 				<Item id="90188" name="Sencillo +/-"/>
-				<Item id="90189" name="Ventanas (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Repositorio de lista de complementos"/>
 				<Item id="90192" name="Seleccione un archivo XML de tema de Nextpad++ para aplicar"/>
-				<Item id="90193" name="Crear nuevo\u2026"/>
-				<Item id="90194" name="Guardar como\u2026"/>
+				<Item id="90193" name="Crear nuevo…"/>
+				<Item id="90194" name="Guardar como…"/>
 				<Item id="90195" name="Idioma del usuario:"/>
 				<Item id="90196" name="Nombre del idioma"/>
 				<Item id="90197" name="Crear"/>
@@ -1013,6 +1008,235 @@
 				<Item id="90221" name="Atributo bloqueado (macOS)"/>
 				<Item id="90222" name="Buscar actualizaciones…"/>
 				<Item id="90223" name="Abrir reciente"/>
+				<Item id="90225" name="Recordar la sesión actual para el próximo lanzamiento"/>
+				<Item id="90226" name="Ayuda"/>
+				<Item id="90227" name="Etapa fallida"/>
+				<Item id="90228" name="Error al no realizar la etapa"/>
+				<Item id="90229" name="esta disponible"/>
+				<Item id="90230" name="estas corriendo"/>
+				<Item id="90231" name="Nunca me lo vuelvas a recordar"/>
+				<Item id="90232" name="Actualizaciones"/>
+				<Item id="90233" name="Buscar actualizaciones automáticamente"/>
+				<Item id="90234" name="Las comprobaciones de actualización automática están desactivadas."/>
+				<Item id="90235" name="Última comprobación:"/>
+				<Item id="90236" name="Sin conexión a Internet."/>
+				<Item id="90237" name="Respuesta inesperada del servidor de actualización."/>
+				<Item id="90238" name="No se encontró ninguna versión publicada."/>
+				<Item id="90239" name="El servidor de actualización no está disponible temporalmente.Inténtelo de nuevo más tarde."/>
+				<Item id="90240" name="El servidor de actualización rechazó la solicitud.Es posible que un proxy, firewall o VPN esté bloqueando el acceso a GitHub."/>
+				<Item id="90241" name="Demasiadas comprobaciones de actualizaciones de su red (este límite lo comparten todos los que están en ella).Inténtalo de nuevo después"/>
+				<Item id="90242" name="Demasiadas comprobaciones de actualizaciones de su red (este límite lo comparten todos los que están en ella).Inténtelo de nuevo más tarde."/>
+				<Item id="90243" name="El servidor de actualización devolvió el estado."/>
+				<Item id="90244" name="Inténtalo de nuevo"/>
+				<Item id="90245" name="Tamaño del texto de impresión:"/>
+				<Item id="90246" name="Usar zoom de pantalla"/>
+				<Item id="90247" name="tamaño real"/>
+				<Item id="90248" name="Algunos archivos no se pudieron reemplazar"/>
+				<Item id="90249" name="...y %lu más"/>
+				<Item id="90250" name="Las asociaciones de archivos las administra su organización."/>
+				<Item id="90251" name="Esperando la confirmación de macOS…"/>
+				<Item id="90252" name="macOS no aplicó el cambio."/>
+				<Item id="90253" name="Registradas"/>
+				<Item id="90254" name="¿Abrir todos los archivos en la carpeta?"/>
+				<Item id="90255" name="Esto abrirá %lu archivos en pestañas nuevas."/>
+				<Item id="90256" name="No se pudo importar: %@"/>
+				<Item id="90258" name="Se encontraron %ld coincidencias en %ld archivo(s)."/>
+				<Item id="90259" name="Buscando... %ld coincidencias hasta el momento"/>
+				<Item id="90260" name="%@ (%ld coincidencia%@)"/>
+				<Item id="90261" name="búsqueda difusa"/>
+				<Item id="90265" name="Buscar: No puedo encontrar el texto &quot;%@&quot;"/>
+				<Item id="90266" name="Recuento: %ld coincidencias."/>
+				<Item id="90267" name="Reemplazar todo: %ld apariciones fueron reemplazadas %@."/>
+				<Item id="90268" name="Reemplazar en archivos abiertos: se reemplazaron %ld apariciones."/>
+				<Item id="90269" name="Buscar en archivos: %ld visitas en %ld archivo(s)."/>
+				<Item id="90270" name="Buscar en Archivos: 0 visitas."/>
+				<Item id="90271" name="Reemplace todas las apariciones de &quot;%@&quot; por &quot;%@&quot; en el directorio:&#10;%@&#10;&#10;Esto no se puede deshacer."/>
+				<Item id="90272" name="Reemplazar en archivos: %ld reemplazo(s) en %ld archivo(s)."/>
+				<Item id="90273" name="Primero abra un Panel de proyecto."/>
+				<Item id="90274" name="Seleccione al menos un Panel de proyecto para buscar."/>
+				<Item id="90275" name="No hay archivos para buscar."/>
+				<Item id="90276" name="Buscar en Proyectos: %ld visitas en %ld archivo(s)."/>
+				<Item id="90277" name="Encontrar en Proyectos: 0 visitas."/>
+				<Item id="90278" name="Reemplazar todas las apariciones de"/>
+				<Item id="90279" name="con"/>
+				<Item id="90280" name="en"/>
+				<Item id="90281" name="archivo(s) del proyecto.Esto no se puede deshacer."/>
+				<Item id="90282" name="Reemplazar en Proyectos: %ld reemplazo(s) en %ld archivo(s)."/>
+				<Item id="90283" name="Marcar: %ld coincidencias marcadas."/>
+				<Item id="90284" name="Filtrar nombre de archivo/carpeta..."/>
+				<Item id="90285" name="Algunos documentos no se pudieron guardar."/>
+				<Item id="90286" name="⌘ comando"/>
+				<Item id="90287" name="⌃controlar"/>
+				<Item id="90288" name="⌥ Opción"/>
+				<Item id="90289" name="⇧ Cambio"/>
+				<Item id="90290" name="Introduzca una cadena de formato NSDateFormatter:"/>
+				<Item id="90291" name="'%@' aún no está implementado en esta versión."/>
+				<Item id="90292" name="Complemento de importación"/>
+				<Item id="90293" name="Se requiere reinicio"/>
+				<Item id="90294" name="No hay archivos para procesar"/>
+				<Item id="90295" name="Este nodo del proyecto no contiene archivos."/>
+				<Item id="90296" name="'%@' tiene cambios sin guardar.&#10;¿Recargar y descartar cambios?"/>
+				<Item id="90297" name="Introduzca un nuevo nombre de archivo:"/>
+				<Item id="90298" name="Cambiar el nombre de la pestaña actual"/>
+				<Item id="90299" name="Nuevo nombre:"/>
+				<Item id="90300" name="Error al cambiar el nombre"/>
+				<Item id="90301" name="El nombre no puede contener “/” o “:”."/>
+				<Item id="90302" name="¿Mover '%@' a la Papelera?"/>
+				<Item id="90303" name="¿Guardar '%@' antes de cerrar?"/>
+				<Item id="90304" name="No guardar todo"/>
+				<Item id="90305" name="Consejo sobre el modo de columna"/>
+				<Item id="90306" name="Hay tres formas de cambiar al modo de selección de columnas:&#10;&#10;1.(Teclado y mouse) Mantenga presionada la opción mientras arrastra con el botón izquierdo&#10;&#10;2.(Solo teclado) Mantenga presionada la tecla Opción+Mayús mientras usa las teclas de flecha&#10;&#10;3.(Teclado o mouse)&#10; Coloque el cursor en el inicio deseado de la posición del bloque de columnas, luego&#10; ejecute el comando &quot;Inicio/Fin de selección en modo de columna&quot;;&#10; Mueva el cursor al final deseado de la posición del bloque de columnas, luego&#10; ejecute nuevamente el comando &quot;Inicio/Fin de selección en modo de columna&quot;"/>
+				<Item id="90307" name="Ingrese la URL de búsqueda.Utilice %s como marcador de posición de la consulta (o agregue la consulta al final):"/>
+				<Item id="90308" name="Ingrese el comando o la URL..."/>
+				<Item id="90309" name="No se pudo ejecutar:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editar contextMenu.xml le permite modificar su menú contextual emergente Nextpad++ en la zona de edición.&#10;Debe reiniciar su Nextpad++ para que surta efecto después de modificar contextMenu.xml."/>
+				<Item id="90312" name="Ya instalado"/>
+				<Item id="90313" name="Instalar la herramienta de línea de comandos nextpad++"/>
+				<Item id="90314" name="La instalación falló"/>
+				<Item id="90315" name="Instalado, pero ~/.local/bin no está en tu RUTA"/>
+				<Item id="90316" name="Ya en tu configuración"/>
+				<Item id="90317" name="Agregado a RUTA"/>
+				<Item id="90318" name="no pude escribir"/>
+				<Item id="90319" name="copiado"/>
+				<Item id="90320" name="¿Guardar cambios en '%@'?"/>
+				<Item id="90321" name="Sus cambios se perderán si no los guarda."/>
+				<Item id="90322" name="Aplicar a todos los documentos."/>
+				<Item id="90323" name="Ejecutar macro en archivos"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Carpeta:"/>
+				<Item id="90326" name="Elige una carpeta..."/>
+				<Item id="90327" name="Explorar…"/>
+				<Item id="90328" name="Extensiones:"/>
+				<Item id="90329" name="Subdirectorios recursivos"/>
+				<Item id="90330" name="Incluir archivos ocultos"/>
+				<Item id="90331" name="Tamaño máximo:"/>
+				<Item id="90332" name="Ilimitado"/>
+				<Item id="90333" name="Por archivo:"/>
+				<Item id="90334" name="Guardar si se modifica"/>
+				<Item id="90335" name="Cerrar después"/>
+				<Item id="90336" name="Cerrar incluso archivos que ya estaban abiertos"/>
+				<Item id="90337" name="En caso de error:"/>
+				<Item id="90338" name="Saltar archivo y continuar"/>
+				<Item id="90339" name="Detenerse ante el primer error"/>
+				<Item id="90340" name="(sin macros guardadas)"/>
+				<Item id="90341" name="%lu archivo(s) coinciden"/>
+				<Item id="90342" name="Carpeta no encontrada"/>
+				<Item id="90343" name="Elija una carpeta que exista."/>
+				<Item id="90344" name="Ningún archivo coincide"/>
+				<Item id="90345" name="Ajuste el filtro de extensiones, la recursividad o la opción de archivos ocultos."/>
+				<Item id="90346" name="Empezando…"/>
+				<Item id="90347" name="Procesamiento:"/>
+				<Item id="90348" name="%ld / %ld Correcto: %ld Omitido: %ld Error: %ld"/>
+				<Item id="90349" name="Lote cancelado"/>
+				<Item id="90350" name="Lote completo"/>
+				<Item id="90351" name="Total: %lu Correcto: %ld Omitido: %ld Error: %ld"/>
+				<Item id="90352" name="Fecha de construcción"/>
+				<Item id="90353" name="Sistema operativo"/>
+				<Item id="90354" name="último"/>
+				<Item id="90355" name="anticuado"/>
+				<Item id="90356" name="desconocido"/>
+				<Item id="90357" name="Reinicie la aplicación para que los cambios surtan efecto."/>
+				<Item id="90358" name="Actualizar complementos"/>
+				<Item id="90359" name="¿Actualizar los siguientes complementos?"/>
+				<Item id="90360" name="Se realiza una copia de seguridad de las versiones actuales en ~/Library/Application Support/Nextpad++/plugin-backups/ antes de ser reemplazadas."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Cambiar a la nueva apariencia Tahoe (Beta)"/>
+				<Item id="90363" name="Utilice menús de estilo macOS (Beta)"/>
+				<Item id="90364" name="La nueva apariencia Tahoe se aplicará después de reiniciar Nextpad++."/>
+				<Item id="90365" name="La apariencia clásica se restaurará después de reiniciar Nextpad++."/>
+				<Item id="90366" name="Salir ahora"/>
+				<Item id="90367" name="Los menús se reorganizarán en el estilo macOS después de reiniciar Nextpad++."/>
+				<Item id="90368" name="El diseño del menú clásico se restaurará después de reiniciar Nextpad++."/>
+				<Item id="90369" name="Color"/>
+				<Item id="90370" name="Aplicar a los iconos de la barra de herramientas del complemento"/>
+				<Item id="90371" name="En el modo Completo, los iconos del complemento se vuelven de un solo color sólido."/>
+				<Item id="90372" name="Grupos de barras de herramientas"/>
+				<Item id="90373" name="Elija dónde aparece cada botón en la barra de herramientas Liquid Glass: en la"/>
+				<Item id="90374" name="Botón"/>
+				<Item id="90375" name="Colocación"/>
+				<Item id="90376" name="Restablecer los valores predeterminados"/>
+				<Item id="90377" name="Menú adicional"/>
+				<Item id="90378" name="Oculto"/>
+				<Item id="90379" name="Ajuste de palabras compatible con CJK"/>
+				<Item id="90380" name="La selección de columnas cambia a edición múltiple"/>
+				<Item id="90381" name="Interlineado:"/>
+				<Item id="90382" name="1.0 (predeterminado)"/>
+				<Item id="90383" name="Ocultar barra de pestañas"/>
+				<Item id="90384" name="El tamaño de la pestaña sigue el zoom del documento"/>
+				<Item id="90385" name="Elige…"/>
+				<Item id="90386" name="Restablecer los valores predeterminados"/>
+				<Item id="90387" name="Usando la ubicación predeterminada."/>
+				<Item id="90388" name="Ubicación personalizada."/>
+				<Item id="90389" name="Ruta no válida: las copias de seguridad utilizarán la ubicación predeterminada."/>
+				<Item id="90390" name="elegir"/>
+				<Item id="90391" name="Insertar selección:"/>
+				<Item id="90392" name="Utilice el modo Boost Regex (varias líneas; reinicie para aplicar)"/>
+				<Item id="90393" name="Reinicie Nextpad++ para que surta efecto."/>
+				<Item id="90394" name="Ruta no válida."/>
+				<Item id="90395" name="Reiniciar ahora"/>
+				<Item id="90396" name="Seleccione una carpeta desde/hacia donde Nextpad++ lee/escribe su configuración"/>
+				<Item id="90397" name="(no lo elijas a menos que sepas lo que estás haciendo)"/>
+				<Item id="90398" name="Tamaño del icono de la barra de herramientas"/>
+				<Item id="90399" name="100% (predeterminado)"/>
+				<Item id="90400" name="Velocidad de desplazamiento de la rueda del ratón"/>
+				<Item id="90401" name="1× (apagado)"/>
+				<Item id="90402" name="El tamaño del icono de la barra de herramientas cambió"/>
+				<Item id="90403" name="El nuevo tamaño del icono de la barra de herramientas entrará en vigor la próxima vez que se inicie Nextpad++."/>
+				<Item id="90404" name="Los iconos de la barra de herramientas cambiaron"/>
+				<Item id="90405" name="Los nuevos iconos de la barra de herramientas entrarán en vigor la próxima vez que se inicie Nextpad++."/>
+				<Item id="90410" name="Buscar en Proyectos..."/>
+				<Item id="90411" name="Ejecutar macro en archivos..."/>
+				<Item id="90418" name="Esto lo eliminará junto con todo su contenido del proyecto.Ningún archivo en el disco se verá afectado."/>
+				<Item id="90420" name="Carpeta"/>
+				<Item id="90421" name="Encuentra en estos resultados de búsqueda..."/>
+				<Item id="90422" name="Copiar líneas seleccionadas"/>
+				<Item id="90423" name="Copiar nombres de ruta seleccionados"/>
+				<Item id="90424" name="Abrir nombres de ruta seleccionados"/>
+				<Item id="90425" name="Líneas largas de ajuste de palabras"/>
+				<Item id="90426" name="Purga para cada búsqueda"/>
+				<Item id="90427" name="No encontrado"/>
+				<Item id="90428" name="CONFLICTO: %@"/>
+				<Item id="90429" name="¿Eliminar &quot;%@&quot;?"/>
+				<Item id="90430" name="Administrador de idioma definido por el usuario"/>
+				<Item id="90431" name="Filtrar idiomas…"/>
+				<Item id="90432" name="Fuente"/>
+				<Item id="90433" name="Fuentes de CA"/>
+				<Item id="90434" name="Estado"/>
+				<Item id="90435" name="Instalar / Actualizar"/>
+				<Item id="90436" name="%lu idiomas · %lu instalado · %lu actualizaciones"/>
+				<Item id="90437" name="Autor"/>
+				<Item id="90438" name="Combinado: %ld entradas de %lu fuentes (combinadas)"/>
+				<Item id="90439" name="Seleccione uno o más idiomas para instalar."/>
+				<Item id="90440" name="Nada descargable para la selección."/>
+				<Item id="90441" name="Descarga fallida"/>
+				<Item id="90442" name="La suma de comprobación no coincide"/>
+				<Item id="90443" name="Los idiomas seleccionados ahora están disponibles en el menú Idioma."/>
+				<Item id="90444" name="Seleccione uno o más idiomas instalados para eliminar."/>
+				<Item id="90445" name="Eliminado"/>
+				<Item id="90446" name="Este nombre ya lo utiliza otro idioma."/>
+				<Item id="90447" name="Este idioma no se pudo eliminar."/>
+				<Item id="90448" name="Los idiomas preinstalados no se pueden eliminar."/>
+				<Item id="90449" name="No se pudo cambiar el nombre de este idioma."/>
+				<Item id="90450" name="Este archivo es %@.Al abrirla, se desactivará el resaltado de sintaxis y se deshacerá el historial para que la aplicación siga respondiendo.&#10;&#10;¿Quieres continuar?"/>
+				<Item id="90451" name="Abierto de todos modos"/>
+				<Item id="90452" name="&quot;%@&quot; cambió en el disco"/>
+				<Item id="90453" name="ignorar"/>
+				<Item id="90454" name="Mantener mi versión"/>
+				<Item id="90455" name="No se pudo recargar &quot;%@&quot;"/>
+				<Item id="90456" name="No se pudo leer el archivo."/>
+				<Item id="90457" name="Elija dónde aparece cada botón en la barra de herramientas Liquid Glass: en la cápsula del grupo (barra de herramientas), en el menú adicional ▾ del grupo u oculto."/>
+				<Item id="90458" name="Donar para apoyar el desarrollo"/>
+				<Item id="90459" name="Instalar herramientas de línea de comando"/>
+				<Item id="90460" name="Mostrar sombras detrás de las cápsulas de la barra de herramientas"/>
+				<Item id="90461" name="Donar"/>
+				<Item id="90462" name="Conjuntos de caracteres"/>
+				<Item id="90463" name="minimizar"/>
+				<Item id="90464" name="Ocultar Nextpad++"/>
+				<Item id="90465" name="Ocultar otros"/>
+				<Item id="90466" name="Mostrar todo"/>
+				<Item id="90467" name="Salir Nextpad++"/>
+				<Item id="90468" name="Guardar la macro grabada actual…"/>
+				<Item id="90469" name="Recortar el espacio final y ahorrar"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

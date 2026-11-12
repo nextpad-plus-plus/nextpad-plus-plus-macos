@@ -1466,13 +1466,13 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90006" name="Source Control"/>
 				<Item id="90007" name="Kudzipereka"/>
 				<Item id="90008" name="Kudzipereka Kwalephera"/>
-				<Item id="90009" name="Palibe git repository\nGwiritsani ntchito Sakatulani kuti mutsegule repo."/>
+				<Item id="90009" name="Palibe git repository&#10;Gwiritsani ntchito Sakatulani kuti mutsegule repo."/>
 				<Item id="90010" name="Gawo"/>
 				<Item id="90011" name="Zosewerera"/>
 				<Item id="90012" name="Gawo Onse"/>
 				<Item id="90013" name="Tsegulani Zonse"/>
-				<Item id="90014" name="Tumizani uthenga\u2026"/>
-				<Item id="90015" name="Sakatulani nkhokwe\u2026"/>
+				<Item id="90014" name="Tumizani uthenga…"/>
+				<Item id="90015" name="Sakatulani nkhokwe…"/>
 				<Item id="90016" name="Sankhani chikwatu cha git"/>
 				<Item id="90017" name="(palibe posungira)"/>
 				<Item id="90018" name="(ochotsedwa)"/>
@@ -1486,9 +1486,9 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90026" name="Zotsatira"/>
 				<Item id="90027" name="Imani"/>
 				<Item id="90028" name="Kusaka kwayimitsidwa."/>
-				<Item id="90029" name="Kusaka\u2026"/>
+				<Item id="90029" name="Kusaka…"/>
 				<Item id="90030" name="Mawu oti mufufuze"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Kufufuza..."/>
 				<Item id="90033" name="Sinthani:"/>
 				<Item id="90034" name="Mawu Onse"/>
@@ -1548,7 +1548,7 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90088" name="Ikani mapulagini"/>
 				<Item id="90089" name="Chotsani mapulagini"/>
 				<Item id="90090" name="Palibe malamulo omwe apezeka"/>
-				<Item id="90091" name="Lembani kuti mufufuze\u2026"/>
+				<Item id="90091" name="Lembani kuti mufufuze…"/>
 				<Item id="90092" name="Chinenero Chofotokozedwa ndi Mtumiki v.2.1"/>
 				<Item id="90093" name="Pangani Chinenero Chatsopano"/>
 				<Item id="90094" name="Lowetsani dzina:"/>
@@ -1557,11 +1557,9 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90097" name="Osasunga"/>
 				<Item id="90098" name="Zachitika"/>
 				<Item id="90099" name="Sinthani Kukulunga Mawu"/>
-				<Item id="90100" name="Onetsani Anthu Onse"/>
 				<Item id="90101" name="Onetsani Zosankha za Anthu"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Sanakwaniritsidwebe"/>
-				<Item id="90104" name="Tsitsaninso kuchokera ku Disk"/>
 				<Item id="90105" name="Sinthani Injini Yosaka"/>
 				<Item id="90106" name="Thamangani Vuto"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90110" name="Tsitsani"/>
 				<Item id="90111" name="Tsamba Lotulutsidwa"/>
 				<Item id="90112" name="Kenako"/>
-				<Item id="90113" name="Zosefera mapulagini\u2026"/>
+				<Item id="90113" name="Zosefera mapulagini…"/>
 				<Item id="90114" name="Likupezeka"/>
 				<Item id="90115" name="Zosintha"/>
 				<Item id="90116" name="Adayikidwa"/>
@@ -1579,7 +1577,7 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90119" name="Chotsani mapulagini otsatirawa?"/>
 				<Item id="90120" name="Ikani mapulagini otsatirawa?"/>
 				<Item id="90121" name="Izi zichotsa mafayilo owonjezera."/>
-				<Item id="90122" name="Sakani malamulo\u2026"/>
+				<Item id="90122" name="Sakani malamulo…"/>
 				<Item id="90123" name="Mtundu wakutsogolo"/>
 				<Item id="90124" name="Mtundu wakumbuyo"/>
 				<Item id="90125" name="Dzina la Macro"/>
@@ -1599,7 +1597,7 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90139" name="Zizindikiro zonse zachotsedwa."/>
 				<Item id="90140" name="Mawu olembedwa akopedwa pa bolodi."/>
 				<Item id="90141" name="Palibe zolembedwa zokopera."/>
-				<Item id="90142" name="Mukusaka... %ld kugunda \u2014 %@"/>
+				<Item id="90142" name="Mukusaka... %ld kugunda — %@"/>
 				<Item id="90143" name="Kusintha m'mafayilo..."/>
 				<Item id="90144" name="Bwezerani m'Maprojekiti: Simunalumikizanebe."/>
 				<Item id="90145" name="Pezani mu Projects: Simunalumikizidwebe pamndandanda wamafayilo a Project Panel."/>
@@ -1626,14 +1624,12 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90165" name="Tsimikizirani musanasunge Zonse"/>
 				<Item id="90166" name="Tsimikizirani Kusintha Zonse m'zikalata zotseguka"/>
 				<Item id="90167" name="Sinthani: osasunthika kumalo ena"/>
-				<Item id="90168" name="Gwiritsani ntchito font ya monospaced mu Pezani dialog"/>
 				<Item id="90169" name="Dinani kumanja kumasunga zosankha"/>
 				<Item id="90170" name="Sinthani sinthani deti/nthawi yoyitanitsa"/>
 				<Item id="90171" name="Gwiritsani ntchito zigawo za mndandanda wa XML"/>
 				<Item id="90172" name="Zotsekera zokha ( ) [ ] { }"/>
 				<Item id="90173" name="Kuchokera kwa munthu wa Nth:"/>
 				<Item id="90174" name="Posankha-chongoyang'ana poyambira (mabati):"/>
-				<Item id="90175" name="Zowonjezera (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Mkonzi"/>
 				<Item id="90177" name="Mphepete"/>
 				<Item id="90178" name="Wakuda"/>
@@ -1647,12 +1643,10 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Wokometsedwa"/>
 				<Item id="90188" name="Yosavuta +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Pulogalamu yowonjezera mndandanda"/>
 				<Item id="90192" name="Sankhani fayilo ya XML ya Notepad ++ yoti mugwiritse ntchito"/>
-				<Item id="90193" name="Pangani zatsopano\u2026"/>
-				<Item id="90194" name="Sungani monga\u2026"/>
+				<Item id="90193" name="Pangani zatsopano…"/>
+				<Item id="90194" name="Sungani monga…"/>
 				<Item id="90195" name="Chilankhulo cha ogwiritsa ntchito:"/>
 				<Item id="90196" name="Dzina lachiyankhulo"/>
 				<Item id="90197" name="Pangani"/>
@@ -1682,6 +1676,217 @@ Mutha kuyambitsanso zokambiranazi mu Zokonda pambuyo pake."/>
 				<Item id="90221" name="Khalidwe Lotsekedwa (macOS)"/>
 				<Item id="90222" name="Onani Zosintha…"/>
 				<Item id="90223" name="Tsegulani Posachedwapa"/>
+				<Item id="90226" name="Thandizo"/>
+				<Item id="90227" name="Gawo Lalephera"/>
+				<Item id="90228" name="Kutsegula Kwalephereka"/>
+				<Item id="90229" name="zilipo"/>
+				<Item id="90230" name="Mukuthamanga"/>
+				<Item id="90231" name="Osandikumbutsanso"/>
+				<Item id="90232" name="Zosintha"/>
+				<Item id="90233" name="Onani zosintha zokha"/>
+				<Item id="90234" name="Macheke osintha okha ndiwozimitsidwa."/>
+				<Item id="90235" name="Kutsimikiziridwa komaliza:"/>
+				<Item id="90236" name="Palibe intaneti."/>
+				<Item id="90237" name="Yankho losayembekezereka kuchokera ku seva yosinthira."/>
+				<Item id="90238" name="Palibe zotulutsidwa zomwe zapezeka."/>
+				<Item id="90239" name="Seva yosinthira sinapezeke kwakanthawi.Chonde yesaninso nthawi ina."/>
+				<Item id="90240" name="Seva yosinthira idakana pempholi.Wothandizira, firewall kapena VPN atha kukhala akuletsa kulowa kwa GitHub."/>
+				<Item id="90241" name="Zosintha zambiri kuchokera pa netiweki yanu (malire awa amagawidwa ndi aliyense amene ali pamenepo).Yesaninso pambuyo pake"/>
+				<Item id="90242" name="Zosintha zambiri kuchokera pa netiweki yanu (malire awa amagawidwa ndi aliyense amene ali pamenepo).Chonde yesaninso nthawi ina."/>
+				<Item id="90243" name="Seva yosinthira idabweza mawonekedwe"/>
+				<Item id="90244" name="Yesaninso"/>
+				<Item id="90245" name="Kukula kwa mawu osindikiza:"/>
+				<Item id="90246" name="Gwiritsani ntchito skrini yowonera"/>
+				<Item id="90247" name="Kukula kwenikweni"/>
+				<Item id="90248" name="Mafayilo ena sanathe kusinthidwa"/>
+				<Item id="90249" name="...ndi %lu zina"/>
+				<Item id="90250" name="Kugwirizana kwamafayilo kumayendetsedwa ndi bungwe lanu."/>
+				<Item id="90251" name="Tikuyembekezera macOS kuti atsimikizire…"/>
+				<Item id="90252" name="macOS sanagwiritse ntchito kusinthaku."/>
+				<Item id="90253" name="Olembetsedwa"/>
+				<Item id="90254" name="Tsegulani mafayilo onse mufoda?"/>
+				<Item id="90255" name="Izi zitsegula mafayilo %lu m'ma tabu atsopano."/>
+				<Item id="90256" name="Sizinathe kuitanitsa: %@"/>
+				<Item id="90258" name="Tapeza %ld zofanana mu %ld mafayilo."/>
+				<Item id="90259" name="Kusaka… %ld mafananidwe mpaka pano"/>
+				<Item id="90260" name="%@ (%ld kufanana%@)"/>
+				<Item id="90261" name="Kusaka kopusa"/>
+				<Item id="90266" name="Chiwerengero: %ld mafananidwe."/>
+				<Item id="90267" name="Sinthani Zonse: %ld zochitika zidasinthidwa %@."/>
+				<Item id="90268" name="Sinthani mu Mafayilo Otsegulidwa: %ld zochitika zidasinthidwa."/>
+				<Item id="90269" name="Pezani mu Mafayilo: %ld gundani (ma) mu %ld mafayilo."/>
+				<Item id="90270" name="Pezani mu Mafayilo: 0 kugunda."/>
+				<Item id="90271" name="M'malo mwake zonse za &quot;%@&quot; ndi &quot;%@&quot; m'ndandanda:&#10;%@&#10;&#10;Izi sizingatheke."/>
+				<Item id="90272" name="M'malo mu Mafayilo: %ld kusintha (ma) mu %ld mafayilo."/>
+				<Item id="90273" name="Tsegulani gulu la Project kaye."/>
+				<Item id="90274" name="Sankhani gulu limodzi la Project kuti mufufuze."/>
+				<Item id="90275" name="Palibe mafayilo oti mufufuze."/>
+				<Item id="90276" name="Find in Projects: %ld hit(ma) mu %ldmafayilo."/>
+				<Item id="90277" name="Pezani mu Ntchito: 0 kugunda."/>
+				<Item id="90278" name="Sinthani zochitika zonse za"/>
+				<Item id="90279" name="ndi"/>
+				<Item id="90280" name="mu"/>
+				<Item id="90281" name="fayilo ya polojekiti (ma).Izi sizingasinthidwe."/>
+				<Item id="90282" name="M'malo m'Maprojekiti: %ld kusintha (ma) mu %ld mafayilo."/>
+				<Item id="90283" name="Chizindikiro: %ld zofananira zasindikizidwa."/>
+				<Item id="90284" name="Zosefera dzina la fayilo/foda..."/>
+				<Item id="90285" name="Zolemba zina sizinathe kusungidwa"/>
+				<Item id="90286" name="⌘ Command"/>
+				<Item id="90287" name="⌃ Kuwongolera"/>
+				<Item id="90288" name="⌥ Njira"/>
+				<Item id="90289" name="⇧ Kusintha"/>
+				<Item id="90290" name="Lowetsani chingwe chamtundu wa NSDateFormatter:"/>
+				<Item id="90291" name="'%@' sichinagwiritsidwebe ntchito mumtunduwu."/>
+				<Item id="90292" name="Lowetsani pulogalamu yowonjezera"/>
+				<Item id="90293" name="Kuyambitsanso Kufunika"/>
+				<Item id="90294" name="Palibe mafayilo oti asinthe"/>
+				<Item id="90295" name="Node ya pulojekitiyi ilibe mafayilo."/>
+				<Item id="90296" name="'%@' ili ndi zosintha zosasungidwa.&#10;Lowetsaninso ndikutaya zosintha?"/>
+				<Item id="90297" name="Lowetsani dzina latsopano lafayilo:"/>
+				<Item id="90299" name="Dzina Latsopano:"/>
+				<Item id="90301" name="Dzinalo silingakhale ndi &quot;/&quot; kapena &quot;:&quot;."/>
+				<Item id="90304" name="Osasunga Zonse"/>
+				<Item id="90306" name="Pali njira zitatu zosinthira kukhala mulingo wosankha:&#10;&#10;1.(Kiyibodi ndi Mbewa) Gwirani Njira pamene mukukoka kumanzere&#10;&#10;2.(Kiyibodi yokha) Gwirani Option+Shift mukugwiritsa ntchito mivi&#10;&#10;3.(Kiyibodi kapena Mouse)&#10; Ikani caret poyambira pomwe padalopo mukufuna, kenako&#10; perekani lamulo la “Yambani/Mapeto Sankhani mu Column Mode”;&#10; Sunthani chisamaliro chakumapeto kwa chipilala chomwe mukufuna, kenako&#10; perekani lamulo la “Yambani/Malizani Sankhani mu Column Mode” kachiwiri."/>
+				<Item id="90307" name="Lowetsani ulalo wofufuzira.Gwiritsani ntchito %s monga chosungira funso (kapena onjezerani funso kumapeto):"/>
+				<Item id="90308" name="Lowetsani lamulo kapena URL..."/>
+				<Item id="90309" name="Zalephera kuchita:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Kusintha contextMenu.xml kumakupatsani mwayi wosintha Nextpad++ menyu yanu yoyambira poyambira pa zone yosinthira.&#10;Muyenera kuyambitsanso Nextpad++ yanu kuti iyambe kugwira ntchito mukasintha contextMenu.xml."/>
+				<Item id="90312" name="Zayikidwa kale"/>
+				<Item id="90313" name="Ikani nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Kuyika kwalephera"/>
+				<Item id="90315" name="Adayikidwa - koma ~/.local/bin sichili pa PATH yanu"/>
+				<Item id="90316" name="Kale mu config"/>
+				<Item id="90317" name="Zowonjezeredwa ku PATH"/>
+				<Item id="90318" name="Sindinathe kulemba"/>
+				<Item id="90319" name="Zokopedwa"/>
+				<Item id="90321" name="Zosintha zanu zidzatayika mukapanda kuzisunga."/>
+				<Item id="90322" name="Ikani ku zolemba zonse"/>
+				<Item id="90323" name="Kuthamanga Macro pa owona"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Foda:"/>
+				<Item id="90326" name="Sankhani chikwatu…"/>
+				<Item id="90327" name="Sakatulani…"/>
+				<Item id="90328" name="Zowonjezera:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Phatikizani mafayilo obisika"/>
+				<Item id="90331" name="Kukula kwakukulu:"/>
+				<Item id="90332" name="Zopanda malire"/>
+				<Item id="90333" name="Pa fayilo:"/>
+				<Item id="90334" name="Sungani ngati zasinthidwa"/>
+				<Item id="90335" name="Tsekani pambuyo"/>
+				<Item id="90336" name="Tsekani mafayilo omwe anali otsegulidwa kale"/>
+				<Item id="90337" name="Zalakwika:"/>
+				<Item id="90338" name="Lumphani fayilo ndikupitiriza"/>
+				<Item id="90339" name="Imani pa cholakwika choyamba"/>
+				<Item id="90340" name="(palibe macros osungidwa)"/>
+				<Item id="90341" name="%lu mafayilo ofanana"/>
+				<Item id="90342" name="Foda sinapezeke"/>
+				<Item id="90343" name="Sankhani chikwatu chomwe chilipo."/>
+				<Item id="90344" name="Palibe mafayilo ofanana"/>
+				<Item id="90345" name="Sinthani zosefera zowonjezera, zobwereza, kapena mafayilo obisika."/>
+				<Item id="90346" name="Kuyambira…"/>
+				<Item id="90347" name="Kukonza:"/>
+				<Item id="90348" name="%ld / %ld Chabwino: %ld Adalumpha: %ld Zalephera: %ld"/>
+				<Item id="90349" name="Gulu lathetsedwa"/>
+				<Item id="90350" name="Gulu latha"/>
+				<Item id="90351" name="Chiwerengero chonse: %lu Chabwino: %ld Adalumpha: %ld Zalephera: %ld"/>
+				<Item id="90352" name="Tsiku Lomangidwira"/>
+				<Item id="90353" name="Opaleshoni System"/>
+				<Item id="90354" name="zaposachedwa"/>
+				<Item id="90355" name="zachikale"/>
+				<Item id="90356" name="osadziwika"/>
+				<Item id="90357" name="Yambitsaninso pulogalamu kuti zosintha zichitike."/>
+				<Item id="90358" name="Sinthani mapulagini"/>
+				<Item id="90359" name="Sinthani mapulagini otsatirawa?"/>
+				<Item id="90360" name="Mabaibulo apano adasungidwa mpaka ~/Library/Application Support/Nextpad++/plugin-backups/ asanasinthidwe."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Sinthani kumawonekedwe Atsopano Tahoe (Beta)"/>
+				<Item id="90363" name="Gwiritsani ntchito menyu macOS (Beta)"/>
+				<Item id="90364" name="Maonekedwe atsopano a Tahoe adzagwiritsidwa ntchito mukayambiranso Nextpad++."/>
+				<Item id="90365" name="Maonekedwe achikale adzabwezeretsedwa mukayambiranso Nextpad++."/>
+				<Item id="90366" name="Siyani Tsopano"/>
+				<Item id="90367" name="Mamenyu adzakonzedwanso motsatira macOS mutayambitsanso Nextpad++."/>
+				<Item id="90368" name="Masanjidwe akale adzabwezeretsedwa mukayambitsanso Nextpad++."/>
+				<Item id="90369" name="Mtundu"/>
+				<Item id="90370" name="Ikani pazithunzi za plugin toolbar"/>
+				<Item id="90371" name="Mu Complete mode plugin zithunzi zimakhala mtundu umodzi wolimba."/>
+				<Item id="90372" name="Toolbar Magulu"/>
+				<Item id="90373" name="Sankhani pomwe batani lililonse limapezeka pazida za Liquid Glass: pa"/>
+				<Item id="90374" name="Batani"/>
+				<Item id="90375" name="Kuyika"/>
+				<Item id="90376" name="Bwezerani ku Zosasintha"/>
+				<Item id="90377" name="Menyu yakuchulukira"/>
+				<Item id="90378" name="Zobisika"/>
+				<Item id="90379" name="Kulemba mawu ochezeka ndi CJK"/>
+				<Item id="90380" name="Zosankha zazambiri zimasintha kukhala zosintha zambiri"/>
+				<Item id="90381" name="Kutalikirana kwa mizere:"/>
+				<Item id="90382" name="1.0 (Zofikira)"/>
+				<Item id="90383" name="Bisani kapamwamba"/>
+				<Item id="90384" name="Kukula kwa tabu kumatsata makulitsidwe a zikalata"/>
+				<Item id="90385" name="Sankhani…"/>
+				<Item id="90386" name="Bwezeretsani ku Default"/>
+				<Item id="90387" name="Kugwiritsa ntchito malo osakhazikika."/>
+				<Item id="90388" name="Malo mwamakonda."/>
+				<Item id="90389" name="Njira yolakwika - zosunga zobwezeretsera zidzagwiritsa ntchito malo osakhazikika."/>
+				<Item id="90390" name="Sankhani"/>
+				<Item id="90391" name="Ikani Zosankha:"/>
+				<Item id="90392" name="Gwiritsani ntchito Boost Regex mode (mizere yambiri; yambitsaninso kugwiritsa ntchito)"/>
+				<Item id="90395" name="Yambitsaninso Tsopano"/>
+				<Item id="90397" name="(musasankhe pokhapokha mutadziwa zomwe mukuchita)"/>
+				<Item id="90398" name="Kukula kwa chizindikiro cha Toolbar"/>
+				<Item id="90399" name="100% (Zofikira)"/>
+				<Item id="90400" name="Mouse gudumu mpukutu liwiro"/>
+				<Item id="90401" name="1 × (kuchotsa)"/>
+				<Item id="90402" name="Chizindikiro cha Toolbar chasinthidwa"/>
+				<Item id="90403" name="Kukula kwa chizindikiro chazida zatsopano kudzayamba nthawi ina Nextpad++ ikadzayamba."/>
+				<Item id="90404" name="Zithunzi za Toolbar zasinthidwa"/>
+				<Item id="90405" name="Zithunzi zatsopano zazida zidzayamba nthawi ina Nextpad++ ikadzayamba."/>
+				<Item id="90411" name="Pangani Macro pa Mafayilo..."/>
+				<Item id="90418" name="Izi zidzachotsa ndi zonse zomwe zili mu polojekitiyi.Palibe mafayilo pa disk omwe angakhudzidwe."/>
+				<Item id="90420" name="Foda"/>
+				<Item id="90427" name="Sanapezeke"/>
+				<Item id="90428" name="KUSANGANA: %@"/>
+				<Item id="90429" name="Chotsani &quot;%@&quot;?"/>
+				<Item id="90430" name="Woyang'anira Chilankhulo Chofotokozera"/>
+				<Item id="90431" name="Zosefera zilankhulo…"/>
+				<Item id="90432" name="Gwero"/>
+				<Item id="90433" name="Magwero a AC"/>
+				<Item id="90434" name="Mkhalidwe"/>
+				<Item id="90435" name="Ikani / Kusintha"/>
+				<Item id="90436" name="%lu zilankhulo · %lu adayika · %lu zosintha"/>
+				<Item id="90437" name="Wolemba"/>
+				<Item id="90438" name="Zophatikizidwa: %ld zolemba kuchokera %lu kochokera (zophatikizidwa)"/>
+				<Item id="90439" name="Sankhani chinenero chimodzi kapena zingapo kuti muyike."/>
+				<Item id="90440" name="Palibe chotsitsa pazosankha."/>
+				<Item id="90441" name="Kutsitsa kwalephera"/>
+				<Item id="90442" name="Kusagwirizana kwa Checksum"/>
+				<Item id="90443" name="Zinenero zosankhidwa tsopano zikupezeka pamenyu ya Zinenero."/>
+				<Item id="90444" name="Sankhani chinenero chimodzi kapena zingapo zomwe zaikidwa kuti muchotse."/>
+				<Item id="90445" name="Zachotsedwa"/>
+				<Item id="90446" name="Dzinali limagwiritsidwa ntchito kale ndi chilankhulo china."/>
+				<Item id="90447" name="Chilankhulochi sichinathe kuchotsedwa."/>
+				<Item id="90448" name="Zilankhulo zomwe zidayikidwiratu sizingachotsedwe."/>
+				<Item id="90449" name="Chilankhulochi sichinasinthidwenso."/>
+				<Item id="90450" name="Fayiloyi ndi %@.Kuyitsegula kuzimitsa kuwunikira kwa mawu ndikusintha mbiri kuti pulogalamuyo ikhale yolabadira.&#10;&#10;Kodi mukufuna kupitiriza?"/>
+				<Item id="90451" name="Tsegulani Komabe"/>
+				<Item id="90452" name="&quot;%@&quot; yasinthidwa pa disk"/>
+				<Item id="90453" name="Musanyalanyaze"/>
+				<Item id="90454" name="Sungani Baibulo Langa"/>
+				<Item id="90455" name="Sizinathe kutsegulanso &quot;%@&quot;"/>
+				<Item id="90456" name="Fayilo sinathe kuwerengedwa."/>
+				<Item id="90457" name="Sankhani pomwe batani lililonse likuwonekera mu Liquid Glasszida: pa kapusule ya gulu (Toolbar), mugulu ▾ menyu yakusefukira, kapena Zobisika."/>
+				<Item id="90458" name="Perekani Kuthandizira Chitukuko"/>
+				<Item id="90459" name="Ikani Command Line Tools"/>
+				<Item id="90460" name="Onetsani mithunzi kuseri kwa makapisozi a toolbar"/>
+				<Item id="90461" name="Perekani"/>
+				<Item id="90462" name="Seti zamakhalidwe"/>
+				<Item id="90463" name="Chepetsani"/>
+				<Item id="90464" name="Bisani Nextpad++"/>
+				<Item id="90465" name="Bisani Ena"/>
+				<Item id="90466" name="Onetsani Zonse"/>
+				<Item id="90467" name="Siyani Nextpad++"/>
+				<Item id="90468" name="Sungani Macro Yojambulidwa Pano…"/>
+				<Item id="90469" name="Chepetsani Malo Otsatira ndikusunga"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

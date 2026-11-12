@@ -15,6 +15,9 @@ extern NSNotificationName const EditorViewDidGainFocusNotification;
 /// invocations gated to the panel-visible state (issue #76).
 extern NSNotificationName const EditorViewDidSaveNotification;
 
+/// Posted when an editor's zoom level changes (SCN_ZOOM). Object is the EditorView.
+extern NSNotificationName const EditorViewZoomDidChangeNotification;
+
 /// Wraps ScintillaView and provides Nextpad++-style editor functionality.
 @interface EditorView : NSView <ScintillaNotificationProtocol>
 
@@ -34,12 +37,26 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 /// Restore the untitled index from a saved session (keeps tab name consistent).
 - (void)restoreUntitledIndex:(NSInteger)index;
 
-/// Force the modified flag to YES (used after session restore from backup).
+/// Mark a buffer just loaded from a backup as modified. It stays modified until
+/// it is saved or reloaded: undoing back to the load point does not make it
+/// clean, because the file on disk (if any) does not hold that text.
 - (void)markAsModified;
+
+/// For a tab recovered from an orphaned backup: the name it had before, which
+/// Save As suggests instead of the "(recovered)" tab title.
+@property (nonatomic, copy, nullable) NSString *recoveredFromName;
+
+/// File name the save panels suggest: recoveredFromName, else displayName.
+@property (nonatomic, readonly) NSString *suggestedSaveName;
 
 /// Write current content to dir using NPP-style timestamped filename.
 /// Updates backupFilePath on success. Returns the backup path or nil.
 - (nullable NSString *)saveBackupToDirectory:(NSString *)dir;
+
+/// Delete this buffer's backup file, if any, and clear backupFilePath. Called
+/// when the tab is closed, so text the user chose not to save is not brought
+/// back by crash recovery.
+- (void)discardBackup;
 
 /// `dir`/`filename`, made unique by appending "-2", "-3", … while a file already
 /// exists there. Backup names are "<display name>@<timestamp>" at one-second
@@ -63,8 +80,19 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 // Current language name (e.g. "python"). Empty string = plain text.
 @property (nonatomic, copy) NSString *currentLanguage;
 
+// YES when currentLanguage names a User Defined Language rather than a
+// built-in one. A UDL may share a built-in's name (e.g. "Python"), so the
+// name alone does not say which is active.
+@property (nonatomic, readonly) BOOL currentLanguageIsUDL;
+
 // YES when in overwrite (OVR) mode, NO for normal insert (INS) mode.
 @property (nonatomic, readonly) BOOL isOverwriteMode;
+
+/// Live zoom points from Scintilla (SCI_GETZOOM). 0 is default 100%.
+@property (nonatomic, readonly) NSInteger zoomLevel;
+
+/// Live zoom percentage (e.g. 100 for 100%, 110 for 110%, etc.).
+@property (nonatomic, readonly) NSInteger zoomPercentage;
 
 // Word wrap — stored per-editor tab.
 @property (nonatomic) BOOL wordWrapEnabled;
@@ -106,7 +134,13 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 - (BOOL)writeCopyToPath:(NSString *)path error:(NSError **)error;
 
 /// Set the syntax language by name (e.g. "cpp", "python"). Pass "" for plain text.
+/// A built-in language wins over a UDL of the same name.
 - (void)setLanguage:(NSString *)languageName;
+
+/// As setLanguage:, but when preferUDL is YES a User Defined Language of
+/// that exact name wins over a built-in language of the same name (Language
+/// menu UDL entries, a UDL saved in the session, -udl= on the command line).
+- (void)setLanguage:(NSString *)languageName preferUDL:(BOOL)preferUDL;
 
 /// Change the save encoding without reloading content; marks buffer as modified.
 - (void)setFileEncoding:(NSStringEncoding)enc hasBOM:(BOOL)bom;
@@ -395,3 +429,15 @@ extern NSNotificationName const EditorViewDidSaveNotification;
 @end
 
 NS_ASSUME_NONNULL_END
+
+/// Default macOS key bindings for a Scintilla command, read from the same generated
+/// table the editor installs (kSciDefaultKeys in EditorView.mm — built from
+/// scintilla/src/KeyMap.cxx MapDefault plus the scintilla/cocoa/ScintillaCocoa.mm
+/// macMapDefault overlay). Writes up to maxCombos key definitions
+/// (keyDef = sckKey | (mod << 16)) into combos and returns how many it WROTE, so the
+/// count is always safe as a loop bound. 0 means the command has no default binding
+/// on macOS — every command with one is present in the table.
+///
+/// Exposed so the Shortcut Mapper can show what the editor really does rather than
+/// keeping a second, hand-maintained copy of the defaults that can drift from it.
+int NppScintillaDefaultKeyCombos(int sciID, int *combos, int maxCombos);

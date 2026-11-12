@@ -909,13 +909,13 @@
 				<Item id="90006" name="Kontrola Çavkaniyê"/>
 				<Item id="90007" name="Pêkhatin"/>
 				<Item id="90008" name="Pêkanîna Sernekeftin"/>
-				<Item id="90009" name="Depoya git tune\nJi bo vekirina depoyekê &quot;Browse&quot; bikar bîne."/>
+				<Item id="90009" name="Depoya git tune&#10;Ji bo vekirina depoyekê &quot;Browse&quot; bikar bîne."/>
 				<Item id="90010" name="Qonax"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Qonaxa Hemû"/>
 				<Item id="90013" name="Hemûyan Rakin"/>
-				<Item id="90014" name="Peyama bipejirîne\u2026"/>
-				<Item id="90015" name="Li depoyê bigerin\u2026"/>
+				<Item id="90014" name="Peyama bipejirîne…"/>
+				<Item id="90015" name="Li depoyê bigerin…"/>
 				<Item id="90016" name="Peldanka depoya git hilbijêrin"/>
 				<Item id="90017" name="(ne depo)"/>
 				<Item id="90018" name="(veqetandî)"/>
@@ -929,9 +929,9 @@
 				<Item id="90026" name="Encam"/>
 				<Item id="90027" name="Raweste"/>
 				<Item id="90028" name="Lêgerîn rawestandin."/>
-				<Item id="90029" name="Lêgerîn\u2026"/>
+				<Item id="90029" name="Lêgerîn…"/>
 				<Item id="90030" name="Nivîsa ji bo lêgerînê"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Lêgerîn..."/>
 				<Item id="90033" name="Biguherîne:"/>
 				<Item id="90034" name="Tevahiya Peyv"/>
@@ -991,7 +991,7 @@
 				<Item id="90088" name="Pêvekan saz bike"/>
 				<Item id="90089" name="Pêvekan Rake"/>
 				<Item id="90090" name="Ferman nehat dîtin"/>
-				<Item id="90091" name="Ji bo lêgerînê binivîse\u2026"/>
+				<Item id="90091" name="Ji bo lêgerînê binivîse…"/>
 				<Item id="90092" name="Ziman Bikarhêner Diyar V.2.1"/>
 				<Item id="90093" name="Zimanê Nû Biafirîne"/>
 				<Item id="90094" name="Navekî binivîse:"/>
@@ -1004,7 +1004,6 @@
 				<Item id="90101" name="Vebijêrkên Karakterên Nîşan Bide"/>
 				<Item id="90102" name="Veguheztina Rêbernameya Derketinê"/>
 				<Item id="90103" name="Hîn nehatiye pêkanîn"/>
-				<Item id="90104" name="Ji dîskê ji nû ve barkirin"/>
 				<Item id="90105" name="Biguherîne Engine Search"/>
 				<Item id="90106" name="Çewtiya Rêvekirinê"/>
 				<Item id="90107" name="Nextpad++ Dema barkirinê"/>
@@ -1013,7 +1012,7 @@
 				<Item id="90110" name="Daxistin"/>
 				<Item id="90111" name="Rûpelê berdan"/>
 				<Item id="90112" name="Paşê"/>
-				<Item id="90113" name="Pêvekên Parzûnê\u2026"/>
+				<Item id="90113" name="Pêvekên Parzûnê…"/>
 				<Item id="90114" name="Berdest"/>
 				<Item id="90115" name="Nûvekirin"/>
 				<Item id="90116" name="Sazkirî"/>
@@ -1022,7 +1021,7 @@
 				<Item id="90119" name="Pêvekên jêrîn jêbirin?"/>
 				<Item id="90120" name="Pêvekên jêrîn saz bikin?"/>
 				<Item id="90121" name="Ev ê pelên pêvekê jê bibe."/>
-				<Item id="90122" name="Fermanên lêgerînê\u2026"/>
+				<Item id="90122" name="Fermanên lêgerînê…"/>
 				<Item id="90123" name="Rengê pêşîn"/>
 				<Item id="90124" name="Rengê paşxanê"/>
 				<Item id="90125" name="Navê makro"/>
@@ -1042,7 +1041,7 @@
 				<Item id="90139" name="Hemî nîşan paqij kirin."/>
 				<Item id="90140" name="Metna nîşankirî li klîpboardê hate kopî kirin."/>
 				<Item id="90141" name="Ji bo kopîkirinê nivîsa nîşankirî tune."/>
-				<Item id="90142" name="Digere... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Digere... %ld hit(s) — %@"/>
 				<Item id="90143" name="Di pelan de diguherin..."/>
 				<Item id="90144" name="Di Projeyan de biguherînin: Hîn ne girêdayî ye."/>
 				<Item id="90145" name="Di Projeyan de Bibînin: Hîn bi lîsteya pelê Panela Projeyê ve nehatiye girêdan."/>
@@ -1063,20 +1062,21 @@
 				<Item id="90160" name="Zehfkirina biaqil: tenê peyv"/>
 				<Item id="90161" name="Ji bo girtina tabê du caran bikirtînin"/>
 				<Item id="90162" name="Bişkoka girtina li ser tabloyan nîşan bide"/>
+				<Item id="90168" name="Di diyaloga Find"/>
+				<Item id="90175" name="Berfireh (\n, \r, \t, \0, \x...)"/>
+				<Item id="90191" name="Depoya lîsteya pêvekan"/>
 				<Item id="90224" name="Hilpekînan di çend rêzan de nîşan bide"/>
 				<Item id="90163" name="Dîtina panelê li seranserê danişînan bi bîr bîne"/>
 				<Item id="90164" name="Di danişînê de têketinên pelan ên tunebûyî bihêlin"/>
 				<Item id="90165" name="Beriya Hilbijartinê Teşxîs bike"/>
 				<Item id="90166" name="Pejirandin Biguherîne Hemî di belgeyên vekirî de"/>
 				<Item id="90167" name="Biguherîne: neçin bûyera din"/>
-				<Item id="90168" name="Di diyaloga Find"/>
 				<Item id="90169" name="de tîpên monospace bikar bîninRast-klîk bijartinê dimîne"/>
 				<Item id="90170" name="Rêza tarîx/demê ya xwerû berevajî bike"/>
 				<Item id="90171" name="Parskerên lîsteya fonksiyonên XML-ê bikar bînin"/>
 				<Item id="90172" name="Bixweber girtina berbendan ( ) [ ] { }"/>
 				<Item id="90173" name="Ji karaktera N-emîn:"/>
 				<Item id="90174" name="Di hilbijartinê de sînorê kontrolkirina otomatîkî (bytes):"/>
-				<Item id="90175" name="Berfireh (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Edîtor"/>
 				<Item id="90177" name="Marjîn"/>
 				<Item id="90178" name="Tarî"/>
@@ -1090,12 +1090,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Hêsan +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Depoya lîsteya pêvekan"/>
 				<Item id="90192" name="Pelê XML-a mijara Nextpad++ hilbijêrin ku hûn bicîh bikin"/>
-				<Item id="90193" name="Nû biafirîne\u2026"/>
-				<Item id="90194" name="Wek tomar bike\u2026"/>
+				<Item id="90193" name="Nû biafirîne…"/>
+				<Item id="90194" name="Wek tomar bike…"/>
 				<Item id="90195" name="Zimanê bikarhêner:"/>
 				<Item id="90196" name="Navê ziman"/>
 				<Item id="90197" name="Biafirîne"/>
@@ -1125,6 +1123,239 @@
 				<Item id="90221" name="Taybetmendiya Girtî (macOS)"/>
 				<Item id="90222" name="Ji bo Nûvekirinan kontrol bikin…"/>
 				<Item id="90223" name="Dawî vekin"/>
+				<Item id="90225" name="Ji bo destpêkirina paşîn rûniştina heyî bi bîr bînin"/>
+				<Item id="90226" name="Alîkarî"/>
+				<Item id="90227" name="Stage Failed"/>
+				<Item id="90228" name="Unstage Failed"/>
+				<Item id="90229" name="heye"/>
+				<Item id="90230" name="Hûn direvin"/>
+				<Item id="90231" name="Qet careke din neyê bîra min"/>
+				<Item id="90233" name="Ji bo nûvekirinan bixweber kontrol bikin"/>
+				<Item id="90234" name="Kontrolên nûvekirina otomatîkî neçalak in."/>
+				<Item id="90235" name="Dawîn kontrol kirin:"/>
+				<Item id="90236" name="Girêdana înternetê tune."/>
+				<Item id="90237" name="Bersiva neçaverêkirî ji servera nûvekirinê."/>
+				<Item id="90238" name="Weşanek çapkirî nehat dîtin."/>
+				<Item id="90239" name="Pêşkêşkara nûvekirinê ji bo demkî ne berdest e.Ji kerema xwe paşê dîsa biceribîne."/>
+				<Item id="90240" name="Pêşkêşkara nûvekirinê daxwaz red kir.Dibe ku proxy, firewall an VPN gihîştina GitHub asteng bike."/>
+				<Item id="90241" name="Ji tora we gelek kontrolên nûvekirinê (ev sînor ji hêla her kesê li ser ve tê parve kirin).Paşê dîsa biceribîne"/>
+				<Item id="90242" name="Ji tora we gelek kontrolên nûvekirinê (ev sînor ji hêla her kesê li ser ve tê parve kirin).Ji kerema xwe paşê dîsa biceribîne."/>
+				<Item id="90243" name="Pêşkêşkara nûvekirinê statû vegeriya"/>
+				<Item id="90244" name="Dîsa biceribîne"/>
+				<Item id="90245" name="Mezinahiya nivîsê çap bike:"/>
+				<Item id="90246" name="Mezinkirina ekranê bikar bînin"/>
+				<Item id="90247" name="Mezinahiya rastîn"/>
+				<Item id="90248" name="Hin dosya nehatin guhertin"/>
+				<Item id="90249" name="...û %lu bêtir"/>
+				<Item id="90250" name="Komeleyên pelan ji hêla rêxistina we ve têne rêve kirin."/>
+				<Item id="90251" name="Li bendê ne ku macOS piştrast bike…"/>
+				<Item id="90252" name="macOS guherandin pêk neanî."/>
+				<Item id="90253" name="Qeyd kirin"/>
+				<Item id="90254" name="Hemî pelên peldankê veke?"/>
+				<Item id="90255" name="Ev ê di tabloyên nû de %lu pelan veke."/>
+				<Item id="90256" name="Nekarî têxe: %@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="Digere… %ld maç(ên) heta niha"/>
+				<Item id="90260" name="%@ (%ld maça%@)"/>
+				<Item id="90261" name="Search Fuzzy"/>
+				<Item id="90265" name="Bibîne: Nivîsara &quot;%@&quot; nayê dîtin"/>
+				<Item id="90266" name="Hejmartin: %ld maç."/>
+				<Item id="90267" name="Biguherîne Hemûyan: %ld rûdan(yên) hatin guhertin %@."/>
+				<Item id="90268" name="Di Pelên Vekirî de Biguherîne: %ld bûyer(yên) hatin guhertin."/>
+				<Item id="90269" name="Di Pelan de bibîne: %ld di %ld pelan de lêdan."/>
+				<Item id="90270" name="Di pelan de bibînin: 0 lêdan."/>
+				<Item id="90271" name="Di pelrêça de hemî bûyerên &quot;%@&quot; bi &quot;%@&quot; re biguherînin:&#10;%@&#10;&#10;Ev nayê betal kirin."/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="Pêşî Panelek Projeyê vekin."/>
+				<Item id="90274" name="Ji bo lêgerînê herî kêm yek Panelek Projeyê hilbijêrin."/>
+				<Item id="90275" name="Pelên lêgerînê tune."/>
+				<Item id="90276" name="Di Projeyan de bibîne: %ld di %ld pel(an) de lêdan."/>
+				<Item id="90277" name="Di Projeyan de bibînin: 0 lêdan."/>
+				<Item id="90278" name="Li şûna hemî bûyeran"/>
+				<Item id="90279" name="bi"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="pel(ên) projeyê.Ev nayê betalkirin."/>
+				<Item id="90282" name="Di Projeyan de biguhezînin: %ld di %ld pel(an) de veguheztin."/>
+				<Item id="90283" name="Nîşankirin: %ld maç(ên) hatin nîşankirin."/>
+				<Item id="90284" name="Navê pelê/peldankê parzîne..."/>
+				<Item id="90285" name="Hin belge nehatin hilanîn"/>
+				<Item id="90286" name="⌘ Ferman"/>
+				<Item id="90287" name="⌃ Kontrolkirin"/>
+				<Item id="90288" name="⌥ Vebijêrk"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Rêzek formata NSDateFormatter binivîse:"/>
+				<Item id="90291" name="'%@' hê di vê guhertoyê de nehatiye bicihanîn."/>
+				<Item id="90292" name="Plugin Import"/>
+				<Item id="90293" name="Pêwîst e ji nû ve bidin destpêkirin"/>
+				<Item id="90294" name="Ji bo pêvajoyiyê tu pel tune"/>
+				<Item id="90295" name="Ev girêka projeyê tu pelan nagire."/>
+				<Item id="90296" name="'%@' has unsaved changes.&#10;Reload and discard changes?"/>
+				<Item id="90297" name="Navekî pelê nû binivîse:"/>
+				<Item id="90298" name="Navê Tabloya Niha Biguherîne"/>
+				<Item id="90299" name="Navê nû:"/>
+				<Item id="90300" name="Rename têk çû"/>
+				<Item id="90301" name="Nabe ku nav &quot;/&quot; an &quot;:&quot; hebe."/>
+				<Item id="90302" name="'%@' biçe Çopê?"/>
+				<Item id="90303" name="Beriya girtinê '%@' tomar bike?"/>
+				<Item id="90304" name="Hemî Save Nekin"/>
+				<Item id="90305" name="Tîpa Modeya Stûnê"/>
+				<Item id="90306" name="Ji bo guheztina moda hilbijartî ya stûnê 3 rê hene:&#10;&#10;1.(Klavye û Mişk) Vebijêrk bihêle dema ku çep-klîk dikişîne&#10;&#10;2.(Tenê klavyeyê) Dema ku bişkojkên tîrê bikar tînin Option+Shift bihêlin&#10;&#10;3.(Klavyeya an Mişk)&#10; Xalê bixin cihê destpêka xwestinê ya pozîsyona bloka stûnê, dûv re&#10; fermana &quot;Destpêk/Dawiya Hilbijartina di Moda Stûnê de&quot; bi cih bînin;&#10; Xalîçeyê biguhezînin dawiya xwestinê ya pozîsyona bloka stûnê, dûv re&#10; fermana &quot;Destpêk/Dawiya Hilbijartinê di Moda Stûnê de&quot; dîsa bi cih bînin."/>
+				<Item id="90307" name="URL-ya lêgerînê binivîse.%s-ê wekî cîhgira pirsê bikar bînin (an jî pirsê li dawiyê pêve bikin):"/>
+				<Item id="90308" name="Ferman an URL binivîse..."/>
+				<Item id="90309" name="Nekarî hat bicîkirin:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Guhertina kontekstMenu"/>
+				<Item id="90311" name="Guhertina contextMenu.xml destûrê dide te ku hûn menuya çarçoweya pêflketî ya Nextpad++ li ser devera guherandinê biguherînin.&#10;Divê hûn Nextpad++-ya xwe ji nû ve bidin destpêkirin ku piştî guherandina contextMenu.xml bikeve bandorê."/>
+				<Item id="90312" name="Jixwe hatiye sazkirin"/>
+				<Item id="90313" name="Amûra rêza fermanê ya nextpad++ saz bike"/>
+				<Item id="90314" name="Sazkirin têk çû"/>
+				<Item id="90315" name="Sazkirî - lê ~/.local/bin ne li ser RIYA we ye"/>
+				<Item id="90316" name="Jixwe di mîhenga we de ye"/>
+				<Item id="90317" name="Li PATH hate zêdekirin"/>
+				<Item id="90318" name="Nikaribû binivîsanda"/>
+				<Item id="90319" name="Kopî kirin"/>
+				<Item id="90320" name="Guhertinên li '%@' tomar bike?"/>
+				<Item id="90321" name="Ger hûn wan hilnegirin guhertinên we dê winda bibin."/>
+				<Item id="90322" name="Serîlêdana hemî belgeyan bikin"/>
+				<Item id="90323" name="Macro li ser pelan bimeşînin"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Peldank:"/>
+				<Item id="90326" name="Peldankek hilbijêre…"/>
+				<Item id="90327" name="Bigerin…"/>
+				<Item id="90328" name="Berfirehkirin:"/>
+				<Item id="90329" name="Bindirectories vegere"/>
+				<Item id="90330" name="Pelên veşartî tevlî bikin"/>
+				<Item id="90331" name="Mezinahiya herî zêde:"/>
+				<Item id="90332" name="Bêsînor"/>
+				<Item id="90333" name="Li ser pelê:"/>
+				<Item id="90334" name="Save eger guhertin"/>
+				<Item id="90335" name="Piştî girtina"/>
+				<Item id="90336" name="Pelên ku berê vekirî bûn jî bigrin"/>
+				<Item id="90337" name="Li ser xeletiyê:"/>
+				<Item id="90338" name="Pelê derbas bikin û berdewam bikin"/>
+				<Item id="90339" name="Li ser xeletiya yekem raweste"/>
+				<Item id="90340" name="(makroyên tomarkirî tune)"/>
+				<Item id="90341" name="%lu pel(ên) li hev dikin"/>
+				<Item id="90342" name="Peldank nehat dîtin"/>
+				<Item id="90343" name="Peldankek ku heye hilbijêrin."/>
+				<Item id="90344" name="Ti pel li hev nayê"/>
+				<Item id="90345" name="Vebijarka parzûna dirêjkirinê, vegerandin, an vebijarka pelên veşartî eyar bikin."/>
+				<Item id="90346" name="Destpêk…"/>
+				<Item id="90347" name="Çêkirin:"/>
+				<Item id="90348" name="%ld / %ld Baş e: %ld Derket: %ld Serneket: %ld"/>
+				<Item id="90349" name="Batch betal kirin"/>
+				<Item id="90350" name="Batch temam"/>
+				<Item id="90351" name="Bi tevahî: %lu Baş e: %ld Derket: %ld Serneket: %ld"/>
+				<Item id="90352" name="Dîroka Avakirin"/>
+				<Item id="90353" name="Operating System"/>
+				<Item id="90354" name="dawî"/>
+				<Item id="90355" name="kevnar"/>
+				<Item id="90356" name="nenas"/>
+				<Item id="90357" name="Ji bo ku guhertin bikevin meriyetê sepanê ji nû ve bidin destpêkirin."/>
+				<Item id="90358" name="Pêvekan Nûve bikin"/>
+				<Item id="90359" name="Pêvekên jêrîn nûve bikin?"/>
+				<Item id="90360" name="Guhertoyên heyî berî ku bên guheztin ji bo ~/Library/Application Support/Nextpad++/plugin-backups/-ê têne piştgirî kirin."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Biguherîne ser dîmena nû ya Tahoe (Beta)"/>
+				<Item id="90363" name="Menuyên bi şêwazê macOS bikar bînin (Beta)"/>
+				<Item id="90364" name="The new Tahoe look will be applied after you restart Nextpad++."/>
+				<Item id="90365" name="Piştî ku hûn ji nû ve dest pê bikin Nextpad++ dê xuyangê klasîk were vegerandin."/>
+				<Item id="90366" name="Niha derkeve"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Pîlansaziya menuya klasîk piştî ku hûn ji nû ve dest pê bikin Nextpad++ dê were vegerandin."/>
+				<Item id="90369" name="Reng"/>
+				<Item id="90370" name="Li ser îkonên darikê amûrê pêvekê bicîh bikin"/>
+				<Item id="90371" name="Di moda Temam de îkonên pêvekê dibin yek rengînek yekgirtî."/>
+				<Item id="90372" name="Komên Toolbar"/>
+				<Item id="90373" name="Hilbijêre cihê ku her bişkok di darika amûrê ya Liquid Glass de xuya bibe: li ser"/>
+				<Item id="90374" name="Button"/>
+				<Item id="90375" name="Cihkirin"/>
+				<Item id="90376" name="Vegerîne li Pêşniyaran"/>
+				<Item id="90377" name="menu Overflow"/>
+				<Item id="90378" name="Veşartî"/>
+				<Item id="90379" name="Wrap peyva CJK-dostane"/>
+				<Item id="90380" name="Hilbijartina stûnê vediguhere pir-guhertinê"/>
+				<Item id="90381" name="Cihê rêzê:"/>
+				<Item id="90382" name="1.0 (Destpêk)"/>
+				<Item id="90383" name="Barika tabê veşêre"/>
+				<Item id="90384" name="Mezinahiya tabê li dû mezinbûna belgeyê ye"/>
+				<Item id="90385" name="Hilbijêre…"/>
+				<Item id="90386" name="Vegere bo Pêşniyarê"/>
+				<Item id="90387" name="Bikaranîna cîhê xwerû."/>
+				<Item id="90388" name="Cihê Custom."/>
+				<Item id="90389" name="Rêya nederbasdar - paşgir dê cîhê xwerû bikar bînin."/>
+				<Item id="90390" name="Hilbijêre"/>
+				<Item id="90391" name="Hilbijartinê têxe:"/>
+				<Item id="90392" name="Moda Regex-ê Boost bikar bînin (pir-xet; ji bo sepandinê ji nû ve bidin destpêkirin)"/>
+				<Item id="90393" name="Ji kerema xwe Nextpad++ ji nû ve bidin destpêkirin da ku bikeve meriyetê."/>
+				<Item id="90394" name="Rêya nederbasdar."/>
+				<Item id="90395" name="Niha ji nû ve bidin destpêkirin"/>
+				<Item id="90396" name="Peldankek ji/ku ku Nextpad++ mîhengên xwe dixwîne/dinivîse hilbijêre"/>
+				<Item id="90397" name="(heya ku hûn zanibin hûn çi dikin wê hilnebijêrin)"/>
+				<Item id="90398" name="Mezinahiya îkona toolbarê"/>
+				<Item id="90399" name="100% (Destpêk)"/>
+				<Item id="90400" name="Mouse wheel scroll speed"/>
+				<Item id="90401" name="1× (derxistin)"/>
+				<Item id="90402" name="Mezinahiya îkona toolbarê guherî"/>
+				<Item id="90403" name="Mezinahiya îkona toolbarê ya nû dema ku Nextpad++ dest pê bike dê bikeve meriyetê."/>
+				<Item id="90404" name="Îkonên toolbarê hatin guhertin"/>
+				<Item id="90405" name="Dema ku Nextpad++ dest pê bike dê îkonên nû yên toolbarê bikeve meriyetê."/>
+				<Item id="90406" name="Cihê Karê Nû"/>
+				<Item id="90407" name="Cihê Xebatê vekin"/>
+				<Item id="90408" name="Cihê Xebatê ji nû ve barkirin"/>
+				<Item id="90410" name="Di Projeyan de bibînin..."/>
+				<Item id="90411" name="Makro li ser pelan bimeşîne..."/>
+				<Item id="90417" name="Rêya Pelê biguherîne"/>
+				<Item id="90418" name="Ev ê wê û hemî naveroka wê ji projeyê derxîne.Tu pelên li ser dîskê dê bandor nebe."/>
+				<Item id="90420" name="Peldanka"/>
+				<Item id="90421" name="Di van encamên lêgerînê de bibînin ..."/>
+				<Item id="90422" name="Xet(ên) Hilbijartî kopî bikin"/>
+				<Item id="90423" name="Nav(ên) Rêça Hilbijartî kopî bikin"/>
+				<Item id="90424" name="Nav(ên) Rêça Hilbijartî veke"/>
+				<Item id="90425" name="Peyv xetên dirêj dipêçin"/>
+				<Item id="90426" name="Ji bo her lêgerînê paqij bikin"/>
+				<Item id="90427" name="nehat dîtin"/>
+				<Item id="90428" name="Nakokî: %@"/>
+				<Item id="90429" name="&quot;%@&quot; jê bibe?"/>
+				<Item id="90430" name="Bikarhêner Danasîna Ziman Rêvebir"/>
+				<Item id="90431" name="Parzkirina zimanan…"/>
+				<Item id="90432" name="Çavkanî"/>
+				<Item id="90433" name="Çavkaniyên AC"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Sazkirin / Nûvekirin"/>
+				<Item id="90436" name="%lu ziman · %lu sazkirî · %lu nûvekirin"/>
+				<Item id="90437" name="Nivîskar"/>
+				<Item id="90438" name="Têkel: %ld navnîşanên ji %lu çavkaniyan (hevbûyî)"/>
+				<Item id="90439" name="Ji bo sazkirinê yek an çend zimanan hilbijêrin."/>
+				<Item id="90440" name="Ji bo hilbijartinê tiştek nayê daxistin."/>
+				<Item id="90441" name="Daxistin bi ser neket"/>
+				<Item id="90442" name="Lihevhatina checksum"/>
+				<Item id="90443" name="Ziman(ên) hilbijartî niha di pêşeka Ziman de berdest in."/>
+				<Item id="90444" name="Ji bo rakirina yek an çend zimanên sazkirî hilbijêrin."/>
+				<Item id="90445" name="Rakirin"/>
+				<Item id="90446" name="Jixwe ev nav ji aliyê zimanekî din ve tê bikaranîn."/>
+				<Item id="90447" name="Ev ziman nehat rakirin."/>
+				<Item id="90448" name="Zimanên pêş-sazkirî nikarin bên rakirin."/>
+				<Item id="90449" name="Navê vî zimanî nehate binavkirin."/>
+				<Item id="90450" name="Ev pel %@ e.Vekirina wê dê ronîkirina hevoksaziyê neçalak bike û dîrokê betal bike da ku sepanê bersivdar bimîne.&#10;&#10;Tu dixwazî ​​bidomînî?"/>
+				<Item id="90451" name="Herçî vekin"/>
+				<Item id="90452" name="&quot;%@&quot; li ser dîskê guherî"/>
+				<Item id="90453" name="Ignore"/>
+				<Item id="90454" name="Guhertoya min biparêze"/>
+				<Item id="90455" name="&quot;%@&quot; dîsa nehat barkirin"/>
+				<Item id="90456" name="Pelê nehat xwendin."/>
+				<Item id="90457" name="Hilbijêre cihê ku her bişkok di darika amûrê ya Liquid Glass de xuya bibe: li ser kapsula komê (Toolbar), di pêşeka ▾ ya komê de, an jî Veşartî."/>
+				<Item id="90458" name="Ji bo Pêşkeftina Piştgiriyê Bexş bikin"/>
+				<Item id="90459" name="Amûrên Rêzika Fermandariyê saz bikin"/>
+				<Item id="90460" name="Siya li pişt kapsulên toolbar nîşan bidin"/>
+				<Item id="90461" name="Donate"/>
+				<Item id="90462" name="Komên karakteran"/>
+				<Item id="90463" name="Kêmkirin"/>
+				<Item id="90464" name="Veşêre Nextpad++"/>
+				<Item id="90465" name="Yên din veşêrin"/>
+				<Item id="90466" name="Hemî nîşan bide"/>
+				<Item id="90467" name="Derkeve Nextpad++"/>
+				<Item id="90468" name="Makroya Nû ya tomarkirî hilîne…"/>
+				<Item id="90469" name="Cihê Birêkûpêk Kurt bikin û Save bikin"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

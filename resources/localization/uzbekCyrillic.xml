@@ -535,13 +535,13 @@
 				<Item id="90006" name="Manba nazorati"/>
 				<Item id="90007" name="Majburiyat"/>
 				<Item id="90008" name="Majburiyat bajarilmadi"/>
-				<Item id="90009" name="Git repozitori yo'q\nRepo ochish uchun Browse-dan foydalaning."/>
+				<Item id="90009" name="Git repozitori yo'q&#10;Repo ochish uchun Browse-dan foydalaning."/>
 				<Item id="90010" name="Bosqich"/>
 				<Item id="90011" name="Bosqichsiz"/>
 				<Item id="90012" name="Barcha bosqich"/>
 				<Item id="90013" name="Hammasi"/>
-				<Item id="90014" name="Xabarni qabul qilish\u2026"/>
-				<Item id="90015" name="Repozitoriyni koʻrib chiqing\u2026"/>
+				<Item id="90014" name="Xabarni qabul qilish…"/>
+				<Item id="90015" name="Repozitoriyni koʻrib chiqing…"/>
 				<Item id="90016" name="Git ombori jildini"/>
 				<Item id="90017" name="tanlang(ombor yo'q)"/>
 				<Item id="90018" name="(alohida)"/>
@@ -555,9 +555,9 @@
 				<Item id="90026" name="Natijalar"/>
 				<Item id="90027" name="To'xtatish"/>
 				<Item id="90028" name="Qidiruv toʻxtatildi."/>
-				<Item id="90029" name="Qidirilmoqda\u2026"/>
+				<Item id="90029" name="Qidirilmoqda…"/>
 				<Item id="90030" name="Izlash uchun matn"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Qidirilmoqda..."/>
 				<Item id="90033" name="O'zgartiring:"/>
 				<Item id="90034" name="Butun so'z"/>
@@ -617,7 +617,7 @@
 				<Item id="90088" name="Plaginlarni o'rnatish"/>
 				<Item id="90089" name="Plaginlarni olib tashlang"/>
 				<Item id="90090" name="Hech qanday buyruq topilmadi"/>
-				<Item id="90091" name="Qidirish uchun tering\u2026"/>
+				<Item id="90091" name="Qidirish uchun tering…"/>
 				<Item id="90092" name="Foydalanuvchi tomonidan belgilangan til v.2.1"/>
 				<Item id="90093" name="Yangi til yaratish"/>
 				<Item id="90094" name="Ismni kiriting:"/>
@@ -626,11 +626,9 @@
 				<Item id="90097" name="Saqlama"/>
 				<Item id="90098" name="Bajarildi"/>
 				<Item id="90099" name="Soʻzlarni oʻrashni oʻzgartirish"/>
-				<Item id="90100" name="Barcha belgilarni ko'rsatish"/>
 				<Item id="90101" name="Belgilar parametrlarini ko'rsatish"/>
 				<Item id="90102" name="Indent Guide"/>
 				<Item id="90103" name="Hali amalga oshirilmagan"/>
-				<Item id="90104" name="Diskdan qayta yuklash"/>
 				<Item id="90105" name="Qidiruv tizimini o'zgartirish"/>
 				<Item id="90106" name="Ishlash xatosi"/>
 				<Item id="90107" name="Nextpad++ yuklash vaqti"/>
@@ -639,7 +637,7 @@
 				<Item id="90110" name="Yuklab olish"/>
 				<Item id="90111" name="Chiqarish sahifasi"/>
 				<Item id="90112" name="Keyinchalik"/>
-				<Item id="90113" name="Plaginlarni filtrlash\u2026"/>
+				<Item id="90113" name="Plaginlarni filtrlash…"/>
 				<Item id="90114" name="Mavjud"/>
 				<Item id="90115" name="Yangilanishlar"/>
 				<Item id="90116" name="O'rnatilgan"/>
@@ -648,7 +646,7 @@
 				<Item id="90119" name="Quyidagi plaginlar olib tashlansinmi?"/>
 				<Item id="90120" name="Quyidagi plaginlarni o'rnatasizmi?"/>
 				<Item id="90121" name="Bu plagin fayllarini o'chirib tashlaydi."/>
-				<Item id="90122" name="Qidiruv buyruqlari\u2026"/>
+				<Item id="90122" name="Qidiruv buyruqlari…"/>
 				<Item id="90123" name="Old fon rangi"/>
 				<Item id="90124" name="Fon rangi"/>
 				<Item id="90125" name="Makro nomi"/>
@@ -668,7 +666,7 @@
 				<Item id="90139" name="Barcha belgilar tozalandi."/>
 				<Item id="90140" name="Belgilangan matn vaqtinchalik xotiraga nusxalandi."/>
 				<Item id="90141" name="Nusxa olish uchun belgilangan matn yo'q."/>
-				<Item id="90142" name="Qidirilmoqda... %ld hit(lar) \u2014 %@"/>
+				<Item id="90142" name="Qidirilmoqda... %ld hit(lar) — %@"/>
 				<Item id="90143" name="Fayllarda almashtirilmoqda..."/>
 				<Item id="90144" name="Loyihalarda almashtiring: hali ulanmagan."/>
 				<Item id="90145" name="Loyihalarda toping: hali Project Panel fayllar ro'yxatiga ulanmagan."/>
@@ -689,20 +687,20 @@
 				<Item id="90160" name="Aqlli ta'kidlash: faqat butun so'z"/>
 				<Item id="90161" name="Yorliqni yopish uchun ikki marta bosing"/>
 				<Item id="90162" name="Yorliqlarda yopish tugmasini ko'rsatish"/>
+				<Item id="90168" name="Topish dialog oynasida bir bo'shliqli shriftdan foydalaning"/>
+				<Item id="90191" name="Plaginlar ro'yxati ombori"/>
 				<Item id="90224" name="Варақларни бир нечта қаторда кўрсатиш"/>
 				<Item id="90163" name="Seanslar bo'ylab panel ko'rinishini eslab qoling"/>
 				<Item id="90164" name="Seansda mavjud bo'lmagan fayl yozuvlarini saqlang"/>
 				<Item id="90165" name="Hammasini saqlashdan oldin tasdiqlang"/>
 				<Item id="90166" name="Ochiq hujjatlardagi Hammasini almashtirishni tasdiqlang"/>
 				<Item id="90167" name="O'zgartirish: keyingi holatga o'tmang"/>
-				<Item id="90168" name="Topish dialog oynasida bir bo'shliqli shriftdan foydalaning"/>
 				<Item id="90169" name="Sichqonchaning o'ng tugmasi tanlovni davom ettiradi"/>
 				<Item id="90170" name="Standart sana/vaqt tartibini teskari"/>
 				<Item id="90171" name="XML-asosidagi funksiyalar roʻyxatini tahlil qiluvchilardan"/>
 				<Item id="90172" name="foydalaningQavslarni avtomatik yopish ( ) [ ] { }"/>
 				<Item id="90173" name="N-belgidan:"/>
 				<Item id="90174" name="Tanlovda avtomatik tekshirish chegarasi (baytlar):"/>
-				<Item id="90175" name="Kengaytirilgan (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Muharrir"/>
 				<Item id="90177" name="Chegaralar"/>
 				<Item id="90178" name="To'q"/>
@@ -716,12 +714,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimallashtirilgan"/>
 				<Item id="90188" name="Oddiy +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plaginlar ro'yxati ombori"/>
 				<Item id="90192" name="Qo'llash uchun Nextpad++ mavzuli XML faylni tanlang"/>
-				<Item id="90193" name="Yangi yaratish\u2026"/>
-				<Item id="90194" name="Saqlash\u2026"/>
+				<Item id="90193" name="Yangi yaratish…"/>
+				<Item id="90194" name="Saqlash…"/>
 				<Item id="90195" name="Foydalanuvchi tili:"/>
 				<Item id="90196" name="Til nomi"/>
 				<Item id="90197" name="Yaratish"/>
@@ -751,6 +747,247 @@
 				<Item id="90221" name="ga o'tingQulflangan atribut (macOS)"/>
 				<Item id="90222" name="Yangilanishlarni tekshiring…"/>
 				<Item id="90223" name="Oxirgilarni oching"/>
+				<Item id="90225" name="Keyingi ishga tushirish uchun joriy seansni eslang"/>
+				<Item id="90226" name="Ёрдам"/>
+				<Item id="90227" name="Bosqich bajarilmadi"/>
+				<Item id="90228" name="Bosqichdan chiqarish amalga oshmadi"/>
+				<Item id="90229" name="mavjud"/>
+				<Item id="90230" name="Siz yuguryapsiz"/>
+				<Item id="90231" name="Menga boshqa hech qachon eslatma"/>
+				<Item id="90232" name="Yangilanishlar"/>
+				<Item id="90233" name="Yangilanishlarni avtomatik tekshirish"/>
+				<Item id="90234" name="Avtomatik yangilanish tekshiruvlari o'chirilgan."/>
+				<Item id="90235" name="Oxirgi tekshirilgan:"/>
+				<Item id="90236" name="Internet aloqasi yo'q."/>
+				<Item id="90237" name="Yangilanish serveridan kutilmagan javob."/>
+				<Item id="90238" name="Hech qanday nashr topilmadi."/>
+				<Item id="90239" name="Yangilash serveri vaqtincha ishlamayapti.Keyinroq qayta urinib ko‘ring."/>
+				<Item id="90240" name="Yangilash serveri so'rovni rad etdi.Proksi, xavfsizlik devori yoki VPN GitHub’ga kirishni bloklayotgan bo‘lishi mumkin."/>
+				<Item id="90241" name="Tarmogʻingizdan juda koʻp yangilanish tekshiruvlari (bu cheklov undagi hamma tomonidan baham koʻriladi).Keyin yana urinib ko'ring"/>
+				<Item id="90242" name="Tarmogʻingizdan juda koʻp yangilanish tekshiruvlari (bu cheklov undagi hamma tomonidan baham koʻriladi).Keyinroq qayta urinib ko‘ring."/>
+				<Item id="90243" name="Yangilash serveri holatni qaytardi"/>
+				<Item id="90244" name="Qayta urinib ko'ring"/>
+				<Item id="90245" name="Matn hajmini chop etish:"/>
+				<Item id="90246" name="Ekranni kattalashtirishdan foydalaning"/>
+				<Item id="90247" name="Haqiqiy o'lcham"/>
+				<Item id="90248" name="Ayrim fayllarni almashtirib bo‘lmadi"/>
+				<Item id="90249" name="...va yana %lu ta"/>
+				<Item id="90250" name="Fayl assotsiatsiyasi tashkilotingiz tomonidan boshqariladi."/>
+				<Item id="90251" name="Tasdiqlash uchun macOS kutilmoqda…"/>
+				<Item id="90252" name="macOS oʻzgartirishni qoʻllamadi."/>
+				<Item id="90253" name="Roʻyxatdan oʻtgan"/>
+				<Item id="90254" name="Jilddagi barcha fayllar ochilsinmi?"/>
+				<Item id="90255" name="Bu yangi varaqlarda %lu ta faylni ochadi."/>
+				<Item id="90256" name="Import qilib bo‘lmadi: %@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="Qidirilmoqda… Hozirgacha %ld ta mos(lar)."/>
+				<Item id="90260" name="%@ (%ld mos%@)"/>
+				<Item id="90261" name="Noaniq qidiruv"/>
+				<Item id="90265" name="Topish: “%@” matni topilmadi"/>
+				<Item id="90266" name="Hisob: %ld ta moslik."/>
+				<Item id="90267" name="Hammasini almashtirish: %ld ta holat %@ almashtirildi."/>
+				<Item id="90268" name="Ochilgan fayllarda almashtirish: %ld ta holat almashtirildi."/>
+				<Item id="90269" name="Find in Files: %ld hit(s) in %ld file(s)."/>
+				<Item id="90270" name="Fayllarda toping: 0 ta hits."/>
+				<Item id="90271" name="Katalogdagi barcha “%@” soʻzlarini “%@” bilan almashtiring:&#10;%@&#10;&#10;Buni ortga qaytarib boʻlmaydi."/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="Avval loyiha panelini oching."/>
+				<Item id="90274" name="Qidirish uchun kamida bitta loyiha panelini tanlang."/>
+				<Item id="90275" name="Qidiriladigan fayl yo'q."/>
+				<Item id="90276" name="Find in Projects: %ld hit(s) in %ld file(s)."/>
+				<Item id="90277" name="Loyihalarda toping: 0 hits."/>
+				<Item id="90278" name="ning barcha holatlarini almashtiring"/>
+				<Item id="90279" name="bilan"/>
+				<Item id="90280" name="ichida"/>
+				<Item id="90281" name="loyiha fayl(lar).Buni ortga qaytarib bo‘lmaydi."/>
+				<Item id="90282" name="Replace in Projects: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90283" name="Belgilash: %ld ta mos(lar) belgilangan."/>
+				<Item id="90284" name="Fayl/papka nomini filtrlash..."/>
+				<Item id="90285" name="Ayrim hujjatlarni saqlab bo‘lmadi"/>
+				<Item id="90286" name="⌘ Buyruq"/>
+				<Item id="90287" name="⌃ Nazorat"/>
+				<Item id="90288" name="⌥ Variant"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="NSDateFormatter formatidagi qatorni kiriting:"/>
+				<Item id="90291" name="&quot;%@&quot; hali bu versiyada qo'llanilmagan."/>
+				<Item id="90292" name="Import plagin"/>
+				<Item id="90293" name="Qayta ishga tushirish talab qilinadi"/>
+				<Item id="90294" name="Qayta ishlash uchun hech qanday fayl yo'q"/>
+				<Item id="90295" name="Ushbu loyiha tugunida hech qanday fayl mavjud emas."/>
+				<Item id="90296" name="“%@” saqlanmagan oʻzgarishlarga ega.&#10;Oʻzgarishlar qayta yuklansin va bekor qilinsinmi?"/>
+				<Item id="90297" name="Yangi fayl nomini kiriting:"/>
+				<Item id="90298" name="Joriy varaq nomini o‘zgartiring"/>
+				<Item id="90299" name="Yangi nom:"/>
+				<Item id="90300" name="Nomini o‘zgartirib bo‘lmadi"/>
+				<Item id="90301" name="Nomda “/” yoki “:” bo‘lishi mumkin emas."/>
+				<Item id="90302" name="“%@” chiqitdonga tashlansinmi?"/>
+				<Item id="90303" name="Yopishdan oldin “%@” saqlansinmi?"/>
+				<Item id="90304" name="Hammasini saqlamang"/>
+				<Item id="90305" name="Ustun rejimi bo'yicha maslahat"/>
+				<Item id="90306" name="Ustun tanlash rejimiga oʻtishning 3 ta usuli mavjud:&#10;&#10;1.(Klaviatura va sichqoncha) sichqonchaning chap tugmasi bilan sudrab olayotganda opsiyani bosib turing&#10;&#10;2.(Faqat klaviatura) strelka tugmalaridan foydalanganda Option+Shift tugmalarini bosib turing&#10;&#10;3.(Klaviatura yoki sichqoncha)&#10; Ustun blokining kerakli boshiga karetani qo‘ying, so‘ng&#10; “Ustun rejimida tanlashni boshlash/tugatish” buyrug‘ini bajaring;&#10; Karetani ustunlar bloki pozitsiyasining kerakli oxiriga o‘tkazing, so‘ng&#10; “Ustun rejimida tanlashni boshlash/tugatish” buyrug‘ini yana bajaring"/>
+				<Item id="90307" name="Qidiruv URL manzilini kiriting.Soʻrov oʻrnini egallovchi sifatida %s dan foydalaning (yoki soʻrovni oxiriga qoʻshing):"/>
+				<Item id="90308" name="Buyruq yoki URL manzilini kiriting..."/>
+				<Item id="90309" name="Bajarilmadi:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Kontekst menyusini tahrirlash"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Allaqachon oʻrnatilgan"/>
+				<Item id="90313" name="nextpad++ Buyruqlar qatori vositasini oʻrnating"/>
+				<Item id="90314" name="O‘rnatish amalga oshmadi"/>
+				<Item id="90315" name="Oʻrnatildi — lekin ~/.local/bin sizning PATHingizda emas"/>
+				<Item id="90316" name="Allaqachon konfiguratsiyangizda"/>
+				<Item id="90317" name="PATHga qo‘shildi"/>
+				<Item id="90318" name="Yozib bo'lmadi"/>
+				<Item id="90319" name="Ko‘chirildi"/>
+				<Item id="90320" name="Oʻzgarishlar “%@”ga saqlansinmi?"/>
+				<Item id="90321" name="Agar ularni saqlamasangiz, oʻzgartirishlaringiz yoʻqoladi."/>
+				<Item id="90322" name="Barcha hujjatlarga murojaat qiling"/>
+				<Item id="90323" name="Fayllarda makrosni ishga tushiring"/>
+				<Item id="90324" name="Ibratli:"/>
+				<Item id="90325" name="Jild:"/>
+				<Item id="90326" name="Jild tanlang…"/>
+				<Item id="90327" name="Ko‘rib chiqish…"/>
+				<Item id="90328" name="Kengaytmalar:"/>
+				<Item id="90329" name="Takroriy pastki kataloglar"/>
+				<Item id="90330" name="Yashirin fayllarni qo'shing"/>
+				<Item id="90331" name="Maksimal hajmi:"/>
+				<Item id="90332" name="Cheksiz"/>
+				<Item id="90333" name="Har bir fayl uchun:"/>
+				<Item id="90334" name="Agar o'zgartirilgan bo'lsa, saqlang"/>
+				<Item id="90335" name="Keyin yoping"/>
+				<Item id="90336" name="Hatto allaqachon ochiq bo'lgan fayllarni ham yoping"/>
+				<Item id="90337" name="Xatoda:"/>
+				<Item id="90338" name="Faylni o'tkazib yuboring va davom eting"/>
+				<Item id="90339" name="Birinchi xatoda to'xtating"/>
+				<Item id="90340" name="(saqlangan makroslar yo'q)"/>
+				<Item id="90341" name="%lu ta fayl (lar) mos keladi"/>
+				<Item id="90342" name="Jild topilmadi"/>
+				<Item id="90343" name="Mavjud jildni tanlang."/>
+				<Item id="90344" name="Hech qanday fayl mos emas"/>
+				<Item id="90345" name="Kengaytmalar filtri, rekursiya yoki yashirin fayllar opsiyasini sozlang."/>
+				<Item id="90346" name="Boshlanmoqda…"/>
+				<Item id="90347" name="Qayta ishlash:"/>
+				<Item id="90348" name="%ld / %ld OK: %ld Oʻtkazib yuborildi: %ld Muvaffaqiyatsiz: %ld"/>
+				<Item id="90349" name="Toʻplam bekor qilindi"/>
+				<Item id="90350" name="Toʻplam tugallandi"/>
+				<Item id="90351" name="Jami: %lu Yaxshi: %ld Oʻtkazib yuborildi: %ld Muvaffaqiyatsiz: %ld"/>
+				<Item id="90352" name="Qurilish sanasi"/>
+				<Item id="90353" name="Operatsion tizim"/>
+				<Item id="90354" name="oxirgi"/>
+				<Item id="90355" name="eskirgan"/>
+				<Item id="90356" name="noma'lum"/>
+				<Item id="90357" name="O'zgarishlar kuchga kirishi uchun dasturni qayta ishga tushiring."/>
+				<Item id="90358" name="Plaginlarni yangilash"/>
+				<Item id="90359" name="Quyidagi plaginlar yangilansinmi?"/>
+				<Item id="90360" name="Joriy versiyalar almashtirilgunga qadar ~/Library/Application Support/Nextpad++/plugin-backups/ ga zaxiralanadi."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Yangi Tahoe koʻrinishiga oʻtish (Beta)"/>
+				<Item id="90363" name="macOS uslubidagi menyulardan foydalaning (Beta)"/>
+				<Item id="90364" name="Yangi Tahoe koʻrinishi Nextpad++ qayta ishga tushirilgandan soʻng qoʻllaniladi."/>
+				<Item id="90365" name="Nextpad++ qayta ishga tushirilgandan soʻng klassik koʻrinish tiklanadi."/>
+				<Item id="90366" name="Hozir chiqing"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Klassik menyu tartibi Nextpad++ qayta ishga tushirilgandan keyin tiklanadi."/>
+				<Item id="90369" name="Rang"/>
+				<Item id="90370" name="Plagin asboblar paneli piktogrammalariga amal qiling"/>
+				<Item id="90371" name="To'liq rejimda plagin piktogrammalari bitta rangga aylanadi."/>
+				<Item id="90372" name="Asboblar paneli guruhlari"/>
+				<Item id="90373" name="Har bir tugma Liquid Glass asboblar panelida qayerda koʻrinishini tanlang: ustiga"/>
+				<Item id="90374" name="Tugma"/>
+				<Item id="90375" name="Joylashtirish"/>
+				<Item id="90376" name="Asl holatiga qaytarish"/>
+				<Item id="90377" name="Ortiqcha menyu"/>
+				<Item id="90378" name="Yashirin"/>
+				<Item id="90379" name="CJK-ga mos keladigan so'z birikmasi"/>
+				<Item id="90380" name="Ustun tanlash ko'p tahrirlashga o'tadi"/>
+				<Item id="90381" name="Satr oralig'i:"/>
+				<Item id="90382" name="1.0 (Standart)"/>
+				<Item id="90383" name="Yorliqlar panelini yashirish"/>
+				<Item id="90384" name="Yorliq o'lchami hujjatni kattalashtirishdan keyin"/>
+				<Item id="90385" name="Tanlang…"/>
+				<Item id="90386" name="Standart holatga qaytarish"/>
+				<Item id="90387" name="Standart joylashuvdan foydalanish."/>
+				<Item id="90388" name="Maxsus joylashuv."/>
+				<Item id="90389" name="Noto'g'ri yo'l - zaxira nusxalari standart joylashuvdan foydalanadi."/>
+				<Item id="90390" name="Tanlang"/>
+				<Item id="90391" name="Tanlovni kiritish:"/>
+				<Item id="90392" name="Boost Regex rejimidan foydalaning (koʻp qatorli; qoʻllash uchun qayta ishga tushiring)"/>
+				<Item id="90393" name="Kuchga kirishi uchun Nextpad++ ilovasini qayta ishga tushiring."/>
+				<Item id="90394" name="Yaroqsiz yo‘l."/>
+				<Item id="90395" name="Hozir qayta ishga tushirish"/>
+				<Item id="90396" name="Nextpad++ sozlamalarini oʻqiydigan/yozadigan jildni tanlang"/>
+				<Item id="90397" name="(nima qilayotganingizni bilmasangiz, uni tanlamang)"/>
+				<Item id="90398" name="Asboblar paneli belgisi oʻlchami"/>
+				<Item id="90399" name="100% (Standart)"/>
+				<Item id="90400" name="Sichqoncha g'ildiragi aylanish tezligi"/>
+				<Item id="90401" name="1× (oʻchirilgan)"/>
+				<Item id="90402" name="Asboblar paneli belgisi oʻlchami oʻzgartirildi"/>
+				<Item id="90403" name="Yangi asboblar paneli belgisi oʻlchami keyingi safar Nextpad++ ishga tushganda kuchga kiradi."/>
+				<Item id="90404" name="Asboblar paneli piktogrammalari o'zgartirildi"/>
+				<Item id="90405" name="Yangi asboblar paneli piktogrammalari keyingi safar Nextpad++ ishga tushganda kuchga kiradi."/>
+				<Item id="90406" name="Yangi ish maydoni"/>
+				<Item id="90407" name="Ish maydonini ochish"/>
+				<Item id="90408" name="Ish maydonini qayta yuklash"/>
+				<Item id="90409" name="Yangi loyiha qo'shish"/>
+				<Item id="90410" name="Loyihalarda toping..."/>
+				<Item id="90411" name="Fayllarda makrosni ishga tushirish..."/>
+				<Item id="90412" name="Yuqoriga siljitish"/>
+				<Item id="90413" name="Pastga siljiting"/>
+				<Item id="90414" name="Jild qo'shish"/>
+				<Item id="90415" name="Fayl qo'shish..."/>
+				<Item id="90416" name="Katalogdan fayllar qo'shish..."/>
+				<Item id="90417" name="Fayl yo'lini o'zgartirish"/>
+				<Item id="90418" name="Bu uni va uning barcha mazmunini loyihadan olib tashlaydi.Diskdagi hech qanday fayl ta'sir qilmaydi."/>
+				<Item id="90419" name="Ish maydoni"/>
+				<Item id="90420" name="Jild"/>
+				<Item id="90421" name="Ushbu qidiruv natijalarida toping..."/>
+				<Item id="90422" name="Tanlangan qator(lar)ni nusxalash"/>
+				<Item id="90423" name="Tanlangan yoʻl(lar)ni nusxalash"/>
+				<Item id="90424" name="Tanlangan yoʻl nomlarini ochish"/>
+				<Item id="90425" name="So'zlarni o'rash uzun qatorlar"/>
+				<Item id="90426" name="Har bir qidiruv uchun tozalang"/>
+				<Item id="90427" name="Topilmadi"/>
+				<Item id="90428" name="MAQOMOTI: %@"/>
+				<Item id="90429" name="“%@” oʻchirilsinmi?"/>
+				<Item id="90430" name="Foydalanuvchi tomonidan belgilangan til boshqaruvchisi"/>
+				<Item id="90431" name="Tillarni filtrlash…"/>
+				<Item id="90432" name="Manba"/>
+				<Item id="90433" name="AC manbalari"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="O'rnatish / yangilash"/>
+				<Item id="90436" name="%lu ta til · %lu ta oʻrnatilgan · %lu ta yangilanish"/>
+				<Item id="90437" name="Muallif"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="O'rnatish uchun bir yoki bir nechta tilni tanlang."/>
+				<Item id="90440" name="Tanlov uchun hech narsa yuklab bo'lmaydi."/>
+				<Item id="90441" name="Yuklab olinmadi"/>
+				<Item id="90442" name="Tekshirish summasi mos kelmasligi"/>
+				<Item id="90443" name="Tanlangan til(lar) endi Til menyusida mavjud."/>
+				<Item id="90444" name="O'chirish uchun bir yoki bir nechta o'rnatilgan tillarni tanlang."/>
+				<Item id="90445" name="Oʻchirildi"/>
+				<Item id="90446" name="Bu nom allaqachon boshqa tilda ishlatilgan."/>
+				<Item id="90447" name="Bu tilni olib tashlab bo‘lmadi."/>
+				<Item id="90448" name="Oldindan oʻrnatilgan tillarni olib tashlab boʻlmaydi."/>
+				<Item id="90449" name="Bu til nomini oʻzgartirib boʻlmadi."/>
+				<Item id="90450" name="Bu fayl: %@.Uni ochish sintaksisni ajratib koʻrsatishni oʻchirib qoʻyadi va ilova javob berishi uchun tarixni bekor qiladi.&#10;&#10;Davom etishni xohlaysizmi?"/>
+				<Item id="90451" name="Baribir oching"/>
+				<Item id="90452" name="&quot;%@&quot; diskda o'zgartirildi"/>
+				<Item id="90453" name="E'tibor bermaslik"/>
+				<Item id="90454" name="Mening versiyamni saqlang"/>
+				<Item id="90455" name="“%@” qayta yuklanmadi"/>
+				<Item id="90456" name="Faylni oʻqib boʻlmadi."/>
+				<Item id="90457" name="Har bir tugma Liquid Glass asboblar panelida qayerda paydo boʻlishini tanlang: guruh kapsulasida (Asboblar paneli), guruhning ▾ ortiqcha menyusida yoki Yashirin."/>
+				<Item id="90458" name="Rivojlanishni qo'llab-quvvatlash uchun xayriya qiling"/>
+				<Item id="90459" name="Buyruqlar qatori vositalarini o'rnating"/>
+				<Item id="90460" name="Asboblar paneli kapsulalari orqasidagi soyalarni ko'rsatish"/>
+				<Item id="90461" name="Xayriya qiling"/>
+				<Item id="90462" name="Belgilar to'plami"/>
+				<Item id="90463" name="Minimallashtirish"/>
+				<Item id="90464" name="Nextpad++ berkitish"/>
+				<Item id="90465" name="Boshqalarni yashirish"/>
+				<Item id="90466" name="Hammasini ko'rsatish"/>
+				<Item id="90467" name="Nextpad++ dan chiqish"/>
+				<Item id="90468" name="Joriy yozib olingan makroni saqlash…"/>
+				<Item id="90469" name="Bo'sh joyni qisqartiring va saqlang"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

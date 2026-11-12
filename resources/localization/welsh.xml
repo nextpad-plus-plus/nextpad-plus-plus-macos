@@ -824,13 +824,13 @@ gan/by Aled Powell
 				<Item id="90006" name="Rheoli Ffynonellau"/>
 				<Item id="90007" name="Ymrwymo"/>
 				<Item id="90008" name="Methodd Ymrwymiad"/>
-				<Item id="90009" name="Dim ystorfa git\nDefnyddiwch Pori i agor repo."/>
+				<Item id="90009" name="Dim ystorfa git&#10;Defnyddiwch Pori i agor repo."/>
 				<Item id="90010" name="Llwyfan"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Llwyfan Pawb"/>
 				<Item id="90013" name="Unstage Pawb"/>
-				<Item id="90014" name="Neges ymrwymo\u2026"/>
-				<Item id="90015" name="Pori am ystorfa\u2026"/>
+				<Item id="90014" name="Neges ymrwymo…"/>
+				<Item id="90015" name="Pori am ystorfa…"/>
 				<Item id="90016" name="Dewiswch ffolder ystorfa git"/>
 				<Item id="90017" name="(dim ystorfa)"/>
 				<Item id="90018" name="(ar wahân)"/>
@@ -844,9 +844,9 @@ gan/by Aled Powell
 				<Item id="90026" name="Canlyniadau"/>
 				<Item id="90027" name="Stopiwch"/>
 				<Item id="90028" name="Stopiwyd y chwiliad."/>
-				<Item id="90029" name="Chwilio\u2026"/>
+				<Item id="90029" name="Chwilio…"/>
 				<Item id="90030" name="Testun i chwilio amdano"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Chwilio..."/>
 				<Item id="90033" name="Amnewid:"/>
 				<Item id="90034" name="Gair Cyfan"/>
@@ -906,7 +906,7 @@ gan/by Aled Powell
 				<Item id="90088" name="Gosod Ategion"/>
 				<Item id="90089" name="Dileu Ategion"/>
 				<Item id="90090" name="Heb ganfod gorchmynion"/>
-				<Item id="90091" name="Teipiwch i chwilio\u2026"/>
+				<Item id="90091" name="Teipiwch i chwilio…"/>
 				<Item id="90092" name="Iaith a Ddiffiniwyd gan Ddefnyddiwr v.2.1"/>
 				<Item id="90093" name="Creu Iaith Newydd"/>
 				<Item id="90094" name="Rhowch enw:"/>
@@ -915,11 +915,9 @@ gan/by Aled Powell
 				<Item id="90097" name="Peidiwch â Arbed"/>
 				<Item id="90098" name="Wedi'i wneud"/>
 				<Item id="90099" name="Toglo Lapio Geiriau"/>
-				<Item id="90100" name="Dangos Pob Cymeriad"/>
 				<Item id="90101" name="Dangos Dewisiadau Cymeriadau"/>
 				<Item id="90102" name="Canllaw Mewnol Toglo"/>
 				<Item id="90103" name="Heb ei Weithredu Eto"/>
-				<Item id="90104" name="Ail-lwytho o Ddisg"/>
 				<Item id="90105" name="Newid Peiriant Chwilio"/>
 				<Item id="90106" name="Gwall Rhedeg"/>
 				<Item id="90107" name="Nextpad++ Amser Llwytho"/>
@@ -928,7 +926,7 @@ gan/by Aled Powell
 				<Item id="90110" name="Lawrlwythwch"/>
 				<Item id="90111" name="Tudalen Rhyddhau"/>
 				<Item id="90112" name="Yn ddiweddarach"/>
-				<Item id="90113" name="Hidlo ategion\u2026"/>
+				<Item id="90113" name="Hidlo ategion…"/>
 				<Item id="90114" name="Ar gael"/>
 				<Item id="90115" name="Diweddariadau"/>
 				<Item id="90116" name="Wedi'i osod"/>
@@ -937,7 +935,7 @@ gan/by Aled Powell
 				<Item id="90119" name="Tynnu'r ategion canlynol?"/>
 				<Item id="90120" name="Gosod yr ategion canlynol?"/>
 				<Item id="90121" name="Bydd hyn yn dileu'r ffeiliau ategyn."/>
-				<Item id="90122" name="Chwilio gorchmynion\u2026"/>
+				<Item id="90122" name="Chwilio gorchmynion…"/>
 				<Item id="90123" name="Lliw blaendir"/>
 				<Item id="90124" name="Lliw cefndir"/>
 				<Item id="90125" name="Enw macro"/>
@@ -957,7 +955,7 @@ gan/by Aled Powell
 				<Item id="90139" name="Pob marc wedi'i glirio."/>
 				<Item id="90140" name="Testun wedi'i farcio wedi'i gopïo i'r clipfwrdd."/>
 				<Item id="90141" name="Dim testun wedi'i farcio i'w gopïo."/>
-				<Item id="90142" name="Chwilio... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Chwilio... %ld hit(s) — %@"/>
 				<Item id="90143" name="Amnewid mewn ffeiliau..."/>
 				<Item id="90144" name="Amnewid mewn Prosiectau: Heb ei gysylltu eto."/>
 				<Item id="90145" name="Dod o hyd i mewn Prosiectau: Heb ei gysylltu eto â rhestr ffeiliau Panel Prosiect."/>
@@ -978,20 +976,20 @@ gan/by Aled Powell
 				<Item id="90160" name="Amlygu craff: gair cyfan yn unig"/>
 				<Item id="90161" name="Cliciwch ddwywaith i gau'r tab"/>
 				<Item id="90162" name="Dangos y botwm cau ar y tabiau"/>
+				<Item id="90168" name="Defnyddiwch ffont monospaced yn yr ymgom Find"/>
+				<Item id="90191" name="Ystorfa rhestr ategion"/>
 				<Item id="90224" name="Dangos tabiau ar sawl llinell"/>
 				<Item id="90163" name="Cofiwch weld y panel ar draws sesiynau"/>
 				<Item id="90164" name="Cadw cofnodion ffeil absennol yn y sesiwn"/>
 				<Item id="90165" name="Cadarnhau cyn Cadw Pawb"/>
 				<Item id="90166" name="Cadarnhau Amnewid Pawb mewn dogfennau agored"/>
 				<Item id="90167" name="Amnewid: peidiwch â symud i'r digwyddiad nesaf"/>
-				<Item id="90168" name="Defnyddiwch ffont monospaced yn yr ymgom Find"/>
 				<Item id="90169" name="De-gliciwch yn cadw'r dewis"/>
 				<Item id="90170" name="Gwrthdroi gorchymyn dyddiad/amser rhagosodedig"/>
 				<Item id="90171" name="Defnyddio parsers rhestr swyddogaethau seiliedig ar XML"/>
 				<Item id="90172" name="Awto-gau cromfachau ( ) [ ] { }"/>
 				<Item id="90173" name="O Nfed cymeriad:"/>
 				<Item id="90174" name="Trothwy awto-wirio mewn-dethol (beit):"/>
-				<Item id="90175" name="Estynedig (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Golygydd"/>
 				<Item id="90177" name="Ymylon"/>
 				<Item id="90178" name="Tywyll"/>
@@ -1005,12 +1003,10 @@ gan/by Aled Powell
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Syml +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Ystorfa rhestr ategion"/>
 				<Item id="90192" name="Dewiswch ffeil XML thema Nextpad++ i'w chymhwyso"/>
-				<Item id="90193" name="Creu\u2026 newydd"/>
-				<Item id="90194" name="Arbed fel\u2026"/>
+				<Item id="90193" name="Creu… newydd"/>
+				<Item id="90194" name="Arbed fel…"/>
 				<Item id="90195" name="Iaith defnyddiwr:"/>
 				<Item id="90196" name="Enw iaith"/>
 				<Item id="90197" name="Creu"/>
@@ -1040,6 +1036,234 @@ gan/by Aled Powell
 				<Item id="90221" name="Priodoledd Wedi'i Gloi (macOS)"/>
 				<Item id="90222" name="Gwiriwch am Ddiweddariadau…"/>
 				<Item id="90223" name="Agored Diweddar"/>
+				<Item id="90226" name="Cymorth"/>
+				<Item id="90227" name="Methodd y Llwyfan"/>
+				<Item id="90228" name="Methwyd Unstage"/>
+				<Item id="90229" name="ar gael"/>
+				<Item id="90230" name="Rydych chi'n rhedeg"/>
+				<Item id="90231" name="Peidiwch byth fy atgoffa eto"/>
+				<Item id="90232" name="Diweddariadau"/>
+				<Item id="90233" name="Gwiriwch yn awtomatig am ddiweddariadau"/>
+				<Item id="90234" name="Mae gwiriadau diweddaru awtomatig wedi'u diffodd."/>
+				<Item id="90235" name="Wedi'i wirio ddiwethaf:"/>
+				<Item id="90236" name="Dim cysylltiad rhyngrwyd."/>
+				<Item id="90237" name="Ymateb annisgwyl gan y gweinydd diweddaru."/>
+				<Item id="90238" name="Ni chanfuwyd datganiad cyhoeddedig."/>
+				<Item id="90239" name="Nid yw'r gweinydd diweddaru ar gael dros dro.Ceisiwch eto yn nes ymlaen."/>
+				<Item id="90240" name="Gwrthododd y gweinydd diweddaru'r cais.Efallai bod dirprwy, wal dân neu VPN yn rhwystro mynediad i GitHub."/>
+				<Item id="90241" name="Gormod o wiriadau diweddaru o'ch rhwydwaith (mae'r terfyn hwn yn cael ei rannu gan bawb arno).Ceisiwch eto ar ôl"/>
+				<Item id="90242" name="Gormod o wiriadau diweddaru o'ch rhwydwaith (mae'r terfyn hwn yn cael ei rannu gan bawb arno).Ceisiwch eto yn nes ymlaen."/>
+				<Item id="90243" name="Dychwelodd y gweinydd diweddaru statws"/>
+				<Item id="90244" name="Ceisiwch Eto"/>
+				<Item id="90245" name="Argraffu maint y testun:"/>
+				<Item id="90246" name="Defnyddiwch chwyddo sgrin"/>
+				<Item id="90247" name="Maint gwirioneddol"/>
+				<Item id="90248" name="Nid oedd modd disodli rhai ffeiliau"/>
+				<Item id="90249" name="...a %lu arall"/>
+				<Item id="90250" name="Rheolir cysylltiadau ffeiliau gan eich sefydliad."/>
+				<Item id="90251" name="Yn aros am gadarnhad macOS…"/>
+				<Item id="90252" name="Ni chymhwysodd macOS y newid."/>
+				<Item id="90253" name="Cofrestredig"/>
+				<Item id="90254" name="Agor pob ffeil yn y ffolder?"/>
+				<Item id="90255" name="Bydd hyn yn agor %lu ffeil mewn tabiau newydd."/>
+				<Item id="90256" name="Methu mewnforio: %@"/>
+				<Item id="90258" name="Wedi dod o hyd i %ld sy'n cyfateb mewn %ld ffeil(iau)."/>
+				<Item id="90259" name="Chwilio… %ld cyfateb(au) hyd yn hyn"/>
+				<Item id="90260" name="%@ (%ld yn cyfateb%@)"/>
+				<Item id="90261" name="Chwiliad niwlog"/>
+				<Item id="90265" name="Darganfod: Methu dod o hyd i'r testun &quot;%@&quot;"/>
+				<Item id="90266" name="Cyfrif: %ld cyfateb(es)."/>
+				<Item id="90267" name="Disodli Pob Un: Cafodd %ld digwyddiad(au) eu disodli %@."/>
+				<Item id="90268" name="Amnewid mewn Ffeiliau a Agorwyd: Cafodd %ld digwyddiad(au) eu disodli."/>
+				<Item id="90269" name="Dod o hyd i mewn Ffeiliau: %ld hit(s) mewn %ld ffeil(iau)."/>
+				<Item id="90270" name="Darganfod mewn Ffeiliau: 0 trawiad."/>
+				<Item id="90271" name="Disodli pob digwyddiad o &quot;%@&quot; gyda &quot;%@&quot; yn y cyfeiriadur:&#10;%@&#10;&#10;Ni ellir dadwneud hyn."/>
+				<Item id="90272" name="Amnewid mewn Ffeiliau: %ld amnewid(iau) mewn %ld ffeil(iau)."/>
+				<Item id="90273" name="Agorwch Banel Prosiect yn gyntaf."/>
+				<Item id="90274" name="Dewiswch o leiaf un Panel Prosiect i'w chwilio."/>
+				<Item id="90275" name="Dim ffeiliau i'w chwilio."/>
+				<Item id="90276" name="Darganfod yn Projects: %ld hit(s) mewn %ld ffeil(iau)."/>
+				<Item id="90277" name="Darganfod yn Prosiectau: 0 trawiad."/>
+				<Item id="90278" name="Disodli pob digwyddiad o"/>
+				<Item id="90279" name="gyda"/>
+				<Item id="90280" name="mewn"/>
+				<Item id="90281" name="ffeil(iau) prosiect.Ni ellir dadwneud hyn."/>
+				<Item id="90282" name="Amnewid mewn Prosiectau: %ld amnewid(iau) mewn %ld ffeil(iau)."/>
+				<Item id="90283" name="Marc: %ld cyfateb(es) wedi'u marcio."/>
+				<Item id="90284" name="Hidlo enw ffeil/ffolder..."/>
+				<Item id="90285" name="Nid oedd modd cadw rhai dogfennau"/>
+				<Item id="90286" name="⌘ Gorchymyn"/>
+				<Item id="90287" name="⌃ Rheolaeth"/>
+				<Item id="90288" name="⌥ Opsiwn"/>
+				<Item id="90289" name="⇧ Turn"/>
+				<Item id="90290" name="Rhowch linyn fformat NSDateFormatter:"/>
+				<Item id="90291" name="Nid yw '%@' wedi'i weithredu yn y fersiwn hwn eto."/>
+				<Item id="90292" name="Mewnforio Ategyn"/>
+				<Item id="90293" name="Angen ailgychwyn"/>
+				<Item id="90294" name="Dim ffeiliau i'w prosesu"/>
+				<Item id="90295" name="Nid yw'r nod prosiect hwn yn cynnwys unrhyw ffeiliau."/>
+				<Item id="90296" name="Mae gan '%@' newidiadau heb eu cadw.&#10;Ail-lwytho a thaflu newidiadau?"/>
+				<Item id="90297" name="Rhowch enw ffeil newydd:"/>
+				<Item id="90298" name="Ail-enwi Tab Cyfredol"/>
+				<Item id="90299" name="Enw newydd:"/>
+				<Item id="90300" name="Methodd ailenwi"/>
+				<Item id="90301" name="Ni all yr enw gynnwys “/” neu “:”."/>
+				<Item id="90302" name="Symud '%@' i'r Sbwriel?"/>
+				<Item id="90303" name="Cadw '%@' cyn cau?"/>
+				<Item id="90304" name="Peidiwch ag Arbed Pawb"/>
+				<Item id="90305" name="Awgrym Modd Colofn"/>
+				<Item id="90306" name="Mae yna 3 ffordd i newid i'r modd dewis colofn:&#10;&#10;1.(Bysellfwrdd a Llygoden) Daliwch yr Opsiwn wrth lusgo'r clic chwith&#10;&#10;2.(Bysellfwrdd yn unig) Daliwch Option+Shift wrth ddefnyddio bysellau saeth&#10;&#10;3.(Bysellfwrdd neu Lygoden)&#10; Rhowch y caret ar ddechrau'r lleoliad bloc colofn a ddymunir, yna&#10; gweithredu'r gorchymyn “Dechrau/Diwedd Dewis yn y Modd Colofn”;&#10; Symud y caret i'r safle bloc pen colofn a ddymunir, yna&#10; gweithredu'r gorchymyn “Dechrau/Diwedd Dewis yn y Modd Colofn” eto"/>
+				<Item id="90307" name="Rhowch yr URL chwilio.Defnyddiwch %s fel dalfan yr ymholiad (neu atodwch yr ymholiad ar y diwedd):"/>
+				<Item id="90308" name="Rhowch orchymyn neu URL..."/>
+				<Item id="90309" name="Wedi methu â gweithredu:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Mae golygu contextMenu.xml yn eich galluogi i addasu eich Nextpad++ dewislen cyd-destun naid yn y parth golygu.&#10;Rhaid i chi ailgychwyn eich Nextpad++ i ddod i rym ar ôl addasu contextMenu.xml."/>
+				<Item id="90312" name="Wedi'i osod yn barod"/>
+				<Item id="90313" name="Gosod Offeryn Llinell Reoli nextpad++"/>
+				<Item id="90314" name="Methodd y gosodiad"/>
+				<Item id="90315" name="Wedi'i osod - ond nid yw ~/.local/bin ar eich PATH"/>
+				<Item id="90316" name="Eisoes yn eich ffurfwedd"/>
+				<Item id="90317" name="Ychwanegwyd at PATH"/>
+				<Item id="90318" name="Methu ysgrifennu"/>
+				<Item id="90319" name="Wedi'i gopïo"/>
+				<Item id="90320" name="Cadw newidiadau i '%@'?"/>
+				<Item id="90321" name="Bydd eich newidiadau yn cael eu colli os na fyddwch yn eu cadw."/>
+				<Item id="90322" name="Gwnewch gais i bob dogfen"/>
+				<Item id="90323" name="Rhedeg Macro ar Ffeiliau"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Ffolder:"/>
+				<Item id="90326" name="Dewiswch ffolder…"/>
+				<Item id="90327" name="Pori…"/>
+				<Item id="90328" name="Estyniadau:"/>
+				<Item id="90329" name="Is-gyfeiriaduron cylchol"/>
+				<Item id="90330" name="Cynnwys ffeiliau cudd"/>
+				<Item id="90331" name="Maint mwyaf:"/>
+				<Item id="90332" name="Diderfyn"/>
+				<Item id="90333" name="Fesul ffeil:"/>
+				<Item id="90334" name="Cadw os caiff ei addasu"/>
+				<Item id="90335" name="Cau ar ôl"/>
+				<Item id="90336" name="Caewch hyd yn oed ffeiliau a oedd eisoes ar agor"/>
+				<Item id="90337" name="Ar gamgymeriad:"/>
+				<Item id="90338" name="Hepgor ffeil a pharhau"/>
+				<Item id="90339" name="Stopiwch ar y gwall cyntaf"/>
+				<Item id="90340" name="(dim macros wedi'u cadw)"/>
+				<Item id="90341" name="Mae %lu ffeil(iau) yn cyfateb"/>
+				<Item id="90342" name="Ni chanfuwyd y ffolder"/>
+				<Item id="90343" name="Dewiswch ffolder sy'n bodoli."/>
+				<Item id="90344" name="Dim ffeiliau yn cyfateb"/>
+				<Item id="90345" name="Addaswch yr opsiwn hidlo estyniadau, dychwelyd, neu ffeiliau cudd."/>
+				<Item id="90346" name="Yn dechrau…"/>
+				<Item id="90347" name="Prosesu:"/>
+				<Item id="90348" name="%ld / %ld Iawn: %ld Wedi'i hepgor: %ld Wedi methu: %ld"/>
+				<Item id="90349" name="Swp wedi'i ganslo"/>
+				<Item id="90350" name="Swp wedi'i gwblhau"/>
+				<Item id="90351" name="Cyfanswm: %lu Iawn: %ld Wedi'i hepgor: %ld Wedi methu: %ld"/>
+				<Item id="90352" name="Dyddiad Adeiledig"/>
+				<Item id="90353" name="System Weithredu"/>
+				<Item id="90354" name="diweddaraf"/>
+				<Item id="90355" name="hen ffasiwn"/>
+				<Item id="90356" name="anhysbys"/>
+				<Item id="90357" name="Ailgychwyn y cais er mwyn i newidiadau ddod i rym."/>
+				<Item id="90358" name="Diweddaru Ategion"/>
+				<Item id="90359" name="Diweddaru'r ategion canlynol?"/>
+				<Item id="90360" name="Mae fersiynau cyfredol yn cael eu gwneud wrth gefn hyd at ~/Library/Application Support/Nextpad++/plugin-backups/ cyn cael eu disodli."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Newid i'r wedd Tahoe Newydd (Beta)"/>
+				<Item id="90363" name="Defnyddio dewislenni arddull macOS (Beta)"/>
+				<Item id="90364" name="Bydd yr olwg Tahoe newydd yn cael ei gymhwyso ar ôl i chi ailgychwyn Nextpad++."/>
+				<Item id="90365" name="Bydd yr edrychiad Clasurol yn cael ei adfer ar ôl i chi ailgychwyn Nextpad++."/>
+				<Item id="90366" name="Gadael Nawr"/>
+				<Item id="90367" name="Bydd dewislenni'n cael eu haildrefnu yn yr arddull macOS ar ôl i chi ailgychwyn Nextpad++."/>
+				<Item id="90368" name="Bydd cynllun clasurol y ddewislen yn cael ei adfer ar ôl i chi ailgychwyn Nextpad++."/>
+				<Item id="90369" name="Lliw"/>
+				<Item id="90370" name="Gwnewch gais i eiconau bar offer ategyn"/>
+				<Item id="90371" name="Yn y modd Cyflawn mae eiconau ategyn yn dod yn un lliw solet."/>
+				<Item id="90372" name="Grwpiau Bar Offer"/>
+				<Item id="90373" name="Dewiswch ble mae pob botwm yn ymddangos yn y bar offer Liquid Glass: ar y"/>
+				<Item id="90374" name="Botwm"/>
+				<Item id="90375" name="Lleoliad"/>
+				<Item id="90376" name="Ailosod i'r Rhagosodiadau"/>
+				<Item id="90377" name="Dewislen gorlif"/>
+				<Item id="90378" name="Cudd"/>
+				<Item id="90379" name="Amlap geiriau cyfeillgar CJK"/>
+				<Item id="90380" name="Mae dewis colofn yn newid i aml-olygu"/>
+				<Item id="90381" name="Bwlch rhwng llinellau:"/>
+				<Item id="90382" name="1.0 (Diofyn)"/>
+				<Item id="90383" name="Cuddio bar tab"/>
+				<Item id="90384" name="Mae maint tab yn dilyn chwyddo dogfen"/>
+				<Item id="90385" name="Dewiswch…"/>
+				<Item id="90386" name="Ailosod i'r Rhagosodiad"/>
+				<Item id="90387" name="Gan ddefnyddio'r lleoliad diofyn."/>
+				<Item id="90388" name="Lleoliad personol."/>
+				<Item id="90389" name="Llwybr annilys - bydd copïau wrth gefn yn defnyddio'r lleoliad diofyn."/>
+				<Item id="90390" name="Dewiswch"/>
+				<Item id="90391" name="Mewnosod Dewis:"/>
+				<Item id="90392" name="Defnyddiwch fodd Boost Regex (aml-linell; ailgychwynnwch i wneud cais)"/>
+				<Item id="90393" name="Ailgychwynnwch Nextpad++ i ddod i rym."/>
+				<Item id="90394" name="Llwybr annilys."/>
+				<Item id="90395" name="Ailgychwyn Nawr"/>
+				<Item id="90396" name="Dewiswch ffolder o/i ble mae Nextpad++ yn darllen/ysgrifennu ei osodiadau"/>
+				<Item id="90397" name="(peidiwch â'i ddewis oni bai eich bod chi'n gwybod beth rydych chi'n ei wneud)"/>
+				<Item id="90398" name="Maint eicon y bar offer"/>
+				<Item id="90399" name="100% (diofyn)"/>
+				<Item id="90400" name="Cyflymder sgrolio olwyn y llygoden"/>
+				<Item id="90401" name="1 × (i ffwrdd)"/>
+				<Item id="90402" name="Newidiodd maint eicon y bar offer"/>
+				<Item id="90403" name="Bydd maint eicon y bar offer newydd yn dod i rym y tro nesaf y bydd Nextpad++ yn lansio."/>
+				<Item id="90404" name="Newidiwyd eiconau'r bar offer"/>
+				<Item id="90405" name="Bydd yr eiconau bar offer newydd yn dod i rym y tro nesaf y bydd Nextpad++ yn lansio."/>
+				<Item id="90410" name="Dod o hyd i mewn Prosiectau..."/>
+				<Item id="90411" name="Rhedeg Macro ar Ffeiliau..."/>
+				<Item id="90418" name="Bydd hyn yn ei dynnu a'i holl gynnwys o'r prosiect.Ni fydd unrhyw ffeiliau ar ddisg yn cael eu heffeithio."/>
+				<Item id="90420" name="Ffolder"/>
+				<Item id="90421" name="Dewch o hyd yn y canlyniadau chwilio hyn..."/>
+				<Item id="90422" name="Copïo'r Llinell(au) a Ddewiswyd"/>
+				<Item id="90423" name="Copïo Enw(au) y Llwybr a Ddewiswyd"/>
+				<Item id="90424" name="Agor Enw(au) y Llwybr a Ddewiswyd"/>
+				<Item id="90425" name="Geiriau lapio llinellau hir"/>
+				<Item id="90426" name="Glanhau ar gyfer pob chwiliad"/>
+				<Item id="90427" name="Heb ei ganfod"/>
+				<Item id="90428" name="GWRTHDARO: %@"/>
+				<Item id="90429" name="Dileu &quot;%@&quot;?"/>
+				<Item id="90430" name="Gweinyddwr Iaith Diffiniedig gan Ddefnyddiwr"/>
+				<Item id="90431" name="Hidlo ieithoedd…"/>
+				<Item id="90432" name="Ffynhonnell"/>
+				<Item id="90433" name="Ffynonellau AC"/>
+				<Item id="90434" name="Statws"/>
+				<Item id="90435" name="Gosod / Diweddaru"/>
+				<Item id="90436" name="%lu iaith · %lu gosod · %lu diweddariadau"/>
+				<Item id="90437" name="Awdur"/>
+				<Item id="90438" name="Cyfunol: %ld cofnod o %lu ffynhonnell (cyfuno)"/>
+				<Item id="90439" name="Dewiswch un neu fwy o ieithoedd i'w gosod."/>
+				<Item id="90440" name="Dim byd i'w lawrlwytho ar gyfer y dewis."/>
+				<Item id="90441" name="Wedi methu llwytho i lawr"/>
+				<Item id="90442" name="Diffyg cyfatebiaeth siec"/>
+				<Item id="90443" name="Mae'r iaith(ieithoedd) a ddewiswyd nawr ar gael yn y ddewislen Iaith."/>
+				<Item id="90444" name="Dewiswch un neu fwy o ieithoedd gosod i'w dileu."/>
+				<Item id="90445" name="Wedi'i ddileu"/>
+				<Item id="90446" name="Mae'r enw hwn eisoes yn cael ei ddefnyddio gan iaith arall."/>
+				<Item id="90447" name="Nid oedd modd dileu'r iaith hon."/>
+				<Item id="90448" name="Ni ellir dileu ieithoedd sydd wedi'u gosod ymlaen llaw."/>
+				<Item id="90449" name="Nid oedd modd ailenwi'r iaith hon."/>
+				<Item id="90450" name="Mae'r ffeil hon yn %@.Bydd ei agor yn analluogi amlygu cystrawen a dadwneud hanes i gadw'r ap yn ymatebol.&#10;&#10;Ydych chi am barhau?"/>
+				<Item id="90451" name="Ar agor Beth bynnag"/>
+				<Item id="90452" name="Newidiwyd &quot;%@&quot; ar ddisg"/>
+				<Item id="90453" name="Anwybyddu"/>
+				<Item id="90454" name="Cadw Fy Fersiwn"/>
+				<Item id="90455" name="Methu ail-lwytho &quot;%@&quot;"/>
+				<Item id="90456" name="Nid oedd modd darllen y ffeil."/>
+				<Item id="90457" name="Dewiswch ble mae pob botwm yn ymddangos ym mar offer Liquid Glass: ar y capsiwl grŵp (Bar Offer), yn newislen gorlif ▾ y grŵp, neu Cudd."/>
+				<Item id="90458" name="Cyfrannu i Gefnogi Datblygiad"/>
+				<Item id="90459" name="Gosod Offer Llinell Reoli"/>
+				<Item id="90460" name="Dangos cysgodion tu ôl i gapsiwlau bar offer"/>
+				<Item id="90461" name="Rhoddwch"/>
+				<Item id="90462" name="Setiau cymeriadau"/>
+				<Item id="90463" name="Lleihewch"/>
+				<Item id="90464" name="Cuddio Nextpad++"/>
+				<Item id="90465" name="Cuddio Eraill"/>
+				<Item id="90466" name="Dangos Pawb"/>
+				<Item id="90467" name="Gadael Nextpad++"/>
+				<Item id="90468" name="Cadw'r Macro Presennol a Recordiwyd…"/>
+				<Item id="90469" name="Trimiwch y Gofod Traed ac Arbed"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

@@ -2,7 +2,8 @@
 # Build and run the Boost.Regex backend harness (regex/test/test_boost_regex.cxx)
 # against the real Scintilla core. Compiles the Scintilla sources Document needs,
 # plus the Boost backend + UTF-32 iterator and the header-only vendored Boost
-# (BOOST_REGEX_STANDALONE). No CMake target needed.
+# (BOOST_REGEX_STANDALONE). No CMake needed; the same harness also runs under
+# ctest (see CMakeLists.txt).
 #
 # Usage:  bash regex/test/run_boost.sh
 set -euo pipefail
@@ -20,11 +21,10 @@ srcs=()
 for s in "${core[@]}"; do srcs+=("$sci/src/$s.cxx"); done
 
 clang++ -std=c++17 -stdlib=libc++ \
-    -DSCI_NAMESPACE -DSCI_OWNREGEX -DSCINTILLA_QT=0 -DBOOST_REGEX_STANDALONE \
+    -DSCI_NAMESPACE -DSCI_OWNREGEX -DSCINTILLA_QT=0 -DBOOST_REGEX_STANDALONE -DBOOST_HAS_THREADS= \
     -I"$sci/include" -I"$sci/src" -I"$root/regex" \
     "$here/test_boost_regex.cxx" \
     "$root/regex/BoostRegExSearch.cxx" "$root/regex/UTF8DocumentIterator.cxx" \
-    "$root/regex/NppRegexSearch.cxx" "$root/regex/RegexBackendSelect.cxx" \
     "${srcs[@]}" \
     -o "$out/test_boost_regex"
 

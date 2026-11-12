@@ -902,13 +902,13 @@ https://github.com/AndresTraks/
 				<Item id="90006" name="Allika juhtimine"/>
 				<Item id="90007" name="Kohustus"/>
 				<Item id="90008" name="Kinnitamine ebaõnnestus"/>
-				<Item id="90009" name="Git-hoidla puudub\nRepo avamiseks kasutage funktsiooni Sirvi."/>
+				<Item id="90009" name="Git-hoidla puudub&#10;Repo avamiseks kasutage funktsiooni Sirvi."/>
 				<Item id="90010" name="Etapp"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Etapp Kõik"/>
 				<Item id="90013" name="Unstage Kõik"/>
-				<Item id="90014" name="Kinnita sõnum\u2026"/>
-				<Item id="90015" name="Sirvige hoidlat\u2026"/>
+				<Item id="90014" name="Kinnita sõnum…"/>
+				<Item id="90015" name="Sirvige hoidlat…"/>
 				<Item id="90016" name="Valige git-hoidla kaust"/>
 				<Item id="90017" name="(hoidla puudub)"/>
 				<Item id="90018" name="(eraldatud)"/>
@@ -922,9 +922,9 @@ https://github.com/AndresTraks/
 				<Item id="90026" name="Tulemused"/>
 				<Item id="90027" name="Peatus"/>
 				<Item id="90028" name="Otsing peatus."/>
-				<Item id="90029" name="Otsimine\u2026"/>
+				<Item id="90029" name="Otsimine…"/>
 				<Item id="90030" name="Tekst otsimiseks"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Otsin..."/>
 				<Item id="90033" name="Asenda:"/>
 				<Item id="90034" name="Terve sõna"/>
@@ -984,7 +984,7 @@ https://github.com/AndresTraks/
 				<Item id="90088" name="Installi pluginad"/>
 				<Item id="90089" name="Eemalda pluginad"/>
 				<Item id="90090" name="Käske ei leitud"/>
-				<Item id="90091" name="Sisestage otsimiseks\u2026"/>
+				<Item id="90091" name="Sisestage otsimiseks…"/>
 				<Item id="90092" name="Kasutaja määratud keel v.2.1"/>
 				<Item id="90093" name="Loo uus keel"/>
 				<Item id="90094" name="Sisestage nimi:"/>
@@ -993,11 +993,9 @@ https://github.com/AndresTraks/
 				<Item id="90097" name="Ära salvesta"/>
 				<Item id="90098" name="Tehtud"/>
 				<Item id="90099" name="Reamurdmise sisse- ja väljalülitamine"/>
-				<Item id="90100" name="Kuva kõik tähemärgid"/>
 				<Item id="90101" name="Kuva tähemärkide valikud"/>
 				<Item id="90102" name="Taandejuhise sisse- ja väljalülitamine"/>
 				<Item id="90103" name="Pole veel rakendatud"/>
-				<Item id="90104" name="Laadi uuesti kettalt"/>
 				<Item id="90105" name="Muuda otsingumootorit"/>
 				<Item id="90106" name="Käivitusviga"/>
 				<Item id="90107" name="Nextpad++ laadimisaeg"/>
@@ -1006,7 +1004,7 @@ https://github.com/AndresTraks/
 				<Item id="90110" name="Laadi alla"/>
 				<Item id="90111" name="Väljalaskeleht"/>
 				<Item id="90112" name="Hiljem"/>
-				<Item id="90113" name="Filtreeri pistikprogrammid\u2026"/>
+				<Item id="90113" name="Filtreeri pistikprogrammid…"/>
 				<Item id="90114" name="Saadaval"/>
 				<Item id="90115" name="Värskendused"/>
 				<Item id="90116" name="Paigaldatud"/>
@@ -1015,7 +1013,7 @@ https://github.com/AndresTraks/
 				<Item id="90119" name="Kas eemaldada järgmised pistikprogrammid?"/>
 				<Item id="90120" name="Kas installida järgmised pistikprogrammid?"/>
 				<Item id="90121" name="See kustutab pistikprogrammi failid."/>
-				<Item id="90122" name="Otsi käske\u2026"/>
+				<Item id="90122" name="Otsi käske…"/>
 				<Item id="90123" name="Esiplaani värv"/>
 				<Item id="90124" name="Taustavärv"/>
 				<Item id="90125" name="Makro nimi"/>
@@ -1035,7 +1033,7 @@ https://github.com/AndresTraks/
 				<Item id="90139" name="Kõik märgid kustutatud."/>
 				<Item id="90140" name="Märgistatud tekst kopeeriti lõikelauale."/>
 				<Item id="90141" name="Kopeerimiseks pole märgitud teksti."/>
-				<Item id="90142" name="Otsimine... %ld tabamust \u2014 %@"/>
+				<Item id="90142" name="Otsimine... %ld tabamust — %@"/>
 				<Item id="90143" name="Failides asendamine..."/>
 				<Item id="90144" name="Asenda jaotises Projektid: pole veel ühendatud."/>
 				<Item id="90145" name="Otsige jaotisest Projektid: pole veel projektipaneeli faililoendiga ühendatud."/>
@@ -1056,20 +1054,20 @@ https://github.com/AndresTraks/
 				<Item id="90160" name="Nutikas esiletõstmine: ainult terve sõna"/>
 				<Item id="90161" name="Topeltklõpsake vahekaardi sulgemiseks"/>
 				<Item id="90162" name="Kuva sulgemisnupp vahekaartidel"/>
+				<Item id="90168" name="Kasutage otsimisdialoogis ühekohalist fonti"/>
+				<Item id="90191" name="Pluginate loendi hoidla"/>
 				<Item id="90224" name="Kuva sakid mitmel real"/>
 				<Item id="90163" name="Jäta meelde paneeli nähtavus seansside lõikes"/>
 				<Item id="90164" name="Failikirjete puudumine seansis"/>
 				<Item id="90165" name="Kinnitage enne Salvesta kõik"/>
 				<Item id="90166" name="Kinnita Asenda kõik avatud dokumentides"/>
 				<Item id="90167" name="Asenda: ära liigu järgmise esinemise juurde"/>
-				<Item id="90168" name="Kasutage otsimisdialoogis ühekohalist fonti"/>
 				<Item id="90169" name="Paremklõps säilitab valiku"/>
 				<Item id="90170" name="Pöörake vaikekuupäeva/kellaaja järjekorda"/>
 				<Item id="90171" name="Kasutage XML-põhiseid funktsiooniloendi parsereid"/>
 				<Item id="90172" name="Sulgude automaatne sulgemine ( ) [ ] { }"/>
 				<Item id="90173" name="N-ndast märgist:"/>
 				<Item id="90174" name="Valikusisese automaatse kontrolli lävi (baitides):"/>
-				<Item id="90175" name="Laiendatud (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Toimetaja"/>
 				<Item id="90177" name="Marginaalid"/>
 				<Item id="90178" name="Tume"/>
@@ -1083,12 +1081,10 @@ https://github.com/AndresTraks/
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimeeritud"/>
 				<Item id="90188" name="Lihtne +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Pluginate loendi hoidla"/>
 				<Item id="90192" name="Valige Nextpad++ teema XML-fail, mida rakendada"/>
-				<Item id="90193" name="Loo uus\u2026"/>
-				<Item id="90194" name="Salvesta kui\u2026"/>
+				<Item id="90193" name="Loo uus…"/>
+				<Item id="90194" name="Salvesta kui…"/>
 				<Item id="90195" name="Kasutaja keel:"/>
 				<Item id="90196" name="Keele nimi"/>
 				<Item id="90197" name="Loo"/>
@@ -1118,6 +1114,232 @@ https://github.com/AndresTraks/
 				<Item id="90221" name="Lukustatud atribuut (macOS)"/>
 				<Item id="90222" name="Kontrollige värskendusi…"/>
 				<Item id="90223" name="Avage Viimased"/>
+				<Item id="90226" name="Abi"/>
+				<Item id="90227" name="Etapp ebaõnnestus"/>
+				<Item id="90228" name="Lava katkestamine ebaõnnestus"/>
+				<Item id="90229" name="on saadaval"/>
+				<Item id="90230" name="Sa jooksed"/>
+				<Item id="90231" name="Ärge kunagi enam meelde tuletage"/>
+				<Item id="90232" name="Värskendused"/>
+				<Item id="90233" name="Otsige automaatselt värskendusi"/>
+				<Item id="90234" name="Automaatsed värskenduste kontrollid on välja lülitatud."/>
+				<Item id="90235" name="Viimati kontrollitud:"/>
+				<Item id="90236" name="Interneti-ühendus puudub."/>
+				<Item id="90237" name="Ootamatu vastus värskendusserverist."/>
+				<Item id="90238" name="Ühtegi avaldatud väljaannet ei leitud."/>
+				<Item id="90239" name="Värskendusserver pole ajutiselt saadaval.Proovige hiljem uuesti."/>
+				<Item id="90240" name="Värskendusserver lükkas taotluse tagasi.Puhverserver, tulemüür või VPN võib blokeerida juurdepääsu GitHubile."/>
+				<Item id="90241" name="Teie võrgust on liiga palju värskenduste kontrolle (seda limiiti jagavad kõik võrgu kasutajad).Proovige pärast uuesti"/>
+				<Item id="90242" name="Teie võrgust on liiga palju värskenduste kontrolle (seda limiiti jagavad kõik võrgu kasutajad).Proovige hiljem uuesti."/>
+				<Item id="90243" name="Värskendusserver tagastas oleku"/>
+				<Item id="90244" name="Proovige uuesti"/>
+				<Item id="90245" name="Prinditeksti suurus:"/>
+				<Item id="90246" name="Kasutage ekraani suumi"/>
+				<Item id="90247" name="Tegelik suurus"/>
+				<Item id="90248" name="Mõnda faili ei saanud asendada"/>
+				<Item id="90249" name="...ja veel %lu"/>
+				<Item id="90250" name="Failiseoseid haldab teie organisatsioon."/>
+				<Item id="90251" name="Ootan macOS-i kinnitust…"/>
+				<Item id="90252" name="macOS ei rakendanud muudatust."/>
+				<Item id="90253" name="Registreeritud"/>
+				<Item id="90254" name="Kas avada kõik kaustas olevad failid?"/>
+				<Item id="90255" name="See avab %lu faili uutel vahekaartidel."/>
+				<Item id="90256" name="Ei saanud importida: %@"/>
+				<Item id="90258" name="Leiti %ld vastet %ld failist."/>
+				<Item id="90259" name="Otsin... Seni on %ld vastet"/>
+				<Item id="90260" name="%@ (%ld vaste%@)"/>
+				<Item id="90261" name="Hägune otsing"/>
+				<Item id="90265" name="Otsi: ei leia teksti &quot;%@&quot;"/>
+				<Item id="90266" name="Loendus: %ld vastet."/>
+				<Item id="90267" name="Asenda kõik: %ld esinemist asendati %@."/>
+				<Item id="90268" name="Asenda avatud failides: %ld esinemist asendati."/>
+				<Item id="90269" name="Otsi failist: %ld tabamust %ld failis."/>
+				<Item id="90270" name="Otsi failist: 0 tabamust."/>
+				<Item id="90271" name="Asendage kataloogis kõik &quot;%@&quot; esinemissagedused &quot;%@&quot;:&#10;%@&#10;&#10;Seda ei saa tagasi võtta."/>
+				<Item id="90272" name="Asenda failis: %ld asendust %ld failis."/>
+				<Item id="90273" name="Esmalt avage projektipaneel."/>
+				<Item id="90274" name="Valige otsimiseks vähemalt üks projektipaneel."/>
+				<Item id="90275" name="Otsida pole faile."/>
+				<Item id="90276" name="Otsi projektidest: %ld tabamust %ld failis."/>
+				<Item id="90277" name="Otsi projektidest: 0 tabamust."/>
+				<Item id="90278" name="Asendage kõik esinemised"/>
+				<Item id="90279" name="koos"/>
+				<Item id="90280" name="sisse"/>
+				<Item id="90281" name="projektifail(id).Seda ei saa tagasi võtta."/>
+				<Item id="90282" name="Asenda projektides: %ld asendust %ld failis."/>
+				<Item id="90283" name="Märgi: %ld vaste(t) on märgitud."/>
+				<Item id="90284" name="Filtreeri faili/kausta nimi..."/>
+				<Item id="90285" name="Mõnda dokumenti ei õnnestunud salvestada"/>
+				<Item id="90286" name="⌘ Käsk"/>
+				<Item id="90287" name="⌃ Juhtimine"/>
+				<Item id="90288" name="⌥ Valik"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Sisestage vormingu string NSDateFormatter:"/>
+				<Item id="90291" name="„%@” pole selles versioonis veel rakendatud."/>
+				<Item id="90292" name="Impordi pistikprogramm"/>
+				<Item id="90293" name="Nõutav taaskäivitamine"/>
+				<Item id="90294" name="Töödeldavaid faile pole"/>
+				<Item id="90295" name="See projekti sõlm ei sisalda faile."/>
+				<Item id="90296" name="„%@” sisaldab salvestamata muudatusi.&#10;Kas laadida uuesti ja loobuda muudatustest?"/>
+				<Item id="90297" name="Sisestage uus failinimi:"/>
+				<Item id="90298" name="Nimeta praegune vaheleht ümber"/>
+				<Item id="90299" name="Uus nimi:"/>
+				<Item id="90300" name="Ümbernimetamine ebaõnnestus"/>
+				<Item id="90301" name="Nimi ei tohi sisaldada &quot;/&quot; ega &quot;:&quot;."/>
+				<Item id="90302" name="Kas teisaldada %@ prügikasti?"/>
+				<Item id="90303" name="Kas salvestada '%@' enne sulgemist?"/>
+				<Item id="90304" name="Ärge salvestage kõike"/>
+				<Item id="90305" name="Veerurežiimi näpunäide"/>
+				<Item id="90306" name="Veeru valimise režiimile lülitumiseks on kolm võimalust:&#10;&#10;1.(Klaviatuur ja hiir) Hoidke valikut vasakklõpsu lohistamise ajal&#10;&#10;2.(Ainult klaviatuur) Hoidke nooleklahvide kasutamise ajal all klahvi Option+Shift&#10;&#10;3.(Klaviatuur või hiir)&#10; Asetage täpp veeruploki soovitud algusesse, seejärel&#10; täitke käsk „Alusta/lõpeta valimist veerurežiimis”;&#10; nihutage tähis soovitud veeruploki lõppu, seejärel&#10; käivitage uuesti käsk „Alusta/lõpeta valikut veerurežiimis”."/>
+				<Item id="90307" name="Sisestage otsingu URL.Kasutage päringu kohatäitena ühikut %s (või lisage päring lõppu):"/>
+				<Item id="90308" name="Sisestage käsk või URL..."/>
+				<Item id="90309" name="Käivitamine nurjus:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="contextMenu.xml muutmine võimaldab teil muuta oma Nextpad++ hüpikkontekstimenüüd redigeerimisvööndis.&#10;Peate oma Nextpad++ taaskäivitama, et pärast üksuse contextMenu.xml muutmist jõustuks."/>
+				<Item id="90312" name="Juba paigaldatud"/>
+				<Item id="90313" name="Installige käsureatööriist nextpad++"/>
+				<Item id="90314" name="Installimine ebaõnnestus"/>
+				<Item id="90315" name="Installitud – kuid ~/.local/bin pole teie PATH-l"/>
+				<Item id="90316" name="Juba teie konfiguratsioonis"/>
+				<Item id="90317" name="Lisati teekonda PATH"/>
+				<Item id="90318" name="Ei saanud kirjutada"/>
+				<Item id="90319" name="Kopeeritud"/>
+				<Item id="90320" name="Kas salvestada muudatused '%@'?"/>
+				<Item id="90321" name="Teie muudatused lähevad kaotsi, kui te neid ei salvesta."/>
+				<Item id="90322" name="Rakenda kõikidele dokumentidele"/>
+				<Item id="90323" name="Käivitage makro failides"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Kaust:"/>
+				<Item id="90326" name="Valige kaust…"/>
+				<Item id="90327" name="Sirvi…"/>
+				<Item id="90328" name="Laiendused:"/>
+				<Item id="90329" name="Alamkataloogide kordus"/>
+				<Item id="90330" name="Kaasake peidetud failid"/>
+				<Item id="90331" name="Max suurus:"/>
+				<Item id="90332" name="Piiramatu"/>
+				<Item id="90333" name="Faili kohta:"/>
+				<Item id="90334" name="Salvestage, kui seda muudetakse"/>
+				<Item id="90335" name="Sulgege pärast"/>
+				<Item id="90336" name="Sulgege isegi failid, mis olid juba avatud"/>
+				<Item id="90337" name="Vea korral:"/>
+				<Item id="90338" name="Jätke fail vahele ja jätkake"/>
+				<Item id="90339" name="Peatage esimese vea korral"/>
+				<Item id="90340" name="(salvestatud makrosid pole)"/>
+				<Item id="90341" name="%lu faili(d) vastavad"/>
+				<Item id="90342" name="Kausta ei leitud"/>
+				<Item id="90343" name="Valige olemasolev kaust."/>
+				<Item id="90344" name="Ükski fail ei sobi"/>
+				<Item id="90345" name="Reguleerige laienduste filtrit, rekursiooni või peidetud failide valikut."/>
+				<Item id="90346" name="Alustatakse…"/>
+				<Item id="90347" name="Töötlemine:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Vahele jäetud: %ld Ebaõnnestunud: %ld"/>
+				<Item id="90349" name="Partii tühistati"/>
+				<Item id="90350" name="Partii lõpetatud"/>
+				<Item id="90351" name="Kokku: %lu OK: %ld Vahele jäetud: %ld Ebaõnnestunud: %ld"/>
+				<Item id="90352" name="Ehitamise kuupäev"/>
+				<Item id="90353" name="Operatsioonisüsteem"/>
+				<Item id="90354" name="viimane"/>
+				<Item id="90355" name="aegunud"/>
+				<Item id="90356" name="teadmata"/>
+				<Item id="90357" name="Muudatuste jõustumiseks taaskäivitage rakendus."/>
+				<Item id="90358" name="Värskenda pistikprogramme"/>
+				<Item id="90359" name="Kas värskendada järgmisi pistikprogramme?"/>
+				<Item id="90360" name="Praegused versioonid varundatakse enne asendamist ~/Library/Application Support/Nextpad++/plugin-backups/-le."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Lülitu uuele Tahoe välimusele (beeta)"/>
+				<Item id="90363" name="Kasutage macOS-stiilis menüüsid (beeta)"/>
+				<Item id="90364" name="Uus välimus Tahoe rakendub pärast rakenduse Nextpad++ taaskäivitamist."/>
+				<Item id="90365" name="Klassikaline välimus taastatakse pärast rakenduse Nextpad++ taaskäivitamist."/>
+				<Item id="90366" name="Lõpeta kohe"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Klassikaline menüüpaigutus taastatakse pärast rakenduse Nextpad++ taaskäivitamist."/>
+				<Item id="90369" name="Värv"/>
+				<Item id="90370" name="Rakenda pistikprogrammi tööriistariba ikoonidele"/>
+				<Item id="90371" name="Täielikus režiimis muutuvad pistikprogrammi ikoonid ühevärviliseks."/>
+				<Item id="90372" name="Tööriistariba rühmad"/>
+				<Item id="90373" name="Valige, kus iga nuppu Liquid Glass tööriistaribal kuvatakse:"/>
+				<Item id="90374" name="Nupp"/>
+				<Item id="90375" name="Paigutus"/>
+				<Item id="90376" name="Lähtestage vaikeseadetele"/>
+				<Item id="90377" name="Ülevoolumenüü"/>
+				<Item id="90378" name="Peidetud"/>
+				<Item id="90379" name="CJK-sõbralik sõnamurdmine"/>
+				<Item id="90380" name="Veeru valik lülitub mitme redigeerimise režiimile"/>
+				<Item id="90381" name="Reavahe:"/>
+				<Item id="90382" name="1.0 (vaikimisi)"/>
+				<Item id="90383" name="Peida vahekaardiriba"/>
+				<Item id="90384" name="Vahekaardi suurus järgib dokumendi suumi"/>
+				<Item id="90385" name="Vali…"/>
+				<Item id="90386" name="Lähtestage vaikeseadetele"/>
+				<Item id="90387" name="Vaikeasukoha kasutamine."/>
+				<Item id="90388" name="Kohandatud asukoht."/>
+				<Item id="90389" name="Vale tee – varukoopiad kasutavad vaikeasukohta."/>
+				<Item id="90390" name="Vali"/>
+				<Item id="90391" name="Sisesta valik:"/>
+				<Item id="90392" name="Kasutage režiimi Boost regex (mitmerealine; rakendamiseks taaskäivitage)"/>
+				<Item id="90395" name="Taaskäivitage kohe"/>
+				<Item id="90396" name="Valige kaust, kuhu Nextpad++ oma seadeid loeb/kirjutab"/>
+				<Item id="90397" name="(ära vali seda, kui sa ei tea, mida teed)"/>
+				<Item id="90398" name="Tööriistariba ikooni suurus"/>
+				<Item id="90399" name="100% (vaikimisi)"/>
+				<Item id="90400" name="Hiireratta kerimiskiirus"/>
+				<Item id="90401" name="1× (väljas)"/>
+				<Item id="90402" name="Tööriistariba ikooni suurust muudeti"/>
+				<Item id="90403" name="Tööriistariba ikooni uus suurus jõustub järgmisel rakenduse Nextpad++ käivitamisel."/>
+				<Item id="90404" name="Tööriistariba ikoone muudeti"/>
+				<Item id="90405" name="Uued tööriistariba ikoonid jõustuvad järgmisel rakenduse Nextpad++ käivitamisel."/>
+				<Item id="90410" name="Otsi projektidest..."/>
+				<Item id="90411" name="Käivita makro failides..."/>
+				<Item id="90418" name="See eemaldab selle ja kogu selle sisu projektist.See ei mõjuta kettal olevaid faile."/>
+				<Item id="90420" name="Kaust"/>
+				<Item id="90421" name="Otsige nendest otsingutulemustest..."/>
+				<Item id="90422" name="Kopeeri valitud rida(d)"/>
+				<Item id="90423" name="Kopeeri valitud teenimi(d)"/>
+				<Item id="90424" name="Ava valitud teenimi(d)"/>
+				<Item id="90425" name="Sõna murdes pikad read"/>
+				<Item id="90426" name="Puhastus iga otsingu jaoks"/>
+				<Item id="90427" name="Ei leitud"/>
+				<Item id="90428" name="KONFLIKT: %@"/>
+				<Item id="90429" name="Kas kustutada &quot;%@&quot;?"/>
+				<Item id="90430" name="Kasutaja määratud keele administraator"/>
+				<Item id="90431" name="Filtreeri keeli…"/>
+				<Item id="90432" name="Allikas"/>
+				<Item id="90433" name="Vahelduvvoolu allikad"/>
+				<Item id="90434" name="Olek"/>
+				<Item id="90435" name="Install / Värskenda"/>
+				<Item id="90436" name="%lu keelt · %lu installitud · %lu värskendust"/>
+				<Item id="90437" name="Autor"/>
+				<Item id="90438" name="Kombineeritud: %ld kirjet %lu allikast (ühendatud)"/>
+				<Item id="90439" name="Valige installimiseks üks või mitu keelt."/>
+				<Item id="90440" name="Valiku jaoks pole midagi allalaaditavat."/>
+				<Item id="90441" name="Allalaadimine ebaõnnestus"/>
+				<Item id="90442" name="Kontrollsumma mittevastavus"/>
+				<Item id="90443" name="Valitud keel(ed) on nüüd saadaval menüüs Keel."/>
+				<Item id="90444" name="Valige eemaldamiseks üks või mitu installitud keelt."/>
+				<Item id="90445" name="Eemaldatud"/>
+				<Item id="90446" name="Seda nime kasutatakse juba teises keeles."/>
+				<Item id="90447" name="Seda keelt ei saanud eemaldada."/>
+				<Item id="90448" name="Eelinstallitud keeli ei saa eemaldada."/>
+				<Item id="90449" name="Seda keelt ei saanud ümber nimetada."/>
+				<Item id="90450" name="See fail on %@.Selle avamine keelab süntaksi esiletõstmise ja ajaloo tagasivõtmise, et rakendus püsiks tundlik.&#10;&#10;Kas soovite jätkata?"/>
+				<Item id="90451" name="Ava ikkagi"/>
+				<Item id="90452" name="&quot;%@&quot; muudeti kettal"/>
+				<Item id="90453" name="Ignoreeri"/>
+				<Item id="90454" name="Säilita minu versioon"/>
+				<Item id="90455" name="&quot;%@&quot; ei saanud uuesti laadida"/>
+				<Item id="90456" name="Faili ei saanud lugeda."/>
+				<Item id="90457" name="Valige, kus iga nuppu Liquid Glass tööriistaribal kuvatakse: rühma kapslil (tööriistaribal), grupi ▾ ülevoolumenüüs või Peidetud."/>
+				<Item id="90458" name="Anneta arengu toetamiseks"/>
+				<Item id="90459" name="Installige käsurea tööriistad"/>
+				<Item id="90460" name="Kuva tööriistariba kapslite taga olevad varjud"/>
+				<Item id="90461" name="Anneta"/>
+				<Item id="90462" name="Tähemärgikomplektid"/>
+				<Item id="90463" name="Minimeeri"/>
+				<Item id="90464" name="Peida Nextpad++"/>
+				<Item id="90465" name="Peida teised"/>
+				<Item id="90466" name="Kuva kõik"/>
+				<Item id="90467" name="Lõpeta Nextpad++"/>
+				<Item id="90468" name="Salvesta praegune salvestatud makro…"/>
+				<Item id="90469" name="Kärbi mahajäänud ruumi ja säästa"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

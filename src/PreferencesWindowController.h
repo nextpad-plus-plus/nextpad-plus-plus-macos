@@ -44,12 +44,13 @@ extern NSString *const kPrefTabCloseButton;      // BOOL, default YES
 extern NSString *const kPrefDoubleClickTabClose; // BOOL, default NO
 extern NSString *const kPrefTabBarWrap;          // BOOL, default NO
 extern NSString *const kPrefHideTabBar;          // BOOL, default NO — hide the tab bar entirely
+extern NSString *const kPrefExitOnCloseLastTab;  // BOOL, default NO — quit when the last tab is closed
 extern NSString *const kPrefVirtualSpace;        // BOOL, default NO
 extern NSString *const kPrefColumnSel2MultiEdit; // BOOL, default YES — column selection becomes multi-edit on Backspace/arrows
 extern NSString *const kPrefScrollBeyondLastLine;// BOOL, default NO
 extern NSString *const kPrefScrollSpeedGain;     // double, default 1.0 (1.0 = no mouse-wheel acceleration)
 extern NSString *const kPrefCaretBlinkRate;      // NSInteger ms, default 500
-extern NSString *const kPrefFontQuality;         // NSInteger 0-3, default 3 (LCD)
+extern NSString *const kPrefFontQuality;         // NSInteger 0-3 (SC_EFF_QUALITY_*), default 3: font smoothing on Cocoa
 extern NSString *const kPrefLineHeightMultiplier;// double, default 1.0; presets 1.0/1.2/1.3/1.4/1.5 (issue #149)
 // Global override — force attributes from Default Style across every style ID
 // (Windows: <GUIConfig name="globalOverride" .../>; see Parameters.cpp:6156).
@@ -88,7 +89,6 @@ extern NSString *const kPrefDisableTextDragDrop; // BOOL, default NO
 extern NSString *const kPrefMonoFontFind;        // BOOL, default NO
 extern NSString *const kPrefConfirmReplaceAll;   // BOOL, default YES
 extern NSString *const kPrefReplaceAndStop;      // BOOL, default NO
-extern NSString *const kPrefUseBoostRegex;       // BOOL, default NO (opt-in Boost.Regex backend)
 extern NSString *const kPrefSmartHiliteCase;     // BOOL, default NO
 extern NSString *const kPrefSmartHiliteWord;     // BOOL, default NO
 extern NSString *const kPrefDateTimeReverse;     // BOOL, default NO

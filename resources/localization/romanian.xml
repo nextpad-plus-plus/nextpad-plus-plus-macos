@@ -1486,13 +1486,13 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90006" name="Controlul sursei"/>
 				<Item id="90007" name="Se angajează"/>
 				<Item id="90008" name="Commiterea eșuată"/>
-				<Item id="90009" name="Fără depozit git\nUtilizați Răsfoire pentru a deschide un depozit."/>
+				<Item id="90009" name="Fără depozit git&#10;Utilizați Răsfoire pentru a deschide un depozit."/>
 				<Item id="90010" name="Etapa"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Etapa Toate"/>
 				<Item id="90013" name="Anulează toate"/>
-				<Item id="90014" name="Mesaj de confirmare\u2026"/>
-				<Item id="90015" name="Căutați depozit\u2026"/>
+				<Item id="90014" name="Mesaj de confirmare…"/>
+				<Item id="90015" name="Căutați depozit…"/>
 				<Item id="90016" name="Alegeți un folder de depozit git"/>
 				<Item id="90017" name="(fără depozit)"/>
 				<Item id="90018" name="(decomandat)"/>
@@ -1506,9 +1506,9 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90026" name="Rezultate"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Căutarea s-a oprit."/>
-				<Item id="90029" name="Se caută\u2026"/>
+				<Item id="90029" name="Se caută…"/>
 				<Item id="90030" name="Text de căutat"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Se caută..."/>
 				<Item id="90033" name="Înlocuiește:"/>
 				<Item id="90034" name="Cuvântul întreg"/>
@@ -1568,7 +1568,7 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90088" name="Instalați pluginuri"/>
 				<Item id="90089" name="Eliminați pluginurile"/>
 				<Item id="90090" name="Nu s-au găsit comenzi"/>
-				<Item id="90091" name="Tastați pentru a căuta\u2026"/>
+				<Item id="90091" name="Tastați pentru a căuta…"/>
 				<Item id="90092" name="Limbă definită de utilizator v.2.1"/>
 				<Item id="90093" name="Creați o limbă nouă"/>
 				<Item id="90094" name="Introduceți un nume:"/>
@@ -1577,11 +1577,9 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90097" name="Nu salva"/>
 				<Item id="90098" name="Gata"/>
 				<Item id="90099" name="Comutați încadrarea cuvintelor"/>
-				<Item id="90100" name="Afișați toate caracterele"/>
 				<Item id="90101" name="Afișare opțiuni pentru caractere"/>
 				<Item id="90102" name="Comutați Ghidul de indentare"/>
 				<Item id="90103" name="Neimplementat încă"/>
-				<Item id="90104" name="Reîncărcați de pe disc"/>
 				<Item id="90105" name="Schimbați motorul de căutare"/>
 				<Item id="90106" name="Eroare de rulare"/>
 				<Item id="90107" name="Timp de încărcare Nextpad++"/>
@@ -1590,16 +1588,13 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90110" name="Descărcați"/>
 				<Item id="90111" name="Pagina de lansare"/>
 				<Item id="90112" name="Mai târziu"/>
-				<Item id="90113" name="Filtrați pluginuri\u2026"/>
-				<Item id="90114" name="Disponibil"/>
-				<Item id="90115" name="Actualizări"/>
-				<Item id="90116" name="Instalat"/>
+				<Item id="90113" name="Filtrați pluginuri…"/>
 				<Item id="90117" name="Incompatibil"/>
 				<Item id="90118" name="Instalarea eșuată"/>
 				<Item id="90119" name="Eliminați următoarele pluginuri?"/>
 				<Item id="90120" name="Instalați următoarele pluginuri?"/>
 				<Item id="90121" name="Aceasta va șterge fișierele plugin."/>
-				<Item id="90122" name="Comenzi de căutare\u2026"/>
+				<Item id="90122" name="Comenzi de căutare…"/>
 				<Item id="90123" name="Culoarea primului plan"/>
 				<Item id="90124" name="Culoare de fundal"/>
 				<Item id="90125" name="Nume macro"/>
@@ -1619,7 +1614,7 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90139" name="Toate semnele au fost eliminate."/>
 				<Item id="90140" name="Textul marcat a fost copiat în clipboard."/>
 				<Item id="90141" name="Niciun text marcat de copiat."/>
-				<Item id="90142" name="Se caută... %ld hit(uri) \u2014 %@"/>
+				<Item id="90142" name="Se caută... %ld hit(uri) — %@"/>
 				<Item id="90143" name="Înlocuire în fișiere..."/>
 				<Item id="90144" name="Înlocuiți în proiecte: neconectat încă."/>
 				<Item id="90145" name="Găsiți în Proiecte: Neconectat încă la lista de fișiere din Panoul de proiecte."/>
@@ -1646,14 +1641,12 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90165" name="Confirmați înainte de a salva tot"/>
 				<Item id="90166" name="Confirmați Înlocuire tot în documentele deschise"/>
 				<Item id="90167" name="Înlocuiește: nu trece la următoarea apariție"/>
-				<Item id="90168" name="Folosiți fontul monospațiat în caseta de dialog Găsiți"/>
 				<Item id="90169" name="Faceți clic dreapta pentru a menține selecția"/>
 				<Item id="90170" name="Inversați ordinea implicită dată/oră"/>
 				<Item id="90171" name="Utilizați analizatori de liste de funcții bazate pe XML"/>
 				<Item id="90172" name="Închideți automat parantezele ( ) [ ] { }"/>
 				<Item id="90173" name="Din al N-lea caracter:"/>
 				<Item id="90174" name="Pragul de verificare automată în cadrul selecției (octeți):"/>
-				<Item id="90175" name="Extins (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Marjele"/>
 				<Item id="90178" name="Întunecat"/>
@@ -1667,12 +1660,10 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimizat"/>
 				<Item id="90188" name="Simplu +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Depozitul listei de pluginuri"/>
 				<Item id="90192" name="Selectați un fișier XML cu temă Nextpad++ pentru a aplica"/>
-				<Item id="90193" name="Creați un nou\u2026"/>
-				<Item id="90194" name="Salvați ca\u2026"/>
+				<Item id="90193" name="Creați un nou…"/>
+				<Item id="90194" name="Salvați ca…"/>
 				<Item id="90195" name="Limba utilizatorului:"/>
 				<Item id="90196" name="Numele limbii"/>
 				<Item id="90197" name="Creați"/>
@@ -1702,6 +1693,216 @@ Poți reactiva această casetă de dialog mai târziu, în Preferințe."/>
 				<Item id="90221" name="Atribut blocat (macOS)"/>
 				<Item id="90222" name="Verificați actualizările…"/>
 				<Item id="90223" name="Deschide Recent"/>
+				<Item id="90226" name="Ajutor"/>
+				<Item id="90227" name="Etapa a eșuat"/>
+				<Item id="90228" name="Demontare a eșuat"/>
+				<Item id="90229" name="este disponibil"/>
+				<Item id="90230" name="Tu alergi"/>
+				<Item id="90231" name="Nu-mi mai aminti niciodată"/>
+				<Item id="90233" name="Verificați automat actualizările"/>
+				<Item id="90234" name="Verificările automate de actualizare sunt dezactivate."/>
+				<Item id="90235" name="Ultima verificare:"/>
+				<Item id="90236" name="Fără conexiune la internet."/>
+				<Item id="90237" name="Răspuns neașteptat de la serverul de actualizare."/>
+				<Item id="90238" name="Nu a fost găsită nicio versiune publicată."/>
+				<Item id="90239" name="Serverul de actualizare este temporar indisponibil.Vă rugăm să încercați din nou mai târziu."/>
+				<Item id="90240" name="Serverul de actualizare a refuzat cererea.Este posibil ca un proxy, firewall sau VPN să blocheze accesul la GitHub."/>
+				<Item id="90241" name="Prea multe verificări de actualizare din rețeaua dvs. (această limită este împărtășită de toată lumea din ea).Încercați din nou după"/>
+				<Item id="90242" name="Prea multe verificări de actualizare din rețeaua dvs. (această limită este împărtășită de toată lumea din ea).Vă rugăm să încercați din nou mai târziu."/>
+				<Item id="90243" name="Serverul de actualizare a returnat starea"/>
+				<Item id="90244" name="Încercați din nou"/>
+				<Item id="90245" name="Dimensiunea textului tipărit:"/>
+				<Item id="90246" name="Utilizați zoomul ecranului"/>
+				<Item id="90247" name="Dimensiunea reală"/>
+				<Item id="90248" name="Unele fișiere nu au putut fi înlocuite"/>
+				<Item id="90249" name="...și încă %lu"/>
+				<Item id="90250" name="Asocierile de fișiere sunt gestionate de organizația dvs."/>
+				<Item id="90251" name="Se așteaptă confirmarea macOS…"/>
+				<Item id="90252" name="macOS nu a aplicat modificarea."/>
+				<Item id="90253" name="Înregistrate"/>
+				<Item id="90254" name="Deschideți toate fișierele din folder?"/>
+				<Item id="90255" name="Aceasta va deschide %lu fișiere în file noi."/>
+				<Item id="90256" name="Nu s-a putut importa: %@"/>
+				<Item id="90258" name="S-au găsit %ld potriviri în %ld fișiere."/>
+				<Item id="90259" name="Se caută... %ld potriviri până acum"/>
+				<Item id="90260" name="%@ (%ld potrivire%@)"/>
+				<Item id="90261" name="Căutare neclară"/>
+				<Item id="90266" name="Număr: %ld potriviri."/>
+				<Item id="90267" name="Înlocuiți toate: %ld apariții au fost înlocuite %@."/>
+				<Item id="90268" name="Înlocuire în fișierele deschise: %ld apariție(e) au fost înlocuite."/>
+				<Item id="90269" name="Găsiți în fișiere: %ld accesări în %ld fișiere."/>
+				<Item id="90270" name="Găsiți în fișiere: 0 rezultate."/>
+				<Item id="90271" name="Înlocuiți toate aparițiile lui „%@” cu „%@” în director:&#10;%@&#10;&#10;Acest lucru nu poate fi anulat."/>
+				<Item id="90272" name="Înlocuire în fișiere: %ld înlocuire(e) în %ld fișier(e)."/>
+				<Item id="90273" name="Deschideți mai întâi un panou de proiect."/>
+				<Item id="90274" name="Selectați cel puțin un panou de proiect pentru a căuta."/>
+				<Item id="90275" name="Nu există fișiere de căutat."/>
+				<Item id="90276" name="Găsiți în Proiecte: %ld accesări în %ld fișiere."/>
+				<Item id="90277" name="Găsiți în Proiecte: 0 rezultate."/>
+				<Item id="90278" name="Înlocuiți toate aparițiile de"/>
+				<Item id="90279" name="cu"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="fișier(e) de proiect.Acest lucru nu poate fi anulat."/>
+				<Item id="90282" name="Înlocuire în proiecte: %ld înlocuire(e) în %ld fișier(e)."/>
+				<Item id="90283" name="Marcare: %ld potriviri marcate."/>
+				<Item id="90284" name="Filtrați numele fișierului/dosarului..."/>
+				<Item id="90285" name="Unele documente nu au putut fi salvate"/>
+				<Item id="90286" name="⌘ Comanda"/>
+				<Item id="90287" name="⌃ Control"/>
+				<Item id="90288" name="⌥ Opțiune"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Introduceți un șir de format NSDateFormatter:"/>
+				<Item id="90291" name="„%@” nu este încă implementat în această versiune."/>
+				<Item id="90292" name="Import plugin"/>
+				<Item id="90293" name="Este necesară repornirea"/>
+				<Item id="90294" name="Nu există fișiere de procesat"/>
+				<Item id="90295" name="Acest nod de proiect nu conține fișiere."/>
+				<Item id="90296" name="„%@” are modificări nesalvate.&#10;Reîncărcați și renunțați la modificări?"/>
+				<Item id="90297" name="Introduceți un nou nume de fișier:"/>
+				<Item id="90299" name="Nume nou:"/>
+				<Item id="90301" name="Numele nu poate conține „/” sau „:”."/>
+				<Item id="90304" name="Nu salvați totul"/>
+				<Item id="90306" name="Există 3 moduri de a comuta la modul de selectare a coloanei:&#10;&#10;1.(Tastatură și mouse) Țineți apăsat Opțiune în timp ce faceți clic cu butonul din stânga la glisare&#10;&#10;2.(Numai pentru tastatură) Țineți apăsat Opțiune+Shift în timp ce utilizați tastele săgeți&#10;&#10;3.(Tastatură sau mouse)&#10; Puneți cursorul la începutul dorit al poziției blocului de coloană, apoi&#10; executați comanda „Început/Sfârșit selectare în modul coloană”;&#10; Mutați cursorul la poziția dorită a blocului de sfârșit de coloană, apoi&#10; executați din nou comanda „Început/Încheierea selectării în modul coloană”"/>
+				<Item id="90307" name="Introduceți adresa URL de căutare.Utilizați %s ca substituent al interogării (sau adăugați interogarea la sfârșit):"/>
+				<Item id="90308" name="Introdu comanda sau URL..."/>
+				<Item id="90309" name="Executarea eșuată:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editarea contextMenu.xml vă permite să modificați meniul contextual pop-up Nextpad++ din zona de editare.&#10;Trebuie să reporniți Nextpad++ pentru a intra în vigoare după modificarea contextMenu.xml."/>
+				<Item id="90312" name="Deja instalat"/>
+				<Item id="90313" name="Instalați instrumentul de linie de comandă nextpad++"/>
+				<Item id="90314" name="Instalarea a eșuat"/>
+				<Item id="90315" name="Instalat — dar ~/.local/bin nu este pe PATH"/>
+				<Item id="90316" name="Deja în configurația dvs"/>
+				<Item id="90317" name="Adăugat la PATH"/>
+				<Item id="90318" name="Nu am putut scrie"/>
+				<Item id="90319" name="Copiat"/>
+				<Item id="90321" name="Modificările dvs. se vor pierde dacă nu le salvați."/>
+				<Item id="90322" name="Aplicați la toate documentele"/>
+				<Item id="90323" name="Rulați macro pe fișiere"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Dosar:"/>
+				<Item id="90326" name="Alegeți un dosar..."/>
+				<Item id="90327" name="Răsfoiți..."/>
+				<Item id="90328" name="Extensii:"/>
+				<Item id="90329" name="Subdirectoare recurente"/>
+				<Item id="90330" name="Includeți fișierele ascunse"/>
+				<Item id="90331" name="Dimensiune maxima:"/>
+				<Item id="90332" name="Nelimitat"/>
+				<Item id="90333" name="Per fișier:"/>
+				<Item id="90334" name="Salvați dacă este modificat"/>
+				<Item id="90335" name="Închide după"/>
+				<Item id="90336" name="Închideți chiar și fișierele care erau deja deschise"/>
+				<Item id="90337" name="La eroare:"/>
+				<Item id="90338" name="Omite fișierul și continuă"/>
+				<Item id="90339" name="Opriți la prima eroare"/>
+				<Item id="90340" name="(fără macrocomenzi salvate)"/>
+				<Item id="90341" name="%lu fișier(e) se potrivesc"/>
+				<Item id="90342" name="Dosarul nu a fost găsit"/>
+				<Item id="90343" name="Alegeți un folder care există."/>
+				<Item id="90344" name="Niciun fișier nu se potrivește"/>
+				<Item id="90345" name="Ajustați filtrul extensiilor, recursiunea sau opțiunea fișierelor ascunse."/>
+				<Item id="90346" name="Începând…"/>
+				<Item id="90347" name="Prelucrare:"/>
+				<Item id="90348" name="%ld / %ld OK: %ld Omis: %ld Eșuat: %ld"/>
+				<Item id="90349" name="Lotul a fost anulat"/>
+				<Item id="90350" name="Lot complet"/>
+				<Item id="90351" name="Total: %lu Ok: %ld Omis: %ld Eșuat: %ld"/>
+				<Item id="90352" name="Data construirii"/>
+				<Item id="90353" name="Sistem de operare"/>
+				<Item id="90354" name="mai recent"/>
+				<Item id="90355" name="învechit"/>
+				<Item id="90356" name="necunoscut"/>
+				<Item id="90357" name="Reporniți aplicația pentru ca modificările să intre în vigoare."/>
+				<Item id="90358" name="Actualizați pluginuri"/>
+				<Item id="90359" name="Actualizați următoarele plugin-uri?"/>
+				<Item id="90360" name="Versiunile actuale sunt copiate în ~/Library/Application Support/Nextpad++/plugin-backups/ înainte de a fi înlocuite."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Comutați la Noul aspect Tahoe (Beta)"/>
+				<Item id="90363" name="Utilizați meniuri în stil macOS (Beta)"/>
+				<Item id="90364" name="Noul aspect Tahoe va fi aplicat după ce reporniți Nextpad++."/>
+				<Item id="90365" name="Aspectul clasic va fi restabilit după ce reporniți Nextpad++."/>
+				<Item id="90366" name="Renunță acum"/>
+				<Item id="90367" name="Meniurile vor fi rearanjate în stilul macOS după ce reporniți Nextpad++."/>
+				<Item id="90368" name="Aspectul clasic al meniului va fi restabilit după ce reporniți Nextpad++."/>
+				<Item id="90369" name="Culoare"/>
+				<Item id="90370" name="Aplicați pictogramelor din bara de instrumente plugin"/>
+				<Item id="90371" name="În modul complet, pictogramele pluginului devin o singură culoare solidă."/>
+				<Item id="90372" name="Grupuri din bara de instrumente"/>
+				<Item id="90373" name="Alegeți unde apare fiecare buton în bara de instrumente Liquid Glass: pe"/>
+				<Item id="90374" name="Buton"/>
+				<Item id="90375" name="Plasarea"/>
+				<Item id="90376" name="Resetați la valorile implicite"/>
+				<Item id="90377" name="Meniu overflow"/>
+				<Item id="90378" name="Ascuns"/>
+				<Item id="90379" name="Încheiere de cuvinte prietenoasă CJK"/>
+				<Item id="90380" name="Selectarea coloanei trece la editare multiplă"/>
+				<Item id="90381" name="Spațiere între linii:"/>
+				<Item id="90382" name="1.0 (implicit)"/>
+				<Item id="90383" name="Ascunde bara de file"/>
+				<Item id="90384" name="Mărimea filei urmează mărirea documentului"/>
+				<Item id="90385" name="alege…"/>
+				<Item id="90386" name="Resetați la valoarea implicită"/>
+				<Item id="90387" name="Folosind locația implicită."/>
+				<Item id="90388" name="Locație personalizată."/>
+				<Item id="90389" name="Cale nevalidă — copiile de rezervă vor folosi locația implicită."/>
+				<Item id="90390" name="Alege"/>
+				<Item id="90391" name="Inserați selecția:"/>
+				<Item id="90392" name="Utilizați modul Boost Regex (cu mai multe linii; reporniți pentru a aplica)"/>
+				<Item id="90395" name="Reporniți acum"/>
+				<Item id="90397" name="(nu-l alege decât dacă știi ce faci)"/>
+				<Item id="90398" name="Dimensiunea pictogramei barei de instrumente"/>
+				<Item id="90399" name="100% (implicit)"/>
+				<Item id="90400" name="Viteza de defilare a roții mouse-ului"/>
+				<Item id="90401" name="1× (dezactivat)"/>
+				<Item id="90402" name="Dimensiunea pictogramei barei de instrumente a fost schimbată"/>
+				<Item id="90403" name="Noua dimensiune a pictogramei barei de instrumente va intra în vigoare la următoarea lansare a Nextpad++."/>
+				<Item id="90404" name="Pictogramele din bara de instrumente au fost modificate"/>
+				<Item id="90405" name="Noile pictograme din bara de instrumente vor intra în vigoare la următoarea lansare a Nextpad++."/>
+				<Item id="90411" name="Rulați macro pe fișiere..."/>
+				<Item id="90418" name="Acest lucru îl va elimina și tot conținutul său din proiect.Niciun fișier de pe disc nu va fi afectat."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90427" name="Nu a fost găsit"/>
+				<Item id="90428" name="CONFLICT: %@"/>
+				<Item id="90429" name="Ștergeți „%@”?"/>
+				<Item id="90430" name="Administrator limbă definită de utilizator"/>
+				<Item id="90431" name="Filtrați limbile..."/>
+				<Item id="90432" name="Sursa"/>
+				<Item id="90433" name="Surse AC"/>
+				<Item id="90434" name="Stare"/>
+				<Item id="90435" name="Instalează/Actualizează"/>
+				<Item id="90436" name="%lu limbi · %lu instalate · %lu actualizări"/>
+				<Item id="90437" name="autor"/>
+				<Item id="90438" name="Combinat: %ld intrări din %lu surse (combinate)"/>
+				<Item id="90439" name="Selectați una sau mai multe limbi de instalat."/>
+				<Item id="90440" name="Nimic de descărcat pentru selecție."/>
+				<Item id="90441" name="Descărcarea a eșuat"/>
+				<Item id="90442" name="Nepotrivire a sumei de control"/>
+				<Item id="90443" name="Limbile selectate sunt acum disponibile în meniul Limbă."/>
+				<Item id="90444" name="Selectați una sau mai multe limbi instalate pentru a le elimina."/>
+				<Item id="90445" name="Eliminat"/>
+				<Item id="90446" name="Acest nume este deja folosit de altă limbă."/>
+				<Item id="90447" name="Această limbă nu a putut fi eliminată."/>
+				<Item id="90448" name="Limbile preinstalate nu pot fi eliminate."/>
+				<Item id="90449" name="Această limbă nu a putut fi redenumită."/>
+				<Item id="90450" name="Acest fișier este %@.Deschiderea acestuia va dezactiva evidențierea sintaxei și va anula istoricul pentru a menține aplicația receptivă.&#10;&#10;Doriți să continuați?"/>
+				<Item id="90451" name="Deschide oricum"/>
+				<Item id="90452" name="„%@” a fost modificat pe disc"/>
+				<Item id="90453" name="Ignora"/>
+				<Item id="90454" name="Păstrează versiunea mea"/>
+				<Item id="90455" name="Nu s-a putut reîncărca „%@”"/>
+				<Item id="90456" name="Fișierul nu a putut fi citit."/>
+				<Item id="90457" name="Alegeți unde apare fiecare buton în bara de instrumente Liquid Glass: în capsula grupului (Bara de instrumente), în meniul de supraîncărcare ▾ al grupului sau Ascuns."/>
+				<Item id="90458" name="Donează pentru a sprijini dezvoltarea"/>
+				<Item id="90459" name="Instalați instrumentele de linie de comandă"/>
+				<Item id="90460" name="Afișați umbrele din spatele capsulelor din bara de instrumente"/>
+				<Item id="90461" name="Donează"/>
+				<Item id="90462" name="Seturi de caractere"/>
+				<Item id="90463" name="Minimizați"/>
+				<Item id="90464" name="Ascunde Nextpad++"/>
+				<Item id="90465" name="Ascunde pe alții"/>
+				<Item id="90466" name="Arată toate"/>
+				<Item id="90467" name="Ieșiți din Nextpad++"/>
+				<Item id="90468" name="Salvați macrocomanda înregistrată curent..."/>
+				<Item id="90469" name="Tăiați spațiul final și salvați"/>
 			</MacStrings>
 		</Dialog>
         <MessageBox> 

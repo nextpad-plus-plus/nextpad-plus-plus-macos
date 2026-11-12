@@ -530,13 +530,13 @@
 				<Item id="90006" name="Bronbeheer"/>
 				<Item id="90007" name="Verbind"/>
 				<Item id="90008" name="Toestel het misluk"/>
-				<Item id="90009" name="Geen git-bewaarplek nie\nGebruik Browse om 'n repo oop te maak."/>
+				<Item id="90009" name="Geen git-bewaarplek nie&#10;Gebruik Browse om 'n repo oop te maak."/>
 				<Item id="90010" name="Verhoog"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stadium Alle"/>
 				<Item id="90013" name="Destage All"/>
-				<Item id="90014" name="Gee boodskap toe\u2026"/>
-				<Item id="90015" name="Blaai vir bewaarplek\u2026"/>
+				<Item id="90014" name="Gee boodskap toe…"/>
+				<Item id="90015" name="Blaai vir bewaarplek…"/>
 				<Item id="90016" name="Kies 'n git-bewaarmap"/>
 				<Item id="90017" name="(geen bewaarplek)"/>
 				<Item id="90018" name="(losstaande)"/>
@@ -550,9 +550,9 @@
 				<Item id="90026" name="Resultate"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Soektog het gestop."/>
-				<Item id="90029" name="Soek tans\u2026"/>
+				<Item id="90029" name="Soek tans…"/>
 				<Item id="90030" name="Teks om te soek vir"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Soek tans..."/>
 				<Item id="90033" name="Vervang:"/>
 				<Item id="90034" name="Hele Woord"/>
@@ -612,7 +612,7 @@
 				<Item id="90088" name="Installeer inproppe"/>
 				<Item id="90089" name="Verwyder inproppe"/>
 				<Item id="90090" name="Geen opdragte gevind nie"/>
-				<Item id="90091" name="Tik om te soek\u2026"/>
+				<Item id="90091" name="Tik om te soek…"/>
 				<Item id="90092" name="Gebruikergedefinieerde taal v.2.1"/>
 				<Item id="90093" name="Skep nuwe taal"/>
 				<Item id="90094" name="Voer 'n naam in:"/>
@@ -621,11 +621,9 @@
 				<Item id="90097" name="Moenie stoor nie"/>
 				<Item id="90098" name="Klaar"/>
 				<Item id="90099" name="Wissel Word Wrap"/>
-				<Item id="90100" name="Wys alle karakters"/>
 				<Item id="90101" name="Wys karakteropsies"/>
 				<Item id="90102" name="Wissel inkeepgids"/>
 				<Item id="90103" name="Nog nie geïmplementeer nie"/>
-				<Item id="90104" name="Herlaai vanaf skyf"/>
 				<Item id="90105" name="Verander soekenjin"/>
 				<Item id="90106" name="Hardloopfout"/>
 				<Item id="90107" name="Nextpad++ Laaityd"/>
@@ -634,7 +632,7 @@
 				<Item id="90110" name="Laai af"/>
 				<Item id="90111" name="Vrystelling Bladsy"/>
 				<Item id="90112" name="Later"/>
-				<Item id="90113" name="Filter inproppe\u2026"/>
+				<Item id="90113" name="Filter inproppe…"/>
 				<Item id="90114" name="Beskikbaar"/>
 				<Item id="90115" name="Opdaterings"/>
 				<Item id="90116" name="Geïnstalleer"/>
@@ -643,7 +641,7 @@
 				<Item id="90119" name="Verwyder die volgende inproppe?"/>
 				<Item id="90120" name="Installeer die volgende inproppe?"/>
 				<Item id="90121" name="Dit sal die inproplêers uitvee."/>
-				<Item id="90122" name="Soekopdragte\u2026"/>
+				<Item id="90122" name="Soekopdragte…"/>
 				<Item id="90123" name="Voorgrondkleur"/>
 				<Item id="90124" name="Agtergrondkleur"/>
 				<Item id="90125" name="Makro naam"/>
@@ -663,7 +661,7 @@
 				<Item id="90139" name="Alle merke skoongemaak."/>
 				<Item id="90140" name="Gemerkte teks is na knipbord gekopieer."/>
 				<Item id="90141" name="Geen gemerkte teks om te kopieer nie."/>
-				<Item id="90142" name="Soek tans … %ld treffer(s) \u2014 %@"/>
+				<Item id="90142" name="Soek tans … %ld treffer(s) — %@"/>
 				<Item id="90143" name="Vervang tans in lêers..."/>
 				<Item id="90144" name="Vervang in Projekte: Nog nie gekoppel nie."/>
 				<Item id="90145" name="Vind in Projekte: Nog nie gekoppel aan Project Panel-lêerlys nie."/>
@@ -684,20 +682,20 @@
 				<Item id="90160" name="Slim uitlig: slegs hele woord"/>
 				<Item id="90161" name="Dubbelklik om oortjie toe te maak"/>
 				<Item id="90162" name="Wys toemaakknoppie op oortjies"/>
+				<Item id="90168" name="Gebruik monospasie lettertipe in Soek dialoog"/>
+				<Item id="90191" name="Inproplys-bewaarplek"/>
 				<Item id="90224" name="Wys oortjies oor verskeie reëls"/>
 				<Item id="90163" name="Onthou paneelsigbaarheid oor sessies"/>
 				<Item id="90164" name="Hou afwesige lêerinskrywings in sessie"/>
 				<Item id="90165" name="Bevestig voor Stoor Alles"/>
 				<Item id="90166" name="Bevestig Vervang alles in oop dokumente"/>
 				<Item id="90167" name="Vervang: moenie na die volgende verskynsel beweeg nie"/>
-				<Item id="90168" name="Gebruik monospasie lettertipe in Soek dialoog"/>
 				<Item id="90169" name="Regskliek hou seleksie"/>
 				<Item id="90170" name="Keer verstek datum/tyd volgorde om"/>
 				<Item id="90171" name="Gebruik XML-gebaseerde funksie lys ontleders"/>
 				<Item id="90172" name="Outo-maak hakies ( ) [ ] { }"/>
 				<Item id="90173" name="Van Nde karakter:"/>
 				<Item id="90174" name="In-seleksie outo-kontrole drempel (grepe):"/>
-				<Item id="90175" name="Uitgebreid (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redakteur"/>
 				<Item id="90177" name="Marges"/>
 				<Item id="90178" name="Donker"/>
@@ -711,12 +709,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD geoptimaliseer"/>
 				<Item id="90188" name="Eenvoudige +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Inproplys-bewaarplek"/>
 				<Item id="90192" name="Kies 'n Nextpad++-tema XML-lêer om toe te pas"/>
-				<Item id="90193" name="Skep nuwe\u2026"/>
-				<Item id="90194" name="Stoor as\u2026"/>
+				<Item id="90193" name="Skep nuwe…"/>
+				<Item id="90194" name="Stoor as…"/>
 				<Item id="90195" name="Gebruikerstaal:"/>
 				<Item id="90196" name="Taalnaam"/>
 				<Item id="90197" name="Skep"/>
@@ -746,6 +742,248 @@
 				<Item id="90221" name="Geslote kenmerk (macOS)"/>
 				<Item id="90222" name="Kyk vir opdaterings..."/>
 				<Item id="90223" name="Maak onlangs oop"/>
+				<Item id="90225" name="Onthou huidige sessie vir volgende bekendstelling"/>
+				<Item id="90226" name="Hulp"/>
+				<Item id="90227" name="Fase het misluk"/>
+				<Item id="90228" name="Kon nie verhoog nie"/>
+				<Item id="90229" name="beskikbaar is"/>
+				<Item id="90230" name="Jy hardloop"/>
+				<Item id="90231" name="Moet my nooit weer herinner nie"/>
+				<Item id="90232" name="Opdaterings"/>
+				<Item id="90233" name="Kyk outomaties vir opdaterings"/>
+				<Item id="90234" name="Outomatiese opdateringkontroles is af."/>
+				<Item id="90235" name="Laas nagegaan:"/>
+				<Item id="90236" name="Geen internet konneksie nie."/>
+				<Item id="90237" name="Onverwagte reaksie van die opdateringbediener."/>
+				<Item id="90238" name="Geen gepubliseerde vrystelling is gevind nie."/>
+				<Item id="90239" name="Die opdateringbediener is tydelik onbeskikbaar.Probeer asseblief later weer."/>
+				<Item id="90240" name="Die opdateringbediener het die versoek geweier.'n Instaanbediener, firewall of VPN kan toegang tot GitHub blokkeer."/>
+				<Item id="90241" name="Te veel opdateringkontroles vanaf jou netwerk (hierdie limiet word deur almal daarop gedeel).Probeer daarna weer"/>
+				<Item id="90242" name="Te veel opdateringkontroles vanaf jou netwerk (hierdie limiet word deur almal daarop gedeel).Probeer asseblief later weer."/>
+				<Item id="90243" name="Die opdateringbediener het status teruggegee"/>
+				<Item id="90244" name="Probeer weer"/>
+				<Item id="90245" name="Druk teksgrootte:"/>
+				<Item id="90246" name="Gebruik skermzoom"/>
+				<Item id="90247" name="Werklike grootte"/>
+				<Item id="90248" name="Sommige lêers kon nie vervang word nie"/>
+				<Item id="90249" name="...en nog %lu"/>
+				<Item id="90250" name="Lêerassosiasies word deur jou organisasie bestuur."/>
+				<Item id="90251" name="Wag tans vir macOS om te bevestig …"/>
+				<Item id="90252" name="macOS het nie die verandering toegepas nie."/>
+				<Item id="90253" name="Geregistreer"/>
+				<Item id="90254" name="Maak alle lêers in vouer oop?"/>
+				<Item id="90255" name="Dit sal %lu lêers in nuwe oortjies oopmaak."/>
+				<Item id="90256" name="Kon nie invoer nie: %@"/>
+				<Item id="90257" name="Uitbr."/>
+				<Item id="90258" name="Het %ld pasmaat(s) in %ld lêer(s) gevind."/>
+				<Item id="90259" name="Soek tans … %ld pasmaat(s) tot dusver"/>
+				<Item id="90260" name="%@ (%ld pas%@)"/>
+				<Item id="90261" name="Vaste soektog"/>
+				<Item id="90265" name="Soek: Kan nie die teks &quot;%@&quot; kry nie"/>
+				<Item id="90266" name="Telling: %ld passing(e)."/>
+				<Item id="90267" name="Vervang alles: %ld voorkoms(s) is vervang %@."/>
+				<Item id="90268" name="Vervang in oop lêers: %ld voorkoms(s) is vervang."/>
+				<Item id="90269" name="Soek in lêers: %ld tref(e) in %ld lêer(s)."/>
+				<Item id="90270" name="Vind in lêers: 0 treffers."/>
+				<Item id="90271" name="Vervang alle gevalle van &quot;%@&quot; met &quot;%@&quot; in die gids:&#10;%@&#10;&#10;Dit kan nie ontdoen word nie."/>
+				<Item id="90272" name="Vervang in lêers: %ld vervanging(e) in %ld lêer(s)."/>
+				<Item id="90273" name="Maak eers 'n projekpaneel oop."/>
+				<Item id="90274" name="Kies ten minste een projekpaneel om te soek."/>
+				<Item id="90275" name="Geen lêers om te soek nie."/>
+				<Item id="90276" name="Vind in projekte: %ld tref(e) in %ld lêer(s)."/>
+				<Item id="90277" name="Vind in Projekte: 0 treffers."/>
+				<Item id="90278" name="Vervang alle voorkomste van"/>
+				<Item id="90279" name="met"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="projeklêer(s).Dit kan nie ongedaan gemaak word nie."/>
+				<Item id="90282" name="Vervang in projekte: %ld vervanging(e) in %ld lêer(s)."/>
+				<Item id="90283" name="Merk: %ld pasmaat(s) gemerk."/>
+				<Item id="90284" name="Filtreer lêer/vouernaam..."/>
+				<Item id="90285" name="Sommige dokumente kon nie gestoor word nie"/>
+				<Item id="90286" name="⌘ Bevel"/>
+				<Item id="90287" name="⌃ Beheer"/>
+				<Item id="90288" name="⌥ Opsie"/>
+				<Item id="90289" name="⇧ Skuif"/>
+				<Item id="90290" name="Voer 'n NSDateFormatter-formaatstring in:"/>
+				<Item id="90291" name="'%@' is nog nie in hierdie weergawe geïmplementeer nie."/>
+				<Item id="90292" name="Voer inprop in"/>
+				<Item id="90293" name="Herbegin vereis"/>
+				<Item id="90294" name="Geen lêers om te verwerk nie"/>
+				<Item id="90295" name="Hierdie projeknodus bevat geen lêers nie."/>
+				<Item id="90296" name="'%@' het ongestoorde veranderinge.&#10;Herlaai en gooi veranderinge weg?"/>
+				<Item id="90297" name="Voer 'n nuwe lêernaam in:"/>
+				<Item id="90298" name="Hernoem huidige oortjie"/>
+				<Item id="90299" name="Nuwe naam:"/>
+				<Item id="90300" name="Hernoem het misluk"/>
+				<Item id="90301" name="Die naam kan nie &quot;/&quot; of &quot;:&quot; bevat nie."/>
+				<Item id="90302" name="Skuif '%@' na die asblik?"/>
+				<Item id="90303" name="Stoor '%@' voor sluiting?"/>
+				<Item id="90304" name="Moenie alles stoor nie"/>
+				<Item id="90305" name="Kolommoduswenk"/>
+				<Item id="90306" name="Daar is 3 maniere om na kolomkiesmodus oor te skakel:&#10;&#10;1.(Sleutelbord en muis) Hou Opsie in terwyl jy met die linkermuisknop sleep&#10;&#10;2.(Slegs sleutelbord) Hou Option+Shift in terwyl jy pyltjiesleutels gebruik&#10;&#10;3.(Sleutelbord of Muis)&#10; Sit 'n tekenbalk by die verlangde begin van kolomblokposisie,&#10; voer dan &quot;Begin/End Kies in Kolommodus&quot;-opdrag uit;&#10; Skuif patroon na die verlangde einde van kolomblokposisie,&#10; voer dan weer &quot;Begin/Beëindig Kies in Kolommodus&quot;-opdrag uit"/>
+				<Item id="90307" name="Voer die soek-URL in.Gebruik %s as die navraagplekhouer (of voeg die navraag aan die einde by):"/>
+				<Item id="90308" name="Voer opdrag of URL in..."/>
+				<Item id="90309" name="Kon nie uitvoer nie:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Redigeer konteksMenu"/>
+				<Item id="90311" name="Deur contextMenu.xml te wysig kan jy jou Nextpad++-opspringkontekskieslys op wysigingsone wysig.&#10;Jy moet jou Nextpad++ herbegin om in werking te tree nadat jy contextMenu.xml gewysig het."/>
+				<Item id="90312" name="Reeds geïnstalleer"/>
+				<Item id="90313" name="Installeer nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Installasie het misluk"/>
+				<Item id="90315" name="Geïnstalleer – maar ~/.local/bin is nie op jou PATH nie"/>
+				<Item id="90316" name="Reeds in jou konfigurasie"/>
+				<Item id="90317" name="By PATH gevoeg"/>
+				<Item id="90318" name="Kon nie skryf nie"/>
+				<Item id="90319" name="Gekopieer"/>
+				<Item id="90320" name="Stoor veranderinge aan '%@'?"/>
+				<Item id="90321" name="Jou veranderinge sal verlore gaan as jy dit nie stoor nie."/>
+				<Item id="90322" name="Dien toe op alle dokumente"/>
+				<Item id="90323" name="Begin makro op lêers"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Voer:"/>
+				<Item id="90326" name="Kies 'n vouer …"/>
+				<Item id="90327" name="Blaai deur …"/>
+				<Item id="90328" name="Uitbreidings:"/>
+				<Item id="90329" name="Herhaal subgidse"/>
+				<Item id="90330" name="Sluit verborge lêers in"/>
+				<Item id="90331" name="Maksimum grootte:"/>
+				<Item id="90332" name="Onbeperk"/>
+				<Item id="90333" name="Per lêer:"/>
+				<Item id="90334" name="Stoor indien gewysig"/>
+				<Item id="90335" name="Sluit daarna"/>
+				<Item id="90336" name="Maak selfs lêers toe wat reeds oop was"/>
+				<Item id="90337" name="Op fout:"/>
+				<Item id="90338" name="Slaan lêer oor en gaan voort"/>
+				<Item id="90339" name="Stop met die eerste fout"/>
+				<Item id="90340" name="(geen gestoorde makro's nie)"/>
+				<Item id="90341" name="%lu lêer(s) pas"/>
+				<Item id="90342" name="Vouer nie gevind nie"/>
+				<Item id="90343" name="Kies 'n vouer wat bestaan."/>
+				<Item id="90344" name="Geen lêers pas nie"/>
+				<Item id="90345" name="Pas die opsie vir uitbreidingsfilter, rekursie of verborge lêers aan."/>
+				<Item id="90346" name="Begin tans …"/>
+				<Item id="90347" name="Verwerking:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Oorgeslaan: %ld Misluk: %ld"/>
+				<Item id="90349" name="Bondel gekanselleer"/>
+				<Item id="90350" name="Batch voltooi"/>
+				<Item id="90351" name="Totaal: %lu Ok: %ld Oorgeslaan: %ld Misluk: %ld"/>
+				<Item id="90352" name="Gebou Datum"/>
+				<Item id="90353" name="Bedryfstelsel"/>
+				<Item id="90354" name="nuutste"/>
+				<Item id="90355" name="verouderd"/>
+				<Item id="90356" name="onbekend"/>
+				<Item id="90357" name="Herbegin die toepassing sodat veranderinge in werking tree."/>
+				<Item id="90358" name="Dateer plugins op"/>
+				<Item id="90359" name="Dateer die volgende inproppe op?"/>
+				<Item id="90360" name="Huidige weergawes word tot ~/Library/Application Support/Nextpad++/plugin-backups/ gerugsteun voordat dit vervang word."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Skakel oor na die nuwe Tahoe-voorkoms (Beta)"/>
+				<Item id="90363" name="Gebruik macOS-styl spyskaarte (Beta)"/>
+				<Item id="90364" name="Die nuwe Tahoe-voorkoms sal toegepas word nadat jy Nextpad++ herbegin het."/>
+				<Item id="90365" name="Die klassieke voorkoms sal herstel word nadat jy Nextpad++ herbegin het."/>
+				<Item id="90366" name="Stop nou"/>
+				<Item id="90367" name="Spyskaarte sal in die macOS-styl herrangskik word nadat jy Nextpad++ herbegin het."/>
+				<Item id="90368" name="Die klassieke kieslysuitleg sal herstel word nadat jy Nextpad++ herbegin het."/>
+				<Item id="90369" name="Kleur"/>
+				<Item id="90370" name="Pas toe op plugin-nutsbalkikone"/>
+				<Item id="90371" name="In die volledige modus word plugin-ikone 'n enkele soliede kleur."/>
+				<Item id="90372" name="Nutsbalkgroepe"/>
+				<Item id="90373" name="Kies waar elke knoppie in die Liquid Glass-nutsbalk verskyn: op die"/>
+				<Item id="90374" name="Knoppie"/>
+				<Item id="90375" name="Plasing"/>
+				<Item id="90376" name="Stel terug na verstek"/>
+				<Item id="90377" name="Oorloop spyskaart"/>
+				<Item id="90378" name="Versteek"/>
+				<Item id="90379" name="CJK-vriendelike woordomhulsel"/>
+				<Item id="90380" name="Kolomkeuse skakel oor na multi-redigering"/>
+				<Item id="90381" name="Reëlspasiëring:"/>
+				<Item id="90382" name="1.0 (Verstek)"/>
+				<Item id="90383" name="Versteek oortjiebalk"/>
+				<Item id="90384" name="Tabgrootte volg dokumentzoom"/>
+				<Item id="90385" name="Kies..."/>
+				<Item id="90386" name="Stel terug na verstek"/>
+				<Item id="90387" name="Gebruik die verstekligging."/>
+				<Item id="90388" name="Pasgemaakte ligging."/>
+				<Item id="90389" name="Ongeldige pad - rugsteun sal die verstekligging gebruik."/>
+				<Item id="90390" name="Kies"/>
+				<Item id="90391" name="Voeg seleksie in:"/>
+				<Item id="90392" name="Gebruik Boost Regex-modus (veellyn; herbegin om toe te pas)"/>
+				<Item id="90393" name="Herbegin asseblief Nextpad++ om in werking te tree."/>
+				<Item id="90394" name="Ongeldige pad."/>
+				<Item id="90395" name="Herbegin nou"/>
+				<Item id="90396" name="Kies 'n vouer van/naar waar Nextpad++ sy instellings lees/skryf"/>
+				<Item id="90397" name="(moenie dit kies tensy jy weet wat jy doen nie)"/>
+				<Item id="90398" name="Werkbalk ikoon grootte"/>
+				<Item id="90399" name="100% (Verstek)"/>
+				<Item id="90400" name="Muiswiel rolspoed"/>
+				<Item id="90401" name="1× (af)"/>
+				<Item id="90402" name="Werkbalkikoongrootte verander"/>
+				<Item id="90403" name="Die nuwe nutsbalkikoongrootte sal in werking tree die volgende keer wanneer Nextpad++ begin."/>
+				<Item id="90404" name="Nutsbalkikone het verander"/>
+				<Item id="90405" name="Die nuwe nutsbalkikone sal in werking tree die volgende keer wanneer Nextpad++ begin."/>
+				<Item id="90406" name="Nuwe Werkspasie"/>
+				<Item id="90407" name="Maak werkspasie oop"/>
+				<Item id="90408" name="Herlaai werkspasie"/>
+				<Item id="90409" name="Voeg nuwe projek by"/>
+				<Item id="90410" name="Vind in Projekte..."/>
+				<Item id="90411" name="Begin makro op lêers..."/>
+				<Item id="90412" name="Beweeg op"/>
+				<Item id="90413" name="Beweeg af"/>
+				<Item id="90414" name="Voeg gids by"/>
+				<Item id="90415" name="Voeg lêers by..."/>
+				<Item id="90416" name="Voeg lêers by vanaf gids..."/>
+				<Item id="90417" name="Wysig lêerpad"/>
+				<Item id="90418" name="Dit sal dit en al sy inhoud van die projek verwyder.Geen lêers op skyf sal geraak word nie."/>
+				<Item id="90419" name="Werkspasie"/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90421" name="Soek in hierdie soekresultate..."/>
+				<Item id="90422" name="Kopieer geselekteerde reël(s)"/>
+				<Item id="90423" name="Kopieer geselekteerde padnaam(e)"/>
+				<Item id="90424" name="Maak geselekteerde padnaam(e) oop"/>
+				<Item id="90425" name="Woordomhul lang lyne"/>
+				<Item id="90426" name="Suiwer vir elke soektog"/>
+				<Item id="90427" name="Nie gevind nie"/>
+				<Item id="90428" name="KONFLIK: %@"/>
+				<Item id="90429" name="Vee &quot;%@&quot; uit?"/>
+				<Item id="90430" name="Gebruikergedefinieerde taaladmin"/>
+				<Item id="90431" name="Filtreer tale …"/>
+				<Item id="90432" name="Bron"/>
+				<Item id="90433" name="AC Bronne"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Installeer / Dateer op"/>
+				<Item id="90436" name="%lu tale · %lu geïnstalleer · %lu opdaterings"/>
+				<Item id="90437" name="Skrywer"/>
+				<Item id="90438" name="Gekombineer: %ld inskrywings van %lu bronne (saamgevoeg)"/>
+				<Item id="90439" name="Kies een of meer tale om te installeer."/>
+				<Item id="90440" name="Niks aflaaibaar vir die keuse nie."/>
+				<Item id="90441" name="Aflaai het misluk"/>
+				<Item id="90442" name="Kontrolesom wanaanpassing"/>
+				<Item id="90443" name="Die geselekteerde taal(e) is nou beskikbaar in die Taalkieslys."/>
+				<Item id="90444" name="Kies een of meer geïnstalleerde tale om te verwyder."/>
+				<Item id="90445" name="Verwyder"/>
+				<Item id="90446" name="Hierdie naam word reeds deur 'n ander taal gebruik."/>
+				<Item id="90447" name="Hierdie taal kon nie verwyder word nie."/>
+				<Item id="90448" name="Vooraf geïnstalleerde tale kan nie verwyder word nie."/>
+				<Item id="90449" name="Hierdie taal kon nie hernoem word nie."/>
+				<Item id="90450" name="Hierdie lêer is %@.As jy dit oopmaak, sal sintaksisuitlig en geskiedenis ontdoen word om die program responsief te hou.&#10;&#10;Wil jy voortgaan?"/>
+				<Item id="90451" name="Maak in elk geval oop"/>
+				<Item id="90452" name="&quot;%@&quot; het op skyf verander"/>
+				<Item id="90453" name="Ignoreer"/>
+				<Item id="90454" name="Hou my weergawe"/>
+				<Item id="90455" name="Kon nie &quot;%@&quot; herlaai nie"/>
+				<Item id="90456" name="Die lêer kon nie gelees word nie."/>
+				<Item id="90457" name="Kies waar elke knoppie in die Liquid Glass-nutsbalk verskyn: op die groepkapsule (nutsbalk), in die groep se ▾-oorloopkieslys, of Versteek."/>
+				<Item id="90458" name="Skenk om ontwikkeling te ondersteun"/>
+				<Item id="90459" name="Installeer Command Line Tools"/>
+				<Item id="90460" name="Wys skaduwees agter nutsbalkkapsules"/>
+				<Item id="90461" name="Skenk"/>
+				<Item id="90462" name="Karakterstelle"/>
+				<Item id="90463" name="Minimaliseer"/>
+				<Item id="90464" name="Versteek Nextpad++"/>
+				<Item id="90465" name="Versteek ander"/>
+				<Item id="90466" name="Wys alles"/>
+				<Item id="90467" name="Verlaat Nextpad++"/>
+				<Item id="90468" name="Stoor huidige opgeneemde makro..."/>
+				<Item id="90469" name="Knip sleepruimte af en stoor"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

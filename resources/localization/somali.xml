@@ -1466,13 +1466,13 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90006" name="Xakamaynta Isha"/>
 				<Item id="90007" name="Go'aan"/>
 				<Item id="90008" name="Ballanqaadkii wuu Fashilmay"/>
-				<Item id="90009" name="Majiraan kayd git\nIsticmaal Baadh si aad u furto repo."/>
+				<Item id="90009" name="Majiraan kayd git&#10;Isticmaal Baadh si aad u furto repo."/>
 				<Item id="90010" name="Marxalada"/>
 				<Item id="90011" name="Marxalad la'aan"/>
 				<Item id="90012" name="Marxaladda oo dhan"/>
 				<Item id="90013" name="Marxaladaha oo dhan"/>
-				<Item id="90014" name="Gudbi fariin\u2026"/>
-				<Item id="90015" name="Ka baadh bakhaarka\u2026"/>
+				<Item id="90014" name="Gudbi fariin…"/>
+				<Item id="90015" name="Ka baadh bakhaarka…"/>
 				<Item id="90016" name="Dooro galka kaydka git"/>
 				<Item id="90017" name="(Bakhaar la'aan)"/>
 				<Item id="90018" name="(ka goostay)"/>
@@ -1486,9 +1486,9 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90026" name="Natiijooyinka"/>
 				<Item id="90027" name="Jooji"/>
 				<Item id="90028" name="Raadinta waa joogsatay"/>
-				<Item id="90029" name="Raadinta\u2026"/>
+				<Item id="90029" name="Raadinta…"/>
 				<Item id="90030" name="Qoraal lagu raadiyo"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Raadinta..."/>
 				<Item id="90033" name="Beddel:"/>
 				<Item id="90034" name="Ereyga oo dhan"/>
@@ -1548,7 +1548,7 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90088" name="Ku rakib Plugins"/>
 				<Item id="90089" name="Ka saar Plugins"/>
 				<Item id="90090" name="Wax amarro ah lama helin"/>
-				<Item id="90091" name="Ku qor si aad u raadiso\u2026"/>
+				<Item id="90091" name="Ku qor si aad u raadiso…"/>
 				<Item id="90092" name="Luqadda la Qeexay Isticmaalaha v.2.1"/>
 				<Item id="90093" name="Abuur Luuqad Cusub"/>
 				<Item id="90094" name="Gali magac:"/>
@@ -1557,7 +1557,6 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90097" name="Ha Keydin"/>
 				<Item id="90098" name="La sameeyay"/>
 				<Item id="90099" name="Isku-dubbarid kelmadda ku-duubka"/>
-				<Item id="90100" name="Tus Dhamaan Jilayaasha"/>
 				<Item id="90101" name="Muuji Xulashada Jilayaasha"/>
 				<Item id="90102" name="Beddel Hagaha Indent"/>
 				<Item id="90103" name="Wali lama Fulin"/>
@@ -1570,7 +1569,7 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Bogga Fasaxa"/>
 				<Item id="90112" name="Kadib"/>
-				<Item id="90113" name="Filter plugins\u2026"/>
+				<Item id="90113" name="Filter plugins…"/>
 				<Item id="90114" name="La heli karo"/>
 				<Item id="90115" name="Wararka"/>
 				<Item id="90116" name="La rakibay"/>
@@ -1579,7 +1578,7 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90119" name="Ka saar furayaashan soo socda?"/>
 				<Item id="90120" name="Ku rakib furayaashan soo socda?"/>
 				<Item id="90121" name="Tani waxay tirtiri doontaa faylasha plugin"/>
-				<Item id="90122" name="Awaamiirta raadinta\u2026"/>
+				<Item id="90122" name="Awaamiirta raadinta…"/>
 				<Item id="90123" name="Midabka hore"/>
 				<Item id="90124" name="Midabka asalka"/>
 				<Item id="90125" name="Magaca Macro"/>
@@ -1626,14 +1625,12 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90165" name="Xaqiiji kahor Badbaadinta Dhammaan"/>
 				<Item id="90166" name="Xaqiiji Bedel Dhammaan waraaqaha furan"/>
 				<Item id="90167" name="Beddel: ha u guurin dhacdada xigta"/>
-				<Item id="90168" name="Isticmaal farta monospaced gudaha Raadi wada hadalka"/>
 				<Item id="90169" name="Midig-guji ayaa ilaalinaysa doorashada"/>
 				<Item id="90170" name="U beddelo nidaamka taariikhda/wakhtiga caadiga ah"/>
 				<Item id="90171" name="Adeegso falanqaynta liiska hawlaha ku salaysan XML"/>
 				<Item id="90172" name="Xiritaanka tooska ah ( ) [ ] {}"/>
 				<Item id="90173" name="Laga soo bilaabo Nth jilaa:"/>
 				<Item id="90174" name="In-doorashada auto-hubinta xadka (bytes):"/>
-				<Item id="90175" name="La fidiyay (\\n, \\r, \\t, \\0, \\ x...)"/>
 				<Item id="90176" name="Tafatire"/>
 				<Item id="90177" name="Margin"/>
 				<Item id="90178" name="Madow"/>
@@ -1647,12 +1644,10 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD La Hagaajiyey"/>
 				<Item id="90188" name="Fudud +/-"/>
-				<Item id="90189" name="Daaqadaha (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Kaydka liiska furaha"/>
 				<Item id="90192" name="Dooro faylka Nextpad++ mawduuca XML si aad u codsato"/>
-				<Item id="90193" name="Abuur cusub\u2026"/>
-				<Item id="90194" name="U keydi sida\u2026"/>
+				<Item id="90193" name="Abuur cusub…"/>
+				<Item id="90194" name="U keydi sida…"/>
 				<Item id="90195" name="Luqadda isticmaalaha:"/>
 				<Item id="90196" name="Magaca luqadda"/>
 				<Item id="90197" name="Abuur"/>
@@ -1682,6 +1677,217 @@ Waxaad dib u hawlgelin kartaa wada-hadalkan gudaha Dookhyada dambe."/>
 				<Item id="90221" name="Sifada qufulan (macOS)"/>
 				<Item id="90222" name="Lasoco wixii kusoo kordha…"/>
 				<Item id="90223" name="Dhawaan Furan"/>
+				<Item id="90226" name="Caawin"/>
+				<Item id="90227" name="Marxaladda Fashilan"/>
+				<Item id="90228" name="Fashil la'aan"/>
+				<Item id="90229" name="waa la heli karaa"/>
+				<Item id="90230" name="Waad ordaysaa"/>
+				<Item id="90231" name="Mar dambe ha i xasuusin"/>
+				<Item id="90232" name="Cusbooneysii"/>
+				<Item id="90233" name="Si toos ah u hubi wixii ku soo kordha"/>
+				<Item id="90234" name="Hubinta cusboonaysiinta tooska ah ayaa dansan"/>
+				<Item id="90235" name="Markii u dambaysay ee la hubiyay:"/>
+				<Item id="90236" name="Ma jiro xiriir internet"/>
+				<Item id="90237" name="Jawaab lama filaan ah oo ka timid serverka cusboonaysiinta."/>
+				<Item id="90238" name="Wax sii dayn ah oo la daabacay lama helin"/>
+				<Item id="90239" name="Adeegga cusboonaysiinta si ku meel gaar ah looma hayoFadlan isku day mar kale hadhow"/>
+				<Item id="90240" name="Adeegga cusboonaysiinta ayaa diiday codsigaWakiil, firewall ama VPN ayaa laga yaabaa inay xannibayaan gelitaanka GitHub."/>
+				<Item id="90241" name="Jeegaga cusboonaysiinta badan ee shabakadaada (xadkan waxa la wadaaga qof kasta oo ku jira).Isku day markale kadib"/>
+				<Item id="90242" name="Jeegaga cusboonaysiinta badan ee shabakadaada (xadkan waxa la wadaaga qof kasta oo ku jira).Fadlan isku day mar kale hadhow"/>
+				<Item id="90243" name="Seerfarka cusboonaysiinta ayaa soo celiyay heerka"/>
+				<Item id="90244" name="Isku day Mar Kale"/>
+				<Item id="90245" name="Daabacaadda cabbirka qoraalka:"/>
+				<Item id="90246" name="Isticmaal zoom shaashadda"/>
+				<Item id="90247" name="Cabbirka dhabta ah"/>
+				<Item id="90248" name="Faylasha qaar waa la bedeli kari waayay"/>
+				<Item id="90249" name="...iyo %lu ka badan"/>
+				<Item id="90250" name="Ururada faylka waxaa maamula ururkaaga."/>
+				<Item id="90251" name="Sugaya macOS si loo xaqiijiyo…"/>
+				<Item id="90252" name="macOS ma dabaqin isbeddelka."/>
+				<Item id="90253" name="diiwaan gashan"/>
+				<Item id="90254" name="Fur dhammaan faylasha ku jira galka?"/>
+				<Item id="90255" name="Tani waxay furi doontaa %lu faylasha tabs cusub"/>
+				<Item id="90256" name="Lama soo dejin karo: %@"/>
+				<Item id="90258" name="Laga helay %ld ciyaar(kuwa) ku jira %ld fayl(yada)."/>
+				<Item id="90259" name="Raadinta… %ld ciyaar ilaa hadda"/>
+				<Item id="90260" name="%@ (%ld ciyaar%@)"/>
+				<Item id="90261" name="Raadin wareer badan"/>
+				<Item id="90266" name="Tiri: %ld ciyaar"/>
+				<Item id="90267" name="Beddel Dhammaan: %ld dhacdo(yada) waa la bedelay %@."/>
+				<Item id="90268" name="Ku beddel faylalka Furan: %ld dhacdooyinka(yada) waa la bedelay."/>
+				<Item id="90269" name="Ka hel faylasha: %ld ku dhufo (yada) gudaha %ld fayl(yada)."/>
+				<Item id="90270" name="Ka hel faylasha: 0 hits."/>
+				<Item id="90271" name="Ku beddel dhammaan dhacdooyinka &quot;%@&quot; ku beddel &quot;%@&quot; ee hagaha:&#10;%@&#10;&#10;Tani lama celin karo."/>
+				<Item id="90272" name="Ku beddel faylasha: %ld beddelka(yada) gudaha %ld fayl(yada)."/>
+				<Item id="90273" name="Furo Gudida Mashruuca marka hore."/>
+				<Item id="90274" name="Dooro ugu yaraan hal guddi mashruuc si aad u raadiso."/>
+				<Item id="90275" name="Ma jiro fayl la raadiyo"/>
+				<Item id="90276" name="Ka hel Mashaariicda: %ld ku dhufo (yada) gudaha %ld fayl(yada)."/>
+				<Item id="90277" name="Ka hel Mashaariicda: 0 hits."/>
+				<Item id="90278" name="Beddel dhammaan dhacdooyinka"/>
+				<Item id="90279" name="leh"/>
+				<Item id="90280" name="gudaha"/>
+				<Item id="90281" name="faylka mashruuca.Tan lama celin karo."/>
+				<Item id="90282" name="Ku beddel mashaariicda: %ld beddelka(yada) ee %ld fayl(yada)."/>
+				<Item id="90283" name="Calaamadee: %ld ciyaar (kuwa) la calaamadeeyay"/>
+				<Item id="90284" name="Sifee faylka/magaca galka..."/>
+				<Item id="90285" name="Dukumentiyada qaar waa la keydin waayay"/>
+				<Item id="90286" name="⌘ Taliska"/>
+				<Item id="90287" name="Xakamaynta"/>
+				<Item id="90288" name="⌥ Ikhtiyaarka"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Geli qaab NSDateFormatter xardhan:"/>
+				<Item id="90291" name="'%@' wali laguma hirgelin noocaan."/>
+				<Item id="90292" name="Soo dejinta Plugin"/>
+				<Item id="90293" name="Dib u bilaabista ayaa loo baahan yahay"/>
+				<Item id="90294" name="Ma jiro fayl la farsameeyo"/>
+				<Item id="90295" name="Mashruucan noodhka wax faylal ah kuma jiraan"/>
+				<Item id="90296" name="'%@' waxa uu leeyahay isbeddellada aan la kaydin.&#10; Dib u soo deji oo tuur isbeddellada?"/>
+				<Item id="90297" name="Geli magac cusub:"/>
+				<Item id="90299" name="Magaca cusub:"/>
+				<Item id="90301" name="Magaca kuma jiri karo &quot;/&quot; ama &quot;:&quot;."/>
+				<Item id="90304" name="Ha Keydin Dhammaan"/>
+				<Item id="90306" name="There are 3 ways to switch to column-select mode:&#10;&#10;1. (Keyboard and Mouse)  Hold Option while left-click dragging&#10;&#10;2. (Keyboard only)  Hold Option+Shift while using arrow keys&#10;&#10;3. (Keyboard or Mouse)&#10;   Put caret at desired start of column block position, then&#10;   execute “Begin/End Select in Column Mode” command;&#10;   Move caret to desired end of column block position, then&#10;   execute “Begin/End Select in Column Mode” command again"/>
+				<Item id="90307" name="Geli URL raadintaU isticmaal %s sidii meeleeyaha weydiinta (ama ku dheji su'aasha dhamaadka):"/>
+				<Item id="90308" name="Gali amarka ama URL..."/>
+				<Item id="90309" name="Ku guuldareystay inuu fuliyo:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Tafatirka contextMenu.xml wuxuu kuu ogolaanayaa inaad wax ka beddesho Nextpad++ menu ka soo baxay ee aagga wax ka beddelka.&#10;Waa inaad dib u billowdaa Nextpad++ si aad u dhaqan gasho ka dib markaad wax ka beddesho contextMenu.xml."/>
+				<Item id="90312" name="Durba waa la rakibay"/>
+				<Item id="90313" name="Ku rakib nextpad++ Qalabka Khadka Taleefanka"/>
+				<Item id="90314" name="Rakibaddii waa fashilantay"/>
+				<Item id="90315" name="La rakibay - laakiin ~/.local/bin kuma socdo PATH kaaga"/>
+				<Item id="90316" name="Durba qaabayntaada"/>
+				<Item id="90317" name="Lagu daray PATH"/>
+				<Item id="90318" name="Ma qori karin"/>
+				<Item id="90319" name="la guuriyay"/>
+				<Item id="90321" name="Isbeddelladaadu way lumi doonaan haddii aadan iyaga badbaadin."/>
+				<Item id="90322" name="Codso dukumentiyada oo dhan"/>
+				<Item id="90323" name="Ku socodsii Macro Faylasha"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder"/>
+				<Item id="90326" name="Dooro gal…"/>
+				<Item id="90327" name="baadh…"/>
+				<Item id="90328" name="Kordhinta:"/>
+				<Item id="90329" name="Ku soo noqnoqda haga-hoosaadyo"/>
+				<Item id="90330" name="Ku dar faylasha qarsoon"/>
+				<Item id="90331" name="Cabirka ugu badan:"/>
+				<Item id="90332" name="Aan xad lahayn"/>
+				<Item id="90333" name="Fayl kasta:"/>
+				<Item id="90334" name="Keydi haddii wax laga beddelo"/>
+				<Item id="90335" name="Xir ka dib"/>
+				<Item id="90336" name="Xir xitaa faylasha horey u furnaa"/>
+				<Item id="90337" name="Khalad ku jiro:"/>
+				<Item id="90338" name="Ka bood faylka oo sii wad"/>
+				<Item id="90339" name="Jooji qaladka koowaad"/>
+				<Item id="90340" name="(ma jiraan macros la keydiyay)"/>
+				<Item id="90341" name="%lu fayl(yada) ku habboon"/>
+				<Item id="90342" name="Folder lama helin"/>
+				<Item id="90343" name="Dooro gal ka jira"/>
+				<Item id="90344" name="Ma jiro fayl u dhigma"/>
+				<Item id="90345" name="Hagaajin shaandhada kordhinta, soo noqoshada, ama ikhtiyaarka faylalka qarsoon."/>
+				<Item id="90346" name="Laga bilaabo…"/>
+				<Item id="90347" name="Habaynta:"/>
+				<Item id="90348" name="%ld / %ld Waayahay: %ld Waa la booday: %ld Fashilmay: %ld"/>
+				<Item id="90349" name="Dufcaddii waa la joojiyay"/>
+				<Item id="90350" name="Dufcaddii waa dhammaatay"/>
+				<Item id="90351" name="Wadarta: %lu Waayahay: %ld Waa la booday: %ld Fashilmay: %ld"/>
+				<Item id="90352" name="Taariikhda la dhisay"/>
+				<Item id="90353" name="Nidaamka hawlgalka"/>
+				<Item id="90354" name="ugu dambeeyay"/>
+				<Item id="90355" name="duugoobay"/>
+				<Item id="90356" name="aan la garanayn"/>
+				<Item id="90357" name="Dib u bilow arjiga isbedelada si ay u dhaqan galaan."/>
+				<Item id="90358" name="Cusbooneysii Plugins"/>
+				<Item id="90359" name="Cusbooneysii fiilooyinka soo socda?"/>
+				<Item id="90360" name="Noocyada hadda waa la xoojiyaa ilaa ~/Library/Application Support/Nextpad++/plugin-backups/ ka hor inta aan la bedelin."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="U beddel muuqaalka cusub Tahoe (Beta)"/>
+				<Item id="90363" name="Adeegso liiska qaab-dhismeedka macOS (Beta)"/>
+				<Item id="90364" name="Muuqaalka cusub Tahoe ayaa lagu dabaqi doonaa ka dib markaad dib u bilowdo Nextpad++."/>
+				<Item id="90365" name="Muuqaalkii caadiga ahaa waa la soo celin doonaa ka dib markaad dib u bilowdo Nextpad++."/>
+				<Item id="90366" name="Hadda Jooji"/>
+				<Item id="90367" name="Menuska waxa dib loo habayn doonaa qaabka macOSka dib markaad dib u bilowdo Nextpad++."/>
+				<Item id="90368" name="Qaabka menu-ga caadiga ah ayaa dib loo soo celin doonaa ka dib markaad dib u bilowdo Nextpad++."/>
+				<Item id="90369" name="Midabka"/>
+				<Item id="90370" name="Codso summada bar-bararka plugin"/>
+				<Item id="90371" name="Qaabka dhameystiran calaamadaha plugin waxay noqdaan hal midab oo adag."/>
+				<Item id="90372" name="Kooxaha Qalabka"/>
+				<Item id="90373" name="Dooro halka badhan kastaa kaga muuqdo Liquid Glass toolbar: on the"/>
+				<Item id="90374" name="badhanka"/>
+				<Item id="90375" name="Meelaynta"/>
+				<Item id="90376" name="Dib u dajinta Defaults"/>
+				<Item id="90377" name="Liiska qulqulka"/>
+				<Item id="90378" name="Qarsoon"/>
+				<Item id="90379" name="CJK-saaxiibtinimo ku duub kelmad"/>
+				<Item id="90380" name="Xulashada safafka waxay u beddeshaa tafatir badan"/>
+				<Item id="90381" name="Kala fogaanshaha khadka:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Qari tab bar"/>
+				<Item id="90384" name="Cabbirka tabku wuxuu raacayaa soo-dhoweynta dukumeentiga"/>
+				<Item id="90385" name="Dooro…"/>
+				<Item id="90386" name="Dib u deji oo u noqo Default"/>
+				<Item id="90387" name="Isticmaalka goobta caadiga ah."/>
+				<Item id="90388" name="Goobta gaarka ah."/>
+				<Item id="90389" name="Jidka aan ansax ahayn - kaydinta waxay isticmaali doontaa goobta caadiga ah."/>
+				<Item id="90390" name="Dooro"/>
+				<Item id="90391" name="Geli Doorashada:"/>
+				<Item id="90392" name="Adeegso Boost Habka Regex (khad badan; dib u bilow si aad u codsato)"/>
+				<Item id="90395" name="Hadda dib u bilow"/>
+				<Item id="90397" name="(ha dooran ilaa aad garanayso waxaad samaynayso)"/>
+				<Item id="90398" name="cabbirka calaamada Toolbar"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Xawaaraha giraangiraha mouse-ka"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Astaanta aaladda cabbirkeeda waa la beddelay"/>
+				<Item id="90403" name="Cabbirka summada aaladda cusub waxay dhaqan geli doontaa marka xigta Nextpad++ la bilaabo."/>
+				<Item id="90404" name="Astaamaha Toolbar waa isbedelay"/>
+				<Item id="90405" name="Astaamaha cusub ee aaladaha ayaa dhaqan gali doona marka xiga Nextpad++ la bilaabo"/>
+				<Item id="90411" name="Ku socodsii Macro Faylasha..."/>
+				<Item id="90418" name="Tani waxay ka saari doontaa mashruuca iyo dhammaan waxa ku jira.Ma jiraan wax faylal ah oo saxanka ku jira oo saamayn doona"/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90427" name="Lama helin"/>
+				<Item id="90428" name="KHILAAF: %@"/>
+				<Item id="90429" name="tirtir &quot;%@&quot;?"/>
+				<Item id="90430" name="Maamulaha Luqadda ee Isticmaalaha"/>
+				<Item id="90431" name="Kala shaandheyn luqadaha…"/>
+				<Item id="90432" name="Xigasho"/>
+				<Item id="90433" name="Ilaha AC"/>
+				<Item id="90434" name="Xaalada"/>
+				<Item id="90435" name="Ku rakib / Cusbooneysii"/>
+				<Item id="90436" name="%lu luqadaha · %lu la rakibay · %lu cusbooneysiin"/>
+				<Item id="90437" name="Qore"/>
+				<Item id="90438" name="La isku daray: %ld ka soo gelida %lu ilo (isku daray)"/>
+				<Item id="90439" name="Dooro hal ama dhowr luqadood si aad u rakibto."/>
+				<Item id="90440" name="Wax la soo dejisan karo ma jiro doorashada"/>
+				<Item id="90441" name="Soo dejintu way fashilantay"/>
+				<Item id="90442" name="Isu-dheeli la'aanta Checksum"/>
+				<Item id="90443" name="Luuqadaha la xushay ayaa hadda laga heli karaa liiska Luuqada."/>
+				<Item id="90444" name="Dooro hal ama in ka badan luqadaha lagu rakibay si aad meesha uga saarto."/>
+				<Item id="90445" name="Laga saaray"/>
+				<Item id="90446" name="Magacan waxaa horey u isticmaalay luqad kale."/>
+				<Item id="90447" name="Luqadan waa laga saari waayay"/>
+				<Item id="90448" name="Luuqadaha horay loo rakibay lama saari karo"/>
+				<Item id="90449" name="Luqadan lama magacaabi karo"/>
+				<Item id="90450" name="Faylkan waa %@.Furitaanka waxay joojin doontaa muujinta syntax oo dib u dhigi doonta taariikhda si abka looga dhigo mid ka jawaabaya.&#10;&#10;Ma doonaysaa inaad sii waddo?"/>
+				<Item id="90451" name="Fur si kastaba"/>
+				<Item id="90452" name="&quot;%@&quot; ayaa lagu bedelay saxanka"/>
+				<Item id="90453" name="Iska daa"/>
+				<Item id="90454" name="Hayso My Version"/>
+				<Item id="90455" name="Dib u soo dejin kari waayay &quot;%@&quot;"/>
+				<Item id="90456" name="Faylka waa la akhriyi waayay"/>
+				<Item id="90457" name="Dooro halka uu badhan kastaa kaga soo muuqdo Liquid Glass toolbar: kaabsal kooxda (Toolbar), ee kooxda ▾ liiska qulqulka, ama Qarsoon."/>
+				<Item id="90458" name="Ku deeq Taageerada Horumarinta"/>
+				<Item id="90459" name="Ku rakib Aaladaha Line Command"/>
+				<Item id="90460" name="Tus hadhka gadaasha kaabsoolada qalabka"/>
+				<Item id="90461" name="Ku deeq"/>
+				<Item id="90462" name="Dabeecadaha jilayaasha"/>
+				<Item id="90463" name="Yaree"/>
+				<Item id="90464" name="Qari Nextpad++"/>
+				<Item id="90465" name="Qari kuwa kale"/>
+				<Item id="90466" name="Muuji Dhammaan"/>
+				<Item id="90467" name="Jooji Nextpad++"/>
+				<Item id="90468" name="Kaydi Macro hadda la duubay…"/>
+				<Item id="90469" name="Ka jar booska raadraaca oo Keydi"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

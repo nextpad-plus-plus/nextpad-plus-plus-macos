@@ -1466,13 +1466,13 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90006" name="Source Control"/>
 				<Item id="90007" name="Commit"/>
 				<Item id="90008" name="Commit Failed"/>
-				<Item id="90009" name="Hapana git repository\nShandisa Bhurawuza kuvhura repo."/>
+				<Item id="90009" name="Hapana git repository&#10;Shandisa Bhurawuza kuvhura repo."/>
 				<Item id="90010" name="Danho"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stage All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Commit message\u2026"/>
-				<Item id="90015" name="Bhurawuza repository\u2026"/>
+				<Item id="90014" name="Commit message…"/>
+				<Item id="90015" name="Bhurawuza repository…"/>
 				<Item id="90016" name="Sarudza git repository folda"/>
 				<Item id="90017" name="(no repository)"/>
 				<Item id="90018" name="(detached)"/>
@@ -1486,9 +1486,9 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90026" name="Results"/>
 				<Item id="90027" name="Mira"/>
 				<Item id="90028" name="Kutsvaga kwakamira."/>
-				<Item id="90029" name="Kutsvaga\u2026"/>
+				<Item id="90029" name="Kutsvaga…"/>
 				<Item id="90030" name="Mavara ekutsvaga"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Kutsvaga..."/>
 				<Item id="90033" name="Tsiva:"/>
 				<Item id="90034" name="Whole Word"/>
@@ -1548,7 +1548,7 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90088" name="Isa Plugins"/>
 				<Item id="90089" name="Bvisa Plugins"/>
 				<Item id="90090" name="No commands found"/>
-				<Item id="90091" name="Nyora kutsvaga\u2026"/>
+				<Item id="90091" name="Nyora kutsvaga…"/>
 				<Item id="90092" name="Mutauro Unotsanangurwa Wemushandisi v.2.1"/>
 				<Item id="90093" name="Gadzira Mutauro Mutsva"/>
 				<Item id="90094" name="Isa zita:"/>
@@ -1557,11 +1557,9 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90097" name="Usachengeta"/>
 				<Item id="90098" name="Zvaitwa"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Show All Characters"/>
 				<Item id="90101" name="Show Characters Options"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Not Implemented"/>
-				<Item id="90104" name="Reload kubva kuDisiki"/>
 				<Item id="90105" name="Change Search Engine"/>
 				<Item id="90106" name="Run Error"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,16 +1568,14 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Release Page"/>
 				<Item id="90112" name="Gare gare"/>
-				<Item id="90113" name="Sefa plugins\u2026"/>
+				<Item id="90113" name="Sefa plugins…"/>
 				<Item id="90114" name="Iripo"/>
-				<Item id="90115" name="Updates"/>
-				<Item id="90116" name="Installed"/>
 				<Item id="90117" name="Zvisingaenderani"/>
 				<Item id="90118" name="Yatadza Kuisa"/>
 				<Item id="90119" name="Bvisa maplugins anotevera?"/>
 				<Item id="90120" name="Isa maplugins anotevera?"/>
 				<Item id="90121" name="Izvi zvinobvisa plugin mafaera."/>
-				<Item id="90122" name="Tsvaga mirairo\u2026"/>
+				<Item id="90122" name="Tsvaga mirairo…"/>
 				<Item id="90123" name="Foreground color"/>
 				<Item id="90124" name="Ruvara rwekumashure"/>
 				<Item id="90125" name="Macro name"/>
@@ -1599,7 +1595,7 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90139" name="Mavanga ese akacheneswa."/>
 				<Item id="90140" name="Mavara akamaka akakopwa kuclipboard."/>
 				<Item id="90141" name="Hapana mavara akamakwa ekukopa."/>
-				<Item id="90142" name="Tirikutsvaga... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Tirikutsvaga... %ld hit(s) — %@"/>
 				<Item id="90143" name="Kutsiva mumafaira..."/>
 				<Item id="90144" name="Tsiva muProjekti: Haisati yabatana."/>
 				<Item id="90145" name="Find in Projects: Not yet connected to Project Panel file list."/>
@@ -1626,14 +1622,12 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90165" name="Confirm before Save All"/>
 				<Item id="90166" name="Confirm Replace All in open documents"/>
 				<Item id="90167" name="Tsiva: usaende kune chinotevera chiitiko"/>
-				<Item id="90168" name="Shandisa monospaced font mu Tsvaga dialog"/>
 				<Item id="90169" name="Tinya-kurudyi chengetedza sarudzo"/>
 				<Item id="90170" name="Reverse default date/time order"/>
 				<Item id="90171" name="Shandisa XML-based function list parsers"/>
 				<Item id="90172" name="Mabhuraketi ekuvhara otomatiki ( ) [ ] { }"/>
 				<Item id="90173" name="From Nth character:"/>
 				<Item id="90174" name="Mukusarudza otomatiki-cheki chikumbaridzo (mabhaiti):"/>
-				<Item id="90175" name="Yakawedzerwa (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margins"/>
 				<Item id="90178" name="Rima"/>
@@ -1647,12 +1641,10 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Nyore +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plugin list repository"/>
 				<Item id="90192" name="Sarudza Nextpad++ theme XML faira yekushandisa"/>
-				<Item id="90193" name="Gadzira itsva\u2026"/>
-				<Item id="90194" name="Sevha se\u2026"/>
+				<Item id="90193" name="Gadzira itsva…"/>
+				<Item id="90194" name="Sevha se…"/>
 				<Item id="90195" name="Mutauro wemushandisi:"/>
 				<Item id="90196" name="Zita remutauro"/>
 				<Item id="90197" name="Create"/>
@@ -1682,6 +1674,223 @@ Unogona kudzorera nhaurirano iyi muZvido pave paya."/>
 				<Item id="90221" name="Yakakiyiwa Attribute (macOS)"/>
 				<Item id="90222" name="Check for Updates…"/>
 				<Item id="90223" name="Open Recent"/>
+				<Item id="90226" name="Help"/>
+				<Item id="90227" name="Danho Rakundikana"/>
+				<Item id="90228" name="Unstage Yakundikana"/>
+				<Item id="90229" name="iripo"/>
+				<Item id="90230" name="Uri kumhanya"/>
+				<Item id="90231" name="Usambondiyeuchidza zvakare"/>
+				<Item id="90233" name="Tarisa uone zvigadziriso"/>
+				<Item id="90234" name="Macheki ekugadzirisa otomatiki adzimwa."/>
+				<Item id="90235" name="Kwekupedzisira kutariswa:"/>
+				<Item id="90236" name="Hapana Indaneti."/>
+				<Item id="90237" name="Mhinduro isingatarisirwe kubva kuseva yekuvandudza."/>
+				<Item id="90238" name="Hapana chakaburitswa chakaburitswa."/>
+				<Item id="90239" name="Sevha yekuvandudza haisati yavepo.Ndapota edza zvakare gare gare."/>
+				<Item id="90240" name="Sevha yekuvandudza yaramba chikumbiro.A proxy, firewall kana VPN inogona kunge ichivharira kupinda kweGitHub."/>
+				<Item id="90241" name="Yakawandisa inogadziridza macheki kubva kunetiweki yako (muganho uyu wakagovaniswa nemunhu wese ari pairi).Edza zvakare mushure"/>
+				<Item id="90242" name="Yakawandisa inogadziridza macheki kubva kunetiweki yako (muganho uyu wakagovaniswa nemunhu wese ari pairi).Ndapota edza zvakare gare gare."/>
+				<Item id="90243" name="Sevha yekuvandudza yakadzora chimiro"/>
+				<Item id="90244" name="Edza Zvakare"/>
+				<Item id="90245" name="Saizi yemavara akadhinda:"/>
+				<Item id="90246" name="Shandisa screen zoom"/>
+				<Item id="90247" name="Saizi chaiyo"/>
+				<Item id="90248" name="Mamwe mafaira haana kukwanisa kutsiviwa"/>
+				<Item id="90249" name="...uye %lu nezvimwe"/>
+				<Item id="90250" name="Kushamwaridzana kwefaira kunotungamirirwa nesangano rako."/>
+				<Item id="90251" name="Takamirira macOS kuti isimbiswe…"/>
+				<Item id="90252" name="macOS handina kushandisa shanduko."/>
+				<Item id="90253" name="Registered"/>
+				<Item id="90254" name="Vhura mafaera ese muforodha?"/>
+				<Item id="90255" name="Izvi zvinovhura %lu mafaera mumatabu matsva."/>
+				<Item id="90256" name="Hatina kukwanisa kutora kunze: %@"/>
+				<Item id="90258" name="Tawana %ld zvakafanana mu %ld mafaira."/>
+				<Item id="90259" name="Kutsvaga… %ld zvakafanana kusvika parizvino"/>
+				<Item id="90260" name="%@ (%ld mechi%@)"/>
+				<Item id="90261" name="Kutsvaga kwakapusa"/>
+				<Item id="90266" name="Verenga: %ld zvakafanana."/>
+				<Item id="90267" name="Tsiva Zvese: %ld zviitiko zvakatsiviwa %@."/>
+				<Item id="90268" name="Tsiva muMafaira Akavhurwa: %ld zviitiko zvakatsiviwa."/>
+				<Item id="90269" name="Tsvaga muMafaira: %ld hit(s) mu %ld mafaira."/>
+				<Item id="90270" name="Tsvaga muMafaira: 0 hits."/>
+				<Item id="90271" name="Tsiva zvese zvinoitika zve&quot;%@&quot; ne&quot;%@&quot; mudhairekitori:&#10;%@&#10;&#10;Izvi hazvigone kuregererwa."/>
+				<Item id="90272" name="Tsiva muMafaira: %ld tsiviwa (s) mu %ld faira(s)."/>
+				<Item id="90273" name="Vhura Project Panel kutanga."/>
+				<Item id="90274" name="Sarudza kamwechete Project Panel yekutsvaga."/>
+				<Item id="90275" name="Hapana mafaira ekutsvaga."/>
+				<Item id="90276" name="Tsvaga muZvirongwa: %ld hit(s) mu %ld mafaira."/>
+				<Item id="90277" name="Tsvaga muZvirongwa: 0 hits."/>
+				<Item id="90278" name="Tsiva zvese zvinoitika zve"/>
+				<Item id="90279" name="pamwe"/>
+				<Item id="90280" name="mu"/>
+				<Item id="90281" name="purojekiti faira(s).Izvi hazvigone kugadziriswa."/>
+				<Item id="90282" name="Tsiva mumaProjekti: %ld zvinotsiva mu(s) mu%ld faira(ma)."/>
+				<Item id="90283" name="Maka: %ld mechi(mi)maka."/>
+				<Item id="90284" name="Sefa faira/zita refolda..."/>
+				<Item id="90285" name="Mamwe mapepa haana kuchengetwa"/>
+				<Item id="90286" name="⌘ Command"/>
+				<Item id="90287" name="⌃ Kudzora"/>
+				<Item id="90288" name="⌥ Sarudzo"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Isa NSDateFormatter fomati tambo:"/>
+				<Item id="90291" name="'%@' haisati yashandiswa mushanduro ino."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Restart Inodiwa"/>
+				<Item id="90294" name="Hapana mafaira ekugadzirisa"/>
+				<Item id="90295" name="Iyi purojekiti node haina mafaera."/>
+				<Item id="90296" name="'%@' ine shanduko dzisina kuchengetwa. &#10;Rodha patsva uye kurasa shanduko?"/>
+				<Item id="90297" name="Isa zita idzva refaira:"/>
+				<Item id="90299" name="Zita Idzva:"/>
+				<Item id="90301" name="Zita harigoni kuva ne &quot;/&quot; kana &quot;:&quot;."/>
+				<Item id="90304" name="Usachengeta Zvese"/>
+				<Item id="90306" name="There are 3 ways to switch to column-select mode:&#10;&#10;1. (Keyboard and Mouse)  Hold Option while left-click dragging&#10;&#10;2. (Keyboard only)  Hold Option+Shift while using arrow keys&#10;&#10;3. (Keyboard or Mouse)&#10;   Put caret at desired start of column block position, then&#10;   execute “Begin/End Select in Column Mode” command;&#10;   Move caret to desired end of column block position, then&#10;   execute “Begin/End Select in Column Mode” command again"/>
+				<Item id="90307" name="Isa URL yekutsvaga.Shandisa %s sechibatiso chemubvunzo (kana wedzera mubvunzo pamagumo):"/>
+				<Item id="90308" name="Isa murairo kana URL..."/>
+				<Item id="90309" name="Atadza kuita:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Kugadzirisa contextMenu.xml kunoita kuti uchinje menyu yeNextpad++ popup context pane editing zone.&#10;Unofanira kutangazve Nextpad++ yako kuti ishande mushure mekugadzirisa contextMenu.xml."/>
+				<Item id="90312" name="Yakatoiswa"/>
+				<Item id="90313" name="Isa nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Kuisa kwakundikana"/>
+				<Item id="90315" name="Yakaiswa - asi ~/.local/bin haisi paPATH yako"/>
+				<Item id="90316" name="Watove mune yako config"/>
+				<Item id="90317" name="Yakawedzerwa kuPATH"/>
+				<Item id="90318" name="Hatina kukwanisa kunyora"/>
+				<Item id="90319" name="Kopirwa"/>
+				<Item id="90321" name="Shanduko dzako dzinorasika kana ukasadzichengeta."/>
+				<Item id="90322" name="Nyorera kune zvese zvinyorwa"/>
+				<Item id="90323" name="Mhanya Macro pane Mafaira"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Sarudza folda…"/>
+				<Item id="90327" name="Bhurawuza..."/>
+				<Item id="90328" name="Extensions:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Batanidza mafaira akavanzwa"/>
+				<Item id="90331" name="Saizi huru:"/>
+				<Item id="90332" name="Unlimited"/>
+				<Item id="90333" name="Pafaira:"/>
+				<Item id="90334" name="Sevha kana zvagadziriswa"/>
+				<Item id="90335" name="Vhara mushure"/>
+				<Item id="90336" name="Vhara kunyange mafaira anga atovhurwa"/>
+				<Item id="90337" name="Pane kukanganisa:"/>
+				<Item id="90338" name="Svetuka faira woenderera mberi"/>
+				<Item id="90339" name="Mira pane yekutanga kukanganisa"/>
+				<Item id="90340" name="(hapana macros akachengetwa)"/>
+				<Item id="90341" name="%lu faira(ma) enderana"/>
+				<Item id="90342" name="Folder haina kuwanikwa"/>
+				<Item id="90343" name="Sarudza folda iripo."/>
+				<Item id="90344" name="Hapana mafaira anoenderana"/>
+				<Item id="90345" name="Gadzirisa iyo yekuwedzera sefa, recursion, kana yakavanzika-mafaira sarudzo."/>
+				<Item id="90346" name="Kutanga…"/>
+				<Item id="90347" name="Kugadziridza:"/>
+				<Item id="90348" name="%ld / %ld Zvakanaka: %ld Svetwa: %ld Zvakundikana: %ld"/>
+				<Item id="90349" name="Batch yakanzurwa"/>
+				<Item id="90350" name="Batch yapera"/>
+				<Item id="90351" name="Zvose: %luZvakanaka: %ld Zvakasvetuka: %ld Zvakundikana: %ld"/>
+				<Item id="90352" name="Built Date"/>
+				<Item id="90353" name="Operating System"/>
+				<Item id="90354" name="latest"/>
+				<Item id="90355" name="zvechinyakare"/>
+				<Item id="90356" name="asingazivikanwi"/>
+				<Item id="90357" name="Tangazve application kuti shanduko dziite."/>
+				<Item id="90358" name="Gadziridza Plugins"/>
+				<Item id="90359" name="Gadzirisa maplugins anotevera?"/>
+				<Item id="90360" name="Mavhezheni azvino anochengetedzwa kusvika ~/Library/Application Support/Nextpad++/plugin-backups/ asati atsiviwa."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Chinja kuChitarisiko Chitsva Tahoe (Beta)"/>
+				<Item id="90363" name="Shandisa macOS-maitiro emenyu (Beta)"/>
+				<Item id="90364" name="Iyo Tahoe kutarisa kutsva kuchashandiswa kana watangazve Nextpad++."/>
+				<Item id="90365" name="Chitarisiko cheClass chichadzoserwa mushure mekunge watangazve Nextpad++."/>
+				<Item id="90366" name="Rega Ikozvino"/>
+				<Item id="90367" name="Mamenu acharongwa patsva mu macOS style mushure mekunge watangazve Nextpad++."/>
+				<Item id="90368" name="Iyo yemhando yepamusoro menyu ichadzoserwa mushure mekunge watangazve Nextpad++."/>
+				<Item id="90369" name="Color"/>
+				<Item id="90370" name="Nyorera kune plugin toolbar icons"/>
+				<Item id="90371" name="Mune Yakakwana modhi plugin icons inova imwechete yakasimba ruvara."/>
+				<Item id="90372" name="Toolbar Groups"/>
+				<Item id="90373" name="Sarudza panowanikwa bhatani rega rega mu Liquid Glass toolbar: pa"/>
+				<Item id="90374" name="Bhatani"/>
+				<Item id="90375" name="Placement"/>
+				<Item id="90376" name="Dzorera kune Defaults"/>
+				<Item id="90377" name="Kufashukira menyu"/>
+				<Item id="90378" name="Hidden"/>
+				<Item id="90379" name="CJK-inoshamwaridzika izwi kuputira"/>
+				<Item id="90380" name="Sarudzo yekoromu inochinja kuita yakawanda-editing"/>
+				<Item id="90381" name="Nharaunda yemitsara:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Viga tab bar"/>
+				<Item id="90384" name="Saizi yeTabhu inoteedzera dhizaini zoom"/>
+				<Item id="90385" name="Sarudza…"/>
+				<Item id="90386" name="Dzorera kuDefault"/>
+				<Item id="90387" name="Kushandisa iyo yakasarudzika nzvimbo."/>
+				<Item id="90388" name="Custom nzvimbo."/>
+				<Item id="90389" name="Nzira isina kufanira - mabhakiritsi achashandisa iyo yakasarudzika nzvimbo."/>
+				<Item id="90390" name="Sarudza"/>
+				<Item id="90391" name="Isa Sarudzo:"/>
+				<Item id="90392" name="Shandisa Boost Regex modhi (yakawanda-mutsara; tangazve kuisa)"/>
+				<Item id="90395" name="Restart Now"/>
+				<Item id="90397" name="(usazvisarudzire kunze kwekunge uchiziva zvauri kuita)"/>
+				<Item id="90398" name="Toolbar icon saizi"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Mbeva vhiri mupumburu kumhanya"/>
+				<Item id="90401" name="1× (kubva)"/>
+				<Item id="90402" name="Toolbar icon size yachinjwa"/>
+				<Item id="90403" name="Iyo itsva toolbar icon size ichaita nguva inotevera Nextpad++ painotangwa."/>
+				<Item id="90404" name="Toolbar icons yachinjwa"/>
+				<Item id="90405" name="Iyo mitsva yeturusia icons ichashanda nguva inotevera Nextpad++ painotangwa."/>
+				<Item id="90409" name="Wedzera New Project"/>
+				<Item id="90410" name="Tsvaga muZvirongwa..."/>
+				<Item id="90411" name="Mhanya Macro pane Mafaira..."/>
+				<Item id="90414" name="Wedzera Folder"/>
+				<Item id="90415" name="Wedzera Mafaira..."/>
+				<Item id="90417" name="Shandura Faira Nzira"/>
+				<Item id="90418" name="Izvi zvichaibvisa uye zvese zvirimo mupurojekiti.Hapana mafaera ari padhisiki achakanganiswa."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90422" name="Kopa Mutsara Wakasarudzwa"/>
+				<Item id="90423" name="Kopa Mazita Akasarudzwa."/>
+				<Item id="90427" name="Haina kuwanikwa"/>
+				<Item id="90428" name="KUKANGANANA: %@"/>
+				<Item id="90429" name="Unodzima &quot;%@&quot;?"/>
+				<Item id="90430" name="Mushandisi Anotsanangurwa Mutauro Admin"/>
+				<Item id="90431" name="Sefa mitauro..."/>
+				<Item id="90432" name="Source"/>
+				<Item id="90433" name="AC Sources"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Isa / Gadziridza"/>
+				<Item id="90436" name="%lu mitauro · %lu yakaiswa · %lu zvigadziriso"/>
+				<Item id="90437" name="Munyori"/>
+				<Item id="90438" name="Zvakasanganiswa: %ld zvinyorwa kubva ku%lu zvinyorwa (zvakasanganiswa)"/>
+				<Item id="90439" name="Sarudza mitauro imwe kana yakawanda yekuisa."/>
+				<Item id="90440" name="Hapana chinodhawunirodha chesarudzo."/>
+				<Item id="90441" name="Kudhaunirodha zvaramba"/>
+				<Item id="90442" name="Checksum kusawirirana"/>
+				<Item id="90443" name="Mitauro yakasarudzwa yava kuwanikwa muMutauro menyu."/>
+				<Item id="90444" name="Sarudza mitauro imwe chete kana yakawanda yakaiswa kuti ubvise."/>
+				<Item id="90445" name="Yakabviswa"/>
+				<Item id="90446" name="Zita iri rinotoshandiswa nemumwe mutauro."/>
+				<Item id="90447" name="Mutauro uyu hauna kukwanisa kubviswa."/>
+				<Item id="90448" name="Mitauro yakaiswa kare haigone kubviswa."/>
+				<Item id="90449" name="Mutauro uyu hauna kukwanisa kupihwa zita."/>
+				<Item id="90450" name="Iyi faira ndeye %@.Kuivhura kunodzima kujekeswa kwemazwi uye kubvisa nhoroondo kuitira kuti app irambe ichishanda.&#10;&#10;Unoda kuenderera mberi here?"/>
+				<Item id="90451" name="Vhura Zvakadaro"/>
+				<Item id="90452" name="&quot;%@&quot; yakashandurwa padhisiki"/>
+				<Item id="90453" name="Ignore"/>
+				<Item id="90454" name="Chengeta Shanduro Yangu"/>
+				<Item id="90455" name="Hatina kukwanisa kurodhazve &quot;%@&quot;"/>
+				<Item id="90456" name="Faera harina kuverengwa."/>
+				<Item id="90457" name="Sarudza panowanikwa bhatani rega rega mu Liquid Glass toolbar: paboka capsule (Toolbar), muboka ▾ mafashama menyu, kana Yakavanzwa."/>
+				<Item id="90458" name="Donate to Support Development"/>
+				<Item id="90459" name="Isa Command Line Zvishandiso"/>
+				<Item id="90460" name="Ratidza mimvuri kuseri kwetoolbar capsules"/>
+				<Item id="90461" name="Donate"/>
+				<Item id="90462" name="Character set"/>
+				<Item id="90463" name="Deredza"/>
+				<Item id="90464" name="Viga Nextpad++"/>
+				<Item id="90465" name="Viga Vamwe"/>
+				<Item id="90466" name="Ratidza Zvose"/>
+				<Item id="90467" name="Siya Nextpad++"/>
+				<Item id="90468" name="Sevha Yazvino Yakarekodhwa Macro…"/>
+				<Item id="90469" name="Cheka Trailing Space uye Chengetedza"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

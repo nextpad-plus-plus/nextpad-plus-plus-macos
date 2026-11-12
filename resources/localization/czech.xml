@@ -1492,13 +1492,13 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90006" name="Ovládání zdroje"/>
 				<Item id="90007" name="Zavázat se"/>
 				<Item id="90008" name="Závazek se nezdařil"/>
-				<Item id="90009" name="Žádné úložiště git\nK otevření úložiště použijte Procházet."/>
+				<Item id="90009" name="Žádné úložiště git&#10;K otevření úložiště použijte Procházet."/>
 				<Item id="90010" name="Jeviště"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Fáze vše"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Potvrdit zprávu\u2026"/>
-				<Item id="90015" name="Procházet úložiště\u2026"/>
+				<Item id="90014" name="Potvrdit zprávu…"/>
+				<Item id="90015" name="Procházet úložiště…"/>
 				<Item id="90016" name="Vyberte složku úložiště git"/>
 				<Item id="90017" name="(žádné úložiště)"/>
 				<Item id="90018" name="(odděleno)"/>
@@ -1512,9 +1512,9 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90026" name="Výsledky"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Hledání zastaveno."/>
-				<Item id="90029" name="Vyhledávání\u2026"/>
+				<Item id="90029" name="Vyhledávání…"/>
 				<Item id="90030" name="Text k hledání"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Hledání..."/>
 				<Item id="90033" name="Nahradit:"/>
 				<Item id="90034" name="Celé slovo"/>
@@ -1574,7 +1574,7 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90088" name="Instalovat pluginy"/>
 				<Item id="90089" name="Odebrat pluginy"/>
 				<Item id="90090" name="Nebyly nalezeny žádné příkazy"/>
-				<Item id="90091" name="Zadejte pro vyhledávání\u2026"/>
+				<Item id="90091" name="Zadejte pro vyhledávání…"/>
 				<Item id="90092" name="Uživatelsky definovaný jazyk v.2.1"/>
 				<Item id="90093" name="Vytvořit nový jazyk"/>
 				<Item id="90094" name="Zadejte jméno:"/>
@@ -1583,11 +1583,9 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90097" name="Neukládat"/>
 				<Item id="90098" name="Hotovo"/>
 				<Item id="90099" name="Přepnout zalamování slov"/>
-				<Item id="90100" name="Zobrazit všechny znaky"/>
 				<Item id="90101" name="Zobrazit znaky Možnosti"/>
 				<Item id="90102" name="Přepnout vodítko odsazení"/>
 				<Item id="90103" name="Dosud neimplementováno"/>
-				<Item id="90104" name="Znovu načíst z disku"/>
 				<Item id="90105" name="Změnit vyhledávač"/>
 				<Item id="90106" name="Chyba běhu"/>
 				<Item id="90107" name="Nextpad++ Doba načítání"/>
@@ -1596,16 +1594,12 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90110" name="Stáhnout"/>
 				<Item id="90111" name="Stránka vydání"/>
 				<Item id="90112" name="Později"/>
-				<Item id="90113" name="Filtrovat pluginy\u2026"/>
-				<Item id="90114" name="Dostupné"/>
-				<Item id="90115" name="Aktualizace"/>
-				<Item id="90116" name="Instalováno"/>
-				<Item id="90117" name="Nekompatibilní"/>
+				<Item id="90113" name="Filtrovat pluginy…"/>
 				<Item id="90118" name="Nepodařilo se nainstalovat"/>
 				<Item id="90119" name="Odebrat následující pluginy?"/>
 				<Item id="90120" name="Nainstalovat následující pluginy?"/>
 				<Item id="90121" name="Tím smažete soubory pluginu."/>
-				<Item id="90122" name="Hledat příkazy\u2026"/>
+				<Item id="90122" name="Hledat příkazy…"/>
 				<Item id="90123" name="Barva popředí"/>
 				<Item id="90124" name="Barva pozadí"/>
 				<Item id="90125" name="Název makra"/>
@@ -1625,7 +1619,7 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90139" name="Všechny značky vymazány."/>
 				<Item id="90140" name="Označený text byl zkopírován do schránky."/>
 				<Item id="90141" name="Žádný označený text ke kopírování."/>
-				<Item id="90142" name="Vyhledávání... %ld zásahů \u2014 %@"/>
+				<Item id="90142" name="Vyhledávání... %ld zásahů — %@"/>
 				<Item id="90143" name="Nahrazování v souborech..."/>
 				<Item id="90144" name="Nahradit v Projektech: Dosud nepřipojeno."/>
 				<Item id="90145" name="Najít v projektech: Dosud nepřipojeno k seznamu souborů panelu projektu."/>
@@ -1652,14 +1646,12 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90165" name="Potvrďte před Uložit vše"/>
 				<Item id="90166" name="Potvrďte Nahradit vše v otevřených dokumentech"/>
 				<Item id="90167" name="Nahradit: nepřecházet na další výskyt"/>
-				<Item id="90168" name="V dialogovém okně Najít"/>
 				<Item id="90169" name="použijte písmo s neproporcionálním písmemKliknutí pravým tlačítkem ponechá výběr"/>
 				<Item id="90170" name="Obrátit výchozí pořadí data/času"/>
 				<Item id="90171" name="Použijte analyzátory seznamu funkcí založené na XML"/>
 				<Item id="90172" name="Automaticky zavírat závorky ( ) [ ] { }"/>
 				<Item id="90173" name="Od N-tého znaku:"/>
 				<Item id="90174" name="Práh automatické kontroly při výběru (bajty):"/>
-				<Item id="90175" name="Rozšířené (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktor"/>
 				<Item id="90177" name="Okraje"/>
 				<Item id="90178" name="Tmavý"/>
@@ -1673,12 +1665,10 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimalizováno"/>
 				<Item id="90188" name="Jednoduché +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (ČR)"/>
-				<Item id="90191" name="Úložiště seznamu pluginů"/>
 				<Item id="90192" name="Vyberte soubor XML motivu Nextpad++, který chcete použít"/>
-				<Item id="90193" name="Vytvořit nový\u2026"/>
-				<Item id="90194" name="Uložit jako\u2026"/>
+				<Item id="90193" name="Vytvořit nový…"/>
+				<Item id="90194" name="Uložit jako…"/>
 				<Item id="90195" name="Uživatelský jazyk:"/>
 				<Item id="90196" name="Název jazyka"/>
 				<Item id="90197" name="Vytvořit"/>
@@ -1708,6 +1698,216 @@ Potvrzovací dialog můžete kdykoliv reaktivovat v &quot;Nastavení&quot;."/>
 				<Item id="90221" name="Uzamčený atribut (macOS)"/>
 				<Item id="90222" name="Zkontrolovat aktualizace…"/>
 				<Item id="90223" name="Otevřít Poslední"/>
+				<Item id="90226" name="Nápověda"/>
+				<Item id="90227" name="Fáze se nezdařila"/>
+				<Item id="90228" name="Unstage Failed"/>
+				<Item id="90229" name="je k dispozici"/>
+				<Item id="90230" name="Ty běžíš"/>
+				<Item id="90231" name="Už mi to nikdy nepřipomínej"/>
+				<Item id="90233" name="Automaticky kontrolovat aktualizace"/>
+				<Item id="90234" name="Automatické kontroly aktualizací jsou vypnuté."/>
+				<Item id="90235" name="Naposledy zkontrolováno:"/>
+				<Item id="90236" name="Žádné připojení k internetu."/>
+				<Item id="90237" name="Neočekávaná odpověď z aktualizačního serveru."/>
+				<Item id="90238" name="Nebyla nalezena žádná publikovaná verze."/>
+				<Item id="90239" name="Aktualizační server je dočasně nedostupný.Zkuste to znovu později."/>
+				<Item id="90240" name="Aktualizační server požadavek odmítl.Proxy, firewall nebo VPN mohou blokovat přístup na GitHub."/>
+				<Item id="90241" name="Příliš mnoho kontrol aktualizací z vaší sítě (tento limit je sdílen všemi v ní).Zkuste to znovu poté"/>
+				<Item id="90242" name="Příliš mnoho kontrol aktualizací z vaší sítě (tento limit je sdílen všemi v ní).Zkuste to znovu později."/>
+				<Item id="90243" name="Aktualizační server vrátil stav"/>
+				<Item id="90244" name="Zkuste to znovu"/>
+				<Item id="90245" name="Velikost textu pro tisk:"/>
+				<Item id="90246" name="Použijte zoom obrazovky"/>
+				<Item id="90247" name="Skutečná velikost"/>
+				<Item id="90248" name="Některé soubory nebylo možné nahradit"/>
+				<Item id="90249" name="...a %lu dalších"/>
+				<Item id="90250" name="Asociace souborů spravuje vaše organizace."/>
+				<Item id="90251" name="Čeká se na potvrzení macOS…"/>
+				<Item id="90252" name="macOS změnu nepoužil."/>
+				<Item id="90253" name="Registrované"/>
+				<Item id="90254" name="Otevřít všechny soubory ve složce?"/>
+				<Item id="90255" name="Tím se otevře %lu souborů na nových kartách."/>
+				<Item id="90256" name="Nelze importovat: %@"/>
+				<Item id="90258" name="Nalezeno %ld shod v %ld souborech."/>
+				<Item id="90259" name="Vyhledávání… zatím %ld shod"/>
+				<Item id="90260" name="%@ (%ld shoda%@)"/>
+				<Item id="90261" name="Fuzzy vyhledávání"/>
+				<Item id="90266" name="Počet: %ld shod."/>
+				<Item id="90267" name="Nahradit vše: %ld výskytů bylo nahrazeno %@."/>
+				<Item id="90268" name="Nahradit v otevřených souborech: Počet nahrazených výskytů: %ld."/>
+				<Item id="90269" name="Najít v souborech: %ld přístupů v %ld souborech."/>
+				<Item id="90270" name="Najít v souborech: 0 zobrazení."/>
+				<Item id="90271" name="Nahraďte všechny výskyty „%@“ za „%@“ v adresáři:&#10;%@&#10;&#10;Toto nelze vrátit zpět."/>
+				<Item id="90272" name="Nahradit v souborech: %ld nahrazení v %ld souborech."/>
+				<Item id="90273" name="Nejprve otevřete panel projektu."/>
+				<Item id="90274" name="Vyberte alespoň jeden panel projektu, který chcete prohledat."/>
+				<Item id="90275" name="Žádné soubory k vyhledávání."/>
+				<Item id="90276" name="Najít v projektech: %ld požadavků v %ld souborech."/>
+				<Item id="90277" name="Najít v projektech: 0 zásahů."/>
+				<Item id="90278" name="Nahradit všechny výskyty"/>
+				<Item id="90279" name="s"/>
+				<Item id="90280" name="v"/>
+				<Item id="90281" name="soubor(y) projektu.Toto nelze vrátit zpět."/>
+				<Item id="90282" name="Nahradit v projektech: %ld nahrazení v %ld souborech."/>
+				<Item id="90283" name="Označit: %ld označených shod."/>
+				<Item id="90284" name="Filtrovat název souboru/složky..."/>
+				<Item id="90285" name="Některé dokumenty se nepodařilo uložit"/>
+				<Item id="90286" name="⌘ Příkaz"/>
+				<Item id="90287" name="⌃ Ovládání"/>
+				<Item id="90288" name="⌥ Možnost"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Zadejte řetězec formátu NSDateFormatter:"/>
+				<Item id="90291" name="'%@' ještě není implementováno v této verzi."/>
+				<Item id="90292" name="Importovat plugin"/>
+				<Item id="90293" name="Je vyžadován restart"/>
+				<Item id="90294" name="Žádné soubory ke zpracování"/>
+				<Item id="90295" name="Tento uzel projektu neobsahuje žádné soubory."/>
+				<Item id="90296" name="'%@' obsahuje neuložené změny.&#10;Znovu načíst a zahodit změny?"/>
+				<Item id="90297" name="Zadejte nový název souboru:"/>
+				<Item id="90299" name="Nové jméno:"/>
+				<Item id="90301" name="Název nesmí obsahovat „/“ nebo „:“."/>
+				<Item id="90304" name="Neukládat vše"/>
+				<Item id="90306" name="Existují 3 způsoby, jak přepnout do režimu výběru sloupců:&#10;&#10;1.(Klávesnice a myš) Při tažení levým tlačítkem myši podržte možnost&#10;&#10;2.(Pouze klávesnice) Při používání kláves se šipkami podržte Option+Shift&#10;&#10;3.(Klávesnice nebo myš)&#10; Umístěte stříšku na požadovaný začátek pozice bloku sloupce, poté&#10; proveďte příkaz „Začít/ukončit výběr v režimu sloupce“;&#10; Přesuňte stříšku na požadovaný konec pozice bloku sloupce a poté&#10; znovu spusťte příkaz „Začátek/Konec výběru v režimu sloupce“"/>
+				<Item id="90307" name="Zadejte vyhledávací adresu URL.Použijte %s jako zástupný symbol dotazu (nebo připojte dotaz na konec):"/>
+				<Item id="90308" name="Zadejte příkaz nebo URL..."/>
+				<Item id="90309" name="Nepodařilo se provést:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Již nainstalováno"/>
+				<Item id="90313" name="Nainstalujte nástroj příkazového řádku nextpad++"/>
+				<Item id="90314" name="Instalace se nezdařila"/>
+				<Item id="90315" name="Nainstalováno – ale ~/.local/bin není na vaší PATH"/>
+				<Item id="90316" name="Již ve vaší konfiguraci"/>
+				<Item id="90317" name="Přidáno do PATH"/>
+				<Item id="90318" name="Nešlo psát"/>
+				<Item id="90319" name="Zkopírováno"/>
+				<Item id="90321" name="Pokud změny neuložíte, budou ztraceny."/>
+				<Item id="90322" name="Použít na všechny dokumenty"/>
+				<Item id="90323" name="Spusťte makro na soubory"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Složka:"/>
+				<Item id="90326" name="Vyberte složku…"/>
+				<Item id="90327" name="Procházet…"/>
+				<Item id="90328" name="Rozšíření:"/>
+				<Item id="90329" name="Recurse podadresáře"/>
+				<Item id="90330" name="Zahrnout skryté soubory"/>
+				<Item id="90331" name="Maximální velikost:"/>
+				<Item id="90332" name="Neomezené"/>
+				<Item id="90333" name="Na soubor:"/>
+				<Item id="90334" name="Uložte, pokud byly změněny"/>
+				<Item id="90335" name="Poté zavřít"/>
+				<Item id="90336" name="Zavřete i soubory, které již byly otevřené"/>
+				<Item id="90337" name="Při chybě:"/>
+				<Item id="90338" name="Přeskočit soubor a pokračovat"/>
+				<Item id="90339" name="Zastavit při první chybě"/>
+				<Item id="90340" name="(žádná uložená makra)"/>
+				<Item id="90341" name="Počet shodných souborů: %lu"/>
+				<Item id="90342" name="Složka nenalezena"/>
+				<Item id="90343" name="Vyberte složku, která existuje."/>
+				<Item id="90344" name="Žádné soubory se neshodují"/>
+				<Item id="90345" name="Upravte možnost filtru rozšíření, rekurze nebo skrytých souborů."/>
+				<Item id="90346" name="Spouštění…"/>
+				<Item id="90347" name="Zpracování:"/>
+				<Item id="90348" name="%ld / %ld OK: %ld Přeskočeno: %ld Nezdařilo se: %ld"/>
+				<Item id="90349" name="Dávka zrušena"/>
+				<Item id="90350" name="Dávka dokončena"/>
+				<Item id="90351" name="Celkem: %lu Dobře: %ld Vynecháno: %ld Nezdařilo se: %ld"/>
+				<Item id="90352" name="Datum sestavení"/>
+				<Item id="90353" name="Operační systém"/>
+				<Item id="90354" name="nejnovější"/>
+				<Item id="90355" name="zastaralé"/>
+				<Item id="90356" name="neznámý"/>
+				<Item id="90357" name="Restartujte aplikaci, aby se změny projevily."/>
+				<Item id="90358" name="Aktualizujte pluginy"/>
+				<Item id="90359" name="Aktualizovat následující pluginy?"/>
+				<Item id="90360" name="Aktuální verze jsou před nahrazením zálohovány do ~/Library/Application Support/Nextpad++/plugin-backups/."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Přepnout na nový vzhled Tahoe (Beta)"/>
+				<Item id="90363" name="Použít nabídky ve stylu macOS (Beta)"/>
+				<Item id="90364" name="Nový vzhled Tahoe bude použit po restartování Nextpad++."/>
+				<Item id="90365" name="Po restartování aplikace Nextpad++ bude obnoven klasický vzhled."/>
+				<Item id="90366" name="Ukončit hned"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Po restartování aplikace Nextpad++ bude obnoveno klasické rozvržení nabídky."/>
+				<Item id="90369" name="Barva"/>
+				<Item id="90370" name="Použít na ikony panelu nástrojů pluginu"/>
+				<Item id="90371" name="V režimu Complete se ikony pluginu změní na jednu plnou barvu."/>
+				<Item id="90372" name="Skupiny lišty nástrojů"/>
+				<Item id="90373" name="Vyberte, kde se na panelu nástrojů Liquid Glass zobrazí jednotlivá tlačítka: na"/>
+				<Item id="90374" name="Tlačítko"/>
+				<Item id="90375" name="Umístění"/>
+				<Item id="90376" name="Obnovit výchozí"/>
+				<Item id="90377" name="Rozbalovací nabídka"/>
+				<Item id="90378" name="Skrytá"/>
+				<Item id="90379" name="CJK-friendly word wrap"/>
+				<Item id="90380" name="Výběr sloupců se přepne na vícenásobné úpravy"/>
+				<Item id="90381" name="Řádkování:"/>
+				<Item id="90382" name="1.0 (výchozí)"/>
+				<Item id="90383" name="Skrýt panel karet"/>
+				<Item id="90384" name="Velikost tabulátoru se řídí přiblížením dokumentu"/>
+				<Item id="90385" name="Vyberte si…"/>
+				<Item id="90386" name="Obnovit výchozí"/>
+				<Item id="90387" name="Použití výchozího umístění."/>
+				<Item id="90388" name="Vlastní umístění."/>
+				<Item id="90389" name="Neplatná cesta – zálohy budou používat výchozí umístění."/>
+				<Item id="90390" name="Vyberte si"/>
+				<Item id="90391" name="Vložit výběr:"/>
+				<Item id="90392" name="Použít Boost režim regulárního výrazu (víceřádkový; restartujte pro použití)"/>
+				<Item id="90395" name="Restartujte nyní"/>
+				<Item id="90397" name="(nevolte, pokud nevíte, co děláte)"/>
+				<Item id="90398" name="Velikost ikony panelu nástrojů"/>
+				<Item id="90399" name="100 % (výchozí)"/>
+				<Item id="90400" name="Rychlost rolování kolečkem myši"/>
+				<Item id="90401" name="1× (vypnuto)"/>
+				<Item id="90402" name="Velikost ikony lišty změněna"/>
+				<Item id="90403" name="Nová velikost ikony panelu nástrojů se projeví při příštím spuštění aplikace Nextpad++."/>
+				<Item id="90404" name="Ikony lišty se změnily"/>
+				<Item id="90405" name="Nové ikony panelu nástrojů se projeví při příštím spuštění aplikace Nextpad++."/>
+				<Item id="90411" name="Spustit makro na soubory..."/>
+				<Item id="90418" name="Tím jej a veškerý jeho obsah odstraníte z projektu.Žádné soubory na disku nebudou ovlivněny."/>
+				<Item id="90420" name="Složka"/>
+				<Item id="90427" name="Nenalezeno"/>
+				<Item id="90428" name="KONFLIKT: %@"/>
+				<Item id="90429" name="Smazat „%@“?"/>
+				<Item id="90430" name="Správce jazyka definovaného uživatelem"/>
+				<Item id="90431" name="Filtrovat jazyky…"/>
+				<Item id="90432" name="Zdroj"/>
+				<Item id="90433" name="AC zdroje"/>
+				<Item id="90434" name="Stav"/>
+				<Item id="90435" name="Instalovat / Aktualizovat"/>
+				<Item id="90436" name="%lu jazyků · %lu nainstalovaných · %lu aktualizací"/>
+				<Item id="90437" name="Autor"/>
+				<Item id="90438" name="Kombinované: %ld záznamů z %lu zdrojů (sloučeno)"/>
+				<Item id="90439" name="Vyberte jeden nebo více jazyků k instalaci."/>
+				<Item id="90440" name="Nic ke stažení pro výběr."/>
+				<Item id="90441" name="Stahování se nezdařilo"/>
+				<Item id="90442" name="Neshoda kontrolního součtu"/>
+				<Item id="90443" name="Vybrané jazyky jsou nyní dostupné v nabídce Jazyk."/>
+				<Item id="90444" name="Vyberte jeden nebo více nainstalovaných jazyků, které chcete odebrat."/>
+				<Item id="90445" name="Odebráno"/>
+				<Item id="90446" name="Tento název již používá jiný jazyk."/>
+				<Item id="90447" name="Tento jazyk se nepodařilo odstranit."/>
+				<Item id="90448" name="Předinstalované jazyky nelze odstranit."/>
+				<Item id="90449" name="Tento jazyk se nepodařilo přejmenovat."/>
+				<Item id="90450" name="Tento soubor je %@.Jeho otevřením deaktivujete zvýraznění syntaxe a vrátíte historii zpět, aby aplikace zůstala responzivní.&#10;&#10;Chcete pokračovat?"/>
+				<Item id="90451" name="Přesto otevřít"/>
+				<Item id="90452" name="„%@“ se na disku změnilo"/>
+				<Item id="90453" name="Ignorovat"/>
+				<Item id="90454" name="Ponechat moji verzi"/>
+				<Item id="90455" name="Nelze znovu načíst „%@“"/>
+				<Item id="90456" name="Soubor nelze přečíst."/>
+				<Item id="90457" name="Vyberte, kde se na panelu nástrojů Liquid Glass zobrazí jednotlivá tlačítka: v kapsli skupiny (panel nástrojů), v rozbalovací nabídce skupiny ▾ nebo Skrytě."/>
+				<Item id="90458" name="Přispějte na podporu rozvoje"/>
+				<Item id="90459" name="Nainstalujte nástroje příkazového řádku"/>
+				<Item id="90460" name="Zobrazit stíny za kapslemi panelu nástrojů"/>
+				<Item id="90461" name="Darovat"/>
+				<Item id="90462" name="Znakové sady"/>
+				<Item id="90463" name="Minimalizovat"/>
+				<Item id="90464" name="Skrýt Nextpad++"/>
+				<Item id="90465" name="Skrýt ostatní"/>
+				<Item id="90466" name="Zobrazit vše"/>
+				<Item id="90467" name="Ukončit Nextpad++"/>
+				<Item id="90468" name="Uložit aktuálně nahrané makro…"/>
+				<Item id="90469" name="Zkraťte koncový prostor a ušetřete"/>
 			</MacStrings>
 		</Dialog>
 

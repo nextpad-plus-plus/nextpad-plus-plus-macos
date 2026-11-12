@@ -1460,13 +1460,13 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90006" name="Kaynak Kontrolü"/>
 				<Item id="90007" name="Taahhüt"/>
 				<Item id="90008" name="Kaydetme Başarısız"/>
-				<Item id="90009" name="Git deposu yok\nBir depo açmak için Gözat'ı kullanın."/>
+				<Item id="90009" name="Git deposu yok&#10;Bir depo açmak için Gözat'ı kullanın."/>
 				<Item id="90010" name="Sahne"/>
 				<Item id="90011" name="Sahneyi kaldır"/>
 				<Item id="90012" name="Tümünü Sahnele"/>
 				<Item id="90013" name="Tümünü Kaldır"/>
-				<Item id="90014" name="Mesajı tamamla\u2026"/>
-				<Item id="90015" name="Depoya göz atın\u2026"/>
+				<Item id="90014" name="Mesajı tamamla…"/>
+				<Item id="90015" name="Depoya göz atın…"/>
 				<Item id="90016" name="Git deposu klasörü seçin"/>
 				<Item id="90017" name="(depo yok)"/>
 				<Item id="90018" name="(müstakil)"/>
@@ -1480,9 +1480,9 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90026" name="Sonuçlar"/>
 				<Item id="90027" name="Dur"/>
 				<Item id="90028" name="Arama durduruldu."/>
-				<Item id="90029" name="Aranıyor\u2026"/>
+				<Item id="90029" name="Aranıyor…"/>
 				<Item id="90030" name="Aranacak metin"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Aranıyor..."/>
 				<Item id="90033" name="Değiştir:"/>
 				<Item id="90034" name="Tüm Kelime"/>
@@ -1542,7 +1542,7 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90088" name="Eklentileri Yükle"/>
 				<Item id="90089" name="Eklentileri Kaldır"/>
 				<Item id="90090" name="Hiçbir komut bulunamadı"/>
-				<Item id="90091" name="Aramak için yazın\u2026"/>
+				<Item id="90091" name="Aramak için yazın…"/>
 				<Item id="90092" name="Kullanıcı Tanımlı Dil v.2.1"/>
 				<Item id="90093" name="Yeni Dil Oluştur"/>
 				<Item id="90094" name="Bir ad girin:"/>
@@ -1551,11 +1551,9 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90097" name="Kaydetme"/>
 				<Item id="90098" name="Bitti"/>
 				<Item id="90099" name="Kelime Kaydırmayı Aç/Kapat"/>
-				<Item id="90100" name="Tüm Karakterleri Göster"/>
 				<Item id="90101" name="Karakter Seçeneklerini Göster"/>
 				<Item id="90102" name="Girinti Kılavuzunu Aç / Kapat"/>
 				<Item id="90103" name="Henüz Uygulanmadı"/>
-				<Item id="90104" name="Diskten Yeniden Yükle"/>
 				<Item id="90105" name="Arama Motorunu Değiştir"/>
 				<Item id="90106" name="Çalıştırma Hatası"/>
 				<Item id="90107" name="Nextpad++ Yükleme Süresi"/>
@@ -1564,16 +1562,12 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90110" name="İndir"/>
 				<Item id="90111" name="Sürüm Sayfası"/>
 				<Item id="90112" name="Daha sonra"/>
-				<Item id="90113" name="Eklentileri filtrele\u2026"/>
-				<Item id="90114" name="Mevcut"/>
-				<Item id="90115" name="Güncellemeler"/>
-				<Item id="90116" name="Yüklendi"/>
-				<Item id="90117" name="Uyumsuz"/>
+				<Item id="90113" name="Eklentileri filtrele…"/>
 				<Item id="90118" name="Kurulum Başarısız"/>
 				<Item id="90119" name="Aşağıdaki eklentiler kaldırılsın mı?"/>
 				<Item id="90120" name="Aşağıdaki eklentiler yüklensin mi?"/>
 				<Item id="90121" name="Bu, eklenti dosyalarını silecektir."/>
-				<Item id="90122" name="Arama komutları\u2026"/>
+				<Item id="90122" name="Arama komutları…"/>
 				<Item id="90123" name="Ön plan rengi"/>
 				<Item id="90124" name="Arka plan rengi"/>
 				<Item id="90125" name="Makro adı"/>
@@ -1593,7 +1587,7 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90139" name="Tüm işaretler temizlendi."/>
 				<Item id="90140" name="İşaretli metin panoya kopyalandı."/>
 				<Item id="90141" name="Kopyalanacak işaretli metin yok."/>
-				<Item id="90142" name="Aranıyor... %ld isabet \u2014 %@"/>
+				<Item id="90142" name="Aranıyor... %ld isabet — %@"/>
 				<Item id="90143" name="Dosyalarda değiştiriliyor..."/>
 				<Item id="90144" name="Projelerde Değiştir: Henüz bağlanmadı."/>
 				<Item id="90145" name="Projelerde Bul: Henüz Proje Paneli dosya listesine bağlı değil."/>
@@ -1620,14 +1614,12 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90165" name="Tümünü Kaydetmeden Önce Onaylayın"/>
 				<Item id="90166" name="Açık belgelerdeki Tümünü Değiştir'i Onaylayın"/>
 				<Item id="90167" name="Değiştir: sonraki tekrara geçme"/>
-				<Item id="90168" name="Bul iletişim kutusunda tek aralıklı yazı tipini kullan"/>
 				<Item id="90169" name="Sağ tıklama seçimi korur"/>
 				<Item id="90170" name="Varsayılan tarih/saat sırasını tersine çevir"/>
 				<Item id="90171" name="XML tabanlı işlev listesi ayrıştırıcılarını kullanın"/>
 				<Item id="90172" name="Parantezleri otomatik kapat ( ) [ ] { }"/>
 				<Item id="90173" name="N'inci karakterden:"/>
 				<Item id="90174" name="Seçim içi otomatik kontrol eşiği (bayt):"/>
-				<Item id="90175" name="Genişletilmiş (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editör"/>
 				<Item id="90177" name="Marjlar"/>
 				<Item id="90178" name="Karanlık"/>
@@ -1641,12 +1633,10 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90186" name="Kenar Yumuşatılmış"/>
 				<Item id="90187" name="LCD Optimize Edilmiş"/>
 				<Item id="90188" name="Basit +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Eklenti listesi deposu"/>
 				<Item id="90192" name="Uygulamak için bir Nextpad++ tema XML dosyası seçin"/>
-				<Item id="90193" name="Yeni oluştur\u2026"/>
-				<Item id="90194" name="Farklı kaydet\u2026"/>
+				<Item id="90193" name="Yeni oluştur…"/>
+				<Item id="90194" name="Farklı kaydet…"/>
 				<Item id="90195" name="Kullanıcı dili:"/>
 				<Item id="90196" name="Dil adı"/>
 				<Item id="90197" name="Oluştur"/>
@@ -1676,6 +1666,216 @@ Bu pencereyi Tercihler içinden tekrar aktif edebilirsiniz."/>
 				<Item id="90221" name="Kilitli Öznitelik (macOS)"/>
 				<Item id="90222" name="Güncellemeleri Kontrol Et…"/>
 				<Item id="90223" name="Son Kullanılanları Aç"/>
+				<Item id="90226" name="Yardım"/>
+				<Item id="90227" name="Aşama Başarısız"/>
+				<Item id="90228" name="Sahneden Kaldırma Başarısız Oldu"/>
+				<Item id="90229" name="mevcut"/>
+				<Item id="90230" name="koşuyorsun"/>
+				<Item id="90231" name="Bana bir daha asla hatırlatma"/>
+				<Item id="90233" name="Güncellemeleri otomatik olarak kontrol et"/>
+				<Item id="90234" name="Otomatik güncelleme kontrolleri kapalı."/>
+				<Item id="90235" name="Son kontrol:"/>
+				<Item id="90236" name="İnternet bağlantısı yok."/>
+				<Item id="90237" name="Güncelleme sunucusundan beklenmeyen yanıt."/>
+				<Item id="90238" name="Yayınlanmış bir sürüm bulunamadı."/>
+				<Item id="90239" name="Güncelleme sunucusu geçici olarak kullanılamıyor.Lütfen daha sonra tekrar deneyin."/>
+				<Item id="90240" name="Güncelleme sunucusu isteği reddetti.Bir proxy, güvenlik duvarı veya VPN GitHub'a erişimi engelliyor olabilir."/>
+				<Item id="90241" name="Ağınızdan çok fazla güncelleme kontrolü yapılıyor (bu sınır ağdaki herkes tarafından paylaşılıyor).Daha sonra tekrar deneyin"/>
+				<Item id="90242" name="Ağınızdan çok fazla güncelleme kontrolü yapılıyor (bu sınır ağdaki herkes tarafından paylaşılıyor).Lütfen daha sonra tekrar deneyin."/>
+				<Item id="90243" name="Güncelleme sunucusu durumu döndürdü"/>
+				<Item id="90244" name="Tekrar Deneyin"/>
+				<Item id="90245" name="Metin boyutunu yazdır:"/>
+				<Item id="90246" name="Ekran yakınlaştırmasını kullan"/>
+				<Item id="90247" name="Gerçek boyut"/>
+				<Item id="90248" name="Bazı dosyalar değiştirilemedi"/>
+				<Item id="90249" name="...ve %lu tane daha"/>
+				<Item id="90250" name="Dosya ilişkilendirmeleri kuruluşunuz tarafından yönetiliyor."/>
+				<Item id="90251" name="macOS onayı bekleniyor…"/>
+				<Item id="90252" name="macOS değişikliği uygulamadı."/>
+				<Item id="90253" name="Kayıtlı"/>
+				<Item id="90254" name="Klasördeki tüm dosyalar açılsın mı?"/>
+				<Item id="90255" name="Bu, %lu dosyayı yeni sekmelerde açacak."/>
+				<Item id="90256" name="İçe aktarılamadı: %@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="Şu ana kadar… %ld eşleşme aranıyor"/>
+				<Item id="90260" name="%@ (%ld eşleşme%@)"/>
+				<Item id="90261" name="Bulanık arama"/>
+				<Item id="90266" name="Sayı: %ld eşleşme."/>
+				<Item id="90267" name="Tümünü Değiştir: %ld oluşum %@ ile değiştirildi."/>
+				<Item id="90268" name="Açılan Dosyalarda Değiştir: %ld örnek değiştirildi."/>
+				<Item id="90269" name="Find in Files: %ld hit(s) in %ld file(s)."/>
+				<Item id="90270" name="Dosyalarda Bul: 0 sonuç."/>
+				<Item id="90271" name="Dizinde &quot;%@&quot; ifadesinin tüm tekrarlarını &quot;%@&quot; ile değiştirin:&#10;%@&#10;&#10;Bu işlem geri alınamaz."/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="Önce bir Proje Paneli açın."/>
+				<Item id="90274" name="Aramak için en az bir Proje Paneli seçin."/>
+				<Item id="90275" name="Aranacak dosya yok."/>
+				<Item id="90276" name="Find in Projects: %ld hit(s) in %ld file(s)."/>
+				<Item id="90277" name="Projelerde Bul: 0 sonuç."/>
+				<Item id="90278" name="Tüm oluşumlarını değiştir"/>
+				<Item id="90279" name="ile"/>
+				<Item id="90280" name="içinde"/>
+				<Item id="90281" name="proje dosya(lar)ı.Bu geri alınamaz."/>
+				<Item id="90282" name="Replace in Projects: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90283" name="İşaretle: %ld eşleşme işaretlendi."/>
+				<Item id="90284" name="Dosya/klasör adını filtrele..."/>
+				<Item id="90285" name="Bazı belgeler kaydedilemedi"/>
+				<Item id="90286" name="⌘ Komut"/>
+				<Item id="90287" name="⌃ Kontrol"/>
+				<Item id="90288" name="⌥ Seçenek"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Bir NSDateFormatter biçim dizesi girin:"/>
+				<Item id="90291" name="'%@' henüz bu sürümde uygulanmadı."/>
+				<Item id="90292" name="Eklentiyi İçe Aktar"/>
+				<Item id="90293" name="Yeniden Başlatma Gerekli"/>
+				<Item id="90294" name="İşlenecek dosya yok"/>
+				<Item id="90295" name="Bu proje düğümü hiçbir dosya içermiyor."/>
+				<Item id="90296" name="'%@' kaydedilmemiş değişiklikler içeriyor.&#10;Değişiklikler yeniden yüklensin ve silinsin mi?"/>
+				<Item id="90297" name="Yeni bir dosya adı girin:"/>
+				<Item id="90299" name="Yeni isim:"/>
+				<Item id="90301" name="Ad “/” veya “:” içeremez."/>
+				<Item id="90304" name="Hepsini Kaydetme"/>
+				<Item id="90306" name="Sütun seçme moduna geçmenin 3 yolu vardır:&#10;&#10;1.(Klavye ve Fare) Sol tıklamayla sürüklerken Tutma Seçeneği&#10;&#10;2.(Yalnızca klavye) Ok tuşlarını kullanırken Option+Shift tuşunu basılı tutun&#10;&#10;3.(Klavye veya Fare)&#10; İmleci istenen sütun bloğu başlangıcına yerleştirin, ardından&#10; &quot;Sütun Modunda Başlangıç/Bitiş Seçimi&quot; komutunu yürütün;&#10; İmleci istenen sütun bloğu sonu sonu konumuna taşıyın, ardından&#10; &quot;Sütun Modunda Başlangıç/Bitiş Seçimi&quot; komutunu tekrar yürütün"/>
+				<Item id="90307" name="Arama URL'sini girin.Sorgu yer tutucusu olarak %s kullanın (veya sorguyu sonuna ekleyin):"/>
+				<Item id="90308" name="Komutu veya URL'yi girin..."/>
+				<Item id="90309" name="Yürütülemedi:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Zaten yüklü"/>
+				<Item id="90313" name="nextpad++ Komut Satırı Aracını Yükleyin"/>
+				<Item id="90314" name="Kurulum başarısız oldu"/>
+				<Item id="90315" name="Yüklendi — ancak ~/.local/bin PATH'inizde değil"/>
+				<Item id="90316" name="Zaten yapılandırmanızda"/>
+				<Item id="90317" name="PATH'e eklendi"/>
+				<Item id="90318" name="yazamadım"/>
+				<Item id="90319" name="Kopyalandı"/>
+				<Item id="90321" name="Kaydetmezseniz değişiklikleriniz kaybolacaktır."/>
+				<Item id="90322" name="Tüm belgelere uygula"/>
+				<Item id="90323" name="Dosyalarda Makro Çalıştırma"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Klasör:"/>
+				<Item id="90326" name="Bir klasör seç…"/>
+				<Item id="90327" name="Göz at…"/>
+				<Item id="90328" name="Uzantılar:"/>
+				<Item id="90329" name="Yinelenen alt dizinler"/>
+				<Item id="90330" name="Gizli dosyaları dahil et"/>
+				<Item id="90331" name="Maksimum boyut:"/>
+				<Item id="90332" name="Sınırsız"/>
+				<Item id="90333" name="Dosya başına:"/>
+				<Item id="90334" name="Değiştirildiyse kaydet"/>
+				<Item id="90335" name="Şu tarihten sonra kapat:"/>
+				<Item id="90336" name="Zaten açık olan dosyaları bile kapatın"/>
+				<Item id="90337" name="Hata durumunda:"/>
+				<Item id="90338" name="Dosyayı atla ve devam et"/>
+				<Item id="90339" name="İlk hatada dur"/>
+				<Item id="90340" name="(kaydedilmiş makro yok)"/>
+				<Item id="90341" name="%lu dosya eşleşiyor"/>
+				<Item id="90342" name="Klasör bulunamadı"/>
+				<Item id="90343" name="Mevcut bir klasörü seçin."/>
+				<Item id="90344" name="Hiçbir dosya eşleşmiyor"/>
+				<Item id="90345" name="Uzantı filtresini, özyinelemeyi veya gizli dosyalar seçeneğini ayarlayın."/>
+				<Item id="90346" name="Başlıyor…"/>
+				<Item id="90347" name="İşleme:"/>
+				<Item id="90348" name="%ld / %ld Tamam: %ld Atlandı: %ld Başarısız: %ld"/>
+				<Item id="90349" name="Toplu iptal"/>
+				<Item id="90350" name="Toplu iş tamamlandı"/>
+				<Item id="90351" name="Toplam: %lu Tamam: %ld Atlandı: %ld Başarısız: %ld"/>
+				<Item id="90352" name="Yapım Tarihi"/>
+				<Item id="90353" name="İşletim Sistemi"/>
+				<Item id="90354" name="en son"/>
+				<Item id="90355" name="modası geçmiş"/>
+				<Item id="90356" name="bilinmiyor"/>
+				<Item id="90357" name="Değişikliklerin etkili olması için uygulamayı yeniden başlatın."/>
+				<Item id="90358" name="Eklentileri Güncelle"/>
+				<Item id="90359" name="Aşağıdaki eklentiler güncellensin mi?"/>
+				<Item id="90360" name="Mevcut sürümler değiştirilmeden önce ~/Library/Application Support/Nextpad++/plugin-backups/ sürümüne yedeklenir."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Yeni Tahoe görünümüne geçiş yapın (Beta)"/>
+				<Item id="90363" name="macOS tarzı menüleri kullanın (Beta)"/>
+				<Item id="90364" name="The new Tahoe look will be applied after you restart Nextpad++."/>
+				<Item id="90365" name="Nextpad++ yeniden başlatıldıktan sonra Klasik görünüm geri yüklenecek."/>
+				<Item id="90366" name="Şimdi Çık"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Nextpad++ yeniden başlatıldıktan sonra klasik menü düzeni geri yüklenecek."/>
+				<Item id="90369" name="Renk"/>
+				<Item id="90370" name="Eklenti araç çubuğu simgelerine uygula"/>
+				<Item id="90371" name="Tam modda eklenti simgeleri tek bir düz renk haline gelir."/>
+				<Item id="90372" name="Araç Çubuğu Grupları"/>
+				<Item id="90373" name="Her düğmenin Liquid Glass araç çubuğunda nerede görüneceğini seçin:"/>
+				<Item id="90374" name="Düğme"/>
+				<Item id="90375" name="Yerleştirme"/>
+				<Item id="90376" name="Varsayılanlara Sıfırla"/>
+				<Item id="90377" name="Taşma menüsü"/>
+				<Item id="90378" name="Gizli"/>
+				<Item id="90379" name="CJK dostu kelime kaydırma"/>
+				<Item id="90380" name="Sütun seçimi çoklu düzenlemeye geçer"/>
+				<Item id="90381" name="Satır aralığı:"/>
+				<Item id="90382" name="1.0 (Varsayılan)"/>
+				<Item id="90383" name="Sekme çubuğunu gizle"/>
+				<Item id="90384" name="Sekme boyutu belge yakınlaştırmasını takip eder"/>
+				<Item id="90385" name="Seç…"/>
+				<Item id="90386" name="Varsayılana Sıfırla"/>
+				<Item id="90387" name="Varsayılan konumu kullanma."/>
+				<Item id="90388" name="Özel konum."/>
+				<Item id="90389" name="Geçersiz yol — yedeklemeler varsayılan konumu kullanacak."/>
+				<Item id="90390" name="Seç"/>
+				<Item id="90391" name="Seçim Ekle:"/>
+				<Item id="90392" name="Boost Regex modunu kullanın (çok satırlı; uygulamak için yeniden başlatın)"/>
+				<Item id="90395" name="Şimdi Yeniden Başlat"/>
+				<Item id="90397" name="(ne yaptığınızı bilmiyorsanız bunu seçmeyin)"/>
+				<Item id="90398" name="Araç çubuğu simge boyutu"/>
+				<Item id="90399" name="%100 (Varsayılan)"/>
+				<Item id="90400" name="Fare tekerleği kaydırma hızı"/>
+				<Item id="90401" name="1× (kapalı)"/>
+				<Item id="90402" name="Araç çubuğu simge boyutu değişti"/>
+				<Item id="90403" name="Yeni araç çubuğu simge boyutu, Nextpad++'ın bir sonraki başlatılışında etkili olacaktır."/>
+				<Item id="90404" name="Araç çubuğu simgeleri değiştirildi"/>
+				<Item id="90405" name="Yeni araç çubuğu simgeleri, Nextpad++'ın bir sonraki başlatılışında etkili olacaktır."/>
+				<Item id="90411" name="Dosyalarda Makro Çalıştır..."/>
+				<Item id="90418" name="Bu, onu ve tüm içeriğini projeden kaldıracaktır.Diskteki hiçbir dosya etkilenmeyecektir."/>
+				<Item id="90420" name="Klasör"/>
+				<Item id="90427" name="Bulunamadı"/>
+				<Item id="90428" name="ÇATIŞMA: %@"/>
+				<Item id="90429" name="&quot;%@&quot; silinsin mi?"/>
+				<Item id="90430" name="Kullanıcı Tanımlı Dil Yöneticisi"/>
+				<Item id="90431" name="Dilleri filtrele…"/>
+				<Item id="90432" name="Kaynak"/>
+				<Item id="90433" name="Alternatif Akım Kaynakları"/>
+				<Item id="90434" name="Durum"/>
+				<Item id="90435" name="Kur / Güncelle"/>
+				<Item id="90436" name="%lu dil · %lu yüklü · %lu güncelleme"/>
+				<Item id="90437" name="Yazar"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="Yüklemek için bir veya daha fazla dil seçin."/>
+				<Item id="90440" name="Seçim için indirilebilir hiçbir şey yok."/>
+				<Item id="90441" name="İndirme başarısız oldu"/>
+				<Item id="90442" name="Sağlama toplamı uyuşmazlığı"/>
+				<Item id="90443" name="Seçilen dil(ler) artık Dil menüsünde mevcuttur."/>
+				<Item id="90444" name="Kaldırmak için bir veya daha fazla yüklü dili seçin."/>
+				<Item id="90445" name="Kaldırıldı"/>
+				<Item id="90446" name="Bu ad zaten başka bir dil tarafından kullanılıyor."/>
+				<Item id="90447" name="Bu dil kaldırılamadı."/>
+				<Item id="90448" name="Önceden yüklenmiş diller kaldırılamaz."/>
+				<Item id="90449" name="Bu dil yeniden adlandırılamadı."/>
+				<Item id="90450" name="Bu dosya %@.Bunu açtığınızda, sözdizimi vurgulama devre dışı bırakılır ve uygulamanın duyarlı kalması için geçmişi geri alınır.&#10;&#10;Devam etmek istiyor musunuz?"/>
+				<Item id="90451" name="Yine de Aç"/>
+				<Item id="90452" name="&quot;%@&quot; diskte değiştirildi"/>
+				<Item id="90453" name="Yoksay"/>
+				<Item id="90454" name="Sürümümü Koru"/>
+				<Item id="90455" name="&quot;%@&quot; yeniden yüklenemedi"/>
+				<Item id="90456" name="Dosya okunamadı."/>
+				<Item id="90457" name="Her düğmenin Liquid Glass araç çubuğunda nerede görüneceğini seçin: grup kapsülünde (Araç Çubuğu), grubun ▾ taşma menüsünde veya Gizli."/>
+				<Item id="90458" name="Gelişimi Desteklemek İçin Bağış Yapın"/>
+				<Item id="90459" name="Komut Satırı Araçlarını Yükleme"/>
+				<Item id="90460" name="Araç çubuğu kapsüllerinin arkasındaki gölgeleri göster"/>
+				<Item id="90461" name="Bağış yap"/>
+				<Item id="90462" name="Karakter setleri"/>
+				<Item id="90463" name="Küçült"/>
+				<Item id="90464" name="Nextpad++'ı gizle"/>
+				<Item id="90465" name="Diğerlerini Gizle"/>
+				<Item id="90466" name="Tümünü Göster"/>
+				<Item id="90467" name="Nextpad++'dan çık"/>
+				<Item id="90468" name="Geçerli Kaydedilen Makroyu Kaydet…"/>
+				<Item id="90469" name="Sondaki Alanı Kırpın ve Tasarruf Edin"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

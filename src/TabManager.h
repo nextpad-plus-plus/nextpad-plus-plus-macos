@@ -14,6 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol TabManagerDelegate <NSObject>
 - (void)tabManager:(id)tabManager didSelectEditor:(EditorView *)editor;
 - (void)tabManager:(id)tabManager didCloseEditor:(EditorView *)editor;
+@optional
+/// Called when the last editor has been removed and the "Exit on close the
+/// last tab" preference is enabled. The delegate should close the window
+/// (which quits the app when it is the last window). Return YES if the
+/// delegate handled the exit; return NO (or leave unimplemented) to fall
+/// back to the default behaviour of opening a fresh untitled tab.
+- (BOOL)tabManagerShouldExitOnLastTabClose:(id)tabManager;
 @end
 
 /// Manages the custom tab bar and the set of open editor views.
@@ -56,6 +63,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Refresh all tab titles and modified icons (e.g. after Save All).
 - (void)refreshAllTabTitles;
+
+/// Refresh the tab showing `editor`, wherever it sits in this manager. Does
+/// nothing if this manager does not own it, so a caller can offer the same
+/// editor to every manager and let the owner respond.
+- (void)refreshTitleForEditor:(EditorView *)editor;
 
 /// Select tab by index programmatically (fires delegate).
 - (void)selectTabAtIndex:(NSInteger)index;

@@ -586,13 +586,13 @@
 				<Item id="90006" name="Kontrola izvora"/>
 				<Item id="90007" name="Commit"/>
 				<Item id="90008" name="Urezivanje nije uspjelo"/>
-				<Item id="90009" name="Nema git spremišta\nKoristite Pregledaj da otvorite repo."/>
+				<Item id="90009" name="Nema git spremišta&#10;Koristite Pregledaj da otvorite repo."/>
 				<Item id="90010" name="Stage"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stage All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Urezivanje poruke\u2026"/>
-				<Item id="90015" name="Pretražite spremište\u2026"/>
+				<Item id="90014" name="Urezivanje poruke…"/>
+				<Item id="90015" name="Pretražite spremište…"/>
 				<Item id="90016" name="Odaberite folder git spremišta"/>
 				<Item id="90017" name="(bez spremišta)"/>
 				<Item id="90018" name="(odvojena)"/>
@@ -606,9 +606,9 @@
 				<Item id="90026" name="Rezultati"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Pretraga je zaustavljena."/>
-				<Item id="90029" name="Pretraživanje\u2026"/>
+				<Item id="90029" name="Pretraživanje…"/>
 				<Item id="90030" name="Tekst za traženje"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Tražim..."/>
 				<Item id="90033" name="Zamijenite:"/>
 				<Item id="90034" name="Cijela riječ"/>
@@ -668,7 +668,7 @@
 				<Item id="90088" name="Instaliraj dodatke"/>
 				<Item id="90089" name="Uklonite dodatke"/>
 				<Item id="90090" name="Komande nisu pronađene"/>
-				<Item id="90091" name="Upišite za pretragu\u2026"/>
+				<Item id="90091" name="Upišite za pretragu…"/>
 				<Item id="90092" name="Korisnički definirani jezik v.2.1"/>
 				<Item id="90093" name="Kreiraj novi jezik"/>
 				<Item id="90094" name="Unesite ime:"/>
@@ -677,11 +677,9 @@
 				<Item id="90097" name="Ne čuvaj"/>
 				<Item id="90098" name="Gotovo"/>
 				<Item id="90099" name="Uključi prelamanje riječi"/>
-				<Item id="90100" name="Prikaži sve likove"/>
 				<Item id="90101" name="Prikaži opcije znakova"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Još nije implementirano"/>
-				<Item id="90104" name="Ponovo učitaj sa diska"/>
 				<Item id="90105" name="Promijeni tražilicu"/>
 				<Item id="90106" name="Greška pri pokretanju"/>
 				<Item id="90107" name="Nextpad++ Vrijeme učitavanja"/>
@@ -690,7 +688,7 @@
 				<Item id="90110" name="Preuzmi"/>
 				<Item id="90111" name="Stranica objave"/>
 				<Item id="90112" name="Kasnije"/>
-				<Item id="90113" name="Dodaci za filtriranje\u2026"/>
+				<Item id="90113" name="Dodaci za filtriranje…"/>
 				<Item id="90114" name="Dostupno"/>
 				<Item id="90115" name="Ažuriranja"/>
 				<Item id="90116" name="Instalirano"/>
@@ -699,7 +697,7 @@
 				<Item id="90119" name="Ukloniti sljedeće dodatke?"/>
 				<Item id="90120" name="Instalirati sljedeće dodatke?"/>
 				<Item id="90121" name="Ovo će izbrisati datoteke dodataka."/>
-				<Item id="90122" name="Naredbe pretraživanja\u2026"/>
+				<Item id="90122" name="Naredbe pretraživanja…"/>
 				<Item id="90123" name="Boja prednjeg plana"/>
 				<Item id="90124" name="Boja pozadine"/>
 				<Item id="90125" name="Ime makroa"/>
@@ -719,7 +717,7 @@
 				<Item id="90139" name="Sve oznake očišćene."/>
 				<Item id="90140" name="Označeni tekst je kopiran u međuspremnik."/>
 				<Item id="90141" name="Nema označenog teksta za kopiranje."/>
-				<Item id="90142" name="Pretraživanje... %ld pogodak(a) \u2014 %@"/>
+				<Item id="90142" name="Pretraživanje... %ld pogodak(a) — %@"/>
 				<Item id="90143" name="Zamjena u fajlovima..."/>
 				<Item id="90144" name="Zamijeni u Projektima: Još nije povezano."/>
 				<Item id="90145" name="Pronađi u projektima: Još nije povezan sa listom datoteka projektne ploče."/>
@@ -740,20 +738,20 @@
 				<Item id="90160" name="Pametno isticanje: samo cijela riječ"/>
 				<Item id="90161" name="Dvaput kliknite da zatvorite karticu"/>
 				<Item id="90162" name="Prikaži dugme za zatvaranje na karticama"/>
+				<Item id="90168" name="Koristite jednorazredni font u dijalogu Pronađi"/>
+				<Item id="90191" name="Spremište liste dodataka"/>
 				<Item id="90224" name="Wrap tabs to multiple lines"/>
 				<Item id="90163" name="Zapamtite vidljivost panela kroz sesije"/>
 				<Item id="90164" name="Zadrži odsutne unose datoteka u sesiji"/>
 				<Item id="90165" name="Potvrdi prije Save All"/>
 				<Item id="90166" name="Potvrdi Zamijeni sve u otvorenim dokumentima"/>
 				<Item id="90167" name="Zamijeni: ne prelazi na sljedeće pojavljivanje"/>
-				<Item id="90168" name="Koristite jednorazredni font u dijalogu Pronađi"/>
 				<Item id="90169" name="Desni klik zadržava odabir"/>
 				<Item id="90170" name="Obrnuti zadani redoslijed datuma/vremena"/>
 				<Item id="90171" name="Koristite parsere liste funkcija zasnovane na XML-u"/>
 				<Item id="90172" name="Automatsko zatvaranje zagrada ( ) [ ] { }"/>
 				<Item id="90173" name="Od N-tog znaka:"/>
 				<Item id="90174" name="Prag automatske provjere u odabiru (bajtovi):"/>
-				<Item id="90175" name="Prošireno (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Urednik"/>
 				<Item id="90177" name="Margine"/>
 				<Item id="90178" name="Tamno"/>
@@ -767,12 +765,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimiziran"/>
 				<Item id="90188" name="Jednostavno +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Spremište liste dodataka"/>
 				<Item id="90192" name="Odaberite XML datoteku teme Nextpad++ koju želite primijeniti"/>
-				<Item id="90193" name="Kreiraj novi\u2026"/>
-				<Item id="90194" name="Sačuvaj kao\u2026"/>
+				<Item id="90193" name="Kreiraj novi…"/>
+				<Item id="90194" name="Sačuvaj kao…"/>
 				<Item id="90195" name="Jezik korisnika:"/>
 				<Item id="90196" name="Naziv jezika"/>
 				<Item id="90197" name="Kreiraj"/>
@@ -802,6 +798,244 @@
 				<Item id="90221" name="Zaključani atribut (macOS)"/>
 				<Item id="90222" name="Provjerite ažuriranja…"/>
 				<Item id="90223" name="Otvorite Nedavno"/>
+				<Item id="90226" name="Pomoć"/>
+				<Item id="90227" name="Stage Failed"/>
+				<Item id="90228" name="Unstage Failed"/>
+				<Item id="90229" name="je dostupan"/>
+				<Item id="90230" name="Trčiš"/>
+				<Item id="90231" name="Nikad me više ne podsjećaj"/>
+				<Item id="90232" name="Ažuriranja"/>
+				<Item id="90233" name="Automatski provjeri ažuriranja"/>
+				<Item id="90234" name="Automatske provjere ažuriranja su isključene."/>
+				<Item id="90235" name="Zadnja provjera:"/>
+				<Item id="90236" name="Nema internetske veze."/>
+				<Item id="90237" name="Neočekivan odgovor od servera za ažuriranje."/>
+				<Item id="90238" name="Nije pronađeno nijedno objavljeno izdanje."/>
+				<Item id="90239" name="Server za ažuriranje je privremeno nedostupan.Molimo pokušajte ponovo kasnije."/>
+				<Item id="90240" name="Server za ažuriranje je odbio zahtjev.Proxy, firewall ili VPN možda blokiraju pristup GitHubu."/>
+				<Item id="90241" name="Previše provjera ažuriranja sa vaše mreže (ovo ograničenje dijele svi na njoj).Pokušajte ponovo nakon"/>
+				<Item id="90242" name="Previše provjera ažuriranja sa vaše mreže (ovo ograničenje dijele svi na njoj).Molimo pokušajte ponovo kasnije."/>
+				<Item id="90243" name="Server za ažuriranje je vratio status"/>
+				<Item id="90244" name="Pokušajte ponovo"/>
+				<Item id="90245" name="Veličina teksta za ispis:"/>
+				<Item id="90246" name="Koristite zumiranje ekrana"/>
+				<Item id="90247" name="Stvarna veličina"/>
+				<Item id="90248" name="Neke datoteke nije bilo moguće zamijeniti"/>
+				<Item id="90249" name="...i još %lu"/>
+				<Item id="90250" name="Asocijacijama datoteka upravlja vaša organizacija."/>
+				<Item id="90251" name="Čeka se potvrda macOS-a…"/>
+				<Item id="90252" name="macOS nije primijenio promjenu."/>
+				<Item id="90253" name="Registrirane"/>
+				<Item id="90254" name="Otvoriti sve datoteke u folderu?"/>
+				<Item id="90255" name="Ovo će otvoriti %lu fajlova u novim karticama."/>
+				<Item id="90256" name="Nije moguće uvesti: %@"/>
+				<Item id="90258" name="Pronađeno je %ld podudaranja u %ld fajlovima."/>
+				<Item id="90259" name="Pretraživanje… %ld podudaranja do sada"/>
+				<Item id="90260" name="%@ (%ld podudaranje%@)"/>
+				<Item id="90261" name="Fuzzy search"/>
+				<Item id="90262" name="Pronađi u Current Document"/>
+				<Item id="90265" name="Pronađi: ne mogu pronaći tekst &quot;%@&quot;"/>
+				<Item id="90266" name="Broj: %ld podudaranja."/>
+				<Item id="90267" name="Zamijeni sve: %ld pojavljivanje(a) je zamijenjeno %@."/>
+				<Item id="90268" name="Zamijeni u otvorenim datotekama: %ld pojavljivanja je zamijenjeno."/>
+				<Item id="90269" name="Pronađi u fajlovima: %ld pogodak(a) u %ld fajl(ova)."/>
+				<Item id="90270" name="Pronađi u datotekama: 0 pogodaka."/>
+				<Item id="90271" name="Zamijenite sva pojavljivanja &quot;%@&quot; sa &quot;%@&quot; u direktoriju:&#10;%@&#10;&#10;Ovo se ne može poništiti."/>
+				<Item id="90272" name="Zamijeni u fajlovima: %ld zamjena(e) u %ld fajl(ova)."/>
+				<Item id="90273" name="Prvo otvorite projektnu ploču."/>
+				<Item id="90274" name="Odaberite barem jedan projektni panel za pretraživanje."/>
+				<Item id="90275" name="Nema datoteka za pretraživanje."/>
+				<Item id="90276" name="Pronađi u projektima: %ld pogodak(a) u %ld fajl(ova)."/>
+				<Item id="90277" name="Pronađi u projektima: 0 pogodaka."/>
+				<Item id="90278" name="Zamijenite sve pojave"/>
+				<Item id="90279" name="sa"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="projektni fajl(i).Ovo se ne može poništiti."/>
+				<Item id="90282" name="Zamijeni u projektima: %ld zamjene u %ld fajlovima."/>
+				<Item id="90283" name="Označi: %ld označenih podudaranja."/>
+				<Item id="90284" name="Filtriraj naziv datoteke/fascikle..."/>
+				<Item id="90285" name="Neki dokumenti se ne mogu sačuvati"/>
+				<Item id="90286" name="⌘ Naredba"/>
+				<Item id="90287" name="⌃ Kontrola"/>
+				<Item id="90288" name="⌥ Opcija"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Unesite niz formata NSDateFormatter:"/>
+				<Item id="90291" name="'%@' još nije implementiran u ovoj verziji."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Restart Required"/>
+				<Item id="90294" name="Nema datoteka za obradu"/>
+				<Item id="90295" name="Ovaj čvor projekta ne sadrži datoteke."/>
+				<Item id="90296" name="'%@' ima nesačuvane promjene.&#10;Ponovo učitati i odbaciti promjene?"/>
+				<Item id="90297" name="Unesite novi naziv fajla:"/>
+				<Item id="90298" name="Preimenuj trenutnu karticu"/>
+				<Item id="90299" name="Novo ime:"/>
+				<Item id="90300" name="Preimenovanje nije uspjelo"/>
+				<Item id="90301" name="Ime ne može sadržavati “/” ili “:”."/>
+				<Item id="90302" name="Premjestiti '%@' u smeće?"/>
+				<Item id="90303" name="Sačuvati '%@' prije zatvaranja?"/>
+				<Item id="90304" name="Nemojte sačuvati sve"/>
+				<Item id="90305" name="Savjet za način rada kolone"/>
+				<Item id="90306" name="Postoje 3 načina za prebacivanje na način odabira kolone:&#10;&#10;1.(Tastatura i miš) Držite opciju dok prevlačite levim klikom&#10;&#10;2.(Samo tastatura) Držite Option+Shift dok koristite tipke sa strelicama&#10;&#10;3.(Tastatura ili Miš)&#10; Postavite kursor na željeni početak pozicije bloka kolone, zatim&#10; izvršite komandu “Početak/Kraj odabira u načinu kolone”;&#10; Pomjerite karet na željeni kraj pozicije bloka kolone, zatim&#10; ponovo izvršite komandu “Početak/kraj odabira u načinu kolone”"/>
+				<Item id="90307" name="Unesite URL za pretragu.Koristite %s kao čuvar mjesta za upit (ili dodajte upit na kraju):"/>
+				<Item id="90308" name="Unesite komandu ili URL..."/>
+				<Item id="90309" name="Izvršenje nije uspjelo:&#10;%@&#10;&#10;%@"/>
+				<Item id="90310" name="Uređivanje kontekstnog menija"/>
+				<Item id="90311" name="Uređivanje contextMenu.xml vam omogućava da promijenite svoj Nextpad++ iskačući kontekstni meni u zoni za uređivanje.&#10;Morate ponovo pokrenuti svoj Nextpad++ da stupi na snagu nakon izmjene contextMenu.xml."/>
+				<Item id="90312" name="Već instalirano"/>
+				<Item id="90313" name="Instalirajte nextpad++ Alat komandne linije"/>
+				<Item id="90314" name="Instalacija nije uspjela"/>
+				<Item id="90315" name="Instalirano — ali ~/.local/bin nije na vašoj PUTI"/>
+				<Item id="90316" name="Već u vašoj konfiguraciji"/>
+				<Item id="90317" name="Dodano u PATH"/>
+				<Item id="90318" name="Ne mogu napisati"/>
+				<Item id="90319" name="Kopirano"/>
+				<Item id="90320" name="Sačuvati promjene na '%@'?"/>
+				<Item id="90321" name="Vaše promjene će biti izgubljene ako ih ne sačuvate."/>
+				<Item id="90322" name="Primijeniti na sve dokumente"/>
+				<Item id="90323" name="Pokrenite Macro on Files"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="folder:"/>
+				<Item id="90326" name="Odaberite folder…"/>
+				<Item id="90327" name="Pregledaj…"/>
+				<Item id="90328" name="Ekstenzije:"/>
+				<Item id="90329" name="Rekurzivni poddirektoriji"/>
+				<Item id="90330" name="Uključite skrivene fajlove"/>
+				<Item id="90331" name="Maksimalna veličina:"/>
+				<Item id="90332" name="Neograničeno"/>
+				<Item id="90333" name="Po fajlu:"/>
+				<Item id="90334" name="Sačuvaj ako je izmijenjeno"/>
+				<Item id="90335" name="Zatvori posle"/>
+				<Item id="90336" name="Zatvorite čak i datoteke koje su već bile otvorene"/>
+				<Item id="90337" name="U slučaju greške:"/>
+				<Item id="90338" name="Preskočite datoteku i nastavite"/>
+				<Item id="90339" name="Zaustavite se na prvoj grešci"/>
+				<Item id="90340" name="(nema sačuvanih makroa)"/>
+				<Item id="90341" name="%lu fajl(ova) se podudara"/>
+				<Item id="90342" name="Fascikla nije pronađena"/>
+				<Item id="90343" name="Odaberite folder koji postoji."/>
+				<Item id="90344" name="Nijedan fajl se ne podudara"/>
+				<Item id="90345" name="Podesite opciju filtera ekstenzija, rekurzije ili skrivenih datoteka."/>
+				<Item id="90346" name="Početak…"/>
+				<Item id="90347" name="Obrada:"/>
+				<Item id="90348" name="%ld / %ld U redu: %ld Preskočeno: %ld Neuspješno: %ld"/>
+				<Item id="90349" name="Grupa je otkazana"/>
+				<Item id="90350" name="Grupa je završena"/>
+				<Item id="90351" name="Ukupno: %lu U redu: %ld Preskočeno: %ld Neuspješno: %ld"/>
+				<Item id="90352" name="Datum izgradnje"/>
+				<Item id="90353" name="Operativni sistem"/>
+				<Item id="90354" name="najnovije"/>
+				<Item id="90355" name="zastarjelo"/>
+				<Item id="90356" name="nepoznato"/>
+				<Item id="90357" name="Ponovo pokrenite aplikaciju da promjene stupe na snagu."/>
+				<Item id="90358" name="Ažurirajte dodatke"/>
+				<Item id="90359" name="Ažurirati sljedeće dodatke?"/>
+				<Item id="90360" name="Trenutne verzije su sigurnosne kopije na ~/Library/Application Support/Nextpad++/plugin-backups/ prije zamjene."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Prebacite se na novi izgled Tahoe (Beta)"/>
+				<Item id="90363" name="Koristite menije u stilu macOS (Beta)"/>
+				<Item id="90364" name="Novi izgled Tahoe bit će primijenjen nakon što ponovo pokrenete Nextpad++."/>
+				<Item id="90365" name="Klasični izgled će biti vraćen nakon što ponovo pokrenete Nextpad++."/>
+				<Item id="90366" name="Odustani odmah"/>
+				<Item id="90367" name="Meniji će biti preuređeni u stilu macOS nakon što ponovo pokrenete Nextpad++."/>
+				<Item id="90368" name="Klasični izgled menija će se vratiti nakon što ponovo pokrenete Nextpad++."/>
+				<Item id="90369" name="Boja"/>
+				<Item id="90370" name="Primijeni na ikone na alatnoj traci dodataka"/>
+				<Item id="90371" name="U Complete modu ikone dodataka postaju jednobojne."/>
+				<Item id="90372" name="Toolbar Groups"/>
+				<Item id="90373" name="Odaberite gdje se svako dugme pojavljuje na traci sa alatkama Liquid Glass: na"/>
+				<Item id="90374" name="Dugme"/>
+				<Item id="90375" name="Plasman"/>
+				<Item id="90376" name="Vratite na zadane postavke"/>
+				<Item id="90377" name="Overflow meni"/>
+				<Item id="90378" name="Skriveno"/>
+				<Item id="90379" name="CJK-friendly premotavanje riječi"/>
+				<Item id="90380" name="Odabir kolone prelazi na višestruko uređivanje"/>
+				<Item id="90381" name="Razmak između redova:"/>
+				<Item id="90382" name="1.0 (zadano)"/>
+				<Item id="90383" name="Sakrij traku kartica"/>
+				<Item id="90384" name="Veličina kartice prati zumiranje dokumenta"/>
+				<Item id="90385" name="Odaberite…"/>
+				<Item id="90386" name="Vrati na zadano"/>
+				<Item id="90387" name="Korištenje zadane lokacije."/>
+				<Item id="90388" name="Prilagođena lokacija."/>
+				<Item id="90389" name="Nevažeći put — sigurnosne kopije će koristiti zadanu lokaciju."/>
+				<Item id="90390" name="Izaberi"/>
+				<Item id="90391" name="Umetni izbor:"/>
+				<Item id="90392" name="Koristite Boost način redovnog izražavanja (više redova; ponovo pokrenite za primjenu)"/>
+				<Item id="90393" name="Ponovo pokrenite Nextpad++ da stupi na snagu."/>
+				<Item id="90394" name="Nevažeći put."/>
+				<Item id="90395" name="Ponovo pokreni sada"/>
+				<Item id="90396" name="Odaberite folder od/do kojeg Nextpad++ čita/upisuje svoje postavke"/>
+				<Item id="90397" name="(ne birajte osim ako ne znate šta radite)"/>
+				<Item id="90398" name="Veličina ikone na alatnoj traci"/>
+				<Item id="90399" name="100% (zadano)"/>
+				<Item id="90400" name="Brzina pomicanja kotačića miša"/>
+				<Item id="90401" name="1× (isključeno)"/>
+				<Item id="90402" name="Veličina ikone trake sa alatkama je promijenjena"/>
+				<Item id="90403" name="Nova veličina ikone trake sa alatkama će stupiti na snagu sljedeći put kada se Nextpad++ pokrene."/>
+				<Item id="90404" name="Ikone na traci sa alatkama su promijenjene"/>
+				<Item id="90405" name="Nove ikone trake sa alatkama će stupiti na snagu sljedeći put kada se Nextpad++ pokrene."/>
+				<Item id="90406" name="Novi radni prostor"/>
+				<Item id="90407" name="Otvorite radni prostor"/>
+				<Item id="90408" name="Ponovo učitaj radni prostor"/>
+				<Item id="90409" name="Dodaj novi projekat"/>
+				<Item id="90410" name="Pronađite u Projektima..."/>
+				<Item id="90411" name="Pokreni makro na fajlovima..."/>
+				<Item id="90415" name="Dodaj fajlove..."/>
+				<Item id="90416" name="Dodaj fajlove iz direktorijuma..."/>
+				<Item id="90417" name="Izmijenite putanju datoteke"/>
+				<Item id="90418" name="Ovo će ukloniti njega i sav njegov sadržaj iz projekta.Nijedna datoteka na disku neće biti pogođena."/>
+				<Item id="90419" name="Radni prostor"/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90421" name="Pronađite u ovim rezultatima pretrage..."/>
+				<Item id="90422" name="Kopiraj odabrane linije"/>
+				<Item id="90423" name="Kopiraj odabrane puteve"/>
+				<Item id="90424" name="Otvorite odabrane puteve"/>
+				<Item id="90425" name="Dugi redovi prelamanja riječi"/>
+				<Item id="90426" name="Čišćenje za svaku pretragu"/>
+				<Item id="90427" name="Nije pronađeno"/>
+				<Item id="90428" name="KONFLIKT: %@"/>
+				<Item id="90429" name="Izbrisati &quot;%@&quot;?"/>
+				<Item id="90430" name="User Defined Language Admin"/>
+				<Item id="90431" name="Filtrirajte jezike…"/>
+				<Item id="90432" name="Izvor"/>
+				<Item id="90433" name="AC Sources"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Instaliraj/ažuriraj"/>
+				<Item id="90436" name="%lu languages · %lu installed · %lu updates"/>
+				<Item id="90437" name="Autor"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="Select one or more languages to install."/>
+				<Item id="90440" name="Nothing downloadable for the selection."/>
+				<Item id="90441" name="Preuzimanje nije uspjelo"/>
+				<Item id="90442" name="Nepodudaranje kontrolnog zbira"/>
+				<Item id="90443" name="Odabrani jezik(i) su sada dostupni u meniju Jezik."/>
+				<Item id="90444" name="Odaberite jedan ili više instaliranih jezika za uklanjanje."/>
+				<Item id="90445" name="Uklonjeno"/>
+				<Item id="90446" name="This name is already used by another language."/>
+				<Item id="90447" name="This language could not be removed."/>
+				<Item id="90448" name="Pre-installed languages can't be removed."/>
+				<Item id="90449" name="This language could not be renamed."/>
+				<Item id="90450" name="Ovaj fajl je %@.Otvaranje će onemogućiti isticanje sintakse i poništiti historiju kako bi aplikacija bila brza.&#10;&#10;Želite li nastaviti?"/>
+				<Item id="90451" name="Otvori svejedno"/>
+				<Item id="90452" name="&quot;%@&quot; promijenjeno na disku"/>
+				<Item id="90453" name="Ignoriraj"/>
+				<Item id="90454" name="Zadrži moju verziju"/>
+				<Item id="90455" name="Nije moguće ponovo učitati &quot;%@&quot;"/>
+				<Item id="90456" name="Datoteka se nije mogla pročitati."/>
+				<Item id="90457" name="Odaberite gdje će se svako dugme pojaviti na Liquid Glass traci sa alatkama: na kapsuli grupe (Toolbar), u ▾ meniju za prelivanje grupe ili Skriveno."/>
+				<Item id="90458" name="Donirajte za podršku razvoju"/>
+				<Item id="90459" name="Instalirajte alate komandne linije"/>
+				<Item id="90460" name="Prikaži senke iza kapsula trake sa alatkama"/>
+				<Item id="90461" name="Donirajte"/>
+				<Item id="90462" name="Skupovi znakova"/>
+				<Item id="90463" name="Minimizirajte"/>
+				<Item id="90464" name="Sakrij Nextpad++"/>
+				<Item id="90465" name="Sakrij druge"/>
+				<Item id="90466" name="Prikaži sve"/>
+				<Item id="90467" name="Napusti Nextpad++"/>
+				<Item id="90468" name="Sačuvaj trenutno snimljeni makro…"/>
+				<Item id="90469" name="Skratite zadnji prostor i uštedite"/>
 			</MacStrings>
 		</Dialog>
 	</Native-Langue>

@@ -3,7 +3,7 @@
 **The full native port of Notepad++ to macOS.** A full port of the original [Notepad++](https://notepad-plus-plus.org) codebase — not a rewrite, not an alternative, not Wine.
 
 <p align="center">
-  <a href="https://nextpad.org"><img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/assets/images/github_screen1.png" alt="Notepad++ for macOS" width="1000"></a>
+  <a href="https://nextpad.org"><img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/news/npp_v1.1.1_updates/bottom-docked-panels-dark.png" alt="Notepad++ for macOS" width="1000"></a>
 </p>
 
 <p align="center">
@@ -38,13 +38,8 @@ The goal is not just to make Notepad++ "run" on Mac — it's to make it feel lik
 ## Screenshots
 
 <p align="center">
-  <img src="https://nextpad.org/assets/images/screenshot7.png" alt="Nextpad++ for macOS in Dark mode Classic Look" width="850">
-  <br><em>Nextpad++ for macOS in Dark mode Classic Look</em>
-</p>
-
-<p align="center">
-  <img src="https://nextpad.org/assets/images/screenshot1.png" alt="Nextpad++ for macOS in Light mode, Classic Look" width="850">
-  <br><em>Nextpad++ for macOS in Light mode, Classic Look</em>
+  <img src="https://nextpad.org/assets/images/screenshots/shot-nextpad-2.png" alt="Nextpad++ for macOS in Light mode" width="850">
+  <br><em>Nextpad++ for macOS in Light mode</em>
 </p>
 
 <p align="center">
@@ -57,11 +52,6 @@ The goal is not just to make Notepad++ "run" on Mac — it's to make it feel lik
   <br><em>Nextpad++ for macOS in Light mode and Classic Look</em>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/nextpad-plus-plus/nextpad.org/main/assets/images/github_screen1.png" alt="Notepad++ for macOS" width="1000">
-  <br><em>Nextpad++ for macOS in Dark mode and Tahoe Look</em>
-</p>
-
 ## Installation
 ### Download
 
@@ -72,21 +62,15 @@ The download is a signed, notarized `.dmg`:
 1. Open the downloaded `.dmg`
 2. Drag **Nextpad++** to your **Applications** folder
 3. Launch from Applications or Spotlight
-4. 
+   
 ### Homebrew
 
-You can install Nextpad++ via Homebrew:
+You can install Nextpad++ via Official Homebrew:
 
 ```shell
-brew install --cask nextpad-plus-plus/homebrew-nextpad/nextpad
+brew install --cask nextpad++
 ```
 
-Or install the tap first, step by step:
-
-```shell
-brew tap nextpad-plus-plus/nextpad
-brew install --cask nextpad
-```
 
 ## System Requirements
 
@@ -115,7 +99,7 @@ brew install --cask nextpad
 
 ### Is this the "real" Notepad++ for Mac?
 
-Yes — Nextpad++ for macOS is a native port of the actual Notepad++ codebase, running directly on macOS as a first-class native application. It is not a knockoff, a Wine wrapper, or a new editor that imitates Notepad++.
+Nextpad++ for macOS is a native port of the actual Notepad++ codebase, running directly on macOS as a first-class native application. It is not a knockoff, a Wine wrapper, or a new editor that imitates Notepad++.
 
 ### Do I need Wine, Porting Kit, or CrossOver?
 
@@ -138,6 +122,18 @@ Plugins are being incrementally ported from Windows. About 50 plugins are alread
 This project is written in C++ and Objective-C++ and uses CMake as its build system. Source code lives in `src/`, and platform-native UI code uses `.mm` files (Objective-C++).
 
 Build instructions will be published as the macOS build pipeline matures. For now, the easiest way to use Nextpad++ on macOS is to download the signed `.dmg` release.
+
+### Running the tests
+
+The search engine has headless tests that run under CTest. They build without the AppKit UI, never launch the app, and only write to a temporary directory (not to `~/Library` or the app's preferences):
+
+```sh
+cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
+cmake --build build-release --target npp_tests -j 8
+ctest --test-dir build-release --output-on-failure
+```
+
+They cover the Boost.Regex engine used by Find/Replace in the editor, and Find/Replace in Files on a temporary tree in several encodings (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252, Shift-JIS). `ctest -LE standalone` skips the two script-based regex harnesses, which compile their own copy of the engine. The test list is in a comment at the end of `CMakeLists.txt`.
 
 ## Contributing
 

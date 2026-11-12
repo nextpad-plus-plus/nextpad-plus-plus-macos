@@ -1,5 +1,6 @@
 #import "TabManager.h"
 #import "EditorView.h"
+#import "PreferencesWindowController.h"
 
 // ── NppDropView ──────────────────────────────────────────────────────────────
 @implementation NppDropView
@@ -76,15 +77,6 @@
     EditorView *editor = [[EditorView alloc] initWithFrame:_contentView.bounds];
     editor.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-    // Mirrors NPP: reuse the lowest available untitled index rather than always incrementing.
-    // e.g. if "new 1" and "new 3" are open, next tab is "new 2" (fills the gap).
-    NSMutableSet<NSNumber *> *used = [NSMutableSet set];
-    for (EditorView *ed in _editors)
-        if (!ed.filePath) [used addObject:@(ed.untitledIndex)];
-    NSInteger idx = 1;
-    while ([used containsObject:@(idx)]) idx++;
-    [editor restoreUntitledIndex:idx];
-
     [self insertEditor:editor title:editor.displayName modified:NO];
     return editor;
 }
@@ -123,9 +115,17 @@
         NSAlert *alert = [[NSAlert alloc] init];
         alert.messageText = [NSString stringWithFormat:@"Save changes to \"%@\"?", editor.displayName];
         alert.informativeText = @"Your changes will be lost if you don't save them.";
+        // Key equivalents are assigned explicitly rather than left to AppKit.
+        // AppKit does supply them, but it matches on the ENGLISH button title —
+        // "Don't Save" gets ⌘D and "Cancel" gets ⎋, while a translated title
+        // gets nothing at all. Setting them here keeps the keyboard path working
+        // if these strings are ever localized (issue #294). The first button is
+        // the default and gets Return whatever it is called, so Save needs none.
         [alert addButtonWithTitle:@"Save"];
-        [alert addButtonWithTitle:@"Don't Save"];
-        [alert addButtonWithTitle:@"Cancel"];
+        NSButton *dontSave = [alert addButtonWithTitle:@"Don't Save"];
+        dontSave.keyEquivalent = @"d";
+        dontSave.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+        [alert addButtonWithTitle:@"Cancel"].keyEquivalent = @"\033";
         NSModalResponse resp = [alert runModal];
 
         if (resp == NSAlertFirstButtonReturn) {
@@ -179,6 +179,13 @@
         [_tabBar setTitle:_editors[i].displayName modified:_editors[i].isModified atIndex:i];
 }
 
+- (void)refreshTitleForEditor:(EditorView *)editor {
+    if (!editor) return;
+    NSInteger idx = [_editors indexOfObject:editor];
+    if (idx == NSNotFound) return;
+    [_tabBar setTitle:editor.displayName modified:editor.isModified atIndex:idx];
+}
+
 - (void)selectTabAtIndex:(NSInteger)index {
     if (index < 0 || index >= (NSInteger)_editors.count) return;
     [self activateTabAtIndex:index];
@@ -192,7 +199,12 @@
 
 - (void)tabBar:(NppTabBar *)bar didCloseTabAtIndex:(NSInteger)index {
     // NPP behavior: can't close the last tab when it's already clean and untitled
-    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) return;
+    // unless "Exit on close the last tab" is enabled, in which case we allow
+    // the close so the app can quit.
+    if (_editors.count == 1 && !_editors[0].isModified && !_editors[0].filePath) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab])
+            return;
+    }
     [self closeEditor:_editors[index]];
 }
 
@@ -266,6 +278,23 @@
     NSInteger idx = [_editors indexOfObject:editor];
     if (idx == NSNotFound) return;
 
+    // The tab is going away for good: every caller has already saved it or the
+    // user chose "Don't Save". Its backup used to linger until the next session
+    // prune; now that launch recovers unreferenced backups as orphans, a
+    // lingering one would bring the discarded text back after a crash. (Moving
+    // a tab between views goes through -evictEditor:, not here.)
+    //
+    // A clone sibling that stays open shares this document, so the text is not
+    // discarded. If the sibling has no backup of its own yet (its first tick has
+    // not run), hand it this one instead of deleting the only copy.
+    EditorView *sibling = editor.cloneSibling;
+    if (sibling && editor.backupFilePath.length && !sibling.backupFilePath.length) {
+        sibling.backupFilePath = editor.backupFilePath;
+        editor.backupFilePath = nil;
+    } else {
+        [editor discardBackup];
+    }
+
     // Unregister file presenter so the EditorView can be deallocated.
     // (NSFileCoordinator holds a strong ref to registered presenters.)
     [editor prepareForClose];
@@ -273,8 +302,18 @@
     [_editors removeObjectAtIndex:idx];
     [_tabBar removeTabAtIndex:idx];
 
-    // Always keep at least one tab
+    // Always keep at least one tab — unless "Exit on close the last tab" is
+    // enabled and the delegate handles the exit (e.g. by closing the window).
     if (_editors.count == 0) {
+        BOOL exitOnLast = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefExitOnCloseLastTab];
+        if (exitOnLast &&
+            [_delegate respondsToSelector:@selector(tabManagerShouldExitOnLastTabClose:)] &&
+            [_delegate tabManagerShouldExitOnLastTabClose:self]) {
+            // Delegate took over (will close the window / quit the app).
+            // Still notify didCloseEditor so observers can update.
+            [_delegate tabManager:self didCloseEditor:editor];
+            return;
+        }
         [self addNewTab];
         return;
     }
@@ -339,7 +378,7 @@
 
 - (void)runSavePanelForEditor:(EditorView *)editor completion:(void(^)(BOOL))completion {
     NSSavePanel *panel = [NSSavePanel savePanel];
-    panel.nameFieldStringValue = editor.displayName;
+    panel.nameFieldStringValue = editor.suggestedSaveName;
     [panel beginWithCompletionHandler:^(NSModalResponse result) {
         if (result == NSModalResponseOK) {
             NSError *err;

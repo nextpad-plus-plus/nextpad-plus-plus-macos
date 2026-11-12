@@ -1466,13 +1466,13 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90006" name="Qhov Chaw Tswj"/>
 				<Item id="90007" name="Ua"/>
 				<Item id="90008" name="Ua Tsis Tau"/>
-				<Item id="90009" name="Tsis muaj git repository\nSiv Browse los qhib repo."/>
+				<Item id="90009" name="Tsis muaj git repository&#10;Siv Browse los qhib repo."/>
 				<Item id="90010" name="Theem"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Kauj Ruam Txhua"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Hais lus\u2026"/>
-				<Item id="90015" name="Xauj rau qhov chaw khaws cia\u2026"/>
+				<Item id="90014" name="Hais lus…"/>
+				<Item id="90015" name="Xauj rau qhov chaw khaws cia…"/>
 				<Item id="90016" name="Xaiv git repository folder"/>
 				<Item id="90017" name="(tsis muaj chaw cia)"/>
 				<Item id="90018" name="(dab neeg)"/>
@@ -1486,9 +1486,9 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90026" name="Cov txiaj ntsig"/>
 				<Item id="90027" name="Nres"/>
 				<Item id="90028" name="Kev tshawb nrhiav nres."/>
-				<Item id="90029" name="Nrhiav\u2026"/>
+				<Item id="90029" name="Nrhiav…"/>
 				<Item id="90030" name="Sau ntawv mus nrhiav"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Nrhiav..."/>
 				<Item id="90033" name="Hloov:"/>
 				<Item id="90034" name="Lus Qhuab Qhia"/>
@@ -1548,7 +1548,7 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90088" name="Nruab Plugins"/>
 				<Item id="90089" name="Tshem Plugins"/>
 				<Item id="90090" name="Tsis pom cov lus txib"/>
-				<Item id="90091" name="Ntaus mus nrhiav\u2026"/>
+				<Item id="90091" name="Ntaus mus nrhiav…"/>
 				<Item id="90092" name="User Defined Language v.2.1"/>
 				<Item id="90093" name="Tsim Cov Lus Tshiab"/>
 				<Item id="90094" name="Sau npe:"/>
@@ -1557,11 +1557,9 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90097" name="Txhob Txuag"/>
 				<Item id="90098" name="Ua tsaug"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Qhia Txhua Yam"/>
 				<Item id="90101" name="Qhia Cov Cim Xaiv"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Tseem Tsis Tau Ua"/>
-				<Item id="90104" name="Reload los ntawm Disk"/>
 				<Item id="90105" name="Hloov Nrhiav Cav"/>
 				<Item id="90106" name="Khiav yuam kev"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1570,7 +1568,7 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Tso Page"/>
 				<Item id="90112" name="Tom qab"/>
-				<Item id="90113" name="Lim plugins\u2026"/>
+				<Item id="90113" name="Lim plugins…"/>
 				<Item id="90114" name="Muaj"/>
 				<Item id="90115" name="Hloov tshiab"/>
 				<Item id="90116" name="Nruab"/>
@@ -1579,7 +1577,7 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90119" name="Tshem tawm cov plugins hauv qab no?"/>
 				<Item id="90120" name="Nruab cov plugins hauv qab no?"/>
 				<Item id="90121" name="Qhov no yuav rho tawm cov ntaub ntawv plugin."/>
-				<Item id="90122" name="Nrhiav cov lus txib\u2026"/>
+				<Item id="90122" name="Nrhiav cov lus txib…"/>
 				<Item id="90123" name="Pem hauv ntej xim"/>
 				<Item id="90124" name="Xim tom qab"/>
 				<Item id="90125" name="Macro npe"/>
@@ -1599,7 +1597,7 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90139" name="Tag nrho cov cim tau raug tshem tawm."/>
 				<Item id="90140" name="Cov ntawv cim tau theej rau hauv daim ntawv teev cia."/>
 				<Item id="90141" name="Tsis muaj ntawv cim rau luam."/>
-				<Item id="90142" name="Nrhiav... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Nrhiav... %ld hit(s) — %@"/>
 				<Item id="90143" name="Hloov cov ntaub ntawv..."/>
 				<Item id="90144" name="Hloov hauv Cov Haujlwm: Tseem tsis tau txuas nrog."/>
 				<Item id="90145" name="Nrhiav hauv Cov Haujlwm: Tseem tsis tau txuas nrog Project Vaj Huam Sib Luag daim ntawv teev npe."/>
@@ -1626,14 +1624,12 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90165" name="Paub meej ua ntej Txuag Tag Nrho"/>
 				<Item id="90166" name="Paub meej Hloov Txhua yam hauv cov ntaub ntawv qhib"/>
 				<Item id="90167" name="Hloov: tsis txhob txav mus rau qhov tshwm sim tom ntej"/>
-				<Item id="90168" name="Siv monospaced font hauv Nrhiav dialog"/>
 				<Item id="90169" name="Right-click khaws xaiv"/>
 				<Item id="90170" name="Rov qab default date/time order"/>
 				<Item id="90171" name="Siv XML-raws li muaj nuj nqi npe parsers"/>
 				<Item id="90172" name="Auto-kaw brackets ( ) [ ] { }"/>
 				<Item id="90173" name="From Nth character:"/>
 				<Item id="90174" name="Nyob rau hauv-xaiv auto-check pib (bytes):"/>
-				<Item id="90175" name="Extended (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margins"/>
 				<Item id="90178" name="Tsaus ntuj"/>
@@ -1647,12 +1643,10 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Yooj yim +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plugin list repository"/>
 				<Item id="90192" name="Xaiv ib Nextpad++ ntsiab XML cov ntaub ntawv thov"/>
-				<Item id="90193" name="Tsim tshiab\u2026"/>
-				<Item id="90194" name="Txuag li\u2026"/>
+				<Item id="90193" name="Tsim tshiab…"/>
+				<Item id="90194" name="Txuag li…"/>
 				<Item id="90195" name="Tus neeg siv lus:"/>
 				<Item id="90196" name="Hom lus"/>
 				<Item id="90197" name="Tsim"/>
@@ -1682,6 +1676,217 @@ Koj tuaj yeem rov qhib qhov kev sib tham no hauv Preferences tom qab."/>
 				<Item id="90221" name="Xauv Attribute (macOS)"/>
 				<Item id="90222" name="Tshawb nrhiav cov tshiab…"/>
 				<Item id="90223" name="Qhib Tsis ntev los no"/>
+				<Item id="90226" name="Pab"/>
+				<Item id="90227" name="Theem ua tsis tiav"/>
+				<Item id="90228" name="Unstage ua tsis tiav"/>
+				<Item id="90229" name="muaj nyob"/>
+				<Item id="90230" name="Koj khiav"/>
+				<Item id="90231" name="Tsis txhob nco kuv dua"/>
+				<Item id="90232" name="Hloov tshiab"/>
+				<Item id="90233" name="Automatically check for updates"/>
+				<Item id="90234" name="Kev kuaj xyuas tsis siv neeg hloov tshiab raug kaw."/>
+				<Item id="90235" name="Xeem kuaj:"/>
+				<Item id="90236" name="Tsis muaj internet txuas."/>
+				<Item id="90237" name="Cov lus teb tsis npaj txhij los ntawm qhov hloov tshiab server."/>
+				<Item id="90238" name="Tsis pom muaj kev tshaj tawm."/>
+				<Item id="90239" name="Lub server hloov tshiab tsis muaj ib ntus.Thov rov sim dua tom qab."/>
+				<Item id="90240" name="Lub server hloov tshiab tsis kam thov.Ib lub npe, firewall lossis VPN yuav thaiv kev nkag mus rau GitHub."/>
+				<Item id="90241" name="Muaj ntau qhov kev hloov kho tshiab los ntawm koj lub network (qhov kev txwv no tau qhia los ntawm txhua tus ntawm nws).Sim dua tom qab"/>
+				<Item id="90242" name="Muaj ntau qhov kev hloov kho tshiab los ntawm koj lub network (qhov kev txwv no tau qhia los ntawm txhua tus ntawm nws).Thov rov sim dua tom qab."/>
+				<Item id="90243" name="Qhov hloov tshiab server rov qab raws li txoj cai"/>
+				<Item id="90244" name="Sim dua"/>
+				<Item id="90245" name="Sau ntawv loj:"/>
+				<Item id="90246" name="Siv lub vijtsam zoom"/>
+				<Item id="90247" name="Qhov loj me"/>
+				<Item id="90248" name="Qee cov ntaub ntawv tsis tuaj yeem hloov tau"/>
+				<Item id="90249" name="...thiab %lu ntxiv"/>
+				<Item id="90250" name="Cov koom haum ua ntaub ntawv raug tswj hwm los ntawm koj lub koom haum."/>
+				<Item id="90251" name="Tos rau macOS kom paub meej…"/>
+				<Item id="90252" name="macOS tsis siv qhov kev hloov pauv."/>
+				<Item id="90253" name="Sau npe"/>
+				<Item id="90254" name="Qhib tag nrho cov ntaub ntawv hauv folder?"/>
+				<Item id="90255" name="Qhov no yuav qhib %lu cov ntaub ntawv hauv cov tab tshiab."/>
+				<Item id="90256" name="Tsis tuaj yeem import: %@"/>
+				<Item id="90258" name="Pom tau %ld match(es) hauv %ld file(s)."/>
+				<Item id="90259" name="Nrhiav… %ld match(es) kom deb li deb"/>
+				<Item id="90260" name="%@ (%ld sib tw%@)"/>
+				<Item id="90261" name="Nrhiav tsis tau"/>
+				<Item id="90266" name="Suav: %ld match(es)."/>
+				<Item id="90267" name="Hloov Tag Nrho: %ld tshwm sim (s) raug hloov %@."/>
+				<Item id="90268" name="Hloov hauv Cov Ntaub Ntawv Qhib: %ld tshwm sim (s) raug hloov."/>
+				<Item id="90269" name="Nrhiav hauv Cov Ntaub Ntawv: %ld hit(s) hauv %ld cov ntaub ntawv."/>
+				<Item id="90270" name="Nrhiav hauv Cov Ntaub Ntawv: 0 hits."/>
+				<Item id="90271" name="Hloov txhua qhov tshwm sim ntawm &quot;%@&quot; nrog &quot;%@&quot; hauv phau ntawv qhia:&#10;%@&#10;&#10;Qhov no tsis tuaj yeem thim rov qab."/>
+				<Item id="90272" name="Hloov hauv Cov Ntaub Ntawv: %ld hloov pauv hauv %ld cov ntaub ntawv (s)."/>
+				<Item id="90273" name="Qhib ib qhov Project Panel ua ntej."/>
+				<Item id="90274" name="Xaiv yam tsawg kawg ib qhov Project Panel los tshawb nrhiav."/>
+				<Item id="90275" name="Tsis muaj cov ntaub ntawv los tshawb nrhiav."/>
+				<Item id="90276" name="Nrhiav hauv Projects: %ld hit(s) hauv %ld file(s)."/>
+				<Item id="90277" name="Nrhiav hauv Projects: 0 hits."/>
+				<Item id="90278" name="Hloov txhua qhov tshwm sim ntawm"/>
+				<Item id="90279" name="nrog"/>
+				<Item id="90280" name="hauv"/>
+				<Item id="90281" name="project file(s).Qhov no tsis tuaj yeem thim rov qab."/>
+				<Item id="90282" name="Hloov hauv Cov Haujlwm: %ld hloov pauv hauv %ld cov ntaub ntawv (s)."/>
+				<Item id="90283" name="Mark: %ld match(es) cim."/>
+				<Item id="90284" name="Lim cov ntaub ntawv / folder npe ..."/>
+				<Item id="90285" name="Qee cov ntaub ntawv yuav cawm tsis tau"/>
+				<Item id="90286" name="⌘ Command"/>
+				<Item id="90287" name="⌃ Control"/>
+				<Item id="90288" name="⌥ Option"/>
+				<Item id="90289" name="⇧ Ua haujlwm"/>
+				<Item id="90290" name="Nkag mus rau NSDateFormatter hom kab ntawv:"/>
+				<Item id="90291" name="'%@' tseem tsis tau siv nyob rau hauv no version."/>
+				<Item id="90292" name="Ntshuam Plugin"/>
+				<Item id="90293" name="Yuav tsum tau pib dua"/>
+				<Item id="90294" name="Tsis muaj cov ntaub ntawv los ua"/>
+				<Item id="90295" name="Qhov project node tsis muaj cov ntaub ntawv."/>
+				<Item id="90296" name="'%@' muaj cov kev hloov pauv uas tsis tau khaws tseg.&#10;Reload thiab pov tseg cov kev hloov pauv?"/>
+				<Item id="90297" name="Sau lub npe tshiab:"/>
+				<Item id="90299" name="Lub npe tshiab:"/>
+				<Item id="90301" name="Lub npe tsis tuaj yeem muaj &quot;/&quot; lossis &quot;:&quot;."/>
+				<Item id="90304" name="Txhob Txuag Tag Nrho"/>
+				<Item id="90306" name="Muaj 3 txoj hauv kev los hloov mus rau kab-xaiv hom:&#10;&#10;1.(Keyboard thiab Nas) Tuav Option thaum nias sab laug rub&#10;&#10;2.(Keyboard nkaus xwb) Tuav Option+Shift thaum siv cov xub xub&#10;&#10;3.(Keyboard lossis Mouse)&#10; Muab cov ntawv pov tseg ntawm qhov xav tau pib ntawm kab thaiv txoj haujlwm, tom qab ntawd&#10; ua &quot;Pib / Xaus Xaiv hauv Kab&quot; cov lus txib;&#10; Tsiv caret mus rau qhov xav tau kawg ntawm kab thaiv txoj haujlwm, tom qab ntawd&#10; ua &quot;Begin/End Select in Kum Mode&quot; hais kom ua dua"/>
+				<Item id="90307" name="Sau qhov URL nrhiav.Siv %s raws li cov lus nug qhov chaw (lossis ntxiv cov lus nug thaum kawg):"/>
+				<Item id="90308" name="Nkag mus hais kom ua lossis URL..."/>
+				<Item id="90309" name="Ua tsis tiav:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Twb ntsia"/>
+				<Item id="90313" name="Nruab nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Kev teeb tsa ua tsis tiav"/>
+				<Item id="90315" name="Nruab - tab sis ~/.local/bin tsis nyob ntawm koj qhov PATH"/>
+				<Item id="90316" name="Twb tau nyob rau hauv koj config"/>
+				<Item id="90317" name="Ntxiv rau PATH"/>
+				<Item id="90318" name="Sau tsis tau"/>
+				<Item id="90319" name="Luam tawm"/>
+				<Item id="90321" name="Koj cov kev hloov pauv yuav ploj yog tias koj tsis txuag lawv."/>
+				<Item id="90322" name="Siv rau txhua yam ntaub ntawv"/>
+				<Item id="90323" name="Khiav Macro ntawm Cov Ntaub Ntawv"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Xaiv lub folder…"/>
+				<Item id="90327" name="Tshawb nrhiav…"/>
+				<Item id="90328" name="Extensions:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="suav nrog cov ntaub ntawv zais"/>
+				<Item id="90331" name="Max loj:"/>
+				<Item id="90332" name="Unlimited"/>
+				<Item id="90333" name="Rau cov ntaub ntawv:"/>
+				<Item id="90334" name="Txuag yog hloov kho"/>
+				<Item id="90335" name="Kaw tom qab"/>
+				<Item id="90336" name="Kaw txawm cov ntaub ntawv uas twb qhib lawm"/>
+				<Item id="90337" name="Ntawm qhov yuam kev:"/>
+				<Item id="90338" name="Hla cov ntaub ntawv thiab txuas ntxiv mus"/>
+				<Item id="90339" name="Nres ntawm thawj qhov yuam kev"/>
+				<Item id="90340" name="(tsis muaj kev cawmdim macros)"/>
+				<Item id="90341" name="%lu cov ntaub ntawv sib phim"/>
+				<Item id="90342" name="Tsis pom Folder"/>
+				<Item id="90343" name="Xaiv ib daim nplaub tshev uas muaj."/>
+				<Item id="90344" name="Tsis muaj ntaub ntawv sib phim"/>
+				<Item id="90345" name="Kho qhov extensions lim, recursion, los yog zais-files xaiv."/>
+				<Item id="90346" name="Pib…"/>
+				<Item id="90347" name="Kev ua:"/>
+				<Item id="90348" name="%ld / %ld Ok: %ld Hla: %ld Ua tsis tiav: %ld"/>
+				<Item id="90349" name="Batch tso tseg"/>
+				<Item id="90350" name="Batch tiav"/>
+				<Item id="90351" name="Tag nrho: %lu Ok: %ld Hla: %ld Ua tsis tiav: %ld"/>
+				<Item id="90352" name="Tsim Hnub"/>
+				<Item id="90353" name="Kev Ua Haujlwm"/>
+				<Item id="90354" name="tseeb"/>
+				<Item id="90355" name="dhau lawm"/>
+				<Item id="90356" name="tsis paub"/>
+				<Item id="90357" name="Pib dua daim ntawv thov kom muaj kev hloov pauv kom siv tau."/>
+				<Item id="90358" name="Hloov tshiab Plugins"/>
+				<Item id="90359" name="Hloov kho cov plugins hauv qab no?"/>
+				<Item id="90360" name="Cov qauv tam sim no tau rov qab mus rau ~/Library/Application Support/Nextpad++/plugin-backups/ ua ntej hloov."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Hloov mus rau New Tahoe saib (Beta)"/>
+				<Item id="90363" name="Siv macOS-style menus (Beta)"/>
+				<Item id="90364" name="Qhov tshiab Tahoe zoo yuav raug siv tom qab koj rov pib dua Nextpad++."/>
+				<Item id="90365" name="Classic zoo yuav rov qab los tom qab koj rov pib dua Nextpad++."/>
+				<Item id="90366" name="Tawm tam sim no"/>
+				<Item id="90367" name="Cov ntawv qhia zaub mov yuav raug rov kho dua hauv macOS style tom qab koj rov pib dua Nextpad++."/>
+				<Item id="90368" name="Cov ntawv qhia zaub mov classic yuav rov qab los tom qab koj rov pib dua Nextpad++."/>
+				<Item id="90369" name="Xim"/>
+				<Item id="90370" name="Siv rau plugin toolbar icons"/>
+				<Item id="90371" name="Nyob rau hauv tiav hom plugin icons dhau los ua ib qho xim xim."/>
+				<Item id="90372" name="Pawg Toolbar"/>
+				<Item id="90373" name="Xaiv qhov twg txhua lub pob tshwm nyob rau hauv Liquid Glass toolbar: ntawm lub"/>
+				<Item id="90374" name="Khawm"/>
+				<Item id="90375" name="Qhov chaw"/>
+				<Item id="90376" name="Rov qab mus rau Defaults"/>
+				<Item id="90377" name="Tshaj ntawv qhia zaub mov"/>
+				<Item id="90378" name="zais"/>
+				<Item id="90379" name="CJK-tus phooj ywg lo lus qhwv"/>
+				<Item id="90380" name="Kem xaiv hloov mus rau ntau qhov kev hloov kho"/>
+				<Item id="90381" name="Kab nrug:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Hide tab bar"/>
+				<Item id="90384" name="Tab loj raws li daim ntawv zoom"/>
+				<Item id="90385" name="Xaiv…"/>
+				<Item id="90386" name="Rov qab mus rau Default"/>
+				<Item id="90387" name="Siv qhov chaw nyob."/>
+				<Item id="90388" name="Kev cai qhov chaw."/>
+				<Item id="90389" name="Txoj kev tsis raug - thaub qab yuav siv qhov chaw nyob."/>
+				<Item id="90390" name="Xaiv"/>
+				<Item id="90391" name="Ntxig xaiv:"/>
+				<Item id="90392" name="Siv Boost Regex hom (ntau kab; rov pib siv)"/>
+				<Item id="90395" name="Rov pib dua tam sim no"/>
+				<Item id="90397" name="(tsis txhob xaiv nws tshwj tsis yog tias koj paub tias koj ua dab tsi)"/>
+				<Item id="90398" name="Toolbar icon loj"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Nas log scroll ceev"/>
+				<Item id="90401" name="1 × (tawm)"/>
+				<Item id="90402" name="Toolbar icon loj hloov"/>
+				<Item id="90403" name="Tus tshiab toolbar icon loj yuav siv sij hawm tom ntej Nextpad++ launches."/>
+				<Item id="90404" name="Toolbar icons hloov"/>
+				<Item id="90405" name="Cov icons tshiab toolbar yuav muaj feem xyuam rau lub sij hawm tom ntej Nextpad++ launches."/>
+				<Item id="90411" name="Khiav Macro ntawm Cov Ntaub Ntawv ..."/>
+				<Item id="90418" name="Qhov no yuav tshem tawm nws thiab tag nrho nws cov ntsiab lus ntawm qhov project.Tsis muaj cov ntaub ntawv ntawm disk yuav raug cuam tshuam."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90427" name="Tsis pom"/>
+				<Item id="90428" name="Kev tsis sib haum xeeb: %@"/>
+				<Item id="90429" name="Rho tawm &quot;%@&quot;?"/>
+				<Item id="90430" name="Tus neeg siv txhais lus Admin"/>
+				<Item id="90431" name="Lim hom lus…"/>
+				<Item id="90432" name="Qhov chaw"/>
+				<Item id="90433" name="AC Sources"/>
+				<Item id="90434" name="xwm txheej"/>
+				<Item id="90435" name="Nruab / Hloov kho"/>
+				<Item id="90436" name="%lu hom lus · %lu ntsia · %lu hloov tshiab"/>
+				<Item id="90437" name="Tus sau"/>
+				<Item id="90438" name="Ua ke: %ld nkag los ntawm %lu qhov chaw (ua ke)"/>
+				<Item id="90439" name="Xaiv ib lossis ntau hom lus los nruab."/>
+				<Item id="90440" name="Tsis muaj dab tsi downloadable rau xaiv."/>
+				<Item id="90441" name="Download tsis tau"/>
+				<Item id="90442" name="Checksum mismatch"/>
+				<Item id="90443" name="Cov lus xaiv tau tam sim no muaj nyob rau hauv Cov ntawv qhia zaub mov."/>
+				<Item id="90444" name="Xaiv ib lossis ntau hom lus uas tau muab tshem tawm."/>
+				<Item id="90445" name="Tshem tawm"/>
+				<Item id="90446" name="Lub npe no twb siv los ntawm lwm yam lus."/>
+				<Item id="90447" name="Cov lus no tsis tuaj yeem raug tshem tawm."/>
+				<Item id="90448" name="Cov lus uas tau teeb tsa ua ntej tsis tuaj yeem raug tshem tawm."/>
+				<Item id="90449" name="Hom lus no tsis tuaj yeem hloov npe."/>
+				<Item id="90450" name="Cov ntaub ntawv no yog %@.Qhib nws yuav lov tes taw syntax highlighting thiab undo keeb kwm kom lub app teb.&#10;&#10;Koj puas xav mus ntxiv?"/>
+				<Item id="90451" name="Qhib Anyway"/>
+				<Item id="90452" name="&quot;%@&quot; hloov ntawm disk"/>
+				<Item id="90453" name="Tsis quav ntsej"/>
+				<Item id="90454" name="Khaws Kuv Version"/>
+				<Item id="90455" name="Tsis tuaj yeem rov pib dua &quot;%@&quot;"/>
+				<Item id="90456" name="Cov ntaub ntawv tsis tuaj yeem nyeem tau."/>
+				<Item id="90457" name="Xaiv qhov twg txhua lub pob tshwm nyob rau hauv Liquid Glass toolbar: ntawm pab pawg capsule (Toolbar), nyob rau hauv pab pawg ▾ overflow menu, lossis Hidden."/>
+				<Item id="90458" name="Pub rau Txhawb Kev Txhim Kho"/>
+				<Item id="90459" name="Nruab Command Line Tools"/>
+				<Item id="90460" name="Qhia duab ntxoov ntxoo hauv qab toolbar capsules"/>
+				<Item id="90461" name="Pub dawb"/>
+				<Item id="90462" name="Cim cim"/>
+				<Item id="90463" name="Tsawg kawg"/>
+				<Item id="90464" name="Nkaum Nextpad++"/>
+				<Item id="90465" name="Nkaum Lwm Tus"/>
+				<Item id="90466" name="Qhia tag nrho"/>
+				<Item id="90467" name="Tawm ntawm Nextpad++"/>
+				<Item id="90468" name="Txuag Tam sim no kaw Macro…"/>
+				<Item id="90469" name="Trim Trailing Space thiab Txuag"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

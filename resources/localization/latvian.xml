@@ -840,13 +840,13 @@
 				<Item id="90006" name="Avota kontrole"/>
 				<Item id="90007" name="Apņemties"/>
 				<Item id="90008" name="Izdarīt neizdevās"/>
-				<Item id="90009" name="Nav git repozitorija\nIzmantojiet pārlūkošanu, lai atvērtu repo."/>
+				<Item id="90009" name="Nav git repozitorija&#10;Izmantojiet pārlūkošanu, lai atvērtu repo."/>
 				<Item id="90010" name="Posms"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stage Visi"/>
 				<Item id="90013" name="Unstage Visi"/>
-				<Item id="90014" name="Apstiprināt ziņojumu\u2026"/>
-				<Item id="90015" name="Pārlūkojiet repozitoriju\u2026"/>
+				<Item id="90014" name="Apstiprināt ziņojumu…"/>
+				<Item id="90015" name="Pārlūkojiet repozitoriju…"/>
 				<Item id="90016" name="Izvēlieties git repozitorija mapi"/>
 				<Item id="90017" name="(nav repozitorija)"/>
 				<Item id="90018" name="(atdalīts)"/>
@@ -860,9 +860,9 @@
 				<Item id="90026" name="Rezultāti"/>
 				<Item id="90027" name="Apstāties"/>
 				<Item id="90028" name="Meklēšana pārtraukta."/>
-				<Item id="90029" name="Notiek meklēšana\u2026"/>
+				<Item id="90029" name="Notiek meklēšana…"/>
 				<Item id="90030" name="Teksts, ko meklēt"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Meklē..."/>
 				<Item id="90033" name="Aizstāt:"/>
 				<Item id="90034" name="Viss vārds"/>
@@ -922,7 +922,7 @@
 				<Item id="90088" name="Instalēt spraudņus"/>
 				<Item id="90089" name="Noņemt spraudņus"/>
 				<Item id="90090" name="Nav atrasta neviena komanda"/>
-				<Item id="90091" name="Ierakstiet, lai meklētu\u2026"/>
+				<Item id="90091" name="Ierakstiet, lai meklētu…"/>
 				<Item id="90092" name="Lietotāja definētā valoda v.2.1"/>
 				<Item id="90093" name="Izveidot jaunu valodu"/>
 				<Item id="90094" name="Ievadiet nosaukumu:"/>
@@ -931,11 +931,9 @@
 				<Item id="90097" name="Nesaglabāt"/>
 				<Item id="90098" name="Gatavs"/>
 				<Item id="90099" name="Pārslēgt vārdu aplaušanu"/>
-				<Item id="90100" name="Rādīt visas rakstzīmes"/>
 				<Item id="90101" name="Rādīt rakstzīmju opcijas"/>
 				<Item id="90102" name="Pārslēgt atkāpes rokasgrāmatu"/>
 				<Item id="90103" name="Vēl nav ieviests"/>
-				<Item id="90104" name="Pārlādēt no diska"/>
 				<Item id="90105" name="Mainīt meklētājprogrammu"/>
 				<Item id="90106" name="Palaist kļūda"/>
 				<Item id="90107" name="Nextpad++ ielādes laiks"/>
@@ -944,7 +942,7 @@
 				<Item id="90110" name="Lejupielādēt"/>
 				<Item id="90111" name="Izlaiduma lapa"/>
 				<Item id="90112" name="Vēlāk"/>
-				<Item id="90113" name="Filtrēt spraudņus\u2026"/>
+				<Item id="90113" name="Filtrēt spraudņus…"/>
 				<Item id="90114" name="Pieejams"/>
 				<Item id="90115" name="Atjauninājumi"/>
 				<Item id="90116" name="Uzstādīts"/>
@@ -953,7 +951,7 @@
 				<Item id="90119" name="Vai noņemt tālāk norādītos spraudņus?"/>
 				<Item id="90120" name="Vai instalēt tālāk norādītos spraudņus?"/>
 				<Item id="90121" name="Tas izdzēsīs spraudņa failus."/>
-				<Item id="90122" name="Meklēt komandas\u2026"/>
+				<Item id="90122" name="Meklēt komandas…"/>
 				<Item id="90123" name="Priekšplāna krāsa"/>
 				<Item id="90124" name="Fona krāsa"/>
 				<Item id="90125" name="Makro nosaukums"/>
@@ -973,7 +971,7 @@
 				<Item id="90139" name="Visas atzīmes notīrītas."/>
 				<Item id="90140" name="Atzīmētais teksts ir kopēts starpliktuvē."/>
 				<Item id="90141" name="Nav atzīmēta teksta, ko kopēt."/>
-				<Item id="90142" name="Notiek meklēšana... %ld trāpījums(-i) \u2014 %@"/>
+				<Item id="90142" name="Notiek meklēšana... %ld trāpījums(-i) — %@"/>
 				<Item id="90143" name="Aizstāšana failos..."/>
 				<Item id="90144" name="Aizstāt projektos: vēl nav pievienots."/>
 				<Item id="90145" name="Atrast sadaļā Projekti: vēl nav savienots ar projektu paneļa failu sarakstu."/>
@@ -994,20 +992,20 @@
 				<Item id="90160" name="Vieda izcelšana: tikai viss vārds"/>
 				<Item id="90161" name="Veiciet dubultklikšķi, lai aizvērtu cilni"/>
 				<Item id="90162" name="Rādīt aizvēršanas pogu uz cilnēm"/>
+				<Item id="90168" name="Izmantojiet vienrindas fontu dialoglodziņā Atrast"/>
+				<Item id="90191" name="Spraudņu saraksta repozitorijs"/>
 				<Item id="90224" name="Rādīt cilnes vairākās rindās"/>
 				<Item id="90163" name="Atcerieties paneļa redzamību sesijās"/>
 				<Item id="90164" name="Saglabājiet prombūtnes failu ierakstus sesijā"/>
 				<Item id="90165" name="Apstiprināt pirms Saglabāt visu"/>
 				<Item id="90166" name="Apstiprināt Aizstāt visu atvērtajos dokumentos"/>
 				<Item id="90167" name="Aizstāt: nepāriet uz nākamo gadījumu"/>
-				<Item id="90168" name="Izmantojiet vienrindas fontu dialoglodziņā Atrast"/>
 				<Item id="90169" name="Ar peles labo pogu noklikšķiniet saglabā atlasi"/>
 				<Item id="90170" name="Apgrieztā noklusējuma datuma/laika secība"/>
 				<Item id="90171" name="Izmantojiet uz XML balstītus funkciju saraksta parsētājus"/>
 				<Item id="90172" name="Automātiski aizvērt iekavas ( ) [ ] { }"/>
 				<Item id="90173" name="No N rakstzīmes:"/>
 				<Item id="90174" name="Automātiskās pārbaudes slieksnis atlasē (baitos):"/>
-				<Item id="90175" name="Pagarināts (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Redaktors"/>
 				<Item id="90177" name="Maržas"/>
 				<Item id="90178" name="Tumšs"/>
@@ -1021,12 +1019,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD optimizēts"/>
 				<Item id="90188" name="Vienkāršs +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Spraudņu saraksta repozitorijs"/>
 				<Item id="90192" name="Atlasiet Nextpad++ motīva XML failu, ko lietot"/>
-				<Item id="90193" name="Izveidot jaunu\u2026"/>
-				<Item id="90194" name="Saglabāt kā\u2026"/>
+				<Item id="90193" name="Izveidot jaunu…"/>
+				<Item id="90194" name="Saglabāt kā…"/>
 				<Item id="90195" name="Lietotāja valoda:"/>
 				<Item id="90196" name="Valodas nosaukums"/>
 				<Item id="90197" name="Izveidot"/>
@@ -1056,6 +1052,234 @@
 				<Item id="90221" name="Bloķēts atribūts (macOS)"/>
 				<Item id="90222" name="Pārbaudiet atjauninājumus…"/>
 				<Item id="90223" name="Atveriet jaunākos"/>
+				<Item id="90226" name="Palīdzība"/>
+				<Item id="90227" name="Posms neizdevās"/>
+				<Item id="90228" name="Neizdevās noņemt posmu"/>
+				<Item id="90229" name="ir pieejams"/>
+				<Item id="90230" name="Tu skrien"/>
+				<Item id="90231" name="Nekad vairs man neatgādini"/>
+				<Item id="90232" name="Atjauninājumi"/>
+				<Item id="90233" name="Automātiski pārbaudiet atjauninājumus"/>
+				<Item id="90234" name="Automātiskās atjaunināšanas pārbaudes ir izslēgtas."/>
+				<Item id="90235" name="Pēdējoreiz pārbaudīts:"/>
+				<Item id="90236" name="Nav interneta savienojuma."/>
+				<Item id="90237" name="Negaidīta atbilde no atjaunināšanas servera."/>
+				<Item id="90238" name="Netika atrasts neviens publicēts izdevums."/>
+				<Item id="90239" name="Atjaunināšanas serveris īslaicīgi nav pieejams.Lūdzu, vēlāk mēģiniet vēlreiz."/>
+				<Item id="90240" name="Atjaunināšanas serveris pieprasījumu noraidīja.Starpniekserveris, ugunsmūris vai VPN, iespējams, bloķē piekļuvi GitHub."/>
+				<Item id="90241" name="Pārāk daudz atjauninājumu pārbaužu no jūsu tīkla (šo ierobežojumu izmanto visi tīkla lietotāji).Pēc tam mēģiniet vēlreiz"/>
+				<Item id="90242" name="Pārāk daudz atjauninājumu pārbaužu no jūsu tīkla (šo ierobežojumu izmanto visi tīkla lietotāji).Lūdzu, vēlāk mēģiniet vēlreiz."/>
+				<Item id="90243" name="Atjaunināšanas serveris atgrieza statusu"/>
+				<Item id="90244" name="Mēģiniet vēlreiz"/>
+				<Item id="90245" name="Drukas teksta izmērs:"/>
+				<Item id="90246" name="Izmantojiet ekrāna tālummaiņu"/>
+				<Item id="90247" name="Faktiskais izmērs"/>
+				<Item id="90248" name="Dažus failus nevarēja aizstāt"/>
+				<Item id="90249" name="...un vēl %lu"/>
+				<Item id="90250" name="Failu asociācijas pārvalda jūsu organizācija."/>
+				<Item id="90251" name="Gaida macOS apstiprinājumu…"/>
+				<Item id="90252" name="macOS nepiemēroja izmaiņas."/>
+				<Item id="90253" name="Reģistrētie"/>
+				<Item id="90254" name="Vai atvērt visus mapē esošos failus?"/>
+				<Item id="90255" name="Tādējādi jaunās cilnēs tiks atvērti %lu faili."/>
+				<Item id="90256" name="Nevarēja importēt: %@"/>
+				<Item id="90258" name="Atrastas %ld atbilstības(-es) %ld failā(-os)."/>
+				<Item id="90259" name="Notiek meklēšana... Pagaidām atbilst %ld atbilstība(-es)."/>
+				<Item id="90260" name="%@ (%ld atbilstība%@)"/>
+				<Item id="90261" name="Neskaidra meklēšana"/>
+				<Item id="90265" name="Atrast: nevar atrast tekstu &quot;%@&quot;"/>
+				<Item id="90266" name="Skaits: %ld atbilstība(-es)."/>
+				<Item id="90267" name="Aizstāt visu: %ld gadījums(-i) tika aizstāts(-i) %@."/>
+				<Item id="90268" name="Aizstāt atvērtajos failos: tika aizstāts(-i) %ld gadījums(-i)."/>
+				<Item id="90269" name="Atrast failos: %ld trāpījums(-i) %ld failā(-os)."/>
+				<Item id="90270" name="Atrast failos: 0 trāpījumi."/>
+				<Item id="90271" name="Aizvietojiet visus &quot;%@&quot; gadījumus ar &quot;%@&quot; direktorijā:&#10;%@&#10;&#10;Šo darbību nevar atsaukt."/>
+				<Item id="90272" name="Aizstāt failos: %ld aizstājējs(-i) %ld failā(-os)."/>
+				<Item id="90273" name="Vispirms atveriet projektu paneli."/>
+				<Item id="90274" name="Atlasiet vismaz vienu projekta paneli, lai meklētu."/>
+				<Item id="90275" name="Nav meklējamo failu."/>
+				<Item id="90276" name="Atrast projektos: %ld trāpījums(-i) %ld failā(-os)."/>
+				<Item id="90277" name="Atrast projektos: 0 hits."/>
+				<Item id="90278" name="Aizstāt visus gadījumus"/>
+				<Item id="90279" name="ar"/>
+				<Item id="90280" name="iekšā"/>
+				<Item id="90281" name="projekta fails(-i).Šo darbību nevar atsaukt."/>
+				<Item id="90282" name="Aizstāt projektos: %ld aizstājējs(-i) %ld failā(-os)."/>
+				<Item id="90283" name="Atzīmēt: atzīmētas %ld atbilstības."/>
+				<Item id="90284" name="Filtrēt faila/mapes nosaukumu..."/>
+				<Item id="90285" name="Dažus dokumentus nevarēja saglabāt"/>
+				<Item id="90286" name="⌘ Komanda"/>
+				<Item id="90287" name="⌃ Kontrole"/>
+				<Item id="90288" name="⌥ Iespēja"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Ievadiet NSDateFormatter formāta virkni:"/>
+				<Item id="90291" name="'%@' vēl nav ieviests šajā versijā."/>
+				<Item id="90292" name="Importēt spraudni"/>
+				<Item id="90293" name="Nepieciešama restartēšana"/>
+				<Item id="90294" name="Nav failu, ko apstrādāt"/>
+				<Item id="90295" name="Šajā projekta mezglā nav failu."/>
+				<Item id="90296" name="&quot;%@&quot; ir nesaglabātas izmaiņas.&#10;Vai atkārtoti ielādēt un atmest izmaiņas?"/>
+				<Item id="90297" name="Ievadiet jaunu faila nosaukumu:"/>
+				<Item id="90298" name="Pārdēvēt pašreizējo cilni"/>
+				<Item id="90299" name="Jauns nosaukums:"/>
+				<Item id="90300" name="Pārdēvēt neizdevās"/>
+				<Item id="90301" name="Nosaukumā nedrīkst būt “/” vai “:”."/>
+				<Item id="90302" name="Vai pārvietot %@ uz miskasti?"/>
+				<Item id="90303" name="Vai saglabāt %@ pirms aizvēršanas?"/>
+				<Item id="90304" name="Nesaglabājiet visu"/>
+				<Item id="90305" name="Kolonnas režīma padoms"/>
+				<Item id="90306" name="Ir trīs veidi, kā pārslēgties uz kolonnu atlases režīmu:&#10;&#10;1.(Tastatūra un pele) Turiet opciju, velkot ar peles kreiso taustiņu.&#10;&#10;2.(Tikai tastatūra) Turiet nospiestu taustiņu Option+Shift, kamēr izmantojat bulttaustiņus.&#10;&#10;3.(Tastatūra vai pele)&#10; Novietojiet punktu kolonnas bloka vēlamajā sākuma pozīcijā, pēc tam&#10; izpildiet komandu &quot;Sākt/Beigt atlasi kolonnas režīmā&quot;;&#10; Pārvietojiet ciparpunktu uz vēlamo kolonnas bloka beigu pozīciju, pēc tam&#10; vēlreiz izpildiet komandu &quot;Sākt/beigt atlasi kolonnas režīmā&quot;."/>
+				<Item id="90307" name="Ievadiet meklēšanas URL.Izmantojiet %s kā vaicājuma vietturi (vai pievienojiet vaicājumu beigās):"/>
+				<Item id="90308" name="Ievadiet komandu vai URL..."/>
+				<Item id="90309" name="Neizdevās izpildīt:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Rediģējot contextMenu.xml, varat mainīt uznirstošo kontekstizvēlni Nextpad++ rediģēšanas zonā.&#10;Jums ir jārestartē Nextpad++, lai tas stātos spēkā pēc contextMenu.xml modificēšanas."/>
+				<Item id="90312" name="Jau uzstādīts"/>
+				<Item id="90313" name="Instalējiet nextpad++ komandrindas rīku"/>
+				<Item id="90314" name="Instalēšana neizdevās"/>
+				<Item id="90315" name="Instalēta, bet ~/.local/bin neatrodas jūsu PATH"/>
+				<Item id="90316" name="Jau atrodas jūsu konfigurācijā"/>
+				<Item id="90317" name="Pievienots PATH"/>
+				<Item id="90318" name="Nevarēja uzrakstīt"/>
+				<Item id="90319" name="Kopēts"/>
+				<Item id="90320" name="Vai saglabāt izmaiņas '%@'?"/>
+				<Item id="90321" name="Jūsu veiktās izmaiņas tiks zaudētas, ja tās nesaglabāsiet."/>
+				<Item id="90322" name="Attiecas uz visiem dokumentiem"/>
+				<Item id="90323" name="Palaidiet makro programmā Faili"/>
+				<Item id="90324" name="Makro:"/>
+				<Item id="90325" name="Mape:"/>
+				<Item id="90326" name="Izvēlieties mapi…"/>
+				<Item id="90327" name="Pārlūkot…"/>
+				<Item id="90328" name="Paplašinājumi:"/>
+				<Item id="90329" name="Atkārtot apakšdirektorijus"/>
+				<Item id="90330" name="Iekļaut slēptos failus"/>
+				<Item id="90331" name="Maksimālais izmērs:"/>
+				<Item id="90332" name="Neierobežots"/>
+				<Item id="90333" name="Katram failam:"/>
+				<Item id="90334" name="Saglabāt, ja tiek mainīts"/>
+				<Item id="90335" name="Aizveriet pēc"/>
+				<Item id="90336" name="Aizveriet pat failus, kas jau bija atvērti"/>
+				<Item id="90337" name="Kļūdas gadījumā:"/>
+				<Item id="90338" name="Izlaist failu un turpināt"/>
+				<Item id="90339" name="Apstājieties pie pirmās kļūdas"/>
+				<Item id="90340" name="(nav saglabātu makro)"/>
+				<Item id="90341" name="%lu fails(-i) atbilst(-i)."/>
+				<Item id="90342" name="Mape nav atrasta"/>
+				<Item id="90343" name="Izvēlieties esošo mapi."/>
+				<Item id="90344" name="Neviens fails neatbilst"/>
+				<Item id="90345" name="Pielāgojiet paplašinājumu filtru, rekursiju vai slēpto failu opciju."/>
+				<Item id="90346" name="Sāk..."/>
+				<Item id="90347" name="Apstrāde:"/>
+				<Item id="90348" name="%ld/%ld Labi: %ld Izlaists: %ld Neizdevās: %ld"/>
+				<Item id="90349" name="Partija atcelta"/>
+				<Item id="90350" name="Partija ir pabeigta"/>
+				<Item id="90351" name="Kopā: %lu Labi: %ld Izlaists: %ld Neizdevās: %ld"/>
+				<Item id="90352" name="Uzcelšanas datums"/>
+				<Item id="90353" name="Operētājsistēma"/>
+				<Item id="90354" name="jaunākais"/>
+				<Item id="90355" name="novecojis"/>
+				<Item id="90356" name="nezināms"/>
+				<Item id="90357" name="Restartējiet lietojumprogrammu, lai izmaiņas stātos spēkā."/>
+				<Item id="90358" name="Atjaunināt spraudņus"/>
+				<Item id="90359" name="Vai atjaunināt tālāk norādītos spraudņus?"/>
+				<Item id="90360" name="Pašreizējās versijas pirms aizstāšanas tiek dublētas līdz ~/Library/Application Support/Nextpad++/plugin-backups/."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Pārslēgties uz jauno Tahoe izskatu (beta)"/>
+				<Item id="90363" name="Izmantojiet macOS stila izvēlnes (beta)"/>
+				<Item id="90364" name="Jaunais Tahoe izskats tiks piemērots pēc Nextpad++ restartēšanas."/>
+				<Item id="90365" name="Klasiskais izskats tiks atjaunots pēc Nextpad++ restartēšanas."/>
+				<Item id="90366" name="Iziet tūlīt"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="Klasiskais izvēlnes izkārtojums tiks atjaunots pēc Nextpad++ restartēšanas."/>
+				<Item id="90369" name="Krāsa"/>
+				<Item id="90370" name="Lietot spraudņu rīkjoslas ikonām"/>
+				<Item id="90371" name="Pilnajā režīmā spraudņa ikonas kļūst vienkrāsainas."/>
+				<Item id="90372" name="Rīkjoslas grupas"/>
+				<Item id="90373" name="Izvēlieties, kur Liquid Glass rīkjoslā ir redzama katra poga: uz"/>
+				<Item id="90374" name="Poga"/>
+				<Item id="90375" name="Izvietojums"/>
+				<Item id="90376" name="Atiestatīt uz noklusējuma iestatījumiem"/>
+				<Item id="90377" name="Pārpildes izvēlne"/>
+				<Item id="90378" name="Slēpts"/>
+				<Item id="90379" name="CJK draudzīgs vārdu aplaušana"/>
+				<Item id="90380" name="Kolonnu atlase pārslēdzas uz vairāku rediģēšanu"/>
+				<Item id="90381" name="Atstarpes starp rindām:"/>
+				<Item id="90382" name="1.0 (noklusējums)"/>
+				<Item id="90383" name="Paslēpt ciļņu joslu"/>
+				<Item id="90384" name="Cilnes izmērs atbilst dokumenta tālummaiņai"/>
+				<Item id="90385" name="Izvēlieties…"/>
+				<Item id="90386" name="Atiestatīt uz noklusējuma vērtību"/>
+				<Item id="90387" name="Izmantojot noklusējuma atrašanās vietu."/>
+				<Item id="90388" name="Pielāgota atrašanās vieta."/>
+				<Item id="90389" name="Nederīgs ceļš — dublējumkopijās tiks izmantota noklusējuma atrašanās vieta."/>
+				<Item id="90390" name="Izvēlieties"/>
+				<Item id="90391" name="Ievietot atlasi:"/>
+				<Item id="90392" name="Izmantojiet Boost regulāro izteiksmes režīmu (vairākas rindas; restartējiet, lai lietotu)"/>
+				<Item id="90393" name="Lūdzu, restartējiet Nextpad++, lai tas stātos spēkā."/>
+				<Item id="90394" name="Nederīgs ceļš."/>
+				<Item id="90395" name="Restartējiet tūlīt"/>
+				<Item id="90396" name="Atlasiet mapi, no kuras/uz kuru Nextpad++ lasa/raksta savus iestatījumus"/>
+				<Item id="90397" name="(neizvēlieties to, ja nezināt, ko darāt)"/>
+				<Item id="90398" name="Rīkjoslas ikonas izmērs"/>
+				<Item id="90399" name="100% (noklusējums)"/>
+				<Item id="90400" name="Peles ritenīša ritināšanas ātrums"/>
+				<Item id="90401" name="1× (izslēgts)"/>
+				<Item id="90402" name="Rīkjoslas ikonas lielums ir mainīts"/>
+				<Item id="90403" name="Jaunais rīkjoslas ikonas izmērs stāsies spēkā nākamajā reizē, kad Nextpad++ tiks palaists."/>
+				<Item id="90404" name="Rīkjoslas ikonas ir mainītas"/>
+				<Item id="90405" name="Jaunās rīkjoslas ikonas stāsies spēkā nākamajā Nextpad++ palaišanas reizē."/>
+				<Item id="90410" name="Atrast sadaļā Projekti..."/>
+				<Item id="90411" name="Palaidiet makro programmā Faili..."/>
+				<Item id="90418" name="Tādējādi tas un viss tā saturs tiks noņemts no projekta.Nekādi faili diskā netiks ietekmēti."/>
+				<Item id="90420" name="Mape"/>
+				<Item id="90421" name="Meklējiet šajos meklēšanas rezultātos..."/>
+				<Item id="90422" name="Kopēt atlasīto(-s) rindiņu(-as)"/>
+				<Item id="90423" name="Kopēt atlasīto(-s) ceļa nosaukumu(-us)"/>
+				<Item id="90424" name="Atvērt atlasīto(-s) ceļa nosaukumu(-us)"/>
+				<Item id="90425" name="Vārdu aplaušanas garas rindas"/>
+				<Item id="90426" name="Iztīriet katru meklēšanu"/>
+				<Item id="90427" name="Nav atrasts"/>
+				<Item id="90428" name="KONFLIKTS: %@"/>
+				<Item id="90429" name="Vai dzēst &quot;%@&quot;?"/>
+				<Item id="90430" name="Lietotāja noteiktas valodas administrators"/>
+				<Item id="90431" name="Filtrēt valodas…"/>
+				<Item id="90432" name="Avots"/>
+				<Item id="90433" name="Maiņstrāvas avoti"/>
+				<Item id="90434" name="Statuss"/>
+				<Item id="90435" name="Instalēt / atjaunināt"/>
+				<Item id="90436" name="%lu valodas · %lu instalēta · %lu atjauninājumi"/>
+				<Item id="90437" name="Autors"/>
+				<Item id="90438" name="Apvienots: %ld ieraksti no %lu avotiem (apvienoti)"/>
+				<Item id="90439" name="Atlasiet vienu vai vairākas valodas, ko instalēt."/>
+				<Item id="90440" name="Atlasei nekas nav lejupielādējams."/>
+				<Item id="90441" name="Lejupielāde neizdevās"/>
+				<Item id="90442" name="Kontrolsummas neatbilstība"/>
+				<Item id="90443" name="Atlasītā(-s) valoda(-as) tagad ir pieejamas izvēlnē Valoda."/>
+				<Item id="90444" name="Atlasiet vienu vai vairākas instalētās valodas, ko noņemt."/>
+				<Item id="90445" name="Noņemts"/>
+				<Item id="90446" name="Šo nosaukumu jau izmanto cita valoda."/>
+				<Item id="90447" name="Šo valodu nevarēja noņemt."/>
+				<Item id="90448" name="Iepriekš instalētās valodas nevar noņemt."/>
+				<Item id="90449" name="Šo valodu nevarēja pārdēvēt."/>
+				<Item id="90450" name="Šis fails ir %@.Atverot to, tiks atspējota sintakses izcelšana un atsaukšanas vēsture, lai lietotne būtu atsaucīga.&#10;&#10;Vai vēlaties turpināt?"/>
+				<Item id="90451" name="Atvērt jebkurā gadījumā"/>
+				<Item id="90452" name="&quot;%@&quot; ir mainīts diskā"/>
+				<Item id="90453" name="Ignorēt"/>
+				<Item id="90454" name="Saglabāt manu versiju"/>
+				<Item id="90455" name="Nevarēja atkārtoti ielādēt &quot;%@&quot;"/>
+				<Item id="90456" name="Failu nevarēja nolasīt."/>
+				<Item id="90457" name="Izvēlieties, kur Liquid Glass rīkjoslā ir redzama katra poga: grupas kapsulā (rīkjoslā), grupas pārpildes izvēlnē ▾ vai paslēptā."/>
+				<Item id="90458" name="Ziedojiet attīstības atbalstam"/>
+				<Item id="90459" name="Instalējiet komandrindas rīkus"/>
+				<Item id="90460" name="Rādīt ēnas aiz rīkjoslas kapsulām"/>
+				<Item id="90461" name="Ziedot"/>
+				<Item id="90462" name="Rakstzīmju kopas"/>
+				<Item id="90463" name="Minimizēt"/>
+				<Item id="90464" name="Slēpt Nextpad++"/>
+				<Item id="90465" name="Paslēpt citus"/>
+				<Item id="90466" name="Rādīt visu"/>
+				<Item id="90467" name="Iziet no Nextpad++"/>
+				<Item id="90468" name="Saglabāt pašreizējo ierakstīto makro…"/>
+				<Item id="90469" name="Apgrieziet aizmugures vietu un ietaupiet"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox>

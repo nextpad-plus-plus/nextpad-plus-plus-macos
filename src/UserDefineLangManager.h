@@ -2,6 +2,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Posted after the UDL dialog saves, renames, creates or removes a UDL (the
+/// manager has already reloaded). userInfo: @"name" (the affected UDL) and,
+/// for a rename, @"oldName". Editors using the UDL re-apply it.
+extern NSNotificationName const UserDefineLangsDidChangeNotification;
+
 /// Represents one User Defined Language loaded from XML.
 @interface UserDefinedLang : NSObject
 @property (nonatomic, copy)   NSString *name;          // display name
@@ -35,6 +40,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Find a UDL by file extension (without dot).
 - (nullable UserDefinedLang *)languageForExtension:(NSString *)ext;
+
+/// Find a UDL for a file name (no directory). Mirrors Windows
+/// getUserDefinedLangNameFromExt: an ext= entry matches the file's extension,
+/// or the whole name when the name contains a dot (e.g. "foo.conf"). Where
+/// several UDLs match, the light/dark variant matching the editor theme wins.
+- (nullable UserDefinedLang *)languageForFileName:(NSString *)fileName;
+
+/// `udl`, or the theme-matching variant of it when `udl` claims `fileName`
+/// (by extension or whole name) and another UDL claiming it is the better
+/// light/dark match. A UDL picked for a file it does not claim is kept.
+- (UserDefinedLang *)variantOf:(UserDefinedLang *)udl forFileName:(nullable NSString *)fileName;
 
 /// Import a UDL from a file (copies to user directory).
 - (nullable UserDefinedLang *)importFromPath:(NSString *)path;

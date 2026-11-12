@@ -998,13 +998,13 @@
 				<Item id="90006" name="Source Control"/>
 				<Item id="90007" name="Commit"/>
 				<Item id="90008" name="Commit Failed"/>
-				<Item id="90009" name="No git repository\nUse Browse to open a repo."/>
+				<Item id="90009" name="No git repository&#10;Use Browse to open a repo."/>
 				<Item id="90010" name="Stage"/>
 				<Item id="90011" name="Unstage"/>
 				<Item id="90012" name="Stage All"/>
 				<Item id="90013" name="Unstage All"/>
-				<Item id="90014" name="Commit message\u2026"/>
-				<Item id="90015" name="Browse for repository\u2026"/>
+				<Item id="90014" name="Commit message…"/>
+				<Item id="90015" name="Browse for repository…"/>
 				<Item id="90016" name="Choose a git repository folder"/>
 				<Item id="90017" name="(no repository)"/>
 				<Item id="90018" name="(detached)"/>
@@ -1018,9 +1018,9 @@
 				<Item id="90026" name="Results"/>
 				<Item id="90027" name="Stop"/>
 				<Item id="90028" name="Search stopped."/>
-				<Item id="90029" name="Searching\u2026"/>
+				<Item id="90029" name="Searching…"/>
 				<Item id="90030" name="Text to search for"/>
-				<Item id="90031" name="*.txt, *.cpp, \u2026"/>
+				<Item id="90031" name="*.txt, *.cpp, …"/>
 				<Item id="90032" name="Searching..."/>
 				<Item id="90033" name="Replace:"/>
 				<Item id="90034" name="Whole Word"/>
@@ -1080,7 +1080,7 @@
 				<Item id="90088" name="Install Plugins"/>
 				<Item id="90089" name="Remove Plugins"/>
 				<Item id="90090" name="No commands found"/>
-				<Item id="90091" name="Type to search\u2026"/>
+				<Item id="90091" name="Type to search…"/>
 				<Item id="90092" name="User Defined Language v.2.1"/>
 				<Item id="90093" name="Create New Language"/>
 				<Item id="90094" name="Enter a name:"/>
@@ -1089,11 +1089,9 @@
 				<Item id="90097" name="Don't Save"/>
 				<Item id="90098" name="Done"/>
 				<Item id="90099" name="Toggle Word Wrap"/>
-				<Item id="90100" name="Show All Characters"/>
 				<Item id="90101" name="Show Characters Options"/>
 				<Item id="90102" name="Toggle Indent Guide"/>
 				<Item id="90103" name="Not Yet Implemented"/>
-				<Item id="90104" name="Reload from Disk"/>
 				<Item id="90105" name="Change Search Engine"/>
 				<Item id="90106" name="Run Error"/>
 				<Item id="90107" name="Nextpad++ Loading Time"/>
@@ -1102,16 +1100,12 @@
 				<Item id="90110" name="Download"/>
 				<Item id="90111" name="Release Page"/>
 				<Item id="90112" name="Later"/>
-				<Item id="90113" name="Filter plugins\u2026"/>
-				<Item id="90114" name="Available"/>
-				<Item id="90115" name="Updates"/>
-				<Item id="90116" name="Installed"/>
-				<Item id="90117" name="Incompatible"/>
+				<Item id="90113" name="Filter plugins…"/>
 				<Item id="90118" name="Failed to Install"/>
 				<Item id="90119" name="Remove the following plugins?"/>
 				<Item id="90120" name="Install the following plugins?"/>
 				<Item id="90121" name="This will delete the plugin files."/>
-				<Item id="90122" name="Search commands\u2026"/>
+				<Item id="90122" name="Search commands…"/>
 				<Item id="90123" name="Foreground colour"/>
 				<Item id="90124" name="Background colour"/>
 				<Item id="90125" name="Macro name"/>
@@ -1131,7 +1125,7 @@
 				<Item id="90139" name="All marks cleared."/>
 				<Item id="90140" name="Marked text copied to clipboard."/>
 				<Item id="90141" name="No marked text to copy."/>
-				<Item id="90142" name="Searching... %ld hit(s) \u2014 %@"/>
+				<Item id="90142" name="Searching... %ld hit(s) — %@"/>
 				<Item id="90143" name="Replacing in files..."/>
 				<Item id="90144" name="Replace in Projects: Not yet connected."/>
 				<Item id="90145" name="Find in Projects: Not yet connected to Project Panel file list."/>
@@ -1158,14 +1152,12 @@
 				<Item id="90165" name="Confirm before Save All"/>
 				<Item id="90166" name="Confirm Replace All in open documents"/>
 				<Item id="90167" name="Replace: don't move to next occurrence"/>
-				<Item id="90168" name="Use monospaced font in Find dialog"/>
 				<Item id="90169" name="Right-click keeps selection"/>
 				<Item id="90170" name="Reverse default date/time order"/>
 				<Item id="90171" name="Use XML-based function list parsers"/>
 				<Item id="90172" name="Auto-close brackets ( ) [ ] { }"/>
 				<Item id="90173" name="From Nth character:"/>
 				<Item id="90174" name="In-selection auto-check threshold (bytes):"/>
-				<Item id="90175" name="Extended (\\n, \\r, \\t, \\0, \\x...)"/>
 				<Item id="90176" name="Editor"/>
 				<Item id="90177" name="Margins"/>
 				<Item id="90178" name="Dark"/>
@@ -1179,12 +1171,10 @@
 				<Item id="90186" name="Antialiased"/>
 				<Item id="90187" name="LCD Optimized"/>
 				<Item id="90188" name="Simple +/-"/>
-				<Item id="90189" name="Windows (CRLF)"/>
 				<Item id="90190" name="Mac (CR)"/>
-				<Item id="90191" name="Plugin list repository"/>
 				<Item id="90192" name="Select a Nextpad++ theme XML file to apply"/>
-				<Item id="90193" name="Create new\u2026"/>
-				<Item id="90194" name="Save as\u2026"/>
+				<Item id="90193" name="Create new…"/>
+				<Item id="90194" name="Save as…"/>
 				<Item id="90195" name="User language:"/>
 				<Item id="90196" name="Language name"/>
 				<Item id="90197" name="Create"/>
@@ -1214,6 +1204,215 @@
 				<Item id="90221" name="Locked Attribute (macOS)"/>
 				<Item id="90222" name="Check for Updates…"/>
 				<Item id="90223" name="Open Recent"/>
+				<Item id="90226" name="Help"/>
+				<Item id="90227" name="Stage Failed"/>
+				<Item id="90228" name="Unstage Failed"/>
+				<Item id="90229" name="is available"/>
+				<Item id="90230" name="You're running"/>
+				<Item id="90231" name="Never remind me again"/>
+				<Item id="90233" name="Automatically check for updates"/>
+				<Item id="90234" name="Automatic update checks are off."/>
+				<Item id="90235" name="Last checked:"/>
+				<Item id="90236" name="No internet connection."/>
+				<Item id="90237" name="Unexpected response from the update server."/>
+				<Item id="90238" name="No published release was found."/>
+				<Item id="90239" name="The update server is temporarily unavailable. Please try again later."/>
+				<Item id="90240" name="The update server refused the request. A proxy, firewall or VPN may be blocking access to GitHub."/>
+				<Item id="90241" name="Too many update checks from your network (this limit is shared by everyone on it). Try again after"/>
+				<Item id="90242" name="Too many update checks from your network (this limit is shared by everyone on it). Please try again later."/>
+				<Item id="90243" name="The update server returned status"/>
+				<Item id="90244" name="Try Again"/>
+				<Item id="90245" name="Print text size:"/>
+				<Item id="90246" name="Use screen zoom"/>
+				<Item id="90247" name="Actual size"/>
+				<Item id="90248" name="Some files could not be replaced"/>
+				<Item id="90249" name="...and %lu more"/>
+				<Item id="90250" name="File associations are managed by your organization."/>
+				<Item id="90251" name="Waiting for macOS to confirm…"/>
+				<Item id="90252" name="macOS did not apply the change."/>
+				<Item id="90253" name="Registered"/>
+				<Item id="90254" name="Open all files in folder?"/>
+				<Item id="90255" name="This will open %lu files in new tabs."/>
+				<Item id="90256" name="Could not import: %@"/>
+				<Item id="90258" name="Found %ld match(es) in %ld file(s)."/>
+				<Item id="90259" name="Searching… %ld match(es) so far"/>
+				<Item id="90260" name="%@ (%ld match%@)"/>
+				<Item id="90261" name="Fuzzy search"/>
+				<Item id="90266" name="Count: %ld match(es)."/>
+				<Item id="90267" name="Replace All: %ld occurrence(s) were replaced %@."/>
+				<Item id="90268" name="Replace in Opened Files: %ld occurrence(s) were replaced."/>
+				<Item id="90269" name="Find in Files: %ld hit(s) in %ld file(s)."/>
+				<Item id="90270" name="Find in Files: 0 hits."/>
+				<Item id="90271" name="Replace all occurrences of &quot;%@&quot; with &quot;%@&quot; in directory:&#10;%@&#10;&#10;This cannot be undone."/>
+				<Item id="90272" name="Replace in Files: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90273" name="Open a Project Panel first."/>
+				<Item id="90274" name="Select at least one Project Panel to search."/>
+				<Item id="90275" name="No files to search."/>
+				<Item id="90276" name="Find in Projects: %ld hit(s) in %ld file(s)."/>
+				<Item id="90277" name="Find in Projects: 0 hits."/>
+				<Item id="90278" name="Replace all occurrences of"/>
+				<Item id="90279" name="with"/>
+				<Item id="90280" name="in"/>
+				<Item id="90281" name="project file(s). This cannot be undone."/>
+				<Item id="90282" name="Replace in Projects: %ld replacement(s) in %ld file(s)."/>
+				<Item id="90283" name="Mark: %ld match(es) marked."/>
+				<Item id="90284" name="Filter file/folder name..."/>
+				<Item id="90285" name="Some documents could not be saved"/>
+				<Item id="90286" name="⌘ Command"/>
+				<Item id="90287" name="⌃ Control"/>
+				<Item id="90288" name="⌥ Option"/>
+				<Item id="90289" name="⇧ Shift"/>
+				<Item id="90290" name="Enter an NSDateFormatter format string:"/>
+				<Item id="90291" name="'%@' is not yet implemented in this version."/>
+				<Item id="90292" name="Import Plugin"/>
+				<Item id="90293" name="Restart Required"/>
+				<Item id="90294" name="No files to process"/>
+				<Item id="90295" name="This project node contains no files."/>
+				<Item id="90296" name="'%@' has unsaved changes.&#10;Reload and discard changes?"/>
+				<Item id="90297" name="Enter a new filename:"/>
+				<Item id="90299" name="New name:"/>
+				<Item id="90301" name="The name cannot contain “/” or “:”."/>
+				<Item id="90306" name="There are 3 ways to switch to column-select mode:&#10;&#10;1. (Keyboard and Mouse)  Hold Option while left-click dragging&#10;&#10;2. (Keyboard only)  Hold Option+Shift while using arrow keys&#10;&#10;3. (Keyboard or Mouse)&#10;   Put caret at desired start of column block position, then&#10;   execute “Begin/End Select in Column Mode” command;&#10;   Move caret to desired end of column block position, then&#10;   execute “Begin/End Select in Column Mode” command again"/>
+				<Item id="90307" name="Enter the search URL. Use %s as the query placeholder (or append the query at the end):"/>
+				<Item id="90308" name="Enter command or URL..."/>
+				<Item id="90309" name="Failed to execute:&#10;%@&#10;&#10;%@"/>
+				<Item id="90311" name="Editing contextMenu.xml allows you to modify your Nextpad++ popup context menu on edit zone.&#10;You have to restart your Nextpad++ to take effect after modifying contextMenu.xml."/>
+				<Item id="90312" name="Already installed"/>
+				<Item id="90313" name="Install nextpad++ Command Line Tool"/>
+				<Item id="90314" name="Installation failed"/>
+				<Item id="90315" name="Installed — but ~/.local/bin is not on your PATH"/>
+				<Item id="90316" name="Already in your config"/>
+				<Item id="90317" name="Added to PATH"/>
+				<Item id="90318" name="Could not write"/>
+				<Item id="90319" name="Copied"/>
+				<Item id="90321" name="Your changes will be lost if you don't save them."/>
+				<Item id="90322" name="Apply to all documents"/>
+				<Item id="90323" name="Run Macro on Files"/>
+				<Item id="90324" name="Macro:"/>
+				<Item id="90325" name="Folder:"/>
+				<Item id="90326" name="Pick a folder…"/>
+				<Item id="90327" name="Browse…"/>
+				<Item id="90328" name="Extensions:"/>
+				<Item id="90329" name="Recurse subdirectories"/>
+				<Item id="90330" name="Include hidden files"/>
+				<Item id="90331" name="Max size:"/>
+				<Item id="90332" name="Unlimited"/>
+				<Item id="90333" name="Per file:"/>
+				<Item id="90334" name="Save if modified"/>
+				<Item id="90335" name="Close after"/>
+				<Item id="90336" name="Close even files that were already open"/>
+				<Item id="90337" name="On error:"/>
+				<Item id="90338" name="Skip file and continue"/>
+				<Item id="90339" name="Stop on first error"/>
+				<Item id="90340" name="(no saved macros)"/>
+				<Item id="90341" name="%lu file(s) match"/>
+				<Item id="90342" name="Folder not found"/>
+				<Item id="90343" name="Pick a folder that exists."/>
+				<Item id="90344" name="No files match"/>
+				<Item id="90345" name="Adjust the extensions filter, recursion, or hidden-files option."/>
+				<Item id="90346" name="Starting…"/>
+				<Item id="90347" name="Processing:"/>
+				<Item id="90348" name="%ld / %ld   Ok: %ld   Skipped: %ld   Failed: %ld"/>
+				<Item id="90349" name="Batch cancelled"/>
+				<Item id="90350" name="Batch complete"/>
+				<Item id="90351" name="Total: %lu   Ok: %ld   Skipped: %ld   Failed: %ld"/>
+				<Item id="90352" name="Built Date"/>
+				<Item id="90353" name="Operating System"/>
+				<Item id="90354" name="latest"/>
+				<Item id="90355" name="outdated"/>
+				<Item id="90356" name="unknown"/>
+				<Item id="90357" name="Restart the application for changes to take effect."/>
+				<Item id="90358" name="Update Plugins"/>
+				<Item id="90359" name="Update the following plugins?"/>
+				<Item id="90360" name="Current versions are backed up to ~/Library/Application Support/Nextpad++/plugin-backups/ before being replaced."/>
+				<Item id="90361" name="Tahoe"/>
+				<Item id="90362" name="Switch to the New Tahoe look (Beta)"/>
+				<Item id="90363" name="Use macOS-style menus (Beta)"/>
+				<Item id="90364" name="The new Tahoe look will be applied after you restart Nextpad++."/>
+				<Item id="90365" name="The Classic look will be restored after you restart Nextpad++."/>
+				<Item id="90366" name="Quit Now"/>
+				<Item id="90367" name="Menus will be rearranged in the macOS style after you restart Nextpad++."/>
+				<Item id="90368" name="The classic menu layout will be restored after you restart Nextpad++."/>
+				<Item id="90369" name="Color"/>
+				<Item id="90370" name="Apply to plugin toolbar icons"/>
+				<Item id="90371" name="In Complete mode plugin icons become a single solid color."/>
+				<Item id="90372" name="Toolbar Groups"/>
+				<Item id="90373" name="Choose where each button appears in the Liquid Glass toolbar: on the "/>
+				<Item id="90374" name="Button"/>
+				<Item id="90375" name="Placement"/>
+				<Item id="90376" name="Reset to Defaults"/>
+				<Item id="90377" name="Overflow menu"/>
+				<Item id="90378" name="Hidden"/>
+				<Item id="90379" name="CJK-friendly word wrap"/>
+				<Item id="90380" name="Column selection switches to multi-editing"/>
+				<Item id="90381" name="Line spacing:"/>
+				<Item id="90382" name="1.0 (Default)"/>
+				<Item id="90383" name="Hide tab bar"/>
+				<Item id="90384" name="Tab size follows document zoom"/>
+				<Item id="90385" name="Choose…"/>
+				<Item id="90386" name="Reset to Default"/>
+				<Item id="90387" name="Using the default location."/>
+				<Item id="90388" name="Custom location."/>
+				<Item id="90389" name="Invalid path — backups will use the default location."/>
+				<Item id="90390" name="Choose"/>
+				<Item id="90391" name="Insert Selection:"/>
+				<Item id="90392" name="Use Boost Regex mode (multi-line; restart to apply)"/>
+				<Item id="90395" name="Restart Now"/>
+				<Item id="90397" name="(don't choose it unless you know what you're doing)"/>
+				<Item id="90398" name="Toolbar icon size"/>
+				<Item id="90399" name="100% (Default)"/>
+				<Item id="90400" name="Mouse wheel scroll speed"/>
+				<Item id="90401" name="1× (off)"/>
+				<Item id="90402" name="Toolbar icon size changed"/>
+				<Item id="90403" name="The new toolbar icon size will take effect the next time Nextpad++ launches."/>
+				<Item id="90404" name="Toolbar icons changed"/>
+				<Item id="90405" name="The new toolbar icons will take effect the next time Nextpad++ launches."/>
+				<Item id="90411" name="Run Macro on Files..."/>
+				<Item id="90418" name="This will remove it and all its contents from the project. No files on disk will be affected."/>
+				<Item id="90420" name="Folder"/>
+				<Item id="90427" name="Not found"/>
+				<Item id="90428" name="CONFLICT: %@"/>
+				<Item id="90429" name="Delete &quot;%@&quot;?"/>
+				<Item id="90430" name="User Defined Language Admin"/>
+				<Item id="90431" name="Filter languages…"/>
+				<Item id="90432" name="Source"/>
+				<Item id="90433" name="AC Sources"/>
+				<Item id="90434" name="Status"/>
+				<Item id="90435" name="Install / Update"/>
+				<Item id="90436" name="%lu languages · %lu installed · %lu updates"/>
+				<Item id="90437" name="Author"/>
+				<Item id="90438" name="Combined: %ld entries from %lu sources (merged)"/>
+				<Item id="90439" name="Select one or more languages to install."/>
+				<Item id="90440" name="Nothing downloadable for the selection."/>
+				<Item id="90441" name="Download failed"/>
+				<Item id="90442" name="Checksum mismatch"/>
+				<Item id="90443" name="The selected language(s) are now available in the Language menu."/>
+				<Item id="90444" name="Select one or more installed languages to remove."/>
+				<Item id="90445" name="Removed"/>
+				<Item id="90446" name="This name is already used by another language."/>
+				<Item id="90447" name="This language could not be removed."/>
+				<Item id="90448" name="Pre-installed languages can't be removed."/>
+				<Item id="90449" name="This language could not be renamed."/>
+				<Item id="90450" name="This file is %@. Opening it will disable syntax highlighting and undo history to keep the app responsive.&#10;&#10;Do you want to continue?"/>
+				<Item id="90451" name="Open Anyway"/>
+				<Item id="90452" name="&quot;%@&quot; changed on disk"/>
+				<Item id="90453" name="Ignore"/>
+				<Item id="90454" name="Keep My Version"/>
+				<Item id="90455" name="Could not reload &quot;%@&quot;"/>
+				<Item id="90456" name="The file could not be read."/>
+				<Item id="90457" name="Choose where each button appears in the Liquid Glass toolbar: on the group capsule (Toolbar), in the group's ▾ overflow menu, or Hidden."/>
+				<Item id="90458" name="Donate to Support Development"/>
+				<Item id="90459" name="Install Command Line Tools"/>
+				<Item id="90460" name="Show shadows behind toolbar capsules"/>
+				<Item id="90461" name="Donate"/>
+				<Item id="90462" name="Character sets"/>
+				<Item id="90463" name="Minimize"/>
+				<Item id="90464" name="Hide Nextpad++"/>
+				<Item id="90465" name="Hide Others"/>
+				<Item id="90466" name="Show All"/>
+				<Item id="90467" name="Quit Nextpad++"/>
+				<Item id="90468" name="Save Current Recorded Macro…"/>
+				<Item id="90469" name="Trim Trailing Space and Save"/>
 			</MacStrings>
 		</Dialog>
 		<MessageBox><!-- $INT_REPLACE$ is a place holder, don't translate it -->
