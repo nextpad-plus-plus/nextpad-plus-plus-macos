@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import "NppPaths.h"
+#import "NppModelXmlMerge.h"
 #import "NppApplication.h"
 #import "MainWindowController.h"
 #import "MenuBuilder.h"
@@ -111,10 +112,18 @@ static void NppRecoveryDone(void) {
     // Load config.xml preferences before building UI (applies saved XML → NSUserDefaults)
     readConfigXML();
 
+    // Move a never-customised Courier New 10 default in the user's stylers.xml
+    // to the Mac default editor font, before any editor reads the style store.
+    [NPPStyleStore migrateLegacyDefaultEditorFont];
+
     [MenuBuilder buildMainMenu];
 
     // Apply saved shortcut overrides from shortcuts.xml <InternalCommands>
     [self _loadShortcutOverrides];
+
+    // Create langs.xml / stylers.xml, or merge new model entries into them,
+    // before anything reads them.
+    NppInstallUserLangsAndStylers();
 
     // Load built-in language definitions from langs.xml (keywords, extensions, comments).
     [[NppLangsManager shared] loadLangs];
@@ -177,6 +186,11 @@ static void NppRecoveryDone(void) {
 
     // Apply the user's saved language to the freshly-built English menu.
     [[NppLocalizer shared] autoLoad];
+
+    // Pick the editor theme for the current appearance before any EditorView
+    // is built (#370). NPPDarkModeChangedNotification only fires on a change,
+    // so an app launched in dark mode otherwise kept the light theme.
+    [[NPPStyleStore sharedStore] syncThemeWithAppearance];
 
     // Create the primary window
     self.mainWindowController = [[MainWindowController alloc] init];
@@ -492,7 +506,7 @@ static void NppRecoveryDone(void) {
 
     if (lastEditor) {
         if (cli.language.length) [lastEditor setLanguage:cli.language];
-        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName];
+        if (cli.udlName.length) [lastEditor setLanguage:cli.udlName preferUDL:YES];
         if (cli.readOnly) [lastEditor.scintillaView message:SCI_SETREADONLY wParam:1 lParam:0];
         if (cli.monitorFiles) lastEditor.monitoringMode = YES;
 

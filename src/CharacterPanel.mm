@@ -300,7 +300,6 @@ static NSString *const kColXHex = @"xhex";  // 5  HTML Hexadecimal
 
 - (void)_applyTheme {
     NSColor *bg = [[NPPStyleStore sharedStore] globalBg];
-    CGFloat brightness = bg.brightnessComponent;
 
     // Whole panel background (visible behind the table header)
     self.wantsLayer = YES;
@@ -310,8 +309,7 @@ static NSString *const kColXHex = @"xhex";  // 5  HTML Hexadecimal
     _tableView.backgroundColor  = bg;
 
     // Drive table appearance (incl. header) from theme brightness
-    _tableView.appearance = [NSAppearance appearanceNamed:
-        brightness < 0.5 ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
+    _tableView.appearance = [NppThemeManager appearanceForBackground:bg];
 
     [_tableView reloadData];
 }
@@ -345,7 +343,7 @@ static NSString *const kColXHex = @"xhex";  // 5  HTML Hexadecimal
 
     NSTextField *cell = [tv makeViewWithIdentifier:@"CharCell" owner:nil];
     if (!cell) {
-        cell = [[NSTextField alloc] init];
+        cell = [[NppThemedLabel alloc] init];
         cell.identifier     = @"CharCell";
         cell.editable       = NO;
         cell.bordered       = NO;
@@ -354,7 +352,10 @@ static NSString *const kColXHex = @"xhex";  // 5  HTML Hexadecimal
                                                 weight:NSFontWeightRegular];
     }
     cell.stringValue = text;
-    cell.textColor   = [[NPPStyleStore sharedStore] globalFg];
+    if ([cell isKindOfClass:[NppThemedLabel class]])
+        ((NppThemedLabel *)cell).themeTextColor = [[NPPStyleStore sharedStore] globalFg];
+    else
+        cell.textColor = [[NPPStyleStore sharedStore] globalFg];
     cell.font = [NSFont monospacedSystemFontOfSize:_panelFontSize weight:NSFontWeightRegular];
     return cell;
 }

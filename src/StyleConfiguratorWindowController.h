@@ -14,6 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic)           int                  fontSize;  // 0 = inherit
 @property (nonatomic)           BOOL                 bold, italic, underline;
 @property (nonatomic)           BOOL                 fontStyleExplicit; // fontStyle attr was set in XML
+/// langs.xml group this row colours ("instre1", "type2", "substyle3", ...);
+/// @"" when the row has no keywordClass attribute.
+@property (nonatomic, copy)     NSString            *keywordClass;
+/// User-defined keywords (the WordsStyle element text), added to the
+/// keywordClass list; @"" = none.
+@property (nonatomic, copy)     NSString            *keywords;
 @end
 
 /// All styles for a single language/lexer.
@@ -33,8 +39,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Parse the bundled XML and apply any saved overrides.  Call once at launch.
 - (void)loadFromDefaults;
 
+/// One-shot launch migration: older builds shipped the Windows default editor
+/// font (Courier New 10) in stylers.model.xml, and the user's stylers.xml is a
+/// copy of it. If that copy still has the untouched old default, switch it to
+/// the Mac default (Menlo 12). Call before any editor reads the style store.
++ (void)migrateLegacyDefaultEditorFont;
+
 /// Return all style entries for a lexer (resolved = theme + user override).
 - (nullable NSArray<NPPStyleEntry *> *)stylesForLexer:(NSString *)lexerID;
+
+/// Style entries of exactly the LexerType named `lexerID` (case-insensitive),
+/// with no c/objc/js/ts aliasing; nil when stylers.xml has no such LexerType.
+- (nullable NSArray<NPPStyleEntry *> *)stylesForExactLexer:(NSString *)lexerID;
 
 /// Ordered list of all lexers (Global Styles first, then alphabetical).
 @property (readonly, nonatomic) NSArray<NPPLexer *> *allLexers;
@@ -64,8 +80,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Update in-memory state + notify EditorViews (no NSUserDefaults write).
 - (void)previewLexers:(NSArray<NPPLexer *> *)lexers;
 
-/// Persist to NSUserDefaults + notify EditorViews.
+/// Persist to NSUserDefaults + notify EditorViews. Also records themeName as
+/// the remembered theme for the current light/dark appearance.
 - (void)commitLexers:(NSArray<NPPLexer *> *)lexers themeName:(NSString *)themeName;
+
+/// The remembered editor theme for the light or dark appearance
+/// (defaults: "Default (stylers.xml)" / "DarkModeDefault").
+- (NSString *)themeNameForDarkAppearance:(BOOL)dark;
+
+/// Switch the editor theme to the one remembered for the current appearance
+/// (NppThemeManager.isDark). No-op when it is already active. Called at launch
+/// and on NPPDarkModeChangedNotification.
+- (void)syncThemeWithAppearance;
 
 @end
 
