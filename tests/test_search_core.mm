@@ -576,6 +576,161 @@ int main() {
                   && results[1].lineText.length == 2 && results[1].matchStart == 1);
         }
 
+        // ---- UTF-8 with a few invalid bytes (damaged Chinese log) ---------------------
+        // A UTF-8 log that contains a stray byte, a character cut in half by a
+        // logger's line-length limit, or one line in another code page is still
+        // a UTF-8 file. It used to fail strict validation as a whole and come
+        // back from the charset detector as Windows-1251 mojibake.
+        {
+            NSStringEncoding gb18030 = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+            NSMutableString *log = [NSMutableString string];
+            for (int i = 0; i < 200; i++)
+                [log appendFormat:@"2026-11-11 13:%02d:%02d [INFO] [线程-%d] 用户登录成功，订单号=%d\n",
+                                  i / 60, i % 60, i % 8, 100000 + i];
+            NSData *clean = [log dataUsingEncoding:NSUTF8StringEncoding];
+            const uint8_t stray = 0xFF;
+
+            NSMutableData *strayByte = [clean mutableCopy];
+            [strayByte replaceBytesInRange:NSMakeRange(5000, 0) withBytes:&stray length:1];
+            NSStringEncoding enc = 0;
+            NSString *s = NppDecodeTextData(strayByte, YES, &enc, NULL);
+            check(@"damaged utf-8: one stray byte keeps the file UTF-8",
+                  enc == NSUTF8StringEncoding && [s hasPrefix:@"2026-11-11 13:00:00 [INFO] [线程-0] 用户登录成功"]
+                  && [s containsString:@"�"],
+                  [NSString stringWithFormat:@"enc=%lu %@", (unsigned long)enc,
+                   [s substringToIndex:MIN(s.length, (NSUInteger)48)]]);
+
+            // "线" is E7 BA BF at bytes 28-30 of the first line: drop its last byte.
+            NSMutableData *splitChar = [clean mutableCopy];
+            [splitChar replaceBytesInRange:NSMakeRange(30, 1) withBytes:NULL length:0];
+            enc = 0;
+            s = NppDecodeTextData(splitChar, YES, &enc, NULL);
+            check(@"damaged utf-8: a character cut in half becomes one U+FFFD",
+                  enc == NSUTF8StringEncoding && [s hasPrefix:@"2026-11-11 13:00:00 [INFO] [�程-0] 用户登录成功"],
+                  [NSString stringWithFormat:@"enc=%lu %@", (unsigned long)enc,
+                   [s substringToIndex:MIN(s.length, (NSUInteger)48)]]);
+
+            NSMutableData *gbkLine = [clean mutableCopy];
+            [gbkLine appendData:[@"错误: 找不到指定的文件。\n" dataUsingEncoding:gb18030]];
+            enc = 0;
+            s = NppDecodeTextData(gbkLine, YES, &enc, NULL);
+            check(@"damaged utf-8: one GBK line in a UTF-8 log keeps the file UTF-8",
+                  enc == NSUTF8StringEncoding && [s hasPrefix:@"2026-11-11 13:00:00 [INFO] [线程-0] 用户登录成功"],
+                  [NSString stringWithFormat:@"enc=%lu", (unsigned long)enc]);
+
+            // Find in Files sees the same text as the editor.
+            writeData(@"logs/app.log", strayByte);
+            NPPFileResults *fr = resultsFor(findInTree(options(@"订单号=100199", NPPSearchNormal)), @"logs/app.log");
+            check(@"damaged utf-8: Find in Files matches the Chinese text", fr.results.count == 1, describe(fr));
+
+            // Replace in Files must not rewrite a file it could only decode lossily.
+            NSInteger count = 0;
+            NPPFindOptions *o = options(@"订单号", NPPSearchNormal);
+            o.replaceText = @"order";
+            [NPPSearchCore replaceAllInFile:pathFor(@"logs/app.log") options:o replacementCount:&count
+                                   encoding:&enc isOpenAndModified:nil error:nil];
+            check(@"damaged utf-8: Replace in Files leaves the bytes untouched",
+                  [readFile(@"logs/app.log") isEqualToData:strayByte]);
+
+            // Real legacy files must not be mistaken for damaged UTF-8.
+            enc = 0;
+            s = NppDecodeTextData([log dataUsingEncoding:gb18030], YES, &enc, NULL);
+            check(@"GBK log is still decoded as GBK, not as damaged UTF-8",
+                  enc != NSUTF8StringEncoding && [s isEqualToString:log],
+                  [NSString stringWithFormat:@"enc=%lu", (unsigned long)enc]);
+            enc = 0;
+            s = NppDecodeTextData(bytes("caf\xE9 na\xEFve r\xE9sum\xE9\n", 18), YES, &enc, NULL);
+            check(@"Latin-1 text is not mistaken for damaged UTF-8",
+                  s && enc != NSUTF8StringEncoding && ![s containsString:@"�"],
+                  [NSString stringWithFormat:@"enc=%lu %@", (unsigned long)enc, s]);
+        }
+
+        // ---- GBK with a few foreign bytes (mixed-encoding Chinese log) ----------------
+        // The mirror case: a Windows program logs in GBK, but a few lines (or
+        // parts of a line) come from a component that writes UTF-8. The
+        // detector names the right code page yet reports a lossy decode, and
+        // the whole file used to be thrown to Latin-1 mojibake.
+        {
+            NSStringEncoding gb18030 = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
+            BOOL (^isSimplifiedChinese)(NSStringEncoding) = ^BOOL(NSStringEncoding e) {
+                switch (CFStringConvertNSStringEncodingToEncoding(e)) {
+                    case kCFStringEncodingGB_18030_2000: case kCFStringEncodingGBK_95:
+                    case kCFStringEncodingGB_2312_80:    case kCFStringEncodingEUC_CN:
+                    case kCFStringEncodingDOSChineseSimplif: return YES;
+                    default: return NO;
+                }
+            };
+            // UTF-8 lines are inserted every 100 lines from line `firstForeign` on.
+            NSData *(^mixedLog)(int, int) = ^NSData *(int lines, int firstForeign) {
+                NSMutableData *d = [NSMutableData data];
+                for (int i = 0; i < lines; i++) {
+                    NSString *gbk = [NSString stringWithFormat:
+                        @"I20261111 13:%02d:%02d.123456  4896 Printer.cpp:%d] 当前机器型号: 测试打印机，主要设备状态:正常\r\n",
+                        (i / 60) % 60, i % 60, i];
+                    [d appendData:[gbk dataUsingEncoding:gb18030]];
+                    if (i >= firstForeign && i % 100 == 50) {
+                        // One whole UTF-8 line, then one line that is half UTF-8, half GBK.
+                        [d appendData:[@"I20261111 13:00:00.000000  5068 Hsm.cpp:426] 外部认证数据为:\r\n"
+                                       dataUsingEncoding:NSUTF8StringEncoding]];
+                        [d appendData:[@"I20261111 13:00:00.000000  4860 Card.cpp:2039] 待发送的报文 :"
+                                       dataUsingEncoding:NSUTF8StringEncoding]];
+                        [d appendData:[@"<操作*>制卡人员</操作*>\r\n" dataUsingEncoding:gb18030]];
+                    }
+                }
+                return d;
+            };
+            NSString *firstLine = @"I20261111 13:00:00.123456  4896 Printer.cpp:0] 当前机器型号: 测试打印机，主要设备状态:正常\r\n";
+
+            NSData *small = mixedLog(200, 0);       // under the 64 KB detector prefix
+            NSStringEncoding enc = 0;
+            NSString *s = NppDecodeTextData(small, YES, &enc, NULL);
+            check(@"mixed gbk: a GBK log with a few UTF-8 lines is decoded as GBK",
+                  isSimplifiedChinese(enc) && [s hasPrefix:firstLine]
+                  && [s containsString:@"<操作*>制卡人员</操作*>"]
+                  && [s containsString:@"Printer.cpp:199] 当前机器型号"],
+                  [NSString stringWithFormat:@"enc=%lu %@", (unsigned long)enc,
+                   [s substringToIndex:MIN(s.length, (NSUInteger)60)]]);
+
+            // The detector only sees a clean 64 KB prefix and says GBK; the
+            // foreign lines further down must not undo that.
+            NSData *big = mixedLog(3000, 1500);
+            enc = 0;
+            s = NppDecodeTextData(big, YES, &enc, NULL);
+            check(@"mixed gbk: UTF-8 lines beyond the detector prefix keep the file GBK",
+                  big.length > 128 * 1024 && isSimplifiedChinese(enc) && [s hasPrefix:firstLine]
+                  && [s containsString:@"<操作*>制卡人员</操作*>"]
+                  && [s containsString:@"Printer.cpp:2999] 当前机器型号"],
+                  [NSString stringWithFormat:@"enc=%lu len=%lu", (unsigned long)enc, (unsigned long)big.length]);
+
+            writeData(@"logs/mixed.log", small);
+            NPPFileResults *fr = resultsFor(findInTree(options(@"Printer.cpp:199] 当前机器型号", NPPSearchNormal)),
+                                            @"logs/mixed.log");
+            check(@"mixed gbk: Find in Files matches the Chinese text", fr.results.count == 1, describe(fr));
+
+            NSInteger count = 0;
+            NPPFindOptions *o = options(@"当前机器型号", NPPSearchNormal);
+            o.replaceText = @"model";
+            [NPPSearchCore replaceAllInFile:pathFor(@"logs/mixed.log") options:o replacementCount:&count
+                                   encoding:&enc isOpenAndModified:nil error:nil];
+            check(@"mixed gbk: Replace in Files leaves the bytes untouched",
+                  [readFile(@"logs/mixed.log") isEqualToData:small]);
+
+            // Mostly-broken multibyte data is not rescued: random high bytes
+            // must not come back as "GBK with some damage".
+            NSMutableData *noise = [NSMutableData data];
+            uint32_t x = 12345;
+            for (int i = 0; i < 4000; i++) {
+                x = x * 1664525u + 1013904223u;
+                uint8_t c = (i % 40 == 39) ? '\n' : (uint8_t)(0x80 | (x >> 24));
+                [noise appendBytes:&c length:1];
+            }
+            enc = 0;
+            s = NppDecodeTextData(noise, YES, &enc, NULL);
+            check(@"random high bytes are not rescued as damaged GBK",
+                  s && ![s containsString:@"\uFFFD"],
+                  [NSString stringWithFormat:@"enc=%lu", (unsigned long)enc]);
+        }
+
         [[NSFileManager defaultManager] removeItemAtPath:g_root error:nil];
     }
     printf("\n%s (%d failure%s)\n", g_fail ? "FAILURES" : "ALL PASS", g_fail, g_fail == 1 ? "" : "s");
