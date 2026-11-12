@@ -1276,10 +1276,16 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             regexError:&regexError];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self _endBackgroundRun:token];
-            if (regexError) {
-                [self _showInvalidRegexStatus];
-                return;
+            [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
+                          options:opts filesSearched:scannedCount];
+            [self->_delegate findWindowShowSearchResultsPanel:self];
+            if (results.count) {
+                NSInteger totalHits = 0;
+                for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
+                [self _showStatus:[NSString stringWithFormat:[[NppLocalizer shared] translate:@"Find in Files: %ld hit(s) in %ld file(s)."],
+                    (long)totalHits, (long)results.count] found:YES];
+            } else {
+                [self _showStatus:[[NppLocalizer shared] translate:@"Find in Files: 0 hits."] found:NO];
             }
             [self _finishFindRun:results filesSearched:scannedCount options:opts
                        cancelled:token.isCancelled
@@ -1411,10 +1417,17 @@ static CGFloat _fromTop(NSView *container, CGFloat topOffset, CGFloat height) {
             regexError:&regexError];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self _endBackgroundRun:token];
-            if (regexError) {
-                [self _showInvalidRegexStatus];
-                return;
+            [self->_delegate findWindow:self showResults:results forSearchText:opts.searchText
+                          options:opts filesSearched:scannedCount];
+            [self->_delegate findWindowShowSearchResultsPanel:self];
+            if (results.count) {
+                NSInteger totalHits = 0;
+                for (NPPFileResults *fr in results) totalHits += (NSInteger)fr.results.count;
+                [self _showStatus:[NSString stringWithFormat:
+                    [[NppLocalizer shared] translate:@"Find in Projects: %ld hit(s) in %ld file(s)."],
+                    (long)totalHits, (long)results.count] found:YES];
+            } else {
+                [self _showStatus:[[NppLocalizer shared] translate:@"Find in Projects: 0 hits."] found:NO];
             }
             [self _finishFindRun:results filesSearched:scannedCount options:opts
                        cancelled:token.isCancelled
