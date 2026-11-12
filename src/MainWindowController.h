@@ -31,6 +31,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Restore the last session from ~/Library/Application Support/Nextpad++/session.plist.
 - (BOOL)restoreLastSession;
 
+/// Crash recovery, run at launch after an unclean exit whatever else opened:
+/// open each backup file written at or after `since` (when the run that did not
+/// exit cleanly started) that this run has not already reopened (by session
+/// restore), as a "<name> (recovered)" tab. Returns YES if at least one tab was opened.
+- (BOOL)recoverBackupsFromUncleanExitSince:(NSDate *)since;
+
 /// The receiver's tab managers: primary view plus the horizontal/vertical split
 /// views, with nils omitted. Session saving walks every window's managers so a
 /// tab living in a secondary window is neither dropped from session.plist nor

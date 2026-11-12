@@ -109,6 +109,23 @@ typedef struct {
 @property (nonatomic, readonly) NSColor *panelBackground;
 @property (nonatomic, readonly) NSColor *statusBarBackground;
 
+// ── Surfaces painted with the editor theme ───────────────────────────────────
+// The editor theme (NPPStyleStore) is independent of the chrome dark-mode
+// state: a light theme can sit under dark chrome and vice versa. Views whose
+// body is painted with a theme colour should key off that colour, not -isDark.
+
+/// Aqua or DarkAqua, whichever matches the brightness of `background`. Pin a
+/// view to it so native parts (scrollers, headers) match the theme behind them.
++ (NSAppearance *)appearanceForBackground:(NSColor *)background;
+
+/// Document Map viewport highlight drawn over a map painted with `background`.
+/// `themeColor` is the theme's "Document map" foreground (the Windows view-zone
+/// focus colour); nil or a colour with too little contrast against the
+/// background falls back to orange on light backgrounds and white on dark.
+/// The alpha matches Windows' 50/255 view-zone transparency.
+- (NSColor *)documentMapViewportColorOnBackground:(NSColor *)background
+                                       themeColor:(nullable NSColor *)themeColor;
+
 // ── Icon Paths ───────────────────────────────────────────────────────────────
 
 /// Returns the toolbar icon directory: "icons/standard/toolbar" or "icons/dark/toolbar/regular"
@@ -124,9 +141,34 @@ typedef struct {
 /// dark icon name if in dark mode. Returns nil if not found.
 - (nullable NSImage *)toolbarIconNamed:(NSString *)standardName;
 
+/// Same as -toolbarIconNamed:, but picks the light/dark icon set from the
+/// background the icon is drawn on instead of the chrome dark-mode state.
+/// For panel bodies painted with the editor theme (NPPStyleStore globalBg),
+/// which can be light while the chrome is dark and vice versa.
+- (nullable NSImage *)toolbarIconNamed:(NSString *)standardName
+                     forDarkBackground:(BOOL)darkBackground;
+
+/// YES when `color` is dark enough that content drawn on it should use the
+/// dark (light-on-dark) variants: DarkAqua appearance, dark icon set.
++ (BOOL)isDarkColor:(NSColor *)color;
+
+/// Aqua or DarkAqua to match content drawn on `color` (via +isDarkColor:).
+/// For views painted with the editor theme background rather than the chrome.
++ (NSAppearance *)appearanceForBackground:(NSColor *)color;
+
 /// Load a tabbar icon by name (e.g. "closeTabButton"). Uses current theme directory.
 - (nullable NSImage *)tabbarIconNamed:(NSString *)name;
 
+@end
+
+/// Label for side-panel table/outline rows painted with the editor theme.
+/// Draws in `themeTextColor` (normally NPPStyleStore globalFg), but switches to
+/// the selected-text color while its row shows the emphasized (accent-filled)
+/// selection, where the theme foreground can be unreadable (black on blue).
+/// Works as a bare row view or as the textField of an NSTableCellView: the row
+/// view forwards its background style to the label's cell either way.
+@interface NppThemedLabel : NSTextField
+@property (nonatomic, strong, nullable) NSColor *themeTextColor;
 @end
 
 NS_ASSUME_NONNULL_END
