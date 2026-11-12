@@ -644,6 +644,9 @@ static NSString *normalizeForLookup(NSString *s) {
         @"full path a to z":               @"cmd:11004",
         @"full path z to a":               @"cmd:11005",
         @"windows…":                       @"cmd:11001",
+
+        // Find window status lines that Windows keeps in <MiscStrings>
+        @"find: invalid regular expression": @"misc:find-status-invalid-re",
     };
 
     for (NSString *macosKey in aliases) {
