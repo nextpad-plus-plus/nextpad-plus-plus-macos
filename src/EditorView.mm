@@ -300,6 +300,30 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     return nppEOLModeFromPrefs();
 }
 
+// Scintilla's EOL mode is a per-document property and every new document
+// starts as SC_EOL_LF on macOS. New tabs take the "Default line ending" pref
+// (kPrefEOLType: 0=CRLF 1=LF 2=CR, which is NOT Scintilla's SC_EOL_* order).
+static int nppEOLModeFromPrefs(void) {
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:kPrefEOLType]) {
+        case 0:  return SC_EOL_CRLF;
+        case 2:  return SC_EOL_CR;
+        default: return SC_EOL_LF;
+    }
+}
+
+// Loaded files take the line ending of their first line break, like Windows
+// NPP's FileManager::getEOLFormatForm. Files with no line break fall back to
+// the pref. Searching for LF first bounds LF and CRLF files to line 1; only
+// CR-only files (or files with no line break) are scanned to the end.
+static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
+    if (!bytes || !len) return nppEOLModeFromPrefs();
+    const char *lf = (const char *)memchr(bytes, '\n', len);
+    const char *cr = (const char *)memchr(bytes, '\r', lf ? (NSUInteger)(lf - bytes) : len);
+    if (cr) return (cr + 1 < bytes + len && cr[1] == '\n') ? SC_EOL_CRLF : SC_EOL_CR;
+    if (lf) return SC_EOL_LF;
+    return nppEOLModeFromPrefs();
+}
+
 @implementation EditorView {
     BOOL    _isModified;
     // Loaded from a backup (-markAsModified): the Scintilla save point is the
@@ -386,6 +410,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     if (dragTypes.count) [contentView registerForDraggedTypes:dragTypes];
 
     [self applyDefaultTheme];
+    [_scintillaView message:SCI_SETEOLMODE wParam:nppEOLModeFromPrefs()];
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_preferencesChanged:)
@@ -1833,7 +1858,6 @@ static NSString *nppEditorFontName(NSString *name) {
     // Indentation guides — honour the persisted kPrefShowIndentGuides toggle.
     BOOL showGuides = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefShowIndentGuides];
     [sci message:SCI_SETINDENTATIONGUIDES wParam:(showGuides ? SC_IV_LOOKBOTH : SC_IV_NONE)];
-    [sci message:SCI_SETEOLMODE wParam:nppEOLModeFromPrefs()];
     NPPStyleEntry *gsIndent = [store globalStyleNamed:@"Indent guideline style"];
     if (gsIndent.fgColor) [sci setColorProperty:SCI_STYLESETFORE parameter:37 value:gsIndent.fgColor];
     if (gsIndent.bgColor) [sci setColorProperty:SCI_STYLESETBACK parameter:37 value:gsIndent.bgColor];
