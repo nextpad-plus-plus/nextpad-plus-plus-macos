@@ -82,7 +82,6 @@
     sptr_t              _mapDoc;       // document shared with _trackedEditor (0 = own empty doc)
     _DMViewportOverlay *_overlay;
     __weak EditorView  *_trackedEditor;
-    NSTimer            *_contentDebounce;
     NSColor            *_viewportColor; // theme-derived; see -_applyChromeForBackground:
     CGFloat             _grabOffset;   // fromTop offset from mouse to rect center at mouseDown
 }
@@ -99,6 +98,9 @@
         [[NSNotificationCenter defaultCenter]
             addObserver:self selector:@selector(_prefsChanged:)
                    name:@"NPPPreferencesChanged" object:nil];
+        [[NSNotificationCenter defaultCenter]
+            addObserver:self selector:@selector(_scintillaStylesChanged:)
+                   name:SCIStyleChangedNotification object:nil];
         // In Auto mode the dark-mode switch commits a new editor theme; in
         // forced Light/Dark it only changes the chrome. Either way re-derive.
         [[NSNotificationCenter defaultCenter]
@@ -111,7 +113,6 @@
 - (instancetype)init { return [self initWithFrame:NSZeroRect]; }
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [_contentDebounce invalidate];
 }
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -202,17 +203,6 @@
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
     return [[self _editorDropView] performDragOperation:sender];
-}
-
-// ── Content update (debounced) ────────────────────────────────────────────────
-
-- (void)_scheduleContentUpdate {
-    [_contentDebounce invalidate];
-    _contentDebounce = [NSTimer scheduledTimerWithTimeInterval:0.25
-                                                        target:self
-                                                      selector:@selector(_updateMapContent)
-                                                      userInfo:nil
-                                                       repeats:NO];
 }
 
 // The map views the editor's own document, so text, lexer state, keyword
@@ -451,9 +441,14 @@ static sptr_t _dmBGRFromColor(NSColor *c) {
 
 - (void)_cursorMoved:(NSNotification *)note {
     if (note.object != _trackedEditor) return;
+    sptr_t previousDocument = _mapDoc;
     [self _syncDocument];
+    if (_mapDoc != previousDocument) [self _applyThemeFromEditor:_trackedEditor];
     [self _syncScroll];
-    [self _scheduleContentUpdate];
+}
+
+- (void)_scintillaStylesChanged:(NSNotification *)note {
+    if (note.object == _trackedEditor.scintillaView) [self _applyThemeFromEditor:_trackedEditor];
 }
 
 - (void)_prefsChanged:(NSNotification *)note {
