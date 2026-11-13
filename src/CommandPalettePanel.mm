@@ -150,7 +150,7 @@ static const CGFloat kRowH    = 50;
     NSMutableArray *result = [NSMutableArray array];
     for (NSMenuItem *top in NSApp.mainMenu.itemArray) {
         if (top.hasSubmenu)
-            [self _walk:top.submenu path:top.title into:result];
+            [self _walk:top.submenu path:top.submenu.title into:result];
     }
     _allCommands = [result copy];
 }

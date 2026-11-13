@@ -1,3 +1,4 @@
+#import "NppCommandDispatch.h"
 #import "EditorView.h"
 #import "NppTextEncoding.h"
 #import "NppPaths.h"
@@ -34,6 +35,8 @@ NSNotificationName const EditorViewZoomDidChangeNotification  = @"EditorViewZoom
 // Forward-declare Lexilla's CreateLexer (statically linked)
 namespace Scintilla { struct ILexer5; }
 extern "C" Scintilla::ILexer5 *CreateLexer(const char *name);
+
+static NSString *stylerKeywordSignature(NSString *lang);  // defined with applyKeywords:
 
 /// Returns YES if the named theme belongs to the explicit "dark fold margin" list.
 /// These themes get fold-margin bg = Default Style background; all others get #f2f2f2.
@@ -298,6 +301,30 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     return nppEOLModeFromPrefs();
 }
 
+// Scintilla's EOL mode is a per-document property and every new document
+// starts as SC_EOL_LF on macOS. New tabs take the "Default line ending" pref
+// (kPrefEOLType: 0=CRLF 1=LF 2=CR, which is NOT Scintilla's SC_EOL_* order).
+static int nppEOLModeFromPrefs(void) {
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:kPrefEOLType]) {
+        case 0:  return SC_EOL_CRLF;
+        case 2:  return SC_EOL_CR;
+        default: return SC_EOL_LF;
+    }
+}
+
+// Loaded files take the line ending of their first line break, like Windows
+// NPP's FileManager::getEOLFormatForm. Files with no line break fall back to
+// the pref. Searching for LF first bounds LF and CRLF files to line 1; only
+// CR-only files (or files with no line break) are scanned to the end.
+static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
+    if (!bytes || !len) return nppEOLModeFromPrefs();
+    const char *lf = (const char *)memchr(bytes, '\n', len);
+    const char *cr = (const char *)memchr(bytes, '\r', lf ? (NSUInteger)(lf - bytes) : len);
+    if (cr) return (cr + 1 < bytes + len && cr[1] == '\n') ? SC_EOL_CRLF : SC_EOL_CR;
+    if (lf) return SC_EOL_LF;
+    return nppEOLModeFromPrefs();
+}
+
 @implementation EditorView {
     BOOL    _isModified;
     // Loaded from a backup (-markAsModified): the Scintilla save point is the
@@ -338,6 +365,9 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
 
     // Git gutter state
     BOOL               _gitGutterEnabled;
+
+    BOOL _sortingRectangle;
+    sptr_t _sortColumnStart, _sortColumnEnd;
 
     // Defer link analysis until viewport changes settle, outside painting.
     NSTimer *_clickableLinkTimer;
@@ -387,6 +417,7 @@ static int nppDetectEOLMode(const char *bytes, NSUInteger len) {
     if (dragTypes.count) [contentView registerForDraggedTypes:dragTypes];
 
     [self applyDefaultTheme];
+    [_scintillaView message:SCI_SETEOLMODE wParam:nppEOLModeFromPrefs()];
 
     [[NSNotificationCenter defaultCenter]
         addObserver:self selector:@selector(_preferencesChanged:)
@@ -1687,6 +1718,12 @@ static NSString *nppEditorFontName(NSString *name) {
             [udlMgr applyLanguage:target toScintillaView:_scintillaView];
             _currentLanguage = [target.name copy];
         } else {
+            // A Style Configurator edit to user-defined keywords arrives
+            // through this same path; refeed the lists only when they changed
+            // (a colour drag fires many previews, and PHP's lists are large).
+            if (![stylerKeywordSignature(_currentLanguage.lowercaseString)
+                    isEqualToString:_appliedStylerKeywords ?: @""])
+                [self applyKeywords:_currentLanguage];
             [self applyLexerColors:_currentLanguage];
         }
     }
@@ -1836,7 +1873,6 @@ static NSString *nppEditorFontName(NSString *name) {
     // Indentation guides — honour the persisted kPrefShowIndentGuides toggle.
     BOOL showGuides = [[NSUserDefaults standardUserDefaults] boolForKey:kPrefShowIndentGuides];
     [sci message:SCI_SETINDENTATIONGUIDES wParam:(showGuides ? SC_IV_LOOKBOTH : SC_IV_NONE)];
-    [sci message:SCI_SETEOLMODE wParam:nppEOLModeFromPrefs()];
     NPPStyleEntry *gsIndent = [store globalStyleNamed:@"Indent guideline style"];
     if (gsIndent.fgColor) [sci setColorProperty:SCI_STYLESETFORE parameter:37 value:gsIndent.fgColor];
     if (gsIndent.bgColor) [sci setColorProperty:SCI_STYLESETBACK parameter:37 value:gsIndent.bgColor];
@@ -2786,6 +2822,55 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
 
 #pragma mark - Keywords
 
+/// User-defined keywords the Style Configurator holds for `group` in the
+/// `styler` lexer (the WordsStyle text of the row whose keywordClass is
+/// `group`). Windows' makeStyle() keeps the last such row; so does this.
+/// Reads that language's own styler (C keywords from "c", not "cpp"); the
+/// aliasing lookup is only a fallback for a stylers.xml without it.
+static NSString *stylerUserKeywords(NSString *styler, NSString *group) {
+    if (!styler.length) return nil;
+    NPPStyleStore *store = [NPPStyleStore sharedStore];
+    NSArray<NPPStyleEntry *> *styles = [store stylesForExactLexer:styler] ?: [store stylesForLexer:styler];
+    NSString *words = nil;
+    for (NPPStyleEntry *e in styles) {
+        if (e.keywords.length && [e.keywordClass isEqualToString:group]) words = e.keywords;
+    }
+    return words;
+}
+
+/// Windows concatToBuildKeywordList(): user-defined words, a space, then the
+/// langs.xml list.
+static NSString *joinKeywordLists(NSString *user, NSString *def) {
+    if (!user.length) return def;
+    if (!def.length) return user;
+    return [NSString stringWithFormat:@"%@ %@", user, def];
+}
+
+/// Every styler user-defined keyword list applyKeywords: reads for `lang`.
+/// A change means the Style Configurator edited keywords and the lists need
+/// feeding again.
+static NSString *stylerKeywordSignature(NSString *lang) {
+    if ([lang isEqualToString:@"javascript"]) lang = @"javascript.js";  // as applyKeywords:
+    NSMutableString *sig = [NSMutableString string];
+    NppKeywordSlot slots[kNppKeywordSlotsMax];
+    NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
+    for (NSUInteger i = 0; i < slotCount; i++) {
+        NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        [sig appendFormat:@"%@\n", stylerUserKeywords(styler, @(slots[i].group)) ?: @""];
+    }
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            [sig appendFormat:@"%@\n", stylerUserKeywords(src, group) ?: @""];
+        }
+    }
+    return sig;
+}
+
 - (void)applyKeywords:(NSString *)lang {
     ScintillaView *sci = _scintillaView;
     lang = lang.lowercaseString;
@@ -2805,15 +2890,24 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
     // Several entries may target one slot; their words are merged (deduped).
     // Only the language's own lists count as "fed": a lone cross-language
     // list such as cpp's doxygen tags must not suppress the fallback below.
+    // Each entry contributes its styler's user-defined keywords (Style
+    // Configurator) followed by the langs.xml group, like Windows'
+    // concatToBuildKeywordList().
     NppKeywordSlot slots[kNppKeywordSlotsMax];
     NSUInteger slotCount = NppKeywordSlotsForLanguage(lang, slots, kNppKeywordSlotsMax);
     NSMutableDictionary<NSNumber *, NSMutableOrderedSet<NSString *> *> *words = [NSMutableDictionary dictionary];
     for (NSUInteger i = 0; i < slotCount; i++) {
         NSString *src = slots[i].sourceLang ? @(slots[i].sourceLang) : lang;
-        NSString *kw = [lm keywordsForLanguage:src keywordClass:@(slots[i].group)];
-        if (!kw.length) continue;
+        NSString *styler = slots[i].stylerLang ? @(slots[i].stylerLang) : src;
+        NSString *group = @(slots[i].group);
+        NSString *kw = joinKeywordLists(stylerUserKeywords(styler, group),
+                                        [lm keywordsForLanguage:src keywordClass:group]);
+        // Every slot in the table is sent, empty ones as "": on a live
+        // refresh (same lexer, Style Configurator keywords cleared or
+        // cancelled) that is what removes the old words.
         NSMutableOrderedSet *set = words[@(slots[i].slot)];
         if (!set) words[@(slots[i].slot)] = set = [NSMutableOrderedSet orderedSet];
+        if (!kw.length) continue;
         for (NSString *w in [kw componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet])
             if (w.length) [set addObject:w];
         if ([src isEqualToString:lang]) fed = YES;
@@ -2822,6 +2916,36 @@ static NSString *nppDefaultWordChars(ScintillaView *sci) {
         NSString *kw = [words[slot].array componentsJoinedByString:@" "];
         [sci message:SCI_SETKEYWORDS wParam:slot.unsignedIntegerValue lParam:(sptr_t)kw.UTF8String];
     }
+
+    // Substyles (Windows populateSubStyleKeywords()): allocate each base's
+    // substyles in Windows' order, then feed the substyleN groups to them with
+    // SCI_SETIDENTIFIERS. The lexer is fresh after setLanguage:, but this also
+    // runs again on a Style Configurator keyword edit, so free first; the
+    // reallocation hands out the same IDs.
+    [sci message:SCI_FREESUBSTYLES];
+    NSMutableDictionary<NSString *, NSNumber *> *substyleIDs = [NSMutableDictionary new];
+    NppSubstyleBase bases[kNppSubstyleBasesMax];
+    NSUInteger baseCount = NppSubstyleBasesForLanguage(lang, bases, kNppSubstyleBasesMax);
+    for (NSUInteger i = 0; i < baseCount; i++) {
+        NSString *src = bases[i].sourceLang ? @(bases[i].sourceLang) : lang;
+        sptr_t first = [sci message:SCI_ALLOCATESUBSTYLES
+                             wParam:(uptr_t)bases[i].baseStyle
+                             lParam:(sptr_t)bases[i].count];
+        if (first < 0) continue;  // lexer has no substyles for this base
+        for (int k = 0; k < bases[i].count; k++) {
+            NSString *group = [NSString stringWithFormat:@"substyle%d", bases[i].firstGroup + k];
+            NSString *words = joinKeywordLists(stylerUserKeywords(src, group),
+                                               [lm keywordsForLanguage:src keywordClass:group]);
+            // Sent even when empty, which clears a substyle on a live refresh.
+            [sci message:SCI_SETIDENTIFIERS wParam:(uptr_t)(first + k)
+                  lParam:(sptr_t)(words.UTF8String ?: "")];
+            // applyLexerColors: puts this language's own substyle rows on
+            // the IDs actually allocated.
+            if ([src isEqualToString:lang]) substyleIDs[group] = @(first + k);
+        }
+    }
+    _substyleIDs = [substyleIDs copy];
+    _appliedStylerKeywords = stylerKeywordSignature(lang);
 
     if (fed) return;
 
@@ -2934,6 +3058,13 @@ static const int kGitGutterMargin   = 4;  // margin index for git gutter
         if (objc) {
             if ([e.name isEqualToString:@"DIRECTIVE"])      sid = SCE_OBJC_DIRECTIVE;
             else if ([e.name isEqualToString:@"QUALIFIER"]) sid = SCE_OBJC_QUALIFIER;
+        }
+        // Substyle rows (keywordClass substyleN) go on the ID applyKeywords:
+        // allocated. stylers.xml numbers them to match Lexilla's allocation
+        // order, so this only differs if a stylers.xml was edited by hand.
+        if ([e.keywordClass hasPrefix:@"substyle"]) {
+            NSNumber *allocated = _substyleIDs[e.keywordClass];
+            if (allocated) sid = allocated.intValue;
         }
 
         // fg
@@ -4193,49 +4324,7 @@ static NSRegularExpression *nppClickableSchemeRegex(NSString *schemes) {
 // the selector string in sParam). Only the common, macro-relevant commands are
 // mapped; unmapped ids are logged and skipped. Each selector below is verified
 // against MenuBuilder.mm.
-static NSString *_winMacroCmdSelector(long long idm) {
-    static NSDictionary<NSNumber *, NSString *> *map;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        map = @{
-            // ── File (IDM_FILE = 41000) ──
-            @41001: @"newDocument:",          // IDM_FILE_NEW
-            @41002: @"openDocument:",         // IDM_FILE_OPEN
-            @41003: @"closeCurrentTab:",      // IDM_FILE_CLOSE
-            @41004: @"closeAllTabs:",         // IDM_FILE_CLOSEALL
-            @41006: @"saveDocument:",         // IDM_FILE_SAVE
-            @41007: @"saveAllDocuments:",     // IDM_FILE_SAVEALL
-            @41008: @"saveDocumentAs:",       // IDM_FILE_SAVEAS
-            @41010: @"printDocument:",        // IDM_FILE_PRINT
-            @41014: @"reloadFromDisk:",       // IDM_FILE_RELOAD
-            // ── Edit (IDM_EDIT = 42000) ──
-            @42001: @"cut:",                  // IDM_EDIT_CUT
-            @42002: @"copy:",                 // IDM_EDIT_COPY
-            @42003: @"undo:",                 // IDM_EDIT_UNDO
-            @42004: @"redo:",                 // IDM_EDIT_REDO
-            @42005: @"paste:",                // IDM_EDIT_PASTE
-            @42006: @"delete:",               // IDM_EDIT_DELETE
-            @42007: @"selectAll:",            // IDM_EDIT_SELECTALL
-            @42010: @"duplicateLine:",        // IDM_EDIT_DUP_LINE
-            @42014: @"moveLineUp:",           // IDM_EDIT_LINE_UP
-            @42015: @"moveLineDown:",         // IDM_EDIT_LINE_DOWN
-            @42016: @"convertToUppercase:",   // IDM_EDIT_UPPERCASE
-            @42017: @"convertToLowercase:",   // IDM_EDIT_LOWERCASE
-            @42022: @"toggleLineComment:",    // IDM_EDIT_BLOCK_COMMENT (Ctrl+Q line toggle)
-            @42023: @"addBlockComment:",      // IDM_EDIT_STREAM_COMMENT (Ctrl+Shift+Q)
-            @42024: @"trimTrailingWhitespace:",// IDM_EDIT_TRIMTRAILING
-            @42047: @"removeBlockComment:",   // IDM_EDIT_STREAM_UNCOMMENT
-            // ── Search (IDM_SEARCH = 43000) ──
-            @43002: @"findNext:",             // IDM_SEARCH_FINDNEXT
-            @43010: @"findPrevious:",         // IDM_SEARCH_FINDPREV
-            // ── Format / EOL (IDM_FORMAT = 45000) ──
-            @45001: @"setEOLCRLF:",           // IDM_FORMAT_TODOS
-            @45002: @"setEOLLF:",             // IDM_FORMAT_TOUNIX
-            @45003: @"setEOLCR:",             // IDM_FORMAT_TOMAC
-        };
-    });
-    return map[@(idm)];
-}
+static NSString *_winMacroCmdSelector(long long idm) { return NppSelectorForCommand(idm); }
 
 #pragma mark - Find/Replace macro replay (#166 — Windows mtSavedSnR / type 3)
 
@@ -5115,57 +5204,75 @@ static NSSet<NSString *> *_cLikeLanguages() {
 #pragma mark - Case Conversion
 
 - (void)convertToUppercase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    [self replaceSelectionWith:sel.uppercaseString];
+    [_scintillaView message:SCI_UPPERCASE];
 }
 
 - (void)convertToLowercase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    [self replaceSelectionWith:sel.lowercaseString];
+    [_scintillaView message:SCI_LOWERCASE];
+}
+
+- (void)_transformSelectedText:(NSString *(^)(NSString *))transform {
+    ScintillaView *sci=_scintillaView;
+    NSMutableArray<NSMutableDictionary *> *ranges=[NSMutableArray new];
+    for (sptr_t i=0;i<[sci message:SCI_GETSELECTIONS];i++) {
+        sptr_t anchor=[sci message:SCI_GETSELECTIONNANCHOR wParam:i],caret=[sci message:SCI_GETSELECTIONNCARET wParam:i];
+        [ranges addObject:[@{@"index":@(i),@"anchor":@(anchor),@"caret":@(caret),@"start":@(MIN(anchor,caret)),@"end":@(MAX(anchor,caret))} mutableCopy]];
+    }
+    NSArray *ordered=[ranges sortedArrayUsingComparator:^NSComparisonResult(NSDictionary *a,NSDictionary *b){return [a[@"start"] compare:b[@"start"]];}];
+    sptr_t delta=0;
+    for (NSMutableDictionary *r in ordered) {
+        sptr_t start=[r[@"start"] longLongValue],end=[r[@"end"] longLongValue];
+        std::vector<char> bytes((size_t)(end-start)+1);Sci_TextRangeFull tr={{start,end},bytes.data()};
+        [sci message:SCI_GETTEXTRANGEFULL wParam:0 lParam:(sptr_t)&tr];
+        NSString *part=[[NSString alloc] initWithBytes:bytes.data() length:end-start encoding:NSUTF8StringEncoding];
+        NSData *replacement=[(part.length?transform(part):@"") dataUsingEncoding:NSUTF8StringEncoding];
+        r[@"replacement"]=replacement ?: NSData.data;r[@"newStart"]=@(start+delta);r[@"newEnd"]=@(start+delta+replacement.length);
+        delta+=(sptr_t)replacement.length-(end-start);
+    }
+    [sci message:SCI_BEGINUNDOACTION];
+    for (NSDictionary *r in ordered.reverseObjectEnumerator) {
+        sptr_t start=[r[@"start"] longLongValue],end=[r[@"end"] longLongValue];
+        if (start==end) continue;
+        NSData *data=r[@"replacement"];[sci message:SCI_SETTARGETRANGE wParam:start lParam:end];
+        [sci message:SCI_REPLACETARGET wParam:data.length lParam:(sptr_t)data.bytes];
+    }
+    for (NSDictionary *r in ranges) {
+        BOOL forward=[r[@"anchor"] longLongValue]<=[r[@"caret"] longLongValue];
+        [sci message:SCI_SETSELECTIONNANCHOR wParam:[r[@"index"] integerValue] lParam:[r[forward?@"newStart":@"newEnd"] longLongValue]];
+        [sci message:SCI_SETSELECTIONNCARET wParam:[r[@"index"] integerValue] lParam:[r[forward?@"newEnd":@"newStart"] longLongValue]];
+    }
+    [sci message:SCI_ENDUNDOACTION];
 }
 
 - (void)convertToProperCase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    [self replaceSelectionWith:sel.capitalizedString];
+    [self _transformSelectedText:^NSString *(NSString *part){return part.capitalizedString;}];
 }
-
-- (void)convertToSentenceCase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    NSMutableString *result = [sel mutableCopy];
-    BOOL nextUpper = YES;
-    for (NSUInteger i = 0; i < result.length; i++) {
-        unichar c = [result characterAtIndex:i];
-        if (nextUpper && isalpha(c)) {
-            [result replaceCharactersInRange:NSMakeRange(i, 1)
-                                  withString:[[NSString stringWithCharacters:&c length:1] uppercaseString]];
-            nextUpper = NO;
-        } else if (c == '.' || c == '!' || c == '?') {
-            nextUpper = YES;
-        }
-    }
-    [self replaceSelectionWith:result];
+- (void)_sentenceCaseBlend:(BOOL)blend {
+    [self _transformSelectedText:^NSString *(NSString *part){
+        NSMutableString *out=[NSMutableString new];__block BOOL first=YES;
+        [part enumerateSubstringsInRange:NSMakeRange(0,part.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *ch,NSRange range,NSRange enclosing,BOOL *stop){
+            BOOL letter=[ch rangeOfCharacterFromSet:NSCharacterSet.letterCharacterSet].location!=NSNotFound;
+            [out appendString:letter?(first?ch.uppercaseString:blend?ch:ch.lowercaseString):ch];
+            if(letter)first=NO;else if([@".!?" containsString:ch])first=YES;
+        }];return out;
+    }];
 }
-
+- (void)convertToSentenceCase:(id)sender { [self _sentenceCaseBlend:NO]; }
 - (void)convertToInvertedCase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    NSMutableString *result = [NSMutableString stringWithCapacity:sel.length];
-    for (NSUInteger i = 0; i < sel.length; i++) {
-        unichar c = [sel characterAtIndex:i];
-        NSString *ch = [NSString stringWithCharacters:&c length:1];
-        [result appendString:isupper(c) ? ch.lowercaseString : ch.uppercaseString];
-    }
-    [self replaceSelectionWith:result];
+    [self _transformSelectedText:^NSString *(NSString *part){
+        NSMutableString *out=[NSMutableString new];
+        [part enumerateSubstringsInRange:NSMakeRange(0,part.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *ch,NSRange range,NSRange enclosing,BOOL *stop){
+            [out appendString:[ch isEqual:ch.lowercaseString]?ch.uppercaseString:ch.lowercaseString];
+        }];return out;
+    }];
 }
-
 - (void)convertToRandomCase:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    NSMutableString *result = [NSMutableString stringWithCapacity:sel.length];
-    for (NSUInteger i = 0; i < sel.length; i++) {
-        unichar c = [sel characterAtIndex:i];
-        NSString *ch = [NSString stringWithCharacters:&c length:1];
-        [result appendString:(arc4random_uniform(2) == 0) ? ch.uppercaseString : ch.lowercaseString];
-    }
-    [self replaceSelectionWith:result];
+    [self _transformSelectedText:^NSString *(NSString *part){
+        NSMutableString *out=[NSMutableString new];
+        [part enumerateSubstringsInRange:NSMakeRange(0,part.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *ch,NSRange range,NSRange enclosing,BOOL *stop){
+            [out appendString:arc4random_uniform(2)?ch.uppercaseString:ch.lowercaseString];
+        }];return out;
+    }];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -5177,14 +5284,23 @@ static NSSet<NSString *> *_cLikeLanguages() {
     ScintillaView *sci = _scintillaView;
     sptr_t selStart = [sci message:SCI_GETSELECTIONSTART];
     sptr_t selEnd   = [sci message:SCI_GETSELECTIONEND];
-    BOOL hasSelection = (selStart != selEnd);
+    _sortingRectangle = [sci message:SCI_SELECTIONISRECTANGLE] || [sci message:SCI_GETSELECTIONMODE] == SC_SEL_THIN;
+    _sortColumnStart = _sortColumnEnd = 0;
+    if (_sortingRectangle) {
+        sptr_t anchor = [sci message:SCI_GETRECTANGULARSELECTIONANCHOR], caret = [sci message:SCI_GETRECTANGULARSELECTIONCARET];
+        sptr_t ac = [sci message:SCI_GETCOLUMN wParam:anchor] + [sci message:SCI_GETRECTANGULARSELECTIONANCHORVIRTUALSPACE];
+        sptr_t cc = [sci message:SCI_GETCOLUMN wParam:caret] + [sci message:SCI_GETRECTANGULARSELECTIONCARETVIRTUALSPACE];
+        _sortColumnStart = MIN(ac, cc); _sortColumnEnd = MAX(ac, cc);
+        selStart = MIN(anchor,caret); selEnd = MAX(anchor,caret);
+    }
+    BOOL hasSelection = (selStart != selEnd) || _sortingRectangle;
 
     sptr_t lineStart, lineEnd;
     if (hasSelection) {
         lineStart = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)selStart];
         lineEnd   = [sci message:SCI_LINEFROMPOSITION wParam:(uptr_t)selEnd];
         // If selection ends at col 0 of the next line, don't include that line
-        if (selEnd == [sci message:SCI_POSITIONFROMLINE wParam:(uptr_t)lineEnd] && lineEnd > lineStart)
+        if (!_sortingRectangle && selEnd == [sci message:SCI_POSITIONFROMLINE wParam:(uptr_t)lineEnd] && lineEnd > lineStart)
             lineEnd--;
     } else {
         lineStart = 0;
@@ -5222,6 +5338,11 @@ static NSSet<NSString *> *_cLikeLanguages() {
 }
 
 - (void)applySortedLines:(NSArray<NSString *> *)lines startPos:(sptr_t)start endPos:(sptr_t)end {
+    sptr_t anchor=[_scintillaView message:SCI_GETRECTANGULARSELECTIONANCHOR];
+    sptr_t caret=[_scintillaView message:SCI_GETRECTANGULARSELECTIONCARET];
+    sptr_t anchorLine=[_scintillaView message:SCI_LINEFROMPOSITION wParam:anchor];
+    sptr_t caretLine=[_scintillaView message:SCI_LINEFROMPOSITION wParam:caret];
+    BOOL reverse=[_scintillaView message:SCI_GETCOLUMN wParam:anchor]>[_scintillaView message:SCI_GETCOLUMN wParam:caret];
     NSString *eol = self.eolName;
     NSString *sep = [eol isEqualToString:@"CRLF"] ? @"\r\n" : [eol isEqualToString:@"CR"] ? @"\r" : @"\n";
     NSString *joined = [lines componentsJoinedByString:sep];
@@ -5234,12 +5355,37 @@ static NSSet<NSString *> *_cLikeLanguages() {
     [_scintillaView message:SCI_REPLACETARGET  wParam:(uptr_t)strlen(joinedUTF8)
                                                lParam:(sptr_t)joinedUTF8];
     [_scintillaView message:SCI_ENDUNDOACTION];
+    if (_sortingRectangle) {
+        sptr_t ac=reverse?_sortColumnEnd:_sortColumnStart, cc=reverse?_sortColumnStart:_sortColumnEnd;
+        sptr_t ap=[_scintillaView message:SCI_FINDCOLUMN wParam:anchorLine lParam:ac];
+        sptr_t cp=[_scintillaView message:SCI_FINDCOLUMN wParam:caretLine lParam:cc];
+        [_scintillaView message:SCI_SETRECTANGULARSELECTIONANCHOR wParam:ap];
+        [_scintillaView message:SCI_SETRECTANGULARSELECTIONCARET wParam:cp];
+        [_scintillaView message:SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE wParam:MAX(0,ac-[_scintillaView message:SCI_GETCOLUMN wParam:ap])];
+        [_scintillaView message:SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE wParam:MAX(0,cc-[_scintillaView message:SCI_GETCOLUMN wParam:cp])];
+    }
+}
+
+- (NSString *)_sortKey:(NSString *)line {
+    if (!_sortingRectangle) return line;
+    NSInteger column=0;
+    NSMutableString *key=[NSMutableString new];
+    NSInteger width=MAX(1,[_scintillaView message:SCI_GETTABWIDTH]);
+    for (NSUInteger i=0; i<line.length;) {
+        NSRange r=[line rangeOfComposedCharacterSequenceAtIndex:i];
+        NSString *ch=[line substringWithRange:r];
+        NSInteger next=column+([ch isEqualToString:@"\t"] ? width-column%width : 1);
+        if (next>_sortColumnStart && (_sortColumnEnd==_sortColumnStart || column<_sortColumnEnd)) [key appendString:ch];
+        column=next; i=NSMaxRange(r);
+        if (_sortColumnEnd>_sortColumnStart && column>=_sortColumnEnd) break;
+    }
+    return key;
 }
 
 - (void)sortLinesAscending:(id)sender {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
-    [lines sortUsingSelector:@selector(compare:)];
+    [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) { return [[self _sortKey:a] compare:[self _sortKey:b]]; }];
     [self applySortedLines:lines startPos:s endPos:e];
 }
 
@@ -5247,6 +5393,7 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         return [b compare:a];
     }];
     [self applySortedLines:lines startPos:s endPos:e];
@@ -5256,6 +5403,7 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         return [a caseInsensitiveCompare:b];
     }];
     [self applySortedLines:lines startPos:s endPos:e];
@@ -5265,6 +5413,7 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         if (a.length < b.length) return NSOrderedAscending;
         if (a.length > b.length) return NSOrderedDescending;
         return NSOrderedSame;
@@ -5276,6 +5425,7 @@ static NSSet<NSString *> *_cLikeLanguages() {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         if (a.length > b.length) return NSOrderedAscending;
         if (a.length < b.length) return NSOrderedDescending;
         return NSOrderedSame;
@@ -5526,45 +5676,15 @@ static const unsigned int kSCI_GetBidirectional = 2708;
 
 /// Proper Case (Blend): uppercase first letter of each word, leave rest unchanged.
 - (void)convertToProperCaseBlend:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    NSMutableString *result = [sel mutableCopy];
-    BOOL prevWasAlnum = NO;
-    for (NSUInteger i = 0; i < result.length; i++) {
-        unichar c = [result characterAtIndex:i];
-        if ([[NSCharacterSet letterCharacterSet] characterIsMember:c]) {
-            if (!prevWasAlnum) {
-                unichar up = [[[NSString stringWithCharacters:&c length:1] uppercaseString] characterAtIndex:0];
-                [result replaceCharactersInRange:NSMakeRange(i, 1)
-                                     withString:[NSString stringWithCharacters:&up length:1]];
-            }
-            prevWasAlnum = YES;
-        } else {
-            prevWasAlnum = [[NSCharacterSet alphanumericCharacterSet] characterIsMember:c];
-        }
-    }
-    [self replaceSelectionWith:result];
+    [self _transformSelectedText:^NSString *(NSString *part){
+        NSMutableString *out=[NSMutableString new];__block BOOL first=YES;
+        [part enumerateSubstringsInRange:NSMakeRange(0,part.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *ch,NSRange range,NSRange enclosing,BOOL *stop){
+            BOOL letter=[ch rangeOfCharacterFromSet:NSCharacterSet.letterCharacterSet].location!=NSNotFound;
+            [out appendString:(letter&&first)?ch.uppercaseString:ch];first=!letter;
+        }];return out;
+    }];
 }
-
-/// Sentence case (Blend): uppercase first letter of each sentence, leave rest unchanged.
-- (void)convertToSentenceCaseBlend:(id)sender {
-    NSString *sel = [self selectedText]; if (!sel) return;
-    NSMutableString *result = [sel mutableCopy];
-    BOOL nextUpper = YES;
-    for (NSUInteger i = 0; i < result.length; i++) {
-        unichar c = [result characterAtIndex:i];
-        if ([[NSCharacterSet letterCharacterSet] characterIsMember:c]) {
-            if (nextUpper) {
-                unichar up = [[[NSString stringWithCharacters:&c length:1] uppercaseString] characterAtIndex:0];
-                [result replaceCharactersInRange:NSMakeRange(i, 1)
-                                     withString:[NSString stringWithCharacters:&up length:1]];
-                nextUpper = NO;
-            }
-        } else if (c == '.' || c == '!' || c == '?') {
-            nextUpper = YES;
-        }
-    }
-    [self replaceSelectionWith:result];
-}
+- (void)convertToSentenceCaseBlend:(id)sender { [self _sentenceCaseBlend:YES]; }
 
 // ─────────────────────────────────────────────────────────────────────────────
 #pragma mark - Join Lines / Sort Extensions
@@ -5583,7 +5703,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
 - (void)sortLinesRandomly:(id)sender {
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
-    for (NSUInteger i = lines.count - 1; i > 0; i--) {
+    for (NSUInteger i = lines.count ? lines.count - 1 : 0; i > 0; i--) {
         NSUInteger j = arc4random_uniform((uint32_t)(i + 1));
         [lines exchangeObjectAtIndex:i withObjectAtIndex:j];
     }
@@ -5601,6 +5721,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         long long va = [a longLongValue];
         long long vb = [b longLongValue];
         return va < vb ? NSOrderedAscending : va > vb ? NSOrderedDescending : NSOrderedSame;
@@ -5612,6 +5733,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         long long va = [a longLongValue];
         long long vb = [b longLongValue];
         return va > vb ? NSOrderedAscending : va < vb ? NSOrderedDescending : NSOrderedSame;
@@ -5623,6 +5745,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         double va = a.doubleValue;
         double vb = b.doubleValue;
         return va < vb ? NSOrderedAscending : va > vb ? NSOrderedDescending : NSOrderedSame;
@@ -5634,6 +5757,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     sptr_t s, e;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         double va = a.doubleValue;
         double vb = b.doubleValue;
         return va > vb ? NSOrderedAscending : va < vb ? NSOrderedDescending : NSOrderedSame;
@@ -5646,6 +5770,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     NSLocale *commaLocale = [NSLocale localeWithLocaleIdentifier:@"fr_FR"]; // uses comma as decimal separator
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         double va = [[NSDecimalNumber decimalNumberWithString:a locale:commaLocale] doubleValue];
         double vb = [[NSDecimalNumber decimalNumberWithString:b locale:commaLocale] doubleValue];
         return va < vb ? NSOrderedAscending : va > vb ? NSOrderedDescending : NSOrderedSame;
@@ -5658,6 +5783,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     NSMutableArray *lines = [self linesForSortingStartPos:&s endPos:&e];
     NSLocale *commaLocale = [NSLocale localeWithLocaleIdentifier:@"fr_FR"];
     [lines sortUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
+        a=[self _sortKey:a]; b=[self _sortKey:b];
         double va = [[NSDecimalNumber decimalNumberWithString:a locale:commaLocale] doubleValue];
         double vb = [[NSDecimalNumber decimalNumberWithString:b locale:commaLocale] doubleValue];
         return va > vb ? NSOrderedAscending : va < vb ? NSOrderedDescending : NSOrderedSame;
@@ -6229,6 +6355,7 @@ static const unsigned int kSCI_GetBidirectional = 2708;
     if (!funcName.length) { NSBeep(); return; }
     NSString *tip = [NSString stringWithFormat:@"%@( ... )", funcName];
     [sci message:SCI_CALLTIPSHOW wParam:(uptr_t)nameStart lParam:(sptr_t)tip.UTF8String];
+
 }
 
 - (void)triggerFunctionCompletion:(id)sender {
