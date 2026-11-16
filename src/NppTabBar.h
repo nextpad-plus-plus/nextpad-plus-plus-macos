@@ -36,11 +36,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// Swap two tab items by index (preserves all properties including pin and color).
 - (void)swapTabAtIndex:(NSInteger)a withIndex:(NSInteger)b;
 
-/// Set a per-tab color identifier (-1 = none/default orange, 0–4 = color 1–5).
+/// Set a per-tab color identifier (-1 = none/default orange, 0–4 = preset colors 1–5, 5 = custom color).
 - (void)setTabColorAtIndex:(NSInteger)index colorId:(NSInteger)colorId;
 /// Returns the color identifier for the tab at index (-1 if none).
 - (NSInteger)tabColorAtIndex:(NSInteger)index;
-/// The fill NSColor for a color identifier (0–4), or nil for -1/none. Lets other
+
+/// Sets an arbitrary custom color on the tab at the specified index, assigning colorId = 5.
+- (void)setTabCustomColor:(NSColor *)color atIndex:(NSInteger)index;
+
+/// Returns the custom color assigned to the tab at index, or nil if uncolored or using a preset palette color.
+- (nullable NSColor *)tabCustomColorAtIndex:(NSInteger)index;
+
 /// UI (e.g. the Document List) tint records to match a colored tab.
 + (nullable NSColor *)tabFillColorForId:(NSInteger)colorId;
 
