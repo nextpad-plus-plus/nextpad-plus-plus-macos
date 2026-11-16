@@ -154,6 +154,9 @@ static NSMenu *buildLanguageMenu() {
     NSMenuItem *recentItem = withSubmenu(@"Open Recent", submenu(@"Open Recent"));
     recentItem.tag = 1001;
     [fileMenu addItem:recentItem];
+    // Windows: File > Restore Recent Closed File (IDM_FILE_RESTORELASTCLOSEDFILE, Ctrl+Shift+T).
+    [fileMenu addItem:itemMod(@"Restore Recent Closed File", @selector(restoreRecentClosedFile:), @"t",
+                              NSEventModifierFlagCommand | NSEventModifierFlagShift)];
 
     NSMenu *openContMenu = submenu(@"Open Containing Folder");
     [openContMenu addItem:item(@"Finder",   @selector(revealInFinder:),  @"")];
