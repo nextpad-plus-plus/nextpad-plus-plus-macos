@@ -593,9 +593,229 @@
 	<td>Sven Ritter</td>
 	<td>Stefan Löffler</td>
 	<td>Nathaniel Braun</td>
+      </tr><tr>
+	<td>Stephan T. Lavavej</td>
+	<td>RealMalWare</td>
+	<td>Schreiner</td>
+	<td>Masayuki HINO</td>
+      </tr><tr>
+	<td>Micha Wiedenmann</td>
     </tr>
     </table>
     <h2 id="Releases">Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla569.zip">Release 5.6.9</a>
+    </h3>
+    <ul>
+	<li>
+	Released 2 November 2026.
+	</li>
+	<li>
+	Restore colour of XPM images which stopped working in 5.6.8.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla568.zip">Release 5.6.8</a>
+    </h3>
+    <ul>
+	<li>
+	Released 31 October 2026.
+	</li>
+	<li>
+	Improve speed by avoiding line layout when determining positions at line starts.
+	Increase maximum size of cached lexemes from 30 to 40 as many identifiers, column names, and
+	common values are larger than 30 bytes.
+	</li>
+	<li>
+	Update case conversion and character categories to Unicode 17.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1569/">Feature #1569</a>.
+	</li>
+	<li>
+	Fix crash with change history undo caused by optimizing bulk deletion in version 5.3.8.
+	</li>
+	<li>
+	On Win32 fix crash and invisible text for invalid weight and stretch font settings with DirectWrite.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2520/">Bug #2520</a>.
+	</li>
+	<li>
+	On Win32 when building with nmake -f scintilla.mak, move PDB file to DIR_O directory
+	so that it is removed by nmake -f scintilla.mak clean.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2521/">Bug #2521</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla567.zip">Release 5.6.7</a>
+    </h3>
+    <ul>
+	<li>
+	Released 28 September 2026.
+	</li>
+	<li>
+	Reduce memory used by line layouts by storing positions as 32-bit floats instead of 64-bit.
+	</li>
+	<li>
+	Reduce temporary memory use during layout of wide lines with many control characters.
+	</li>
+	<li>
+	Fix style ending inside character after deleting last character of document.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2471/">Bug #2471</a>.
+	</li>
+	<li>
+	Fix SCI_VERTICALCENTRECARET to not scroll past end.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2518/">Bug #2518</a>.
+	</li>
+	<li>
+	For SCI_GETCOLUMN and SCI_FINDCOLUMN treat Unicode line ends similar to ASCII line ends.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2516/">Bug #2516</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla566.zip">Release 5.6.6</a>
+    </h3>
+    <ul>
+	<li>
+	Released 12 August 2026.
+	</li>
+	<li>
+	Add position to fields of UpdateUI event in Scintilla.iface.
+	</li>
+	<li>
+	Fix data race bug in multi-threaded word wrap introduced in 5.6.4.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2515/">Bug #2515</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla565.zip">Release 5.6.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 4 August 2026.
+	</li>
+	<li>
+	Add SC_UPDATE_TEXT and SC_UPDATE_LINE_COUNT flags to SCN_UPDATEUI notifications.
+	This can help improve performance by client code switching from listening for changes with rapid
+	SCN_MODIFIED to delayed SCN_UPDATEUI notifications.
+	</li>
+	<li>
+	On Qt, prepare for drawing asynchronously to avoid styling inside the draw handler.
+	This may improve performance and matches other platforms.
+	</li>
+	<li>
+	On Cocoa, fix problem where styling and update UI notifications were performed inside drawing
+	instead of before drawing which could cause drawing to be abandoned unnecessarily.
+	</li>
+	<li>
+	Increase interior width of MarkerSymbol::Plus and Minus to match stroke width setting.
+	</li>
+	<li>
+	Improve performance of fold discovery in some situations by styling progressively larger
+	blocks of lines.
+	</li>
+	<li>
+	Don't use std::async and std::future in single threaded situations.
+	This avoids crashes with some runtime libraries as well as minor performance costs.
+	<a href="https://github.com/geany/geany/issues/4620">Geany Issue #4620</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla564.zip">Release 5.6.4</a>
+    </h3>
+    <ul>
+	<li>
+	Released 6 July 2026.
+	</li>
+	<li>
+	On Qt improve display for fractional scaling by providing SCI_SETSCALETECHNIQUE API.
+	The SCALE_TECHNIQUE_PIXEL_ALIGNED value will eliminate potential 'seams' between lines
+	and between runs on a line.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2450/">Bug #2450</a>.
+	</li>
+	<li>
+	Scintilla.iface is augmented with comments indicating which APIs take pixel values so may
+	be automatically scaled by wrappers.
+	For compatibility this is currently indicated in comments after each affected API but this will
+	change to using the 'pixels' type in a future version,
+	Downstream projects should examine this and make any needed changes, such as using floating
+	point types for wrapper methods.
+	To help migration, the scripts/FilterPixels.py script can convert this Scintilla.iface into the previous form
+	with no mention of 'pixels' or into the final form with 'pixels' as the only type for these features.
+	</li>
+	<li>
+	On Qt always place ScintillaEditBase library in scintilla/bin instead of depending on Qt version.
+	</li>
+	<li>
+	Optimize SCI_CHANGEINSERTION that sets empty insertion by not producing empty undo action
+	and potential save point change.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1588/">Feature #1588</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla563.zip">Release 5.6.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 6 June 2026.
+	</li>
+	<li>
+	Restore selection and scroll position for undo and redo on additional views instead of just the view
+	performing the undo or redo.
+	<a href="https://github.com/notepad-plus-plus/notepad-plus-plus/pull/18014">Notepad++ Pull Request #18014</a>.
+	</li>
+	<li>
+	Improve performance of rectangular paste when many spaces must be inserted.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2302/">Bug #2302</a>.
+	</li>
+	<li>
+	On Win32, close the clipboard before inserting pasted or dropped text so that the clipboard is not blocked while
+	the insertion is performed.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2507/">Bug #2507</a>.
+	</li>
+	<li>
+	On Qt with Wayland, fix failures with displaying calltips and autocompletion lists.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla562.zip">Release 5.6.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 29 April 2026.
+	</li>
+	<li>
+	Add error status SC_STATUS_OUTSIDE_DOCUMENT that is set when operations are attempted on a position
+	outside the document.
+	Positions are checked earlier to prevent actions partly succeeding.
+	Incomplete actions could lead to features that are out of synchronization
+	like change history referring to text that has been deleted.
+	</li>
+	<li>
+	On Win32 with DirectWrite in a GDI scaled application, draw sharper text in autocompletion lists.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2505/">Bug #2505</a>.
+	</li>
+	<li>
+	On Win32 update scaling when the application moves to another monitor.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2503/">Bug #2503</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla561.zip">Release 5.6.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 26 March 2026.
+	</li>
+	<li>
+	Add mode to draw tabs as [HT] blobs with SCI_SETTABDRAWMODE(SCTD_CONTROLCHAR).
+	</li>
+	<li>
+	Improve mouse drag behaviour when drag and drop disabled.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1581/">Feature #1581</a>.
+	</li>
+	<li>
+	Fix regression in SCI_CONVERTEOLS that may not convert whole file.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2501/">Bug #2501</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla560.zip">Release 5.6.0</a>
     </h3>

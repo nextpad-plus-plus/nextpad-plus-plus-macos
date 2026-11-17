@@ -21,6 +21,7 @@
 #include <ctime>
 #include <cmath>
 #include <stdexcept>
+#include <new>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -76,6 +77,8 @@
 class ScintillaEditBase;
 
 namespace Scintilla::Internal {
+
+constexpr QEvent::Type workEvent = QEvent::User;
 
 class ScintillaQt : public QObject, public ScintillaBase {
 	Q_OBJECT
@@ -135,6 +138,8 @@ private:
 	void FineTickerCancel(TickReason reason) override;
 	bool ChangeIdle(bool on);
 	bool SetIdle(bool on) override;
+	bool workInQueue = false;
+	void QueueIdleWork(WorkItems items, Sci::Position upTo) override;
 	void SetMouseCapture(bool on) override;
 	bool HaveMouseCapture() override;
 	void StartDrag() override;
@@ -155,6 +160,11 @@ private:
 	static sptr_t DirectStatusFunction(sptr_t ptr,
 				     unsigned int iMessage, uptr_t wParam, sptr_t lParam, int *pStatus);
 
+	void SetScaleProperty();
+	bool IsPixelAlignedScale() const noexcept {
+		return scaleTechnique == ScaleTechnique::PixelAligned;
+	}
+
 protected:
 
 	void PartialPaint(const PRectangle &rect);
@@ -166,6 +176,7 @@ protected:
 	void DropUrls(const QMimeData *data);
 
 	void timerEvent(QTimerEvent *event) override;
+	void customEvent(QEvent* event) override;
 
 private:
 	QAbstractScrollArea *scrollArea;
@@ -176,6 +187,8 @@ private:
 	bool haveMouseCapture;
 	bool dragWasDropped;
 	int rectangularSelectionModifier;
+
+	ScaleTechnique scaleTechnique = ScaleTechnique::Default;
 
 	friend class ::ScintillaEditBase;
 };

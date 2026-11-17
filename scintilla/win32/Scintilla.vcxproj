@@ -36,7 +36,9 @@
   <PropertyGroup>
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '18'">v145</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '17'">v143</PlatformToolset>
+    <PlatformToolset Condition="'$(VisualStudioVersion)' == '18' and exists('$(MSBuildExtensionsPath32)\Microsoft\VC\v170\Platforms\$(Platform)\PlatformToolsets\v143\Toolset.props')">v143</PlatformToolset>
     <TargetName>lib$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -91,7 +93,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_USRDLL;BOOST_REGEX_STANDALONE;SCI_OWNREGEX;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;BOOST_REGEX_STANDALONE;SCI_OWNREGEX;SCI_NAMESPACE;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include;..\src;..\..\boostregex</AdditionalIncludeDirectories>
       <BrowseInformation>false</BrowseInformation>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

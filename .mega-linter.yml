@@ -1,0 +1,40 @@
+# MegaLinter Configuration for Nextpad++ macOS
+# Documentation: https://megalinter.io/latest/configuration/
+
+# --- Codebase Filtering ---
+# Exclude vendored upstream libraries, build outputs, and release downloads
+FILTER_REGEX_EXCLUDE: (scintilla/|lexilla/|regex/|downloads/|build/|build-.*/|dist/|test_plugins/|\.git/|\.vscode/)
+
+# --- Language Enablement ---
+ENABLE:
+  - ACTION
+  - BASH
+  - CMAKE
+  - CPP
+  - MARKDOWN
+  - REPOSITORY
+  - XML
+  - YAML
+
+# --- Specific Linter Activation ---
+ENABLE_LINTERS:
+  - ACTION_ACTIONLINT
+  - BASH_SHELLCHECK
+  - BASH_SHFMT
+  - CMAKE_CMAKE_FORMAT
+  - CMAKE_CMAKE_LINT
+  - CPP_CLANG_FORMAT
+  - CPP_CPPCHECK
+  - MARKDOWN_MARKDOWNLINT
+  - REPOSITORY_TRUFFLEHOG
+  - XML_XMLLINT
+  - YAML_YAMLLINT
+
+# --- Linter-Specific Arguments & Settings ---
+BASH_SHELLCHECK_ARGUMENTS: -s bash
+CPP_CPPCHECK_ARGUMENTS: --enable=warning,performance,portability --inline-suppr --suppress=missingIncludeSystem -I src
+
+# --- Formatting & Output Configuration ---
+PRINT_ALPACA: false
+SHOW_ELAPSED_TIME: true
+FILEIO_REPORTER: false

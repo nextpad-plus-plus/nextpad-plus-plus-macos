@@ -32,6 +32,7 @@ $(DIR_O)/DefaultLexer.obj: \
 	../lexlib/LexAccessor.h \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
 $(DIR_O)/InList.obj: \
 	../lexlib/InList.cxx \
@@ -284,7 +285,9 @@ $(DIR_O)/LexBatch.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexBibTeX.obj: \
 	../lexers/LexBibTeX.cxx \
 	../../scintilla/include/ILexer.h \
@@ -929,7 +932,9 @@ $(DIR_O)/LexMarkdown.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexMatlab.obj: \
 	../lexers/LexMatlab.cxx \
 	../../scintilla/include/ILexer.h \
@@ -1127,7 +1132,9 @@ $(DIR_O)/LexPascal.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexPB.obj: \
 	../lexers/LexPB.cxx \
 	../../scintilla/include/ILexer.h \
