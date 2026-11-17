@@ -14,6 +14,8 @@
 #include <cmath>
 
 #include <stdexcept>
+#include <new>
+#include <utility>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -22,6 +24,7 @@
 #include <forward_list>
 #include <optional>
 #include <algorithm>
+#include <iterator>
 #include <memory>
 #include <chrono>
 
@@ -530,6 +533,13 @@ void SCI_METHOD Document::SetErrorStatus(int status) {
 	}
 }
 
+void Document::CheckPosition(Sci::Position pos) const {
+	PLATFORM_ASSERT((pos >= 0) && (pos <= LengthNoExcept()));
+	if ((pos < 0) || (pos > LengthNoExcept())) {
+		throw Failure(Status::OutsideDocument);
+	}
+}
+
 Sci_Position SCI_METHOD Document::LineFromPosition(Sci_Position pos) const {
 	return cb.LineFromPosition(pos);
 }
@@ -629,8 +639,20 @@ Sci::Line Document::GetLastChild(Sci::Line lineParent, std::optional<FoldLevel> 
 	const Sci::Line maxLine = LinesTotal() - 1;
 	const Sci::Line lookLastLine = (lastLine != -1) ? std::min(maxLine, lastLine) : maxLine;
 	Sci::Line lineMaxSubord = lineParent;
+
+	// A fold start is commonly closely followed by its last child, but it could be a long distance,
+	// perhaps the end of the file. This may be caused by an unbalanced fold start.
+	// To reduce lexer/folder overhead use progressively larger blocks of lines.
+	// First 10 grow by 1 then geometric 1.2x growth.
+	Sci::Line linesToStyle = 1;
+	constexpr Sci::Line growthFraction = 5;
+
 	while (lineMaxSubord < maxLine) {
-		EnsureStyledTo(LineStart(lineMaxSubord + 2));
+		const Sci::Position posNeedStyle = LineStart(lineMaxSubord + 2);
+		if (posNeedStyle > GetEndStyled()) {
+			EnsureStyledTo(LineStart(lineMaxSubord + linesToStyle + 1));
+			linesToStyle += std::max<Sci::Line>(1, linesToStyle / growthFraction);
+		}
 		if (!IsSubordinate(levelStart, GetFoldLevel(lineMaxSubord + 1)))
 			break;
 		if ((lineMaxSubord >= lookLastLine) && !LevelIsWhitespace(GetFoldLevel(lineMaxSubord)))
@@ -716,10 +738,7 @@ void Document::GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter, Sc
 	if (firstChangeableLineAfter == -1)
 		firstChangeableLineAfter = endFoldBlock + 1;
 
-	highlightDelimiter.beginFoldBlock = beginFoldBlock;
-	highlightDelimiter.endFoldBlock = endFoldBlock;
-	highlightDelimiter.firstChangeableLineBefore = firstChangeableLineBefore;
-	highlightDelimiter.firstChangeableLineAfter = firstChangeableLineAfter;
+	highlightDelimiter.Set(beginFoldBlock, endFoldBlock, firstChangeableLineBefore, firstChangeableLineAfter);
 }
 
 Sci::Position Document::ClampPositionIntoDocument(Sci::Position pos) const noexcept {
@@ -1485,6 +1504,7 @@ Sci::Position Document::InsertString(Sci::Position position, const char *s, Sci:
 	if (insertLength <= 0) {
 		return 0;
 	}
+	CheckPosition(position);
 	CheckReadOnly();	// Application may change read only state here
 	if (cb.IsReadOnly()) {
 		return 0;
@@ -1501,6 +1521,10 @@ Sci::Position Document::InsertString(Sci::Position position, const char *s, Sci:
 			position, insertLength,
 			0, s));
 	if (insertionSet) {
+		if (insertion.empty()) {
+			enteredModification--;
+			return 0;
+		}
 		s = insertion.c_str();
 		insertLength = insertion.length();
 	}
@@ -1622,7 +1646,7 @@ Sci::Position Document::Undo() {
 						modFlags |= ModificationFlags::MultilineUndoRedo;
 				}
 				NotifyModified(DocModification(modFlags, action.position, action.lenData,
-											   linesAdded, action.data));
+											   linesAdded, action.data, 0, newPos));
 			}
 
 			const bool endSavePoint = cb.IsSavePoint();
@@ -1682,7 +1706,7 @@ Sci::Position Document::Redo() {
 				}
 				NotifyModified(
 					DocModification(modFlags, action.position, action.lenData,
-									linesAdded, action.data));
+									linesAdded, action.data, 0, newPos));
 			}
 
 			const bool endSavePoint = cb.IsSavePoint();
@@ -1888,13 +1912,13 @@ constexpr std::string_view EOLForMode(EndOfLine eolMode) noexcept {
 
 // Convert line endings for a piece of text to a particular mode.
 // Stop at len or when a NUL is found.
-std::string Document::TransformLineEnds(const char *s, size_t len, EndOfLine eolModeWanted) {
+std::string Document::TransformLineEnds(std::string_view s, EndOfLine eolModeWanted) {
 	std::string dest;
 	const std::string_view eol = EOLForMode(eolModeWanted);
-	for (size_t i = 0; (i < len) && (s[i]); i++) {
+	for (size_t i = 0; (i < s.length()) && (s[i]); i++) {
 		if (s[i] == '\n' || s[i] == '\r') {
 			dest.append(eol);
-			if ((s[i] == '\r') && (i+1 < len) && (s[i+1] == '\n')) {
+			if ((s[i] == '\r') && (i+1 < s.length()) && (s[i+1] == '\n')) {
 				i++;
 			}
 		} else {
@@ -1904,11 +1928,14 @@ std::string Document::TransformLineEnds(const char *s, size_t len, EndOfLine eol
 	return dest;
 }
 
+std::string Document::TransformLineEnds(const char *s, size_t len, EndOfLine eolModeWanted) {
+	return TransformLineEnds(std::string_view(s, len), eolModeWanted);
+}
+
 void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 	UndoGroup ug(this);
 
-	const Sci::Position length = Length();
-	for (Sci::Position pos = 0; pos < length; pos++) {
+	for (Sci::Position pos = 0; pos < LengthNoExcept(); pos++) {
 		const char ch = cb.CharAt(pos);
 		if (ch == '\r') {
 			if (cb.CharAt(pos + 1) == '\n') {
@@ -2572,10 +2599,10 @@ bool SCI_METHOD Document::SetStyleFor(Sci_Position length, char style) {
 		return false;
 	}
 	enteredStyling++;
-	const Sci::Position prevEndStyled = endStyled;
-	if (cb.SetStyleFor(endStyled, length, style)) {
+	const ChangedRange cr = cb.SetStyleFor(endStyled, length, style);
+	if (!cr.Empty()) {
 		const DocModification mh(ModificationFlags::ChangeStyle | ModificationFlags::User,
-			                prevEndStyled, length);
+			                cr.start, cr.end - cr.start + 1);
 		NotifyModified(mh);
 	}
 	endStyled += length;
@@ -2588,22 +2615,11 @@ bool SCI_METHOD Document::SetStyles(Sci_Position length, const char *styles) {
 		return false;
 	}
 	enteredStyling++;
-	bool didChange = false;
-	Sci::Position startMod = 0;
-	Sci::Position endMod = 0;
-	for (int iPos = 0; iPos < length; iPos++, endStyled++) {
-		PLATFORM_ASSERT(endStyled < Length());
-		if (cb.SetStyleAt(endStyled, styles[iPos])) {
-			if (!didChange) {
-				startMod = endStyled;
-			}
-			didChange = true;
-			endMod = endStyled;
-		}
-	}
-	if (didChange) {
+	const ChangedRange cr = cb.SetStyles(endStyled, styles, length);
+	endStyled += length;
+	if (!cr.Empty()) {
 		const DocModification mh(ModificationFlags::ChangeStyle | ModificationFlags::User,
-			                startMod, endMod - startMod + 1);
+			                cr.start, cr.end - cr.start + 1);
 		NotifyModified(mh);
 	}
 	enteredStyling--;
@@ -3022,7 +3038,7 @@ Sci::Position Document::BraceMatch(Sci::Position position, Sci::Position /*maxRe
 		return -1;
 	const int styBrace = StyleIndexAt(position);
 	int direction = -1;
-	if (chBrace == '(' || chBrace == '[' || chBrace == '{' || chBrace == '<')
+	if (AnyOf(chBrace, '(', '[', '{', '<'))
 		direction = 1;
 	int depth = 1;
 	position = useStartPos ? startPos : position + direction;
@@ -3035,7 +3051,7 @@ Sci::Position Document::BraceMatch(Sci::Position position, Sci::Position /*maxRe
 
 	while ((position >= 0) && (position < LengthNoExcept())) {
 		const unsigned char chAtPos = CharAt(position);
-		if (chAtPos == chBrace || chAtPos == chSeek) {
+		if (AnyOf(chAtPos, chBrace, chSeek)) {
 			if (((position > GetEndStyled()) || (StyleIndexAt(position) == styBrace)) &&
 				(chAtPos <= maxSafeChar || position == MovePositionOutsideChar(position, direction, false))) {
 				depth += (chAtPos == chBrace) ? 1 : -1;
@@ -3141,7 +3157,9 @@ public:
 	const Document *doc;
 	Sci::Position position;
 
-	explicit ByteIterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	ByteIterator() noexcept :
+		ByteIterator(nullptr) {}
+	explicit ByteIterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
 	char operator*() const noexcept {
@@ -3206,7 +3224,9 @@ public:
 	using pointer = wchar_t*;
 	using reference = wchar_t&;
 
-	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	UTF8Iterator() noexcept :
+		UTF8Iterator(nullptr) {}
+	explicit UTF8Iterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 		if (doc) {
 			ReadCharacter();
@@ -3295,7 +3315,9 @@ public:
 	using pointer = wchar_t*;
 	using reference = wchar_t&;
 
-	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	UTF8Iterator() noexcept :
+		UTF8Iterator(nullptr) {}
+	explicit UTF8Iterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
 	wchar_t operator*() const noexcept {
