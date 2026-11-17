@@ -14,10 +14,13 @@
 #include <cstddef>
 #include <cstdint>
 
+#include <utility>
 #include <string>
 #include <string_view>
 #include <vector>
 #include <optional>
+#include <algorithm>
+#include <iterator>
 #include <memory>
 
 #include "Debugging.h"
@@ -61,14 +64,22 @@ inline Point PointFromQPoint(QPoint qp)
 	return Point(qp.x(), qp.y());
 }
 
+inline Point PointFromQPointF(QPointF qp)
+{
+	return Point(qp.x(), qp.y());
+}
+
 inline QPointF QPointFFromPoint(Point qp)
 {
 	return QPointF(qp.x, qp.y);
 }
 
-constexpr PRectangle RectangleInset(PRectangle rc, XYPOSITION delta) noexcept {
-	return PRectangle(rc.left + delta, rc.top + delta, rc.right - delta, rc.bottom - delta);
+inline QWidget *window(WindowID wid) noexcept
+{
+	return static_cast<QWidget *>(wid);
 }
+
+double ScaleOfWindow(WindowID wid);
 
 class SurfaceImpl : public Surface {
 private:
@@ -77,6 +88,7 @@ private:
 	bool deviceOwned = false;
 	bool painterOwned = false;
 	SurfaceMode mode;
+	qreal scale = 0.0;
 	const char *codecName = nullptr;
 	QTextCodec *codec = nullptr;
 
@@ -84,7 +96,7 @@ private:
 
 public:
 	SurfaceImpl();
-	SurfaceImpl(int width, int height, SurfaceMode mode_);
+	SurfaceImpl(int width, int height, SurfaceMode mode_, qreal scale_);
 	virtual ~SurfaceImpl() override;
 
 	void Init(WindowID wid) override;
@@ -159,6 +171,8 @@ public:
 	void SetPainter(QPainter *painter);
 	QPainter *GetPainter();
 };
+
+std::unique_ptr<Surface> SurfaceImpl_AllocatePixMap(int width, int height, SurfaceMode mode, qreal scale);
 
 }
 

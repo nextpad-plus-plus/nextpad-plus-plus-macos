@@ -7,13 +7,17 @@
 
 #include <cassert>
 
+#include <stdexcept>
+#include <utility>
 #include <string>
 #include <string_view>
 #include <vector>
 #include <map>
 #include <optional>
 #include <algorithm>
+#include <iterator>
 
+#include <ios>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -324,11 +328,11 @@ std::pair<std::string, std::string> MarkedAndFoldedDocument(const Scintilla::IDo
 
 std::vector<std::string> StringSplit(const std::string_view &text, int separator) {
 	std::vector<std::string> vs(text.empty() ? 0 : 1);
-	for (std::string_view::const_iterator it = text.begin(); it != text.end(); ++it) {
-		if (*it == separator) {
+	for (const char ch : text) {
+		if (ch == separator) {
 			vs.push_back(std::string());
 		} else {
-			vs.back() += *it;
+			vs.back() += ch;
 		}
 	}
 	return vs;
@@ -407,7 +411,7 @@ class PropertyMap {
 		return withVars;
 	}
 
-	std::vector<std::string> GetFilePatterns(const std::string &key) const {
+	static std::vector<std::string> GetFilePatterns(const std::string &key) {
 		std::vector<std::string> exts;
 		// Malformed patterns are skipped if we require the whole prefix here;
 		// a fuzzy search lets us collect and report them
@@ -996,7 +1000,7 @@ std::filesystem::path FindLexillaDirectory(std::filesystem::path startDirectory)
 struct LexerTestsDirectory {
 	std::filesystem::path path;
 	std::filesystem::path parent;
-	bool singleLexer;
+	bool singleLexer=false;
 };
 
 bool AccessLexilla(std::filesystem::path basePath, const std::vector<LexerTestsDirectory> &directoryList) {
@@ -1036,8 +1040,9 @@ int main(int argc, char **argv) {
 		std::filesystem::path examplesDirectory = baseDirectory / "test" / "examples";
 		std::vector<LexerTestsDirectory> directoryList;
 		for (int i = 1; i < argc; i++) {
-			if (argv[i][0] != '-') {
-				std::filesystem::path path = argv[i];
+			const std::string_view arg = argv[i];
+			if (!arg.starts_with('-')) {
+				std::filesystem::path path = arg;
 				if (std::filesystem::is_directory(path)) {
 					std::filesystem::path parent = path.parent_path();
 					const bool singleLexer = std::filesystem::equivalent(examplesDirectory, parent);
