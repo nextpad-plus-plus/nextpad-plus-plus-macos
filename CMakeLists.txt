@@ -535,6 +535,8 @@ set_source_files_properties(${APP_SRCS} PROPERTIES
 #                         tree (UTF-8, UTF-8 BOM, UTF-16LE/BE, Windows-1252,
 #                         Shift-JIS, binary skip, multi-hit lines, cancel,
 #                         round-trip safety)
+#   lang_type             tests/test_lang_type.mm: the Windows LangType table that
+#                         NPPM_GET/SETCURRENTLANGTYPE and *BUFFERLANGTYPE use
 #   regex_run_sh,         the standalone harness scripts (regex/test/run.sh and
 #   regex_run_boost_sh    run_boost.sh), which build their own copy with clang++;
 #                         label "standalone" (ctest -LE standalone skips them)
@@ -554,6 +556,9 @@ if(NPP_BUILD_TESTS)
         "${NPP_TEST_ROOT}/PlatformStubs.cxx"
         src/SearchCore.mm
         src/NppTextEncoding.mm)
+    add_executable(test_lang_type EXCLUDE_FROM_ALL
+        "${NPP_TEST_ROOT}/test_lang_type.mm"
+        src/NppBuiltinLanguages.mm)
 
     # -DNPP_TEST_SANITIZER=thread (or address) builds scintilla_core and the
     # tests with that sanitizer, e.g. to have TSan check the concurrent search
@@ -575,14 +580,18 @@ if(NPP_BUILD_TESTS)
     target_compile_options(test_search_core PRIVATE -fobjc-arc)
     # Foundation only: linking fails if the code under test needs AppKit.
     target_link_libraries(test_search_core PRIVATE "-framework Foundation")
+    target_include_directories(test_lang_type PRIVATE src)
+    target_compile_options(test_lang_type PRIVATE -fobjc-arc)
+    target_link_libraries(test_lang_type PRIVATE "-framework Foundation")
 
     add_custom_target(npp_tests
-        DEPENDS test_npp_regex test_boost_regex test_buffer_search test_search_core)
+        DEPENDS test_npp_regex test_boost_regex test_buffer_search test_search_core test_lang_type)
 
     add_test(NAME regex_editor_engine COMMAND test_npp_regex)
     add_test(NAME regex_boost_backend COMMAND test_boost_regex)
     add_test(NAME buffer_search COMMAND test_buffer_search)
     add_test(NAME search_core COMMAND test_search_core)
+    add_test(NAME lang_type COMMAND test_lang_type)
     add_test(NAME regex_run_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run.sh")
     add_test(NAME regex_run_boost_sh COMMAND bash "${NPP_REGEX_ROOT}/test/run_boost.sh")
     set_tests_properties(regex_run_sh regex_run_boost_sh PROPERTIES LABELS standalone TIMEOUT 600)

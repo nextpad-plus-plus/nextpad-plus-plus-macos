@@ -21,6 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// The active editor in the currently focused pane (for plugin access).
 - (nullable EditorView *)currentEditor;
 
+/// Set an editor's language by internal name ("" for plain text) and, when it
+/// is the active editor, refresh the status bar and Function List, as the
+/// Language menu does. Used by the menu and by NPPM_SET*LANGTYPE.
+- (void)setLanguage:(NSString *)language forEditor:(EditorView *)editor;
+
 /// Editor for a specific view: 0 = primary tab manager, 1 = secondary (vertical split).
 /// Returns nil if the secondary view has no tabs.
 - (nullable EditorView *)editorForPluginView:(int)viewId;

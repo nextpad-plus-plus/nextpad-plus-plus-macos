@@ -7,6 +7,7 @@
 #import "PreferencesWindowController.h"
 #import "TabManager.h"
 #import "EditorView.h"
+#import "NppBuiltinLanguages.h"
 #import "ScintillaView.h"
 
 #include <dlfcn.h>
@@ -224,6 +225,25 @@ static NSArray<EditorView *> *nppAllEditors(MainWindowController *mwc, int filte
         }
     }
     return out;
+}
+
+// The editor a plugin's bufferID (an EditorView pointer, see
+// NPPM_GETCURRENTBUFFERID) refers to, or nil. Only adopts the pointer once it
+// matches one of the host's editors, so a stale or bogus ID is never retained
+// (same pattern as NPPM_GETFULLPATHFROMBUFFERID).
+static EditorView *nppEditorForBufferID(MainWindowController *mwc, uintptr_t bufferID) {
+    if (!bufferID) return nil;
+    for (EditorView *ed in nppAllEditors(mwc, 0)) {
+        if ((uintptr_t)(__bridge void *)ed == bufferID) return ed;
+    }
+    return nil;
+}
+
+// The Windows LangType a plugin sees for an editor: L_TEXT (0) for plain text,
+// unknown languages and User Defined Languages.
+static int nppLangTypeOfEditor(EditorView *ed) {
+    if (!ed || ed.currentLanguageIsUDL) return 0;
+    return MAX(0, NppBuiltinLanguageLangTypeForInternal(ed.currentLanguage ?: @""));
 }
 
 // ── Loading ─────────────────────────────────────────────────────────────
@@ -755,131 +775,54 @@ static intptr_t _npp_run_on_main(intptr_t (^block)(void)) {
             return 0;
         }
 
-        // ── Language detection ─────────────────────────────────────────
+        // ── Language type ──────────────────────────────────────────────
         // Windows NPP exposes an integer LangType enum (see
         // notepad-plus-plus/PowerEditor/src/MISC/PluginsManager/Notepad_plus_msgs.h
-        // line 27). Plugins use NPPM_GETCURRENTLANGTYPE to detect which
-        // language the current buffer is classified as. The macOS host
-        // stores the language as an NSString on EditorView.currentLanguage;
-        // these two handlers translate between the NSString name and the
-        // canonical Windows integer value.
+        // line 27). The macOS host stores the language as an NSString on
+        // EditorView.currentLanguage; NppBuiltinLanguages translates between
+        // the name and the canonical Windows integer value.
         //
-        // Unknown / untyped buffers return L_TEXT = 0, matching Windows.
-        // UDL (L_USER = 15) is not implemented on macOS — the host has no
-        // user-defined language engine. External lexers (L_EXTERNAL = 95)
-        // are likewise not used.
+        // Unknown / untyped buffers return L_TEXT = 0, matching Windows. A
+        // User Defined Language also reports L_TEXT (Windows reports L_USER =
+        // 15), and L_USER / L_EXTERNAL cannot be set: no built-in language.
         case NPPM_GETCURRENTLANGTYPE: {
             int *out = (int *)lParam;
             if (!out) return 0;
 
             MainWindowController *mwc = _mwc;
-            EditorView *ed = mwc ? [mwc currentEditor] : nil;
-            NSString *langName = ed.currentLanguage ?: @"";
-
-            static NSDictionary<NSString *, NSNumber *> *nameToLangType;
-            static dispatch_once_t onceLangType;
-            dispatch_once(&onceLangType, ^{
-                nameToLangType = @{
-                    // Canonical Windows NPP LangType values.
-                    // Reference: Notepad_plus_msgs.h line 27.
-                    @"c"            : @2,    // L_C
-                    @"cpp"          : @3,    // L_CPP
-                    @"cs"           : @4,    // L_CS
-                    @"objc"         : @5,    // L_OBJC
-                    @"java"         : @6,    // L_JAVA
-                    @"rc"           : @7,    // L_RC
-                    @"html"         : @8,    // L_HTML
-                    @"xml"          : @9,    // L_XML
-                    @"makefile"     : @10,   // L_MAKEFILE
-                    @"pascal"       : @11,   // L_PASCAL
-                    @"batch"        : @12,   // L_BATCH
-                    @"ini"          : @13,   // L_INI
-                    // 14 = L_ASCII/L_NFO, 15 = L_USER (UDL — not supported)
-                    @"asp"          : @16,   // L_ASP
-                    @"sql"          : @17,   // L_SQL
-                    @"vb"           : @18,   // L_VB
-                    // 19 = L_JS_EMBEDDED (deprecated)
-                    @"css"          : @20,   // L_CSS
-                    @"perl"         : @21,   // L_PERL
-                    @"python"       : @22,   // L_PYTHON
-                    @"lua"          : @23,   // L_LUA
-                    @"tex"          : @24,   // L_TEX
-                    @"fortran"      : @25,   // L_FORTRAN
-                    @"bash"         : @26,   // L_BASH
-                    @"actionscript" : @27,   // L_FLASH
-                    @"nsis"         : @28,   // L_NSIS
-                    @"tcl"          : @29,   // L_TCL
-                    @"lisp"         : @30,   // L_LISP
-                    @"scheme"       : @31,   // L_SCHEME
-                    @"asm"          : @32,   // L_ASM
-                    @"diff"         : @33,   // L_DIFF
-                    @"props"        : @34,   // L_PROPS
-                    @"postscript"   : @35,   // L_PS
-                    @"ruby"         : @36,   // L_RUBY
-                    @"smalltalk"    : @37,   // L_SMALLTALK
-                    @"vhdl"         : @38,   // L_VHDL
-                    @"kix"          : @39,   // L_KIX
-                    @"autoit"       : @40,   // L_AU3
-                    @"caml"         : @41,   // L_CAML
-                    @"ada"          : @42,   // L_ADA
-                    @"verilog"      : @43,   // L_VERILOG
-                    @"matlab"       : @44,   // L_MATLAB
-                    @"haskell"      : @45,   // L_HASKELL
-                    @"inno"         : @46,   // L_INNO
-                    // 47 = L_SEARCHRESULT (host-internal)
-                    @"cmake"        : @48,   // L_CMAKE
-                    @"yaml"         : @49,   // L_YAML
-                    @"cobol"        : @50,   // L_COBOL
-                    // 51 = L_GUI4CLI (not in host)
-                    @"d"            : @52,   // L_D
-                    @"powershell"   : @53,   // L_POWERSHELL
-                    @"r"            : @54,   // L_R
-                    // 55 = L_JSP (not in host)
-                    @"coffeescript" : @56,   // L_COFFEESCRIPT
-                    @"json"         : @57,   // L_JSON
-                    @"javascript"   : @58,   // L_JAVASCRIPT
-                    @"javascript.js": @58,   // alternate host alias
-                    @"fortran77"    : @59,   // L_FORTRAN_77
-                    @"baanc"        : @60,   // L_BAANC
-                    // 61-63 = L_SREC/L_IHEX/L_TEHEX (not in host)
-                    @"swift"        : @64,   // L_SWIFT
-                    // 65 = L_ASN1 (not in host)
-                    @"avs"          : @66,   // L_AVS
-                    @"blitzbasic"   : @67,   // L_BLITZBASIC
-                    @"purebasic"    : @68,   // L_PUREBASIC
-                    @"freebasic"    : @69,   // L_FREEBASIC
-                    @"csound"       : @70,   // L_CSOUND
-                    @"erlang"       : @71,   // L_ERLANG
-                    @"escript"      : @72,   // L_ESCRIPT
-                    @"forth"        : @73,   // L_FORTH
-                    @"latex"        : @74,   // L_LATEX
-                    // 75 = L_MMIXAL (not in host)
-                    @"nim"          : @76,   // L_NIM
-                    @"nncrontab"    : @77,   // L_NNCRONTAB
-                    @"oscript"      : @78,   // L_OSCRIPT
-                    // 79 = L_REBOL (not in host)
-                    @"registry"     : @80,   // L_REGISTRY
-                    @"rust"         : @81,   // L_RUST
-                    @"spice"        : @82,   // L_SPICE
-                    // 83 = L_TXT2TAGS (not in host)
-                    @"visualprolog" : @84,   // L_VISUALPROLOG
-                    @"typescript"   : @85,   // L_TYPESCRIPT
-                    // 86 = L_JSON5 (not in host)
-                    @"mssql"        : @87,   // L_MSSQL
-                    @"gdscript"     : @88,   // L_GDSCRIPT
-                    @"hollywood"    : @89,   // L_HOLLYWOOD
-                    @"go"           : @90,   // L_GOLANG
-                    @"raku"         : @91,   // L_RAKU
-                    @"toml"         : @92,   // L_TOML
-                    @"sas"          : @93,   // L_SAS
-                    // 94 = L_ERRORLIST (host-internal)
-                    // 95 = L_EXTERNAL (reserved)
-                };
-            });
-
-            NSNumber *val = nameToLangType[langName.lowercaseString];
-            *out = val ? val.intValue : 0;    // L_TEXT for unknown / plain text
+            *out = nppLangTypeOfEditor(mwc ? [mwc currentEditor] : nil);
             return 0;
+        }
+
+        case NPPM_SETCURRENTLANGTYPE: {
+            // lParam = LangType. Windows (NppBigSwitch.cpp:1269) sets it on the
+            // current buffer and always returns TRUE; a LangType the host has
+            // no language for returns FALSE here instead.
+            MainWindowController *mwc = _mwc;
+            EditorView *ed = mwc ? [mwc currentEditor] : nil;
+            NSString *langName = NppBuiltinLanguageInternalForLangType(lParam);
+            if (!ed || !langName) return FALSE;
+            [mwc setLanguage:langName forEditor:ed];
+            return TRUE;
+        }
+
+        case NPPM_GETBUFFERLANGTYPE: {
+            // wParam = bufferID (EditorView*). Returns the LangType, or -1 for
+            // an unknown buffer (Windows NppBigSwitch.cpp:588).
+            EditorView *ed = nppEditorForBufferID(_mwc, wParam);
+            return ed ? nppLangTypeOfEditor(ed) : -1;
+        }
+
+        case NPPM_SETBUFFERLANGTYPE: {
+            // wParam = bufferID (EditorView*), lParam = LangType. Returns FALSE
+            // for an unknown buffer and for L_USER / L_EXTERNAL, as Windows
+            // (NppBigSwitch.cpp:601), and for a LangType the host lacks.
+            MainWindowController *mwc = _mwc;
+            EditorView *ed = nppEditorForBufferID(mwc, wParam);
+            NSString *langName = NppBuiltinLanguageInternalForLangType(lParam);
+            if (!ed || !langName) return FALSE;
+            [mwc setLanguage:langName forEditor:ed];
+            return TRUE;
         }
 
         case NPPM_GETLANGUAGENAME: {
