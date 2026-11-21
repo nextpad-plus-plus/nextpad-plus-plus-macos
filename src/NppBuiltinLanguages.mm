@@ -144,3 +144,66 @@ NSString *NppBuiltinLanguageCaptionForInternal(NSString *internalName) {
 NSString *NppBuiltinLanguageLexerIDForInternal(NSString *internalName) {
     return internalName.length ? lexerIndex()[internalName] : nil;
 }
+
+// ── Windows LangType ↔ internal name ─────────────────────────────────────────
+// The names of Windows ScintillaEditView.cpp's _langNameInfoArray, in order, so
+// the index is the LangType value (enum LangType in Notepad_plus_msgs.h:27,
+// L_TEXT = 0 … L_EXTERNAL = 97). Plugins pass these integers in
+// NPPM_GET/SETCURRENTLANGTYPE and NPPM_GET/SETBUFFERLANGTYPE.
+static const char *const kLangTypeNames[] = {
+    /*  0 */ "normal",        "php",           "c",             "cpp",           "cs",
+    /*  5 */ "objc",          "java",          "rc",            "html",          "xml",
+    /* 10 */ "makefile",      "pascal",        "batch",         "ini",           "nfo",
+    /* 15 */ "udf",           "asp",           "sql",           "vb",            "javascript",
+    /* 20 */ "css",           "perl",          "python",        "lua",           "tex",
+    /* 25 */ "fortran",       "bash",          "actionscript",  "nsis",          "tcl",
+    /* 30 */ "lisp",          "scheme",        "asm",           "diff",          "props",
+    /* 35 */ "postscript",    "ruby",          "smalltalk",     "vhdl",          "kix",
+    /* 40 */ "autoit",        "caml",          "ada",           "verilog",       "matlab",
+    /* 45 */ "haskell",       "inno",          "searchResult",  "cmake",         "yaml",
+    /* 50 */ "cobol",         "gui4cli",       "d",             "powershell",    "r",
+    /* 55 */ "jsp",           "coffeescript",  "json",          "javascript.js", "fortran77",
+    /* 60 */ "baanc",         "srec",          "ihex",          "tehex",         "swift",
+    /* 65 */ "asn1",          "avs",           "blitzbasic",    "purebasic",     "freebasic",
+    /* 70 */ "csound",        "erlang",        "escript",       "forth",         "latex",
+    /* 75 */ "mmixal",        "nim",           "nncrontab",     "oscript",       "rebol",
+    /* 80 */ "registry",      "rust",          "spice",         "txt2tags",      "visualprolog",
+    /* 85 */ "typescript",    "json5",         "mssql",         "gdscript",      "hollywood",
+    /* 90 */ "go",            "raku",          "toml",          "sas",           "errorlist",
+    /* 95 */ "escseq",        "fcST",          "ext",
+};
+
+static const int kLangTypeCount = (int)(sizeof(kLangTypeNames) / sizeof(kLangTypeNames[0]));
+static const int kLangTypeJavaScript = 58;   // L_JAVASCRIPT
+
+// Built-in languages only: LangTypes the host has no language for (L_USER,
+// L_JS_EMBEDDED, L_SEARCHRESULT, …) are left out.
+static NSDictionary<NSString *, NSNumber *> *langTypeIndex(void) {
+    static NSDictionary *idx;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        NSMutableDictionary *m = [NSMutableDictionary dictionaryWithCapacity:kLangTypeCount];
+        for (int t = 0; t < kLangTypeCount; t++) {
+            NSString *name = @(kLangTypeNames[t]);
+            if (captionIndex()[name]) m[name] = @(t);
+        }
+        // "javascript" is L_JS_EMBEDDED on Windows (deprecated, "use
+        // L_JAVASCRIPT instead"); the host's JavaScript is "javascript.js".
+        m[@"javascript"] = @(kLangTypeJavaScript);
+        idx = [m copy];
+    });
+    return idx;
+}
+
+int NppBuiltinLanguageLangTypeForInternal(NSString *internalName) {
+    if (!internalName.length) return 0;   // plain text, as setLanguage:@""
+    NSNumber *t = langTypeIndex()[internalName.lowercaseString];
+    return t ? t.intValue : -1;
+}
+
+NSString *NppBuiltinLanguageInternalForLangType(NSInteger langType) {
+    if (langType == 0) return @"";        // L_TEXT → plain text
+    if (langType < 0 || langType >= kLangTypeCount) return nil;
+    NSString *name = @(kLangTypeNames[langType]);
+    return captionIndex()[name] ? name : nil;
+}

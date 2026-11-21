@@ -24,4 +24,14 @@ NSString * _Nullable NppBuiltinLanguageCaptionForInternal(NSString *internalName
 /// Returns nil for unknown names.
 NSString * _Nullable NppBuiltinLanguageLexerIDForInternal(NSString *internalName);
 
+/// Windows LangType value (enum LangType, Notepad_plus_msgs.h) for an internal
+/// name (e.g. "json" → 57 = L_JSON). "" and "normal" → 0 (L_TEXT). Returns -1
+/// for names that are not built-in languages (User Defined Languages included).
+int NppBuiltinLanguageLangTypeForInternal(NSString *internalName);
+
+/// Internal name for a Windows LangType value (e.g. 57 → "json"), as passed to
+/// EditorView's setLanguage:. 0 (L_TEXT) → "" (plain text). Returns nil for
+/// values the host has no built-in language for (L_USER, L_EXTERNAL, …).
+NSString * _Nullable NppBuiltinLanguageInternalForLangType(NSInteger langType);
+
 NS_ASSUME_NONNULL_END

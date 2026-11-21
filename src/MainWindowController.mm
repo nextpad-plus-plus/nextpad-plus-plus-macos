@@ -8194,11 +8194,17 @@ static NSArray<NSDictionary *> *convertRecordedToXmlFormat(NSArray<NSDictionary 
 
 - (void)setLanguageFromMenu:(id)sender {
     NSString *lang = [sender representedObject] ?: @"";
-    [[self currentEditor] setLanguage:lang];
+    EditorView *ed = [self currentEditor];
+    if (ed) [self setLanguage:lang forEditor:ed];
+}
+
+- (void)setLanguage:(NSString *)language forEditor:(EditorView *)editor {
+    [editor setLanguage:language];
+    if (editor != [self currentEditor]) return;
     [self updateStatusBar];
     // Refresh Function List if it's open
     if (_funcListPanel && [_sidePanelHost hasPanel:_funcListPanel])
-        [_funcListPanel loadEditor:[self currentEditor]];
+        [_funcListPanel loadEditor:editor];
 }
 
 /// Apply a User Defined Language from the Language menu.
